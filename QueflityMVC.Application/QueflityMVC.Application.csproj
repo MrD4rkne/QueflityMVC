@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
     <Folder Include="Common\" />
-    <Folder Include="Validators\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QueflityMVC.Infrastructure\QueflityMVC.Infrastructure.csproj" />
+    <ProjectReference Include="..\QueflityMVC.Domain\QueflityMVC.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Infrastructure.Repositories
 {
-    public class IngredientRepository : GenericRepository<Ingredient>, IIngredientRepository
+    public class IngredientRepository : BaseRepository<Ingredient>, IIngredientRepository
     {
         public override DbSet<Ingredient> Table() => _dbContext.Ingredients;
 

@@ -8,14 +8,18 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Infrastructure.Common
 {
-    public abstract class GenericRepository<T> : IBaseRepository<T> where T : BaseEntity
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         protected Context _dbContext;
 
-        public GenericRepository(Context dbContext){
+        public BaseRepository(Context dbContext){
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Get proper table for entities
+        /// </summary>
+        /// <returns>DbSet<EntityType></returns>
         public abstract DbSet<T> Table();
 
         public virtual int Add(T entityToAdd)
@@ -72,6 +76,11 @@ namespace QueflityMVC.Infrastructure.Common
         public virtual T? GetById(int entityId)
         {
             return Table().FirstOrDefault(ent => ent.Id == entityId);
+        }
+
+        public IQueryable<T> GetAll()
+        {
+            return Table();
         }
     }
 }

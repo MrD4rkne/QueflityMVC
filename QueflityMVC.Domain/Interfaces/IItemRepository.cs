@@ -10,5 +10,6 @@ namespace QueflityMVC.Domain.Interfaces
 {
     public interface IItemRepository : IBaseRepository<Item>
     {
+
     }
 }

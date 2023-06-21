@@ -11,15 +11,13 @@ namespace QueflityMVC.Domain.Models
     {
         public string Name { get; set; }
 
-        public string? ThumbnailURL { get; set; }
-
         public int ItemCategoryId { get; set; }
 
         public virtual ItemCategory ItemCategory { get; set; }
 
-        public int ImageId { get; set; }
+        public int? ImageId { get; set; }
 
-        public virtual Image Image { get; set; }
+        public virtual Image? Image { get; set; }
 
         public virtual ICollection<ItemSet> ItemSets { get; set; }
 

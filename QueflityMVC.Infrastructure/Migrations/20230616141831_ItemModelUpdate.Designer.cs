@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueflityMVC.Infrastructure;
 
@@ -11,9 +12,11 @@ using QueflityMVC.Infrastructure;
 namespace QueflityMVC.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230616141831_ItemModelUpdate")]
+    partial class ItemModelUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -304,7 +307,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ImageId")
+                    b.Property<int>("ImageId")
                         .HasColumnType("int");
 
                     b.Property<int>("ItemCategoryId")
@@ -317,8 +320,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ImageId")
-                        .IsUnique()
-                        .HasFilter("[ImageId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("ItemCategoryId");
 
@@ -444,7 +446,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                 {
                     b.HasOne("QueflityMVC.Domain.Models.Image", "Image")
                         .WithOne("Item")
-                        .HasForeignKey("QueflityMVC.Domain.Models.Item", "ImageId");
+                        .HasForeignKey("QueflityMVC.Domain.Models.Item", "ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("QueflityMVC.Domain.Models.ItemCategory", "ItemCategory")
                         .WithMany("Items")

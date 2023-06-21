@@ -34,7 +34,8 @@ namespace QueflityMVC.Infrastructure
             builder.Entity<Item>()
                 .HasOne(it => it.Image)
                 .WithOne(img => img.Item)
-                .HasForeignKey<Item>(it => it.ImageId);
+                .HasForeignKey<Item>(it => it.ImageId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Item>()
                 .HasMany(it => it.Ingredients)

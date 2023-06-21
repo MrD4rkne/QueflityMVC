@@ -10,6 +10,8 @@ namespace QueflityMVC.Domain.Interfaces
 {
     public interface IImageRepository : IBaseRepository<Image>
     {
-        
+        //string SaveImageData(IFormFile formFile);
+
+        //byte[] LoadImageData(string path);
     }
 }

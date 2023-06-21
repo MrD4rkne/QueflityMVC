@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Infrastructure.Repositories
 {
-    public class ItemSetRepository : GenericRepository<ItemSet>, IItemSetRepository
+    public class ItemSetRepository : BaseRepository<ItemSet>, IItemSetRepository
     {
         public override DbSet<ItemSet> Table() => _dbContext.ItemSets;
 
