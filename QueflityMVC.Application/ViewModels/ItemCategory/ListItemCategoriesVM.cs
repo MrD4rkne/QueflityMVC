@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.ViewModels.ItemCategory
 {
-    public class ListItemCategoryVM
+    public class ListItemCategoriesVM
     {
         public int PageSize { get; set; }
 

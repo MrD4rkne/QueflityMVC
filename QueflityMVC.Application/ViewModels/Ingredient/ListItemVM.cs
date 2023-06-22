@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QueflityMVC.Application.ViewModels.Item
+namespace QueflityMVC.Application.ViewModels.Ingredient
 {
-    public class ListItemVM
+    public class ListIngredientsVM
     {
         public int PageSize { get; set; }
 
@@ -14,9 +14,9 @@ namespace QueflityMVC.Application.ViewModels.Item
 
         public int TotalCount { get; set; }
 
-        public int? ItemCategoryId { get; set; }
+        public int? ItemId { get; set; }
 
-        public List<ItemForListVM> Items { get; set; }
+        public List<IngredientForListVM> Items { get; set; }
 
         public string NameFilter { get; set; }
     }

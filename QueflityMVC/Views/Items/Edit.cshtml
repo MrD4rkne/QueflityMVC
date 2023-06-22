@@ -36,7 +36,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ItemVM.CategoryId" class="control-label"></label>
+                <label>Category</label>
                 <select asp-for="ItemVM.CategoryId" class="form-control">
                     <option value="">Select a category</option>
                     @if (Model.ItemCategories != null && Model.ItemCategories.Count > 0)
@@ -45,6 +45,7 @@
                         {
                             @if(category.Id==Model.ItemVM.CategoryId){
                                 <option selected="selected" value="@category.Id">@category.Name</option>
+                                ViewData["categoryId"] = category.Id;
                             }
                             else
                             {
@@ -68,7 +69,13 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    @if(ViewData["categoryId"] is int categoryId)
+    {
+        @Html.ActionLink("Back to List", "Index", new {categoryId = categoryId});
+    }
+    else{
+        <a asp-action="Index">Back to List</a>
+    }
 </div>
 
 @section Scripts {

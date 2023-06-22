@@ -27,6 +27,7 @@ namespace QueflityMVC.Application
             // Services
             services.AddTransient<IItemCategoryService, ItemCategoryService>();
             services.AddTransient<IItemService, ItemService>();
+            services.AddTransient<IIngredientService, IngredientService>();
 
             return services;
         }

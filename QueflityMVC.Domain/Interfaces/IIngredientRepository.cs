@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Domain.Interfaces
 {
-    public interface IItemSetRepository : IBaseRepository<ItemSet>
+    public interface IIngredientRepository : IBaseRepository<Ingredient>
     {
+        public IQueryable<Ingredient> GetIngredientsForItem(int itemId);
     }
 }

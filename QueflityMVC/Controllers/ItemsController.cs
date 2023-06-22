@@ -44,7 +44,7 @@ namespace QueflityMVC.Web.Controllers
             if (pageIndex < 1)
                 pageIndex = 1;
 
-            ListItemVM listVM;
+            ListItemsVM listVM;
             if (itemCategoryId.HasValue)
                 listVM = _itemService.GetFilteredList(itemCategoryId.Value, nameFilter, pageSize, pageIndex);
             else

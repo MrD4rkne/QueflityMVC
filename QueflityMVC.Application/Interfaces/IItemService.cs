@@ -12,8 +12,8 @@ namespace QueflityMVC.Application.Interfaces
     {
         Task<int> CreateItem(ItemDTO createItemVM, string imagesDirectory);
         void DeleteItem(int id, string rootPath);
-        ListItemVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
-        ListItemVM GetFilteredList(int itemCategoryId, string nameFilter, int pageSize, int pageIndex);
+        ListItemsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
+        ListItemsVM GetFilteredList(int itemCategoryId, string nameFilter, int pageSize, int pageIndex);
         CrEdItemVM? GetForEdit(int id);
         CrEdItemVM GetItemVMForAdding(int? categoryId);
         Task UpdateItem(ItemDTO createItemVM, string rootPath);

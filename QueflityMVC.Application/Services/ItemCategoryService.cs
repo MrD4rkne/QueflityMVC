@@ -39,11 +39,11 @@ namespace QueflityMVC.Application.Services
             _repository.Delete(id);
         }
 
-        public ListItemCategoryVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
+        public ListItemCategoriesVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
         {
             int itemsToSkip = (pageIndex- 1) * pageSize;
 
-            ListItemCategoryVM listItemCategoryVM = new() { 
+            ListItemCategoriesVM listItemCategoryVM = new() { 
                 NameFilter= nameFilter,
                 PageIndex=pageIndex,
                 PageSize=pageSize

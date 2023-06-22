@@ -49,21 +49,21 @@ namespace QueflityMVC.Application.Services
             _repository.Delete(id);
         }
 
-        public ListItemVM GetFilteredList(int itemCategoryId, string nameFilter, int pageSize, int pageIndex)
+        public ListItemsVM GetFilteredList(int itemCategoryId, string nameFilter, int pageSize, int pageIndex)
         {
             return GetListItemVM(_repository.GetAll().Where(x=>x.ItemCategoryId==itemCategoryId),nameFilter, pageSize, pageIndex);
         }
 
-        public ListItemVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
+        public ListItemsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
         {
             return GetListItemVM(_repository.GetAll(), nameFilter, pageSize, pageIndex);
         }
 
-        private ListItemVM GetListItemVM(IQueryable<Item> itemsQuerable, string nameFilter, int pageSize, int pageIndex)
+        private ListItemsVM GetListItemVM(IQueryable<Item> itemsQuerable, string nameFilter, int pageSize, int pageIndex)
         {
             int itemsToSkip = (pageIndex - 1) * pageSize;
 
-            ListItemVM listItemVM = new()
+            ListItemsVM listItemVM = new()
             {
                 NameFilter = nameFilter,
                 PageIndex = pageIndex,
