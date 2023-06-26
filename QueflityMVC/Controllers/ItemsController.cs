@@ -71,6 +71,10 @@ namespace QueflityMVC.Web.Controllers
             if (!result.IsValid)
             {
                 result.AddToModelState(this.ModelState);
+
+                if (crEdObjItem.ItemCategories == null)
+                    crEdObjItem.ItemCategories = _itemService.GetItemCategoriesForSelectVM();
+
                 return View("Create", crEdObjItem);
             }
 

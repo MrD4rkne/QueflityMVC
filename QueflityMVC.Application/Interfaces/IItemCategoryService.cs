@@ -12,7 +12,7 @@ namespace QueflityMVC.Application.Interfaces
         int CreateItemCategory(ItemCategoryDTO createItemCategoryVM);
         void DeleteItemCategory(int id);
         ListItemCategoriesVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
-        ItemCategoryDTO? GetForEdit(int id);
-        int UpdateItemCategory(ItemCategoryDTO createItemCategoryVM);
+        ItemCategoryDTO? GetVMForEdit(int id);
+        void UpdateItemCategory(ItemCategoryDTO createItemCategoryVM);
     }
 }

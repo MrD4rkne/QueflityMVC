@@ -116,9 +116,13 @@ namespace QueflityMVC.Application.Services
             if(categoryId.HasValue)
                 crEdObjItem.ItemVM.CategoryId = categoryId.Value;
 
-            crEdObjItem.ItemCategories = _categoryRepository.GetAll().ProjectTo<ItemCategoryForSelectVM>(_mapper.ConfigurationProvider).ToList();
+            crEdObjItem.ItemCategories = GetItemCategoriesForSelectVM();
 
             return crEdObjItem;
+        }
+
+        public List<ItemCategoryForSelectVM> GetItemCategoriesForSelectVM() { 
+            return _categoryRepository.GetAll().ProjectTo<ItemCategoryForSelectVM>(_mapper.ConfigurationProvider).ToList();
         }
 
         private bool ShouldSwitchImages(ItemDTO updatedItem)

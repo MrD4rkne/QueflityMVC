@@ -2,34 +2,43 @@
 @model ListItemCategoriesVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "List";
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
+    int pagesCount = (int)Math.Ceiling((Model.TotalCount / (double)Model.PageSize));
+    if (pagesCount < 1)
+        pagesCount = 1;
 }
 
-<h1>Index</h1>
+<h1>Item Categories</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <button class="btn btn-primary" asp-action="Create">Create New</button>
 </p>
 
 <form asp-action="Index" asp-controller="ItemCategories" method="post">
-    <div class="column">
-        <input type="text" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />
-        <input type="submit" value="Wyszukaj" />
-        <select asp-for="PageSize" name="pageSize" id="pageSize" onchange="javascript:PageSizeSelected()">
-            @foreach(int i in options)
-            {
-                @if(i == Model.PageSize)
+    <ul class="nav gap-1">
+        <li class="nav-item">
+            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />
+        </li>
+        <li class="nav-item">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </li>
+        <li class="nav-item">
+            <select class="form-select" asp-for="PageSize" name="pageSize" id="pageSize" onchange="javascript:PageSizeSelected()">
+                @foreach (int i in options)
                 {
-                    <option value="@i" selected="selected">@i</option>
+                    @if (i == Model.PageSize)
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
                 }
-                else
-                {
-                    <option value="@i">@i</option>
-                }
-            }
-        </select>
-    </div>
+            </select>
+        </li>
+    </ul>
     <div class="row">
         <table class="table">
             <thead>
@@ -44,42 +53,57 @@
                 </tr>
             </thead>
             <tbody>
-        @foreach (var item in Model.ItemCategories) {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                        @Html.ActionLink("View items", "ViewItems", new { id = item.Id }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                    </td>
-                </tr>
-        }
+                @foreach (var item in Model.ItemCategories)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                            @Html.ActionLink("View items", "ViewItems", new { id = item.Id }, new { @class = "btn btn-outline-primary btn-sm"})
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
     <div class="row">
-        <table>
-            <tr>
-                @for (int i = 1; i <= Math.Ceiling((Model.TotalCount / (double)Model.PageSize)); i++)
+        <nav>
+            <ul class="pagination justify-content-center">
+                @if (Model.PageIndex <= 1)
                 {
-                    <td>
-                        @if (i != Model.PageIndex)
-                        {
-                            <a href="javascript:PagerClick(@i)">@i</a>
-                        }
-                        else
-                        {
-                            <span>@i</span>
-                        }
-                    </td>
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
                 }
-            </tr>
-        </table>
+                else
+                {
+                    <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.PageIndex-1)">Previous</a></li>
+                }
+                @for (int i = 1; i <= pagesCount; i++)
+                {
+                    @if (i != Model.PageIndex)
+                    {
+                        <li class="page-item"><a class="page-link" href="javascript:PagerClick(@i)">@i</a></li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled"><span class="page-link"><b>@i</b></span></li>
+                    }
+                }
+                @if (Model.PageIndex >= pagesCount)
+                {
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.PageIndex+1)">Next</a></li>
+                }
+            </ul>
+        </nav>
         <input type="hidden" name="pageIndex" id="pageIndex" />
     </div>
 </form>

@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Services;
+using QueflityMVC.Application.ViewModels.Ingredient;
+using QueflityMVC.Application.ViewModels.ItemCategory;
+using System.ComponentModel.DataAnnotations;
 
 namespace QueflityMVC.Web.Controllers
 {
@@ -10,10 +15,12 @@ namespace QueflityMVC.Web.Controllers
         private const int DEFAULT_PAGE_SIZE = 2;
 
         private IIngredientService _ingredientService;
+        private IValidator<IngredientDTO> _itemCategoryValidator;
 
-        public IngredientsController(IIngredientService ingredientService)
+        public IngredientsController(IIngredientService ingredientService, IValidator<IngredientDTO> itemCategoryValidator)
         {
             _ingredientService = ingredientService;
+            _itemCategoryValidator = itemCategoryValidator;
         }
 
         public IActionResult Index()
@@ -33,6 +40,64 @@ namespace QueflityMVC.Web.Controllers
 
             var listVm = _ingredientService.GetFilteredList(itemId,nameFilter, pageSize, pageIndex);
             return View(listVm);
+        }
+
+        [Route("Create")]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new IngredientDTO());
+        }
+
+        [Route("Create")]
+        [HttpPost]
+        public IActionResult Create(IngredientDTO ingredientToAddDTO)
+        {
+            var validationResult = _itemCategoryValidator.Validate(ingredientToAddDTO);
+
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(this.ModelState);
+                return View("Create", ingredientToAddDTO);
+            }
+
+            _ingredientService.CreateIngredient(ingredientToAddDTO);
+
+            return RedirectToAction("Index");
+        }
+
+        [Route("Edit")]
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var ingredientVM = _ingredientService.GetIngredientVMForEdit(id);
+            if (ingredientVM is null)
+                return NotFound();
+            return View(ingredientVM);
+        }
+
+        [Route("Edit")]
+        [HttpPost]
+        public IActionResult Edit(IngredientDTO ingredientToEditDTO)
+        {
+            var validationResult = _itemCategoryValidator.Validate(ingredientToEditDTO);
+
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(this.ModelState);
+                return View("Edit", ingredientToEditDTO);
+            }
+
+            _ingredientService.UpdateIngredient(ingredientToEditDTO);
+
+            return RedirectToAction("Index");
+        }
+
+        [Route("Delete")]
+        public IActionResult Delete(int id)
+        {
+            _ingredientService.DeleteIngredient(id);
+            return RedirectToAction("Index");
         }
     }
 }

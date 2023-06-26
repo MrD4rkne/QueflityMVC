@@ -58,7 +58,7 @@ namespace QueflityMVC.Application.Services
             return listItemCategoryVM;
         }
 
-        public ItemCategoryDTO? GetForEdit(int id)
+        public ItemCategoryDTO? GetVMForEdit(int id)
         {
             var itemCategory = _repository.GetById(id);
 
@@ -68,13 +68,11 @@ namespace QueflityMVC.Application.Services
             return _mapper.Map<ItemCategoryDTO>(itemCategory);
         }
 
-        public int UpdateItemCategory(ItemCategoryDTO createItemCategoryVM)
+        public void UpdateItemCategory(ItemCategoryDTO createItemCategoryVM)
         {
             var itemCategory = _mapper.Map<ItemCategory>(createItemCategoryVM);
 
             var updatedItemCategory = _repository.Update(itemCategory);
-
-            return updatedItemCategory.Id;
         }
     }
 }

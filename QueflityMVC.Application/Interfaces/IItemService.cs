@@ -17,5 +17,7 @@ namespace QueflityMVC.Application.Interfaces
         CrEdItemVM? GetForEdit(int id);
         CrEdItemVM GetItemVMForAdding(int? categoryId);
         Task UpdateItem(ItemDTO createItemVM, string rootPath);
+
+        List<ItemCategoryForSelectVM> GetItemCategoriesForSelectVM();
     }
 }

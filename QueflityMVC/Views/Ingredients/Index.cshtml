@@ -1,30 +1,23 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.ListItemsVM
+﻿@model QueflityMVC.Application.ViewModels.Ingredient.ListIngredientsVM
 
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "List ingredients";
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
     int pagesCount = (int)Math.Ceiling((Model.TotalCount / (double)Model.PageSize));
     if (pagesCount < 1)
         pagesCount = 1;
 }
 
-<h1>Items</h1>
+<h1>Ingredients</h1>
 
 <p>
-    @if (Model.ItemCategoryId.HasValue)
-    {
-        @Html.ActionLink("Create New with this category", "Create", new { categoryId = Model.ItemCategoryId.Value }, new{ @class="btn btn-primary" })
-    }
-    else
-    {
-        <button class="btn btn-primary" asp-action="Create">Create New</button>
-    }
+    <button class="btn btn-primary" asp-action="Create">Create New</button>
 </p>
 
-<form asp-action="Index" asp-controller="Items" method="post">
+<form asp-action="Index" asp-controller="Ingredients" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />
+           <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />
         </li>
         <li class="nav-item">
             <button type="submit" class="btn btn-secondary">Search</button>
@@ -49,7 +42,6 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th></th>
                     <th>
                         Id
                     </th>
@@ -64,20 +56,14 @@
                 {
                     <tr>
                         <td>
-                            @if (item.Image != null)
-                            {
-                                <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px" />
-                            }
-                        </td>
-                        <td>
                             @Html.DisplayFor(modelItem => item.Id)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
-                            @Html.ActionLink("Delete", "Delete", new {  id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            @Html.ActionLink("Edit", "Edit", new { id=item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                            @Html.ActionLink("Delete", "Delete", new { id=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
                         </td>
                     </tr>
                 }

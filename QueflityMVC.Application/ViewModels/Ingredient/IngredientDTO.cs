@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.ViewModels.Ingredient
 {
-    public class IngredientForListVM : IMapFrom<Domain.Models.Ingredient>
+    public class IngredientDTO : IMapFrom<Domain.Models.Ingredient>
     {
         public int Id { get; set; }
 
@@ -16,8 +16,7 @@ namespace QueflityMVC.Application.ViewModels.Ingredient
 
         public void Mapping(Profile profile)
         {
-            // properties' names match
-            profile.CreateMap<Domain.Models.Ingredient, IngredientForListVM>();   
+            profile.CreateMap<Domain.Models.Ingredient, IngredientDTO>().ReverseMap();
         }
     }
 }

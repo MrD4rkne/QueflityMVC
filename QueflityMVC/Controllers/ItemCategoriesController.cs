@@ -70,7 +70,7 @@ namespace QueflityMVC.Web.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            return View(_itemCategoryService.GetForEdit(id));
+            return View(_itemCategoryService.GetVMForEdit(id));
         }
 
         [Route("Edit")]
@@ -86,7 +86,7 @@ namespace QueflityMVC.Web.Controllers
                 return View("Edit", createItemCategoryVM);
             }
 
-            int id = _itemCategoryService.UpdateItemCategory(createItemCategoryVM);
+            _itemCategoryService.UpdateItemCategory(createItemCategoryVM);
 
             return RedirectToAction("Index");
         }

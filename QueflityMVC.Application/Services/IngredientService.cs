@@ -24,6 +24,20 @@ namespace QueflityMVC.Application.Services
             _mapper = mapper;
         }
 
+        public int CreateIngredient(IngredientDTO ingredientToCreateDTO)
+        {
+            Ingredient ingredientToCreate = _mapper.Map<Ingredient>(ingredientToCreateDTO);
+
+            _ingredientRepository.Add(ingredientToCreate);
+
+            return ingredientToCreate.Id;
+        }
+
+        public void DeleteIngredient(int id)
+        {
+            _ingredientRepository.Delete(id);
+        }
+
         public ListIngredientsVM GetFilteredList(int? itemId, string nameFilter, int pageSize, int pageIndex)
         {
             ListIngredientsVM listIngredientsVM = new()
@@ -40,10 +54,29 @@ namespace QueflityMVC.Application.Services
                 matchingIngredients = _ingredientRepository.GetAll();
             matchingIngredients = matchingIngredients.Where(x => x.Name.Contains(nameFilter));
 
+            listIngredientsVM.TotalCount = matchingIngredients.Count();
+
             int itemsToSkip = (pageIndex - 1) * pageSize;
             listIngredientsVM.Items = matchingIngredients.Skip(itemsToSkip).Take(pageSize).ProjectTo<IngredientForListVM>(_mapper.ConfigurationProvider).ToList();
 
             return listIngredientsVM;
+        }
+
+        public IngredientDTO? GetIngredientVMForEdit(int id)
+        {
+            var ingredientEntity = _ingredientRepository.GetById(id);
+
+            if (ingredientEntity is null)
+                return null;
+
+            return _mapper.Map<IngredientDTO>(ingredientEntity);
+        }
+
+        public void UpdateIngredient (IngredientDTO ingredientToEditDTO)
+        {
+            var itemCategory = _mapper.Map<Ingredient>(ingredientToEditDTO);
+
+            var updatedItemCategory = _ingredientRepository.Update(itemCategory);
         }
     }
 }
