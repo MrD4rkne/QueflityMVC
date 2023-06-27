@@ -16,36 +16,5 @@ namespace QueflityMVC.Infrastructure.Repositories
         public override DbSet<Image> Table() => _dbContext.Images;
 
         public ImageRepository(Context dbContext) : base(dbContext) { }
-
-        public string SaveImageData(IFormFile formFile)
-        {
-            string directory = Environment.CurrentDirectory;
-            string fileName = GetNewFileName();
-            string fullPath = Path.Combine(directory, fileName + ".jpg");
-
-            formFile.CopyTo(File.OpenWrite(fullPath));
-
-            return fullPath;
-        }
-
-        private string GetNewFileName()
-        {
-            string fileName;
-
-            do
-            {
-                fileName = Path.GetRandomFileName();
-            } while (File.Exists(fileName));
-
-            return fileName;
-        }
-
-        public byte[] LoadImageData(string path)
-        {
-            if (!File.Exists(path))
-                throw new FileNotFoundException("File cannot be found");
-
-            return File.ReadAllBytes(path);
-        }
     }
 }

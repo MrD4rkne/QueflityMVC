@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using QueflityMVC.Application.Helpers;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.ViewModels.Ingredient;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.ItemCategory;
 using QueflityMVC.Domain.Interfaces;
@@ -13,13 +14,15 @@ namespace QueflityMVC.Application.Services
     {
         private IItemRepository _repository;
         private IItemCategoryRepository _categoryRepository;
+        private IIngredientRepository _ingredientRepository;
         private IMapper _mapper;
 
-        public ItemService(IItemRepository itemRepository, IMapper mapper, IItemCategoryRepository categoryRepository)
+        public ItemService(IItemRepository itemRepository, IMapper mapper, IItemCategoryRepository categoryRepository, IIngredientRepository ingredientRepository)
         {
             _repository = itemRepository;
             _mapper = mapper;
             _categoryRepository = categoryRepository;
+            _ingredientRepository= ingredientRepository;
         }
 
         public async Task<int> CreateItem(ItemDTO createItemVM, string itemsDirectory)
@@ -128,6 +131,38 @@ namespace QueflityMVC.Application.Services
         private bool ShouldSwitchImages(ItemDTO updatedItem)
         {
             return updatedItem!=null && updatedItem.Image!=null && updatedItem.Image.FormFile!=null;
+        }
+
+        public ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id) {
+            var item = _repository.GetItemWithIngredientsById(id);
+            if (item is null)
+                return null;
+
+            ItemIngredientsSelectionVM selectionVM = new ItemIngredientsSelectionVM()
+            {
+                Item = _mapper.Map<ItemDTO>(item)
+            };
+
+            var allIngredients = _ingredientRepository.GetAll();
+            selectionVM.AllIngredients = allIngredients.ProjectTo<IngredientForSelection>(_mapper.ConfigurationProvider).ToList();
+
+            selectionVM.SelectedIngredients = item.Ingredients.Select(x=>x.Id).ToList();
+
+            return selectionVM;
+        }
+
+        public void UpdateItemIngredients(ItemIngredientsSelectionVM selectionVM)
+        {
+            if (selectionVM is null)
+                throw new ArgumentNullException("View model cannot be null");
+            if(selectionVM.AllIngredients is null)
+                throw new ArgumentNullException("All ingredients cannot be null");
+            if(selectionVM.Item is null)
+                throw new ArgumentNullException("Item cannot be null");
+
+            var selectedIngredients = _mapper.Map<IEnumerable<Ingredient>>(selectionVM.AllIngredients.Where(x => x.IsSelected)).ToList();
+
+            _repository.UpdateIngredients(selectionVM.Item.Id, selectedIngredients);
         }
     }
 }

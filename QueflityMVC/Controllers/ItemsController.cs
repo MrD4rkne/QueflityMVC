@@ -115,5 +115,22 @@ namespace QueflityMVC.Web.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [Route("Ingredients")]
+        [HttpGet]
+        public IActionResult Ingredients(int id)
+        {
+            var ingredientsViewModel = _itemService.GetIngredientsForSelectionVM(id);
+            return View(ingredientsViewModel);
+        }
+
+        [Route("Ingredients")]
+        [HttpPost]
+        public IActionResult Ingredients(ItemIngredientsSelectionVM selectionVM)
+        {
+            //var ingredientsViewModel = _itemService.GetIngredientsForSelectionVM(id);
+            _itemService.UpdateItemIngredients(selectionVM);
+            return RedirectToAction("Index");
+        }
     }
 }
