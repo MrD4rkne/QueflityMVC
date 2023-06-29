@@ -30,11 +30,17 @@ namespace QueflityMVC.Web.Controllers
         public IActionResult Index(string nameFilter, int pageSize, int pageIndex)
         {
             if (nameFilter == null)
+            {
                 nameFilter = string.Empty;
+            }
             if (pageSize <= 1)
+            {
                 pageSize = 2;
-            if(pageIndex<1) 
+            }
+            if (pageIndex < 1)
+            {
                 pageIndex = 1;
+            }
 
             var listVm = _itemCategoryService.GetFilteredList(nameFilter, pageSize, pageIndex);
 

@@ -12,13 +12,11 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class IngredientRepository : BaseRepository<Ingredient>, IIngredientRepository
     {
-        public override DbSet<Ingredient> Table() => _dbContext.Ingredients;
+        public IngredientRepository(Context dbContext) : base(dbContext) { }
 
         public IQueryable<Ingredient> GetIngredientsForItem(int itemId)
         {
             return GetAll().Where(x => x.Items.Any(x => x.Id == itemId));
         }
-
-        public IngredientRepository(Context dbContext) : base(dbContext) { }
     }
 }

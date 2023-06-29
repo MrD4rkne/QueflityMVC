@@ -12,8 +12,6 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class ItemSetRepository : BaseRepository<ItemSet>, IItemSetRepository
     {
-        public override DbSet<ItemSet> Table() => _dbContext.ItemSets;
-
         public ItemSetRepository(Context dbContext) : base(dbContext) { }
     }
 }

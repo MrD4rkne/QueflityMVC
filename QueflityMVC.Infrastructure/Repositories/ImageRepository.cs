@@ -13,8 +13,6 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class ImageRepository : BaseRepository<Image>, IImageRepository
     {
-        public override DbSet<Image> Table() => _dbContext.Images;
-
         public ImageRepository(Context dbContext) : base(dbContext) { }
     }
 }

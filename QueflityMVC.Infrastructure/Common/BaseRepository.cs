@@ -12,22 +12,17 @@ namespace QueflityMVC.Infrastructure.Common
     {
         protected Context _dbContext;
 
-        public BaseRepository(Context dbContext){
+        public BaseRepository(Context dbContext)
+        {
             _dbContext = dbContext;
         }
-
-        /// <summary>
-        /// Get proper table for entities
-        /// </summary>
-        /// <returns>DbSet<EntityType></returns>
-        public abstract DbSet<T> Table();
 
         public virtual int Add(T entityToAdd)
         {
             if (entityToAdd == null)
                 throw new ArgumentNullException("Entity cannot be null");
             
-            Table().Add(entityToAdd);
+            _dbContext.Set<T>().Add(entityToAdd);
             _dbContext.SaveChanges();
 
             return entityToAdd.Id;
@@ -45,7 +40,7 @@ namespace QueflityMVC.Infrastructure.Common
             if (!Exists(entityToDelete))
                 throw new ArgumentException("Entity does not exist!");
 
-            Table().Remove(entityToDelete); 
+            _dbContext.Set<T>().Remove(entityToDelete); 
             _dbContext.SaveChanges();
         }
 
@@ -54,7 +49,7 @@ namespace QueflityMVC.Infrastructure.Common
             if (!Exists(entityToUpdate))
                 throw new ArgumentException("Entity does not exist!");
 
-            Table().Update(entityToUpdate);
+            _dbContext.Set<T>().Update(entityToUpdate);
             _dbContext.SaveChanges();
 
             return GetById(entityToUpdate.Id)!;
@@ -75,12 +70,12 @@ namespace QueflityMVC.Infrastructure.Common
 
         public virtual T? GetById(int entityId)
         {
-            return Table().FirstOrDefault(ent => ent.Id == entityId);
+            return _dbContext.Set<T>().FirstOrDefault(ent => ent.Id == entityId);
         }
 
         public IQueryable<T> GetAll()
         {
-            return Table();
+            return _dbContext.Set<T>();
         }
     }
 }

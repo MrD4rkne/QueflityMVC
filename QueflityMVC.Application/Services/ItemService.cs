@@ -28,10 +28,14 @@ namespace QueflityMVC.Application.Services
         public async Task<int> CreateItem(ItemDTO createItemVM, string itemsDirectory)
         {
             if (createItemVM == null)
+            {
                 throw new ArgumentNullException("Viewmodel cannot be null!");
+            }
 
             if (createItemVM.Image == null || createItemVM.Image.FormFile == null)
+            {
                 throw new ArgumentNullException("Image cannot be null!");
+            }
 
             createItemVM.Image!.FileUrl = await FileManager.UploadFile(itemsDirectory, createItemVM.Image.FormFile);
 
@@ -44,10 +48,15 @@ namespace QueflityMVC.Application.Services
         {
             Item itemToDelete = _repository.GetById(id);
             if (itemToDelete == null)
+            {
                 return;
+            }
 
-            if(itemToDelete.Image!=null)
+            if (itemToDelete.Image != null)
+            {
                 FileManager.DeleteImage(rootPath, itemToDelete.Image?.FileUrl);
+            }
+
             // should automatically delete image (Cascade)
             _repository.Delete(id);
         }
@@ -87,7 +96,9 @@ namespace QueflityMVC.Application.Services
             var item = _repository.GetById(id);
 
             if (item is null)
+            {
                 return null;
+            }
 
             CrEdItemVM crEdObjItemVM = new();
             crEdObjItemVM.ItemVM = _mapper.Map<ItemDTO>(item);
@@ -102,8 +113,11 @@ namespace QueflityMVC.Application.Services
 
             if (item!=null && ShouldSwitchImages(updateItemVM))
             {
-                if(item.Image!=null)
+                if (item.Image != null)
+                {
                     FileManager.DeleteImage(rootPath, item.Image.FileUrl);
+                }
+
                 item.Image!.FileUrl = await FileManager.UploadFile(rootPath, updateItemVM.Image!.FormFile!);
             }
 
@@ -115,8 +129,10 @@ namespace QueflityMVC.Application.Services
             CrEdItemVM crEdObjItem = new CrEdItemVM();
 
             crEdObjItem.ItemVM = new ItemDTO();
-            if(categoryId.HasValue)
+            if (categoryId.HasValue)
+            {
                 crEdObjItem.ItemVM.CategoryId = categoryId.Value;
+            }
 
             crEdObjItem.ItemCategories = GetItemCategoriesForSelectVM();
 
@@ -135,7 +151,9 @@ namespace QueflityMVC.Application.Services
         public ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id) {
             var item = _repository.GetItemWithIngredientsById(id);
             if (item is null)
+            {
                 return null;
+            }
 
             ItemIngredientsSelectionVM selectionVM = new ItemIngredientsSelectionVM()
             {
@@ -153,11 +171,17 @@ namespace QueflityMVC.Application.Services
         public void UpdateItemIngredients(ItemIngredientsSelectionVM selectionVM)
         {
             if (selectionVM is null)
+            {
                 throw new ArgumentNullException("View model cannot be null");
-            if(selectionVM.AllIngredients is null)
+            }
+            if (selectionVM.AllIngredients is null)
+            {
                 throw new ArgumentNullException("All ingredients cannot be null");
-            if(selectionVM.Item is null)
+            }
+            if (selectionVM.Item is null)
+            {
                 throw new ArgumentNullException("Item cannot be null");
+            }
 
             var selectedIngredients = _mapper.Map<IEnumerable<Ingredient>>(selectionVM.AllIngredients.Where(x => x.IsSelected)).ToList();
 

@@ -38,17 +38,27 @@ namespace QueflityMVC.Web.Controllers
         public IActionResult Index(int? itemCategoryId, string nameFilter, int pageSize, int pageIndex)
         {
             if (nameFilter == null)
+            {
                 nameFilter = string.Empty;
+            }
             if (pageSize <= 1)
+            {
                 pageSize = 2;
+            }
             if (pageIndex < 1)
+            {
                 pageIndex = 1;
+            }
 
             ListItemsVM listVM;
             if (itemCategoryId.HasValue)
+            {
                 listVM = _itemService.GetFilteredList(itemCategoryId.Value, nameFilter, pageSize, pageIndex);
+            }
             else
+            {
                 listVM = _itemService.GetFilteredList(nameFilter, pageSize, pageIndex);
+            }
 
             listVM.ItemCategoryId = itemCategoryId;
 
@@ -73,7 +83,9 @@ namespace QueflityMVC.Web.Controllers
                 result.AddToModelState(this.ModelState);
 
                 if (crEdObjItem.ItemCategories == null)
+                {
                     crEdObjItem.ItemCategories = _itemService.GetItemCategoriesForSelectVM();
+                }
 
                 return View("Create", crEdObjItem);
             }
@@ -112,7 +124,6 @@ namespace QueflityMVC.Web.Controllers
         public IActionResult Delete(int id)
         {
             _itemService.DeleteItem(id,_env.ContentRootPath);
-
             return RedirectToAction("Index");
         }
 
@@ -128,7 +139,6 @@ namespace QueflityMVC.Web.Controllers
         [HttpPost]
         public IActionResult Ingredients(ItemIngredientsSelectionVM selectionVM)
         {
-            //var ingredientsViewModel = _itemService.GetIngredientsForSelectionVM(id);
             _itemService.UpdateItemIngredients(selectionVM);
             return RedirectToAction("Index");
         }

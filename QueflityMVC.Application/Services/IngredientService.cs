@@ -49,9 +49,13 @@ namespace QueflityMVC.Application.Services
 
             IQueryable<Ingredient> matchingIngredients;
             if (itemId.HasValue)
+            {
                 matchingIngredients = _ingredientRepository.GetIngredientsForItem(itemId.Value);
+            }
             else
+            {
                 matchingIngredients = _ingredientRepository.GetAll();
+            }
             matchingIngredients = matchingIngredients.Where(x => x.Name.Contains(nameFilter));
 
             listIngredientsVM.TotalCount = matchingIngredients.Count();
@@ -67,7 +71,9 @@ namespace QueflityMVC.Application.Services
             var ingredientEntity = _ingredientRepository.GetById(id);
 
             if (ingredientEntity is null)
+            {
                 return null;
+            }
 
             return _mapper.Map<IngredientDTO>(ingredientEntity);
         }

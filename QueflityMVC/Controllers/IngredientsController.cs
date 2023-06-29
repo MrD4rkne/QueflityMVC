@@ -32,11 +32,17 @@ namespace QueflityMVC.Web.Controllers
         public IActionResult Index(int? itemId,string nameFilter, int pageSize, int pageIndex)
         {
             if (nameFilter == null)
+            {
                 nameFilter = string.Empty;
+            }
             if (pageSize <= 1)
+            {
                 pageSize = 2;
+            }
             if (pageIndex < 1)
+            {
                 pageIndex = 1;
+            }
 
             var listVm = _ingredientService.GetFilteredList(itemId,nameFilter, pageSize, pageIndex);
             return View(listVm);
@@ -72,7 +78,9 @@ namespace QueflityMVC.Web.Controllers
         {
             var ingredientVM = _ingredientService.GetIngredientVMForEdit(id);
             if (ingredientVM is null)
+            {
                 return NotFound();
+            }
             return View(ingredientVM);
         }
 

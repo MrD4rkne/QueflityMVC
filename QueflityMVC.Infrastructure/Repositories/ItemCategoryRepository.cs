@@ -12,8 +12,6 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class ItemCategoryRepository : BaseRepository<ItemCategory>, IItemCategoryRepository
     {
-        public override DbSet<ItemCategory> Table() => _dbContext.ItemCategories;
-
         public ItemCategoryRepository(Context dbContext) : base(dbContext) { }
 
         public bool CanDeleteItemCategory(int categoryId)

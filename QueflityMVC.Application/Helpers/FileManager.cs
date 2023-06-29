@@ -43,17 +43,24 @@ namespace QueflityMVC.Application.Helpers
         {
             string path = Path.Combine(GetRootDirectory(root), NormaliseFilePath(relativeImagePath));
 
-            if(File.Exists(path))
+            if (File.Exists(path))
+            {
                 File.Delete(path);
+            }
         }
 
         private static string NormaliseFilePath(string path)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 return string.Empty;
+            }
 
             if (path.First() == '/')
+            {
                 path = path.Substring(1);
+            }
+
             return path.Replace('/', '\\');
         }
 
