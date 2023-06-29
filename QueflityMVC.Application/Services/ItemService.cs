@@ -12,10 +12,10 @@ namespace QueflityMVC.Application.Services
 {
     public class ItemService : IItemService
     {
-        private IItemRepository _repository;
-        private IItemCategoryRepository _categoryRepository;
-        private IIngredientRepository _ingredientRepository;
-        private IMapper _mapper;
+        private readonly IItemRepository _repository;
+        private readonly IItemCategoryRepository _categoryRepository;
+        private readonly IIngredientRepository _ingredientRepository;
+        private readonly IMapper _mapper;
 
         public ItemService(IItemRepository itemRepository, IMapper mapper, IItemCategoryRepository categoryRepository, IIngredientRepository ingredientRepository)
         {
@@ -104,11 +104,10 @@ namespace QueflityMVC.Application.Services
             {
                 if(item.Image!=null)
                     FileManager.DeleteImage(rootPath, item.Image.FileUrl);
-                item.Image.FileUrl = await FileManager.UploadFile(rootPath, updateItemVM.Image.FormFile);
+                item.Image!.FileUrl = await FileManager.UploadFile(rootPath, updateItemVM.Image!.FormFile!);
             }
 
             var updatedItem = _repository.Update(item);
-
         }
 
         public CrEdItemVM GetItemVMForAdding(int? categoryId)

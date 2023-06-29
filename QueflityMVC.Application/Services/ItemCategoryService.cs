@@ -15,8 +15,8 @@ namespace QueflityMVC.Application.Services
 {
     public class ItemCategoryService : IItemCategoryService
     {
-        private IItemCategoryRepository _repository;
-        private IMapper _mapper;
+        private readonly IItemCategoryRepository _repository;
+        private readonly IMapper _mapper;
 
         public ItemCategoryService(IItemCategoryRepository repository, IMapper mapper)
         {

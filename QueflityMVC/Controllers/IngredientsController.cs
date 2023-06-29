@@ -14,8 +14,8 @@ namespace QueflityMVC.Web.Controllers
     {
         private const int DEFAULT_PAGE_SIZE = 2;
 
-        private IIngredientService _ingredientService;
-        private IValidator<IngredientDTO> _itemCategoryValidator;
+        private readonly IIngredientService _ingredientService;
+        private readonly IValidator<IngredientDTO> _itemCategoryValidator;
 
         public IngredientsController(IIngredientService ingredientService, IValidator<IngredientDTO> itemCategoryValidator)
         {

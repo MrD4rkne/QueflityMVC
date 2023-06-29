@@ -2,17 +2,35 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application;
 using QueflityMVC.Infrastructure;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<Context>(options =>
+builder.Services.AddDbContext<QueflityMVC.Infrastructure.Context>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<Context>();
+    .AddEntityFrameworkStores<QueflityMVC.Infrastructure.Context>();
+builder.Services.Configure<IdentityOptions>(options => {
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireUppercase= true;
+    options.Password.RequiredUniqueChars = 0;
+
+    options.SignIn.RequireConfirmedEmail = false;
+    options.User.RequireUniqueEmail = false;
+});
+
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    IConfigurationSection googleOAuthSection = builder.Configuration.GetSection("Authentication:Google");
+    googleOptions.ClientId = googleOAuthSection["ClientId"];
+    googleOptions.ClientSecret = googleOAuthSection["ClientSecret"];
+});
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddInfrastructure();
@@ -39,6 +57,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -15,8 +15,8 @@ namespace QueflityMVC.Application.Services
 {
     public class IngredientService : IIngredientService
     {
-        private IIngredientRepository _ingredientRepository;
-        private IMapper _mapper;
+        private readonly IIngredientRepository _ingredientRepository;
+        private readonly IMapper _mapper;
 
         public IngredientService(IIngredientRepository ingredientRepository, IMapper mapper)
         {

@@ -12,8 +12,8 @@ namespace QueflityMVC.Web.Controllers
     {
         private const int DEFAULT_PAGE_SIZE = 2;
 
-        private IItemCategoryService _itemCategoryService;
-        private IValidator<ItemCategoryDTO> _itemCategoryValidator;
+        private readonly IItemCategoryService _itemCategoryService;
+        private readonly IValidator<ItemCategoryDTO> _itemCategoryValidator;
 
         public ItemCategoriesController(IItemCategoryService itemCategoryService, IValidator<ItemCategoryDTO> itemCategoryValidator)
         {
