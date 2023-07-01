@@ -1,14 +1,15 @@
 ﻿using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Models;
+using QueflityMVC.Infrastructure.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QueflityMVC.Domain.Interfaces
+namespace QueflityMVC.Domain.Models
 {
-    public interface IImageRepository : IBaseRepository<ItemImage>
+    public class ItemImage : BaseImage
     {
+        public virtual Item Item { get; set; }
     }
 }

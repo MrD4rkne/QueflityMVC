@@ -12,7 +12,7 @@ namespace QueflityMVC.Infrastructure
 {
     public class Context : IdentityDbContext
     {
-        public DbSet<Image> Images { get; set; }
+        public DbSet<ItemImage> Images { get; set; }
 
         public DbSet<Ingredient> Ingredients { get; set; }
 
@@ -34,7 +34,13 @@ namespace QueflityMVC.Infrastructure
             builder.Entity<Item>()
                 .HasOne(it => it.Image)
                 .WithOne(img => img.Item)
-                .HasForeignKey<Item>(it => it.ImageId)
+                .HasForeignKey<Item>(it => it.ItemImageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ItemSet>()
+                .HasOne(it => it.ItemSetImage)
+                .WithOne(img => img.ItemSet)
+                .HasForeignKey<ItemSet>(it => it.ItemSetImageId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Item>()
@@ -42,13 +48,19 @@ namespace QueflityMVC.Infrastructure
                 .WithMany(ing => ing.Items);
 
             builder.Entity<Item>()
-                .HasMany(it => it.ItemSets)
-                .WithMany(itSet => itSet.Items);
-
-            builder.Entity<Item>()
                 .HasOne(it => it.ItemCategory)
                 .WithMany(itCtgr => itCtgr.Items)
                 .HasForeignKey(it => it.ItemCategoryId);
+
+            builder.Entity<SetMembership>()
+                .HasOne(membership => membership.Item)
+                .WithMany(it => it.SetMemberships)
+                .HasForeignKey(membership => membership.ItemId);
+
+            builder.Entity<SetMembership>()
+                .HasOne(membership => membership.ItemSet)
+                .WithMany(it => it.SetMemberships)
+                .HasForeignKey(membership => membership.ItemSetId);
         }
     }
 }

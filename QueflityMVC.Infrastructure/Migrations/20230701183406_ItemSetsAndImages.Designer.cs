@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueflityMVC.Infrastructure;
 
@@ -11,9 +12,11 @@ using QueflityMVC.Infrastructure;
 namespace QueflityMVC.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230701183406_ItemSetsAndImages")]
+    partial class ItemSetsAndImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -270,6 +273,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Property<int?>("ItemImageId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ItemSetId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -284,6 +290,8 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.HasIndex("ItemImageId")
                         .IsUnique()
                         .HasFilter("[ItemImageId] IS NOT NULL");
+
+                    b.HasIndex("ItemSetId");
 
                     b.ToTable("Items");
                 });
@@ -490,6 +498,10 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .HasForeignKey("QueflityMVC.Domain.Models.Item", "ItemImageId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("QueflityMVC.Domain.Models.ItemSet", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ItemSetId");
+
                     b.Navigation("Image");
 
                     b.Navigation("ItemCategory");
@@ -514,7 +526,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("QueflityMVC.Domain.Models.ItemSet", "ItemSet")
-                        .WithMany("SetMemberships")
+                        .WithMany()
                         .HasForeignKey("ItemSetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -542,7 +554,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
                 {
-                    b.Navigation("SetMemberships");
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSetImage", b =>

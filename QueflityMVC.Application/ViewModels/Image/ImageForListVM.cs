@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.ViewModels.Image
 {
-    public class ImageForListVM : IMapFrom<Domain.Models.Image>
+    public class ImageForListVM : IMapFrom<Domain.Models.ItemImage>
     {
         public int Id { get; set; }
 
@@ -21,7 +21,7 @@ namespace QueflityMVC.Application.ViewModels.Image
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Models.Image, ImageForListVM>().ReverseMap();
+            profile.CreateMap<Domain.Models.ItemImage, ImageForListVM>().ReverseMap();
         }
     }
 }

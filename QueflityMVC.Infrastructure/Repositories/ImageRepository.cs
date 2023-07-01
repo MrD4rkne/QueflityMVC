@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Infrastructure.Repositories
 {
-    public class ImageRepository : BaseRepository<Image>, IImageRepository
+    public class ImageRepository : BaseRepository<ItemImage>, IImageRepository
     {
         public ImageRepository(Context dbContext) : base(dbContext) { }
     }
