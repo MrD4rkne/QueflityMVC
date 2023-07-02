@@ -1,16 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using QueflityMVC.Application.Mapping;
-using QueflityMVC.Infrastructure.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.ViewModels.Image
 {
-    public class ImageDTO : IMapFrom<Domain.Models.ItemImage>
+    public class ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.ItemSetImage>
     {
         public int Id { get; set; }
 
@@ -25,6 +19,10 @@ namespace QueflityMVC.Application.ViewModels.Image
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Domain.Models.ItemImage, ImageDTO>()
+                .ForMember(img => img.FormFile, opt => opt.Ignore())
+                .ReverseMap();
+
+            profile.CreateMap<Domain.Models.ItemSetImage, ImageDTO>()
                 .ForMember(img => img.FormFile, opt => opt.Ignore())
                 .ReverseMap();
         }

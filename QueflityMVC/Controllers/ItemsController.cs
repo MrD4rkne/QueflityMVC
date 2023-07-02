@@ -1,15 +1,9 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using QueflityMVC.Application.Helpers;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Services;
-using QueflityMVC.Application.Validators;
-using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Item;
-using QueflityMVC.Application.ViewModels.ItemCategory;
 
 namespace QueflityMVC.Web.Controllers
 {

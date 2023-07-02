@@ -1,9 +1,5 @@
-﻿using QueflityMVC.Infrastructure.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Infrastructure.Common;
 
 namespace QueflityMVC.Domain.Models
 {
@@ -11,6 +7,7 @@ namespace QueflityMVC.Domain.Models
     {
         public uint ItemsAmount { get; set; }
 
+        [Precision(14, 2)]
         public decimal PricePerItem { get; set; }
 
         public int ItemSetId { get; set; }

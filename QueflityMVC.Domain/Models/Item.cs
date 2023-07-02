@@ -1,10 +1,5 @@
-﻿using QueflityMVC.Domain.Common;
-using QueflityMVC.Infrastructure.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Domain.Models
 {

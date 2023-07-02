@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using QueflityMVC.Application.ViewModels.ItemSet;
 
 namespace QueflityMVC.Application.Interfaces
 {
     public interface IItemSetService
     {
+        ListItemSetsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
+        string? GetItemSetVMForAdding();
     }
 }

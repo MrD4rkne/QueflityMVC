@@ -1,6 +1,7 @@
-﻿namespace QueflityMVC.Application.ViewModels.Ingredient
+﻿
+namespace QueflityMVC.Application.ViewModels.ItemSet
 {
-    public class ListIngredientsVM
+    public class ListItemSetsVM
     {
         public int PageSize { get; set; }
 
@@ -8,9 +9,9 @@
 
         public int TotalCount { get; set; }
 
-        public int? ItemId { get; set; }
+        public int? ItemCategoryId { get; set; }
 
-        public List<IngredientForListVM> Items { get; set; }
+        public List<ItemSetForListVM> Items { get; set; }
 
         public string NameFilter { get; set; }
     }

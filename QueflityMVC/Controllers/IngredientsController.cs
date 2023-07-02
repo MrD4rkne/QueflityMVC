@@ -2,10 +2,7 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Services;
 using QueflityMVC.Application.ViewModels.Ingredient;
-using QueflityMVC.Application.ViewModels.ItemCategory;
-using System.ComponentModel.DataAnnotations;
 
 namespace QueflityMVC.Web.Controllers
 {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueflityMVC.Infrastructure;
 
@@ -11,13 +12,15 @@ using QueflityMVC.Infrastructure;
 namespace QueflityMVC.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230702104736_ImagesRename")]
+    partial class ImagesRename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -274,10 +277,6 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasPrecision(14, 2)
-                        .HasColumnType("decimal(14,2)");
-
                     b.Property<bool>("ShouldBeShown")
                         .HasColumnType("bit");
 
@@ -331,7 +330,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemImages");
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
@@ -348,10 +347,6 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(14, 2)
-                        .HasColumnType("decimal(14,2)");
 
                     b.Property<bool>("ShouldBeShown")
                         .HasColumnType("bit");
@@ -387,7 +382,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemSetImages");
+                    b.ToTable("ItemSetImage");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.SetMembership", b =>
@@ -408,8 +403,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("PricePerItem")
-                        .HasPrecision(14, 2)
-                        .HasColumnType("decimal(14,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -417,7 +411,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasIndex("ItemSetId");
 
-                    b.ToTable("SetMemberships");
+                    b.ToTable("SetMembership");
                 });
 
             modelBuilder.Entity("IngredientItem", b =>

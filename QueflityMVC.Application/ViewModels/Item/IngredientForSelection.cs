@@ -4,25 +4,20 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item
 {
-    public class ItemDTO : IMapFrom<Domain.Models.Item>
+    public class ItemForSelection : IMapFrom<Domain.Models.Item>
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        public decimal PricePerItem { get; set; }
+        public bool IsSelected { get; set; }
 
-        public bool ShouldBeShown { get; set; }
-
-        public ImageDTO? Image { get; set; } = new ImageDTO();
-
-        public int CategoryId { get; set; }
+        public ImageForListVM Image { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Models.Item, ItemDTO>()
+            profile.CreateMap<Domain.Models.Item, ItemForSelection>()
                 .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
-                .ForMember(vm => vm.CategoryId, opt => opt.MapFrom(ent => ent.ItemCategoryId))
                 .ReverseMap();
         }
     }

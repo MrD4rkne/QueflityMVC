@@ -1,11 +1,4 @@
-﻿using AutoMapper;
-using QueflityMVC.Application.Mapping;
-using QueflityMVC.Application.ViewModels.Ingredient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using QueflityMVC.Application.ViewModels.Ingredient;
 
 namespace QueflityMVC.Application.ViewModels.Item
 {

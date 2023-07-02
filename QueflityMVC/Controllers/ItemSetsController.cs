@@ -1,15 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using QueflityMVC.Application.Helpers;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Services;
-using QueflityMVC.Application.Validators;
-using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Item;
-using QueflityMVC.Application.ViewModels.ItemCategory;
+using QueflityMVC.Application.ViewModels.ItemSet;
 
 namespace QueflityMVC.Web.Controllers
 {
@@ -18,26 +13,26 @@ namespace QueflityMVC.Web.Controllers
     {
         private const int DEFAULT_PAGE_SIZE = 2;
 
-        private readonly IItemService _itemService;
-        private readonly IValidator<ItemDTO> _itemValidator;
+        private readonly IItemSetService _itemSetService;
+        private readonly IValidator<ItemSetDTO> _itemValidator;
         private readonly IWebHostEnvironment _env;
 
-        public ItemSetsController(IItemService itemService, IValidator<ItemDTO> itemValidator, IWebHostEnvironment env)
+        public ItemSetsController(IItemSetService itemSetService, IValidator<ItemSetDTO> itemSetValidator, IWebHostEnvironment env)
         {
-            _itemService = itemService;
-            _itemValidator = itemValidator;
+            _itemSetService = itemSetService;
+            _itemValidator = itemSetValidator;
             _env = env;
         }
 
-        public IActionResult Index(int? itemCategoryId)
+        public IActionResult Index()
         {
-            return Index(itemCategoryId, string.Empty, DEFAULT_PAGE_SIZE, 1);
+            return Index(string.Empty, DEFAULT_PAGE_SIZE, 1);
         }
 
         [HttpPost]
-        public IActionResult Index(int? itemCategoryId, string nameFilter, int pageSize, int pageIndex)
+        public IActionResult Index(string nameFilter, int pageSize, int pageIndex)
         {
-            if (nameFilter == null)
+            if (nameFilter is null)
             {
                 nameFilter = string.Empty;
             }
@@ -50,97 +45,87 @@ namespace QueflityMVC.Web.Controllers
                 pageIndex = 1;
             }
 
-            ListItemsVM listVM;
-            if (itemCategoryId.HasValue)
-            {
-                listVM = _itemService.GetFilteredList(itemCategoryId.Value, nameFilter, pageSize, pageIndex);
-            }
-            else
-            {
-                listVM = _itemService.GetFilteredList(nameFilter, pageSize, pageIndex);
-            }
-
-            listVM.ItemCategoryId = itemCategoryId;
+            ListItemSetsVM listVM = _itemSetService.GetFilteredList(nameFilter, pageSize, pageIndex);
 
             return View(listVM);
         }
 
-        [Route("Create")]
-        [HttpGet]
-        public IActionResult Create(int? categoryId)
-        {
-            return View(_itemService.GetItemVMForAdding(categoryId));
-        }
+        //[Route("Create")]
+        //[HttpGet]
+        //public IActionResult Create()
+        //{
+        //    return View(_itemSetService.GetItemSetVMForAdding());
+        //}
 
-        [Route("Create")]
-        [HttpPost]
-        public async Task<IActionResult> Create(CrEdItemVM crEdObjItem)
-        {
-            ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVM);
+        //[Route("Create")]
+        //[HttpPost]
+        //public async Task<IActionResult> Create(CrEdItemSetVM crEdObjItemSet)
+        //{
+        //    ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItemSet.ItemVM);
 
-            if (!result.IsValid)
-            {
-                result.AddToModelState(this.ModelState);
+        //    if (!result.IsValid)
+        //    {
+        //        result.AddToModelState(this.ModelState);
 
-                if (crEdObjItem.ItemCategories == null)
-                {
-                    crEdObjItem.ItemCategories = _itemService.GetItemCategoriesForSelectVM();
-                }
+        //        if (crEdObjItemSet.ItemCategories == null)
+        //        {
+        //            crEdObjItemSet.ItemCategories = _itemSetService.GetItemCategoriesForSelectVM();
+        //        }
 
-                return View("Create", crEdObjItem);
-            }
+        //        return View("Create", crEdObjItemSet);
+        //    }
 
-            int id = await _itemService.CreateItem(crEdObjItem.ItemVM, _env.ContentRootPath);
+        //    int id = await _itemSetService.CreateItem(crEdObjItemSet.ItemVM, _env.ContentRootPath);
 
-            return RedirectToAction("Index");
-        }
+        //    return RedirectToAction("Index");
+        //}
 
-        [Route("Edit")]
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            return View(_itemService.GetForEdit(id));
-        }
+        //[Route("Edit")]
+        //[HttpGet]
+        //public IActionResult Edit(int id)
+        //{
+        //    return View(_itemSetService.GetForEdit(id));
+        //}
 
-        [Route("Edit")]
-        [HttpPost]
-        public async Task<IActionResult> Edit(CrEdItemVM editItemVM)
-        {
-            ValidationResult result = await _itemValidator.ValidateAsync(editItemVM.ItemVM);
+        //[Route("Edit")]
+        //[HttpPost]
+        //public async Task<IActionResult> Edit(CrEdItemVM editItemVM)
+        //{
+        //    ValidationResult result = await _itemValidator.ValidateAsync(editItemVM.ItemVM);
 
-            if (!result.IsValid)
-            {
-                result.AddToModelState(this.ModelState);
-                return View("Edit", editItemVM);
-            }
+        //    if (!result.IsValid)
+        //    {
+        //        result.AddToModelState(this.ModelState);
+        //        return View("Edit", editItemVM);
+        //    }
 
-            await _itemService.UpdateItem(editItemVM.ItemVM, _env.ContentRootPath);
+        //    await _itemSetService.UpdateItem(editItemVM.ItemVM, _env.ContentRootPath);
 
-            return RedirectToAction("Index");
-        }
+        //    return RedirectToAction("Index");
+        //}
 
-        [Route("Delete")]
-        [HttpGet]
-        public IActionResult Delete(int id)
-        {
-            _itemService.DeleteItem(id,_env.ContentRootPath);
-            return RedirectToAction("Index");
-        }
+        //[Route("Delete")]
+        //[HttpGet]
+        //public IActionResult Delete(int id)
+        //{
+        //    _itemSetService.DeleteItem(id,_env.ContentRootPath);
+        //    return RedirectToAction("Index");
+        //}
 
-        [Route("Ingredients")]
-        [HttpGet]
-        public IActionResult Ingredients(int id)
-        {
-            var ingredientsViewModel = _itemService.GetIngredientsForSelectionVM(id);
-            return View(ingredientsViewModel);
-        }
+        //[Route("Ingredients")]
+        //[HttpGet]
+        //public IActionResult Ingredients(int id)
+        //{
+        //    var ingredientsViewModel = _itemSetService.GetIngredientsForSelectionVM(id);
+        //    return View(ingredientsViewModel);
+        //}
 
-        [Route("Ingredients")]
-        [HttpPost]
-        public IActionResult Ingredients(ItemIngredientsSelectionVM selectionVM)
-        {
-            _itemService.UpdateItemIngredients(selectionVM);
-            return RedirectToAction("Index");
-        }
+        //[Route("Ingredients")]
+        //[HttpPost]
+        //public IActionResult Ingredients(ItemIngredientsSelectionVM selectionVM)
+        //{
+        //    _itemSetService.UpdateItemIngredients(selectionVM);
+        //    return RedirectToAction("Index");
+        //}
     }
 }

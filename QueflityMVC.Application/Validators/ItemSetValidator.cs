@@ -1,17 +1,20 @@
 ﻿using FluentValidation;
-using QueflityMVC.Application.ViewModels.ItemCategory;
+using QueflityMVC.Application.ViewModels.ItemSet;
 
 namespace QueflityMVC.Application.Validators
 {
-    public class ItemCategoryValidator : AbstractValidator<ItemCategoryDTO>
+    public class ItemSetValidator : AbstractValidator<ItemSetDTO>
     {
-        public ItemCategoryValidator()
+        public ItemSetValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .MinimumLength(2)
                 .MaximumLength(20)
                 .Matches("[A-Za-z]*").WithMessage("'Name' może zawierać tylko litery");
+            RuleFor(x => x.Image)
+                .NotNull()
+                ?.SetValidator(new ImageValidator());
         }
     }
 }
