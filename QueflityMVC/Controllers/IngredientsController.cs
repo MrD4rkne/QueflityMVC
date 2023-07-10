@@ -22,11 +22,11 @@ namespace QueflityMVC.Web.Controllers
 
         public IActionResult Index()
         {
-            return Index(null,string.Empty, DEFAULT_PAGE_SIZE, 1);
+            return Index(null, string.Empty, DEFAULT_PAGE_SIZE, 1);
         }
 
         [HttpPost]
-        public IActionResult Index(int? itemId,string nameFilter, int pageSize, int pageIndex)
+        public IActionResult Index(int? itemId, string nameFilter, int pageSize, int pageIndex)
         {
             if (nameFilter == null)
             {
@@ -41,7 +41,7 @@ namespace QueflityMVC.Web.Controllers
                 pageIndex = 1;
             }
 
-            var listVm = _ingredientService.GetFilteredList(itemId,nameFilter, pageSize, pageIndex);
+            var listVm = _ingredientService.GetFilteredList(itemId, nameFilter, pageSize, pageIndex);
             return View(listVm);
         }
 

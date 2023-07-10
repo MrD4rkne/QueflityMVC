@@ -12,7 +12,7 @@ namespace QueflityMVC.Application.ViewModels.Ingredient
         public void Mapping(Profile profile)
         {
             // properties' names match
-            profile.CreateMap<Domain.Models.Ingredient, IngredientForListVM>();   
+            profile.CreateMap<Domain.Models.Ingredient, IngredientForListVM>();
         }
     }
 }

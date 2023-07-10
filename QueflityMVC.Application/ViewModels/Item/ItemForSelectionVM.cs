@@ -4,7 +4,7 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item
 {
-    public class ItemForSelection : IMapFrom<Domain.Models.Item>
+    public class ItemForSelectionVM : IMapFrom<Domain.Models.Item>
     {
         public int Id { get; set; }
 
@@ -16,7 +16,7 @@ namespace QueflityMVC.Application.ViewModels.Item
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Models.Item, ItemForSelection>()
+            profile.CreateMap<Domain.Models.Item, ItemForSelectionVM>()
                 .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
                 .ReverseMap();
         }

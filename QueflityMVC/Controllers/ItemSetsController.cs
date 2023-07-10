@@ -3,7 +3,6 @@ using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.ItemSet;
 
 namespace QueflityMVC.Web.Controllers
@@ -14,13 +13,13 @@ namespace QueflityMVC.Web.Controllers
         private const int DEFAULT_PAGE_SIZE = 2;
 
         private readonly IItemSetService _itemSetService;
-        private readonly IValidator<ItemSetDTO> _itemValidator;
+        private readonly IValidator<ItemSetDTO> _itemSetValidator;
         private readonly IWebHostEnvironment _env;
 
         public ItemSetsController(IItemSetService itemSetService, IValidator<ItemSetDTO> itemSetValidator, IWebHostEnvironment env)
         {
             _itemSetService = itemSetService;
-            _itemValidator = itemSetValidator;
+            _itemSetValidator = itemSetValidator;
             _env = env;
         }
 
@@ -32,10 +31,7 @@ namespace QueflityMVC.Web.Controllers
         [HttpPost]
         public IActionResult Index(string nameFilter, int pageSize, int pageIndex)
         {
-            if (nameFilter is null)
-            {
-                nameFilter = string.Empty;
-            }
+            nameFilter ??= string.Empty;
             if (pageSize <= 1)
             {
                 pageSize = 2;
@@ -50,35 +46,41 @@ namespace QueflityMVC.Web.Controllers
             return View(listVM);
         }
 
-        //[Route("Create")]
-        //[HttpGet]
-        //public IActionResult Create()
-        //{
-        //    return View(_itemSetService.GetItemSetVMForAdding());
-        //}
+        [Route("Create")]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(_itemSetService.GetItemSetVMForAdding());
+        }
 
-        //[Route("Create")]
-        //[HttpPost]
-        //public async Task<IActionResult> Create(CrEdItemSetVM crEdObjItemSet)
-        //{
-        //    ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItemSet.ItemVM);
+        [Route("Create")]
+        [HttpPost]
+        public async Task<IActionResult> Create(ItemSetDTO createItemSetDTO, bool routeToDetails = false)
+        {
+            ValidationResult result = await _itemSetValidator.ValidateAsync(createItemSetDTO);
 
-        //    if (!result.IsValid)
-        //    {
-        //        result.AddToModelState(this.ModelState);
+            if (!result.IsValid)
+            {
+                result.AddToModelState(this.ModelState);
 
-        //        if (crEdObjItemSet.ItemCategories == null)
-        //        {
-        //            crEdObjItemSet.ItemCategories = _itemSetService.GetItemCategoriesForSelectVM();
-        //        }
+                return View("Create", createItemSetDTO);
+            }
 
-        //        return View("Create", crEdObjItemSet);
-        //    }
+            int itemSetId = await _itemSetService.CreateItemSet(createItemSetDTO, _env.ContentRootPath);
 
-        //    int id = await _itemSetService.CreateItem(crEdObjItemSet.ItemVM, _env.ContentRootPath);
+            if (routeToDetails)
+                return RedirectToAction("Details", new { id = itemSetId});
 
-        //    return RedirectToAction("Index");
-        //}
+            return RedirectToAction("Index");
+        }
+
+        [Route("Details")]
+        public IActionResult Details(int id)
+        {
+            var itemSetDetailsVM = _itemSetService.GetDetailsVM(id);
+
+            return View(itemSetDetailsVM);
+        }
 
         //[Route("Edit")]
         //[HttpGet]

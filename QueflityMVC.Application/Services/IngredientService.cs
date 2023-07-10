@@ -72,7 +72,7 @@ namespace QueflityMVC.Application.Services
             return _mapper.Map<IngredientDTO>(ingredientEntity);
         }
 
-        public void UpdateIngredient (IngredientDTO ingredientToEditDTO)
+        public void UpdateIngredient(IngredientDTO ingredientToEditDTO)
         {
             var itemCategory = _mapper.Map<Ingredient>(ingredientToEditDTO);
 

@@ -10,7 +10,7 @@ namespace QueflityMVC.Infrastructure.Repositories
 
         public bool CanDeleteItemCategory(int categoryId)
         {
-            return !_dbContext.Items.Any(x => x.ItemCategoryId == categoryId); 
+            return !_dbContext.Items.Any(x => x.ItemCategoryId == categoryId);
         }
     }
 }

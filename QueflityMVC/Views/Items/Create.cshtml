@@ -18,11 +18,6 @@
                 <span asp-validation-for="ItemVM.Image!.FormFile"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ItemVM.Image!.Title" class="control-label"></label>
-                <input asp-for="ItemVM.Image!.Title" class="form-control" />
-                <span asp-validation-for="ItemVM.Image!.Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="ItemVM.Image!.AltDescription" class="control-label"></label>
                 <input asp-for="ItemVM.Image!.AltDescription" class="form-control" />
                 <span asp-validation-for="ItemVM.Image!.AltDescription" class="text-danger"></span>
@@ -51,7 +46,7 @@
                     }
                 </select>
                 <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
-            </div>
+            </div
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

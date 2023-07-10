@@ -5,9 +5,9 @@ namespace QueflityMVC.Application.Interfaces
 {
     public interface IItemService
     {
-        Task<int> CreateItem(ItemDTO createItemVM, string imagesDirectory);
+        Task<int> CreateItem(ItemDTO createItemVM, string contentRootPath);
 
-        void DeleteItem(int id, string rootPath);
+        void DeleteItem(int id, string contentRootPath);
 
         ListItemsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
 

@@ -6,10 +6,10 @@ namespace QueflityMVC.Application.Helpers
     {
         private const string RELATIVE_IMAGES_PATH = "Images";
 
-        public static async Task<string> UploadFile(string root,IFormFile file)
+        public static async Task<string> UploadFile(string root, IFormFile file)
         {
             string directory = GetImagesDirectory(root);
-            if(!Directory.Exists(directory))
+            if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
@@ -19,7 +19,7 @@ namespace QueflityMVC.Application.Helpers
             {
                 await file.CopyToAsync(stream);
             }
-            return Path.Combine("/"+RELATIVE_IMAGES_PATH, Path.GetFileName(path));
+            return Path.Combine("/" + RELATIVE_IMAGES_PATH, Path.GetFileName(path));
         }
 
         private static string GetFileName(string directory, string extension)

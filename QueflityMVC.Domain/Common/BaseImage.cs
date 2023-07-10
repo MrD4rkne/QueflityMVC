@@ -6,8 +6,6 @@ namespace QueflityMVC.Domain.Common
     {
         public string FileUrl { get; set; }
 
-        public string Title { get; set; }
-
         public string AltDescription { get; set; }
     }
 }

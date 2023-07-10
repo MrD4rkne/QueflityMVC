@@ -10,8 +10,6 @@ namespace QueflityMVC.Application.ViewModels.Image
 
         public string FileUrl { get; set; }
 
-        public string Title { get; set; }
-
         public string AltDescription { get; set; }
 
         public IFormFile? FormFile { get; set; }

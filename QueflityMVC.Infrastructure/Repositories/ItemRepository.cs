@@ -33,11 +33,12 @@ namespace QueflityMVC.Infrastructure.Repositories
             return _dbContext.Items.Include(x => x.Ingredients).Include(it => it.Image).FirstOrDefault(x => x.Id == itemId);
         }
 
-        public void UpdateIngredients(int itemId, List<Ingredient> ingredients) {
+        public void UpdateIngredients(int itemId, List<Ingredient> ingredients)
+        {
             var item = GetItemWithIngredientsById(itemId);
 
             item.Ingredients.Clear();
-            foreach(var ing in ingredients)
+            foreach (var ing in ingredients)
             {
                 item.Ingredients.Add(ing);
             }

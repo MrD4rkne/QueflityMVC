@@ -117,7 +117,7 @@ namespace QueflityMVC.Web.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            _itemService.DeleteItem(id,_env.ContentRootPath);
+            _itemService.DeleteItem(id, _env.ContentRootPath);
             return RedirectToAction("Index");
         }
 

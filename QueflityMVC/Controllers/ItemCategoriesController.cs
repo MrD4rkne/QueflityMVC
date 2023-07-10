@@ -103,7 +103,8 @@ namespace QueflityMVC.Web.Controllers
             try
             {
                 _itemCategoryService.DeleteItemCategory(id);
-            }catch(InvalidOperationException invOpEx)
+            }
+            catch (InvalidOperationException invOpEx)
             {
                 DeleteFailedItemCategoryVM deleteFailedVM = new()
                 {

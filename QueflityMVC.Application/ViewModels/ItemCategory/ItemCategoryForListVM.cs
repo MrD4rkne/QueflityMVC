@@ -12,7 +12,7 @@ namespace QueflityMVC.Application.ViewModels.ItemCategory
         public void Mapping(Profile profile)
         {
             // properties' names match
-            profile.CreateMap<Domain.Models.ItemCategory, ItemCategoryForListVM>();   
+            profile.CreateMap<Domain.Models.ItemCategory, ItemCategoryForListVM>();
         }
     }
 }

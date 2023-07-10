@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueflityMVC.Infrastructure;
 
@@ -11,9 +12,11 @@ using QueflityMVC.Infrastructure;
 namespace QueflityMVC.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230702134610_Image simplify")]
+    partial class Imagesimplify
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -396,7 +399,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Property<int>("ItemSetId")
                         .HasColumnType("int");
 
-                    b.Property<long>("ItemsAmmount")
+                    b.Property<long>("ItemsAmount")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("PricePerItem")

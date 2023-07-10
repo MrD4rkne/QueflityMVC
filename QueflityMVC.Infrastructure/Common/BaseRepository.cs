@@ -15,7 +15,7 @@ namespace QueflityMVC.Infrastructure.Common
         {
             if (entityToAdd == null)
                 throw new ArgumentNullException("Entity cannot be null");
-            
+
             _dbContext.Set<T>().Add(entityToAdd);
             _dbContext.SaveChanges();
 
@@ -34,7 +34,7 @@ namespace QueflityMVC.Infrastructure.Common
             if (!Exists(entityToDelete))
                 throw new ArgumentException("Entity does not exist!");
 
-            _dbContext.Set<T>().Remove(entityToDelete); 
+            _dbContext.Set<T>().Remove(entityToDelete);
             _dbContext.SaveChanges();
         }
 

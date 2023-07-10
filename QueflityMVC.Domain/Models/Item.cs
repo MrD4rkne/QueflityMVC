@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Domain.Common;
+﻿using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Domain.Models
 {
@@ -17,6 +16,6 @@ namespace QueflityMVC.Domain.Models
 
         public virtual ICollection<SetMembership> SetMemberships { get; set; }
 
-        public virtual ICollection<Ingredient> Ingredients { get; set;}
+        public virtual ICollection<Ingredient> Ingredients { get; set; }
     }
 }

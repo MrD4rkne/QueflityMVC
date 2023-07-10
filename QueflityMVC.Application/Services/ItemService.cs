@@ -12,20 +12,20 @@ namespace QueflityMVC.Application.Services
 {
     public class ItemService : IItemService
     {
-        private readonly IItemRepository _repository;
+        private readonly IItemRepository _itemRepository;
         private readonly IItemCategoryRepository _categoryRepository;
         private readonly IIngredientRepository _ingredientRepository;
         private readonly IMapper _mapper;
 
         public ItemService(IItemRepository itemRepository, IMapper mapper, IItemCategoryRepository categoryRepository, IIngredientRepository ingredientRepository)
         {
-            _repository = itemRepository;
+            _itemRepository = itemRepository;
             _mapper = mapper;
             _categoryRepository = categoryRepository;
-            _ingredientRepository= ingredientRepository;
+            _ingredientRepository = ingredientRepository;
         }
 
-        public async Task<int> CreateItem(ItemDTO createItemVM, string itemsDirectory)
+        public async Task<int> CreateItem(ItemDTO createItemVM, string contentRootPath)
         {
             if (createItemVM == null)
             {
@@ -37,38 +37,37 @@ namespace QueflityMVC.Application.Services
                 throw new ArgumentNullException("Image cannot be null!");
             }
 
-            createItemVM.Image!.FileUrl = await FileManager.UploadFile(itemsDirectory, createItemVM.Image.FormFile);
+            createItemVM.Image!.FileUrl = await FileManager.UploadFile(contentRootPath, createItemVM.Image.FormFile);
 
             var itemToCreate = _mapper.Map<Item>(createItemVM);
 
-            return _repository.Add(itemToCreate);
+            return _itemRepository.Add(itemToCreate);
         }
 
-        public void DeleteItem(int id, string rootPath)
+        public void DeleteItem(int id, string contentRootPath)
         {
-            Item itemToDelete = _repository.GetById(id);
-            if (itemToDelete == null)
+            Item? itemToDelete = _itemRepository.GetById(id);
+            if (itemToDelete is null)
             {
                 return;
             }
 
-            if (itemToDelete.Image != null)
+            if (itemToDelete.Image is not null)
             {
-                FileManager.DeleteImage(rootPath, itemToDelete.Image?.FileUrl);
+                FileManager.DeleteImage(contentRootPath, itemToDelete.Image!.FileUrl);
             }
 
-            // should automatically delete image (Cascade)
-            _repository.Delete(id);
+            _itemRepository.Delete(id);
         }
 
         public ListItemsVM GetFilteredList(int itemCategoryId, string nameFilter, int pageSize, int pageIndex)
         {
-            return GetListItemVM(_repository.GetAll().Where(x=>x.ItemCategoryId==itemCategoryId),nameFilter, pageSize, pageIndex);
+            return GetListItemVM(_itemRepository.GetAll().Where(x => x.ItemCategoryId == itemCategoryId), nameFilter, pageSize, pageIndex);
         }
 
         public ListItemsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
         {
-            return GetListItemVM(_repository.GetAll(), nameFilter, pageSize, pageIndex);
+            return GetListItemVM(_itemRepository.GetAll(), nameFilter, pageSize, pageIndex);
         }
 
         private ListItemsVM GetListItemVM(IQueryable<Item> itemsQuerable, string nameFilter, int pageSize, int pageIndex)
@@ -93,7 +92,7 @@ namespace QueflityMVC.Application.Services
 
         public CrEdItemVM? GetForEdit(int id)
         {
-            var item = _repository.GetById(id);
+            var item = _itemRepository.GetById(id);
 
             if (item is null)
             {
@@ -111,7 +110,7 @@ namespace QueflityMVC.Application.Services
         {
             var item = _mapper.Map<Item>(updateItemVM);
 
-            if (item!=null && ShouldSwitchImages(updateItemVM))
+            if (item != null && ShouldSwitchImages(updateItemVM))
             {
                 if (item.Image != null)
                 {
@@ -121,7 +120,7 @@ namespace QueflityMVC.Application.Services
                 item.Image!.FileUrl = await FileManager.UploadFile(rootPath, updateItemVM.Image!.FormFile!);
             }
 
-            var updatedItem = _repository.Update(item);
+            var updatedItem = _itemRepository.Update(item);
         }
 
         public CrEdItemVM GetItemVMForAdding(int? categoryId)
@@ -139,17 +138,19 @@ namespace QueflityMVC.Application.Services
             return crEdObjItem;
         }
 
-        public List<ItemCategoryForSelectVM> GetItemCategoriesForSelectVM() { 
+        public List<ItemCategoryForSelectVM> GetItemCategoriesForSelectVM()
+        {
             return _categoryRepository.GetAll().ProjectTo<ItemCategoryForSelectVM>(_mapper.ConfigurationProvider).ToList();
         }
 
         private bool ShouldSwitchImages(ItemDTO updatedItem)
         {
-            return updatedItem!=null && updatedItem.Image!=null && updatedItem.Image.FormFile!=null;
+            return updatedItem != null && updatedItem.Image != null && updatedItem.Image.FormFile != null;
         }
 
-        public ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id) {
-            var item = _repository.GetItemWithIngredientsById(id);
+        public ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id)
+        {
+            var item = _itemRepository.GetItemWithIngredientsById(id);
             if (item is null)
             {
                 return null;
@@ -163,7 +164,7 @@ namespace QueflityMVC.Application.Services
             var allIngredients = _ingredientRepository.GetAll();
             selectionVM.AllIngredients = allIngredients.ProjectTo<IngredientForSelection>(_mapper.ConfigurationProvider).ToList();
 
-            selectionVM.SelectedIngredients = item.Ingredients.Select(x=>x.Id).ToList();
+            selectionVM.SelectedIngredients = item.Ingredients.Select(x => x.Id).ToList();
 
             return selectionVM;
         }
@@ -185,7 +186,7 @@ namespace QueflityMVC.Application.Services
 
             var selectedIngredients = _mapper.Map<IEnumerable<Ingredient>>(selectionVM.AllIngredients.Where(x => x.IsSelected)).ToList();
 
-            _repository.UpdateIngredients(selectionVM.Item.Id, selectedIngredients);
+            _itemRepository.UpdateIngredients(selectionVM.Item.Id, selectedIngredients);
         }
     }
 }

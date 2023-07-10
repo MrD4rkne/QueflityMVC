@@ -5,7 +5,7 @@ namespace QueflityMVC.Domain.Models
 {
     public class SetMembership : BaseEntity
     {
-        public uint ItemsAmount { get; set; }
+        public uint ItemsAmmount { get; set; }
 
         [Precision(14, 2)]
         public decimal PricePerItem { get; set; }
@@ -16,6 +16,6 @@ namespace QueflityMVC.Domain.Models
 
         public int ItemId { get; set; }
 
-        public Item Item { get; set; }
+        public virtual Item Item { get; set; }
     }
 }

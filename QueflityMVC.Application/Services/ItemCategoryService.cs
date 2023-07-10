@@ -21,7 +21,7 @@ namespace QueflityMVC.Application.Services
         public int CreateItemCategory(ItemCategoryDTO createItemCategoryVM)
         {
             var itemCategoryToCreate = _mapper.Map<ItemCategory>(createItemCategoryVM);
-                
+
             return _repository.Add(itemCategoryToCreate);
         }
 
@@ -34,15 +34,16 @@ namespace QueflityMVC.Application.Services
 
         public ListItemCategoriesVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
         {
-            int itemsToSkip = (pageIndex- 1) * pageSize;
+            int itemsToSkip = (pageIndex - 1) * pageSize;
 
-            ListItemCategoriesVM listItemCategoryVM = new() { 
-                NameFilter= nameFilter,
-                PageIndex=pageIndex,
-                PageSize=pageSize
+            ListItemCategoriesVM listItemCategoryVM = new()
+            {
+                NameFilter = nameFilter,
+                PageIndex = pageIndex,
+                PageSize = pageSize
             };
 
-            var itemsToShow = _repository.GetAll().Where(x=>x.Name.Contains(nameFilter));
+            var itemsToShow = _repository.GetAll().Where(x => x.Name.Contains(nameFilter));
             listItemCategoryVM.TotalCount = itemsToShow.Count();
             itemsToShow = itemsToShow.Skip(itemsToSkip).Take(pageSize);
 
