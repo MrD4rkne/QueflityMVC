@@ -14,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <img alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image!.FileUrl" style="max-width: 600px;width:100%" />
             <div class="form-group">
-                <input asp-for="ItemVM.Image!.FormFile" type="file">
+                <input asp-for="ItemVM.Image!.FormFile" type="image>
                 <span asp-validation-for="ItemVM.Image!.FormFile"></span>
                 <span asp-validation-for="ItemVM.Image!.FormFile" class="text-danger"></span>
             </div>
@@ -38,7 +38,8 @@
                     {
                         @foreach (var category in Model.ItemCategories)
                         {
-                            @if(category.Id==Model.ItemVM.CategoryId){
+                            @if (category.Id == Model.ItemVM.CategoryId)
+                            {
                                 <option selected="selected" value="@category.Id">@category.Name</option>
                                 ViewData["categoryId"] = category.Id;
                             }
@@ -46,8 +47,7 @@
                             {
                                 <option value="@category.Id">@category.Name</option>
                             }
-
-                    }
+                        }
                     }
                 </select>
                 <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
@@ -64,15 +64,18 @@
 </div>
 
 <div>
-    @if(ViewData["categoryId"] is int categoryId)
+    @if (ViewData["categoryId"] is int categoryId)
     {
         @Html.ActionLink("Back to List", "Index", new {categoryId = categoryId});
     }
-    else{
+    else
+    {
         <a asp-action="Index">Back to List</a>
     }
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

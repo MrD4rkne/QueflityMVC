@@ -5,6 +5,6 @@ namespace QueflityMVC.Domain.Interfaces
 {
     public interface IItemSetRepository : IBaseRepository<ItemSet>
     {
-        public ItemSet? GetItemSetWithMembershipsById(int id);
+        public ItemSet? GetFullItemSetWithMembershipsById(int id);
     }
 }

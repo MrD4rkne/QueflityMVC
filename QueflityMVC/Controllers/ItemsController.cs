@@ -121,6 +121,7 @@ namespace QueflityMVC.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        // TODO: check if any ingredient exists
         [Route("Ingredients")]
         [HttpGet]
         public IActionResult Ingredients(int id)

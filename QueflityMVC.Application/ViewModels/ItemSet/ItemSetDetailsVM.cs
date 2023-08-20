@@ -16,6 +16,8 @@ namespace QueflityMVC.Application.ViewModels.ItemSet
 
         public string Name { get; set; }
 
+        public decimal Price { get; set; }
+
         public bool ShouldBeShown { get; set; }
 
         public ImageDTO? Image { get; set; } = new ImageDTO();

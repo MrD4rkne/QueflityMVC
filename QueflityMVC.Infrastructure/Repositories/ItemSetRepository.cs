@@ -9,9 +9,9 @@ namespace QueflityMVC.Infrastructure.Repositories
     {
         public ItemSetRepository(Context dbContext) : base(dbContext) { }
 
-        public ItemSet? GetItemSetWithMembershipsById(int id)
+        public ItemSet? GetFullItemSetWithMembershipsById(int id)
         {
-            return _dbContext.Set<ItemSet>().Include(x=>x.SetMemberships).FirstOrDefault(y=> y.Id == id);
+            return _dbContext.Set<ItemSet>().Include(x=>x.SetMemberships).Include(z=> z.Image).FirstOrDefault(y=> y.Id == id);
         }
     }
 }

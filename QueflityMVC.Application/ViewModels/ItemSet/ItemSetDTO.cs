@@ -10,6 +10,8 @@ namespace QueflityMVC.Application.ViewModels.ItemSet
 
         public string Name { get; set; }
 
+        public string? Description { get; set; }
+
         public bool ShouldBeShown { get; set; }
 
         public ImageDTO? Image { get; set; } = new ImageDTO();

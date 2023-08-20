@@ -55,20 +55,20 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpPost]
-        public async Task<IActionResult> Create(ItemSetDTO createItemSetDTO, bool routeToDetails = false)
+        public async Task<IActionResult> Create(ItemSetDTO createItemSetDTO, bool shouldRouteToDetails = false)
         {
-            ValidationResult result = await _itemSetValidator.ValidateAsync(createItemSetDTO);
+            ValidationResult validationResults = await _itemSetValidator.ValidateAsync(createItemSetDTO);
 
-            if (!result.IsValid)
+            if (!validationResults.IsValid)
             {
-                result.AddToModelState(this.ModelState);
+                validationResults.AddToModelState(this.ModelState);
 
                 return View("Create", createItemSetDTO);
             }
 
             int itemSetId = await _itemSetService.CreateItemSet(createItemSetDTO, _env.ContentRootPath);
 
-            if (routeToDetails)
+            if (shouldRouteToDetails)
                 return RedirectToAction("Details", new { id = itemSetId});
 
             return RedirectToAction("Index");
@@ -82,52 +82,39 @@ namespace QueflityMVC.Web.Controllers
             return View(itemSetDetailsVM);
         }
 
-        //[Route("Edit")]
-        //[HttpGet]
-        //public IActionResult Edit(int id)
-        //{
-        //    return View(_itemSetService.GetForEdit(id));
-        //}
+        [Route("Edit")]
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            ItemSetDTO itemSetToEditVM = _itemSetService.GetItemSetVMForEdit(id);
 
-        //[Route("Edit")]
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(CrEdItemVM editItemVM)
-        //{
-        //    ValidationResult result = await _itemValidator.ValidateAsync(editItemVM.ItemVM);
+            return View(itemSetToEditVM);
+        }
 
-        //    if (!result.IsValid)
-        //    {
-        //        result.AddToModelState(this.ModelState);
-        //        return View("Edit", editItemVM);
-        //    }
+        [Route("Edit")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(ItemSetDTO editedItemSetDTO) {
 
-        //    await _itemSetService.UpdateItem(editItemVM.ItemVM, _env.ContentRootPath);
+            ValidationResult validationResults = await _itemSetValidator.ValidateAsync(editedItemSetDTO);
 
-        //    return RedirectToAction("Index");
-        //}
+            if (!validationResults.IsValid)
+            {
+                validationResults.AddToModelState(this.ModelState);
 
-        //[Route("Delete")]
-        //[HttpGet]
-        //public IActionResult Delete(int id)
-        //{
-        //    _itemSetService.DeleteItem(id,_env.ContentRootPath);
-        //    return RedirectToAction("Index");
-        //}
+                return View("Edit", editedItemSetDTO);
+            }
 
-        //[Route("Ingredients")]
-        //[HttpGet]
-        //public IActionResult Ingredients(int id)
-        //{
-        //    var ingredientsViewModel = _itemSetService.GetIngredientsForSelectionVM(id);
-        //    return View(ingredientsViewModel);
-        //}
+            int itemSetId = await _itemSetService.EditItemSet(editedItemSetDTO, _env.ContentRootPath);
 
-        //[Route("Ingredients")]
-        //[HttpPost]
-        //public IActionResult Ingredients(ItemIngredientsSelectionVM selectionVM)
-        //{
-        //    _itemSetService.UpdateItemIngredients(selectionVM);
-        //    return RedirectToAction("Index");
-        //}
+            return RedirectToAction("Details", new {id = itemSetId});
+        }
+
+        // TODO: Add view & logic for adding new components
+        [Route("AddComponent")]
+        [HttpGet]
+        public IActionResult AddComponent(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

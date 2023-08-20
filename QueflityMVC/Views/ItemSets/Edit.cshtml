@@ -1,0 +1,71 @@
+﻿@model QueflityMVC.Application.ViewModels.ItemSet.ItemSetDTO
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Change your awesome item set!</h4>
+<hr />
+<div class="row">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <img class="img-fluid rounded-start" alt="@Model.Image?.AltDescription" src="@Model.Image?.FileUrl" />
+                </div>
+                <div class="col-md-8">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <h5>Image</h5>
+                            <div class="mb-3">
+                                <input class="form-control" asp-for="Image!.FormFile" type="file">
+                                <span asp-validation-for="Image!.FormFile" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Image!.AltDescription" class="control-label">Alternative description</label>
+                                <input asp-for="Image!.AltDescription" class="form-control" value="@Model.Image?.AltDescription"/>
+                                <span asp-validation-for="Image!.AltDescription" class="text-danger"></span>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <h5>Set</h5>
+                            <div class="mb-3">
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" value="@Model.Name"/>
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description" class="control-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="5" value="@Model.Description"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="submit" class="btn btn-outline-primary" formaction="Edit">Edit</button>
+                </div>
+            </div>
+        </div>
+        @*<div class="form-group">
+        <input type="submit" value="Create and return" class="btn btn-primary" formaction="Create"/>
+        <input type="submit" value="Create and add items" class="btn btn-primary" formaction="CreateAndRoute" />
+        </div>*@
+
+        <input type="hidden" asp-for="Id" value="@Model.Id"/>
+        <input type="hidden" asp-for="Image!.FileUrl" value="@Model.Image!.FileUrl" />
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

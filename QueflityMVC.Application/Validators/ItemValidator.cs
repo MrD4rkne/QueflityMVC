@@ -11,7 +11,7 @@ namespace QueflityMVC.Application.Validators
                 .NotEmpty()
                 .MinimumLength(2)
                 .MaximumLength(20)
-                .Matches("[A-Za-z]*").WithMessage("'Name' może zawierać tylko litery");
+                .Matches("[A-Za-z]*").WithMessage("Name can only contain letters");
             RuleFor(x => x.Image)
                 .NotNull()
                 ?.SetValidator(new ImageValidator());
