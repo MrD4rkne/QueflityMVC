@@ -1,0 +1,41 @@
+﻿@using QueflityMVC.Application.ViewModels.Pagination;
+@model PaginationInfo
+<nav>
+    <ul class="pagination justify-content-center">
+        @if (Model.CurrentPageNo <= 1)
+        {
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.CurrentPageNo-1)">Previous</a></li>
+        }
+        @for (int i = 1; i <= Model.PagesCount; i++)
+        {
+            @if (i != Model.CurrentPageNo)
+            {
+                <li class="page-item"><a class="page-link" href="javascript:PagerClick(@i)">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item disabled"><span class="page-link"><b>@i</b></span></li>
+            }
+        }
+        @if (Model.CurrentPageNo >= Model.PagesCount)
+        {
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.CurrentPageNo+1)">Next</a></li>
+        }
+    </ul>
+</nav>
+
+<script type="text/javascript">
+    function PagerClick(pageIndex) {
+        document.getElementById("Pagination_Info_CurrentPageNo").value = pageIndex;
+        document.forms[0].submit();
+    }
+</script>
+

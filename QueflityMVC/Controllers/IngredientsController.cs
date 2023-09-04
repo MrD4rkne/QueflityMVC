@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Ingredient;
 
@@ -9,39 +10,32 @@ namespace QueflityMVC.Web.Controllers
     [Route("Ingredients")]
     public class IngredientsController : Controller
     {
-        private const int DEFAULT_PAGE_SIZE = 2;
-
         private readonly IIngredientService _ingredientService;
-        private readonly IValidator<IngredientDTO> _itemCategoryValidator;
+        private readonly IValidator<IngredientDTO> _categoryValidator;
 
-        public IngredientsController(IIngredientService ingredientService, IValidator<IngredientDTO> itemCategoryValidator)
+        public IngredientsController(IIngredientService ingredientService, IValidator<IngredientDTO> categoryValidator)
         {
             _ingredientService = ingredientService;
-            _itemCategoryValidator = itemCategoryValidator;
+            _categoryValidator = categoryValidator;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return Index(null, string.Empty, DEFAULT_PAGE_SIZE, 1);
+            ListIngredientsVM listIngredientsVM = new()
+            {
+                Pagination = PaginationFactory.Default<IngredientForListVM>()
+            };
+            return await Index(listIngredientsVM);
         }
 
         [HttpPost]
-        public IActionResult Index(int? itemId, string nameFilter, int pageSize, int pageIndex)
+        public async Task<IActionResult> Index(ListIngredientsVM listIngredients)
         {
-            if (nameFilter == null)
-            {
-                nameFilter = string.Empty;
-            }
-            if (pageSize <= 1)
-            {
-                pageSize = 2;
-            }
-            if (pageIndex < 1)
-            {
-                pageIndex = 1;
-            }
+            if (listIngredients is null)
+                return BadRequest();
+            listIngredients.NameFilter ??= string.Empty;
 
-            var listVm = _ingredientService.GetFilteredList(itemId, nameFilter, pageSize, pageIndex);
+            var listVm = await _ingredientService.GetFilteredList(listIngredients);
             return View(listVm);
         }
 
@@ -49,14 +43,20 @@ namespace QueflityMVC.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new IngredientDTO());
+            IngredientDTO freshIngredientDTO = new()
+            {
+                Id = 0,
+                Name = string.Empty
+            };
+
+            return View(freshIngredientDTO);
         }
 
         [Route("Create")]
         [HttpPost]
         public IActionResult Create(IngredientDTO ingredientToAddDTO)
         {
-            var validationResult = _itemCategoryValidator.Validate(ingredientToAddDTO);
+            var validationResult = _categoryValidator.Validate(ingredientToAddDTO);
 
             if (!validationResult.IsValid)
             {
@@ -85,7 +85,7 @@ namespace QueflityMVC.Web.Controllers
         [HttpPost]
         public IActionResult Edit(IngredientDTO ingredientToEditDTO)
         {
-            var validationResult = _itemCategoryValidator.Validate(ingredientToEditDTO);
+            var validationResult = _categoryValidator.Validate(ingredientToEditDTO);
 
             if (!validationResult.IsValid)
             {
@@ -97,6 +97,18 @@ namespace QueflityMVC.Web.Controllers
 
             return RedirectToAction("Index");
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
         [Route("Delete")]
         public IActionResult Delete(int id)

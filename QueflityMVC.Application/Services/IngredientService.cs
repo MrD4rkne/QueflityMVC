@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Ingredient;
 using QueflityMVC.Domain.Interfaces;
@@ -32,30 +32,17 @@ namespace QueflityMVC.Application.Services
             _ingredientRepository.Delete(id);
         }
 
-        public ListIngredientsVM GetFilteredList(int? itemId, string nameFilter, int pageSize, int pageIndex)
+        public async Task<ListIngredientsVM> GetFilteredList(ListIngredientsVM listIngredientsVM)
         {
-            ListIngredientsVM listIngredientsVM = new()
+            if (listIngredientsVM is null)
             {
-                NameFilter = nameFilter,
-                PageIndex = pageIndex,
-                PageSize = pageSize
-            };
-
-            IQueryable<Ingredient> matchingIngredients;
-            if (itemId.HasValue)
-            {
-                matchingIngredients = _ingredientRepository.GetIngredientsForItem(itemId.Value);
+                throw new ArgumentNullException(nameof(listIngredientsVM));
             }
-            else
-            {
-                matchingIngredients = _ingredientRepository.GetAll();
-            }
-            matchingIngredients = matchingIngredients.Where(x => x.Name.Contains(nameFilter));
 
-            listIngredientsVM.TotalCount = matchingIngredients.Count();
+            IQueryable<Ingredient> matchingIngredients = _ingredientRepository.GetIngredientsForPagination(listIngredientsVM.ItemId, listIngredientsVM.NameFilter);
 
-            int itemsToSkip = (pageIndex - 1) * pageSize;
-            listIngredientsVM.Items = matchingIngredients.Skip(itemsToSkip).Take(pageSize).ProjectTo<IngredientForListVM>(_mapper.ConfigurationProvider).ToList();
+
+            listIngredientsVM.Pagination = await matchingIngredients.Paginate<Ingredient, IngredientForListVM>(listIngredientsVM.Pagination, _mapper.ConfigurationProvider);
 
             return listIngredientsVM;
         }
@@ -74,9 +61,9 @@ namespace QueflityMVC.Application.Services
 
         public void UpdateIngredient(IngredientDTO ingredientToEditDTO)
         {
-            var itemCategory = _mapper.Map<Ingredient>(ingredientToEditDTO);
+            var category = _mapper.Map<Ingredient>(ingredientToEditDTO);
 
-            var updatedItemCategory = _ingredientRepository.Update(itemCategory);
+            var updatedcategory = _ingredientRepository.Update(category);
         }
     }
 }

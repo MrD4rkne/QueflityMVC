@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application;
 using QueflityMVC.Infrastructure;
+using QueflityMVC.Web.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,20 +31,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
-builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-{
-    IConfigurationSection googleOAuthSection = builder.Configuration.GetSection("Authentication:Google");
-    googleOptions.ClientId = googleOAuthSection["ClientId"];
-    googleOptions.ClientSecret = googleOAuthSection["ClientSecret"];
-});
+builder.Services.AddAuthentication().AddExternalOAth(builder.Configuration);
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanManageIngredients", policy =>
         policy.RequireClaim("AddIngredient", "EditIngredient", "DeleteIngredient"));
     options.AddPolicy("CanManageItems", policy =>
         policy.RequireClaim("ViewItemsList", "AddItem", "EditItem", "DeleteItem"));
-    options.AddPolicy("CanManageItemCategories", policy =>
-        policy.RequireClaim("ViewItemCategoriesList", "AddItemCategory", "EditItemCategory", "DeleteItemCategory"));
+    options.AddPolicy("CanManageCategories", policy =>
+        policy.RequireClaim("ViewCategoriesList", "AddCategory", "EditCategory", "DeleteCategory"));
 });
 
 var app = builder.Build();

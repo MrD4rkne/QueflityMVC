@@ -4,17 +4,17 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.ItemSet
 {
-    public class ItemSetDTO : IMapFrom<Domain.Models.ItemSet>
+    public record ItemSetDTO : IMapFrom<Domain.Models.ItemSet>
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public string? Description { get; set; }
 
         public bool ShouldBeShown { get; set; }
 
-        public ImageDTO? Image { get; set; } = new ImageDTO();
+        public ImageDTO? Image { get; set; }
 
         public void Mapping(Profile profile)
         {

@@ -1,72 +1,80 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.ViewModels.ItemCategory;
+using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Application.Services
 {
-    public class ItemCategoryService : IItemCategoryService
+    public class CategoryService : ICategoryService
     {
-        private readonly IItemCategoryRepository _repository;
+        private readonly ICategoryRepository _repository;
         private readonly IMapper _mapper;
 
-        public ItemCategoryService(IItemCategoryRepository repository, IMapper mapper)
+        public CategoryService(ICategoryRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        public int CreateItemCategory(ItemCategoryDTO createItemCategoryVM)
+        public int CreateCategory(CategoryDTO createcategoryVM)
         {
-            var itemCategoryToCreate = _mapper.Map<ItemCategory>(createItemCategoryVM);
+            var categoryToCreate = _mapper.Map<Category>(createcategoryVM);
 
-            return _repository.Add(itemCategoryToCreate);
+            return _repository.Add(categoryToCreate);
         }
 
-        public void DeleteItemCategory(int id)
+        public void DeleteCategory(int id)
         {
-            if (!_repository.CanDeleteItemCategory(id))
+            if (!_repository.CanDeleteCategory(id))
                 throw new InvalidOperationException("First, remove or change category for items!");
             _repository.Delete(id);
         }
 
-        public ListItemCategoriesVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
+        public async Task<ListCategoriesVM> GetFilteredList(ListCategoriesVM listCategoriesVM)
         {
-            int itemsToSkip = (pageIndex - 1) * pageSize;
-
-            ListItemCategoriesVM listItemCategoryVM = new()
+            if (listCategoriesVM is null)
             {
-                NameFilter = nameFilter,
-                PageIndex = pageIndex,
-                PageSize = pageSize
+                throw new ArgumentNullException(nameof(listCategoriesVM));
+            }
+
+            IQueryable<Category> matchingCategories = _repository.GetFiltered(listCategoriesVM.NameFilter);
+
+            listCategoriesVM.Pagination = await matchingCategories.Paginate<Category, CategoryForListVM>(listCategoriesVM.Pagination, _mapper.ConfigurationProvider);
+
+            return listCategoriesVM;
+        }
+
+        public CategoryDTO GetVMForCreate()
+        {
+            CategoryDTO defaultCategoryDTO = new()
+            {
+                Id = default,
+                Name = string.Empty
             };
 
-            var itemsToShow = _repository.GetAll().Where(x => x.Name.Contains(nameFilter));
-            listItemCategoryVM.TotalCount = itemsToShow.Count();
-            itemsToShow = itemsToShow.Skip(itemsToSkip).Take(pageSize);
-
-            listItemCategoryVM.ItemCategories = itemsToShow.ProjectTo<ItemCategoryForListVM>(_mapper.ConfigurationProvider).ToList();
-
-            return listItemCategoryVM;
+            return defaultCategoryDTO;
         }
 
-        public ItemCategoryDTO? GetVMForEdit(int id)
+        public CategoryDTO? GetVMForEdit(int id)
         {
-            var itemCategory = _repository.GetById(id);
+            var category = _repository.GetById(id);
 
-            if (itemCategory is null)
+            if (category is null)
                 return null;
 
-            return _mapper.Map<ItemCategoryDTO>(itemCategory);
+            return _mapper.Map<CategoryDTO>(category);
         }
 
-        public void UpdateItemCategory(ItemCategoryDTO createItemCategoryVM)
+        // Finish category updating
+        public CategoryDTO UpdateCategory(CategoryDTO createcategoryVM)
         {
-            var itemCategory = _mapper.Map<ItemCategory>(createItemCategoryVM);
+            var category = _mapper.Map<Category>(createcategoryVM);
 
-            var updatedItemCategory = _repository.Update(itemCategory);
+            var updatedcategory = _repository.Update(category);
+
+            return _mapper.Map<CategoryDTO>(updatedcategory);
         }
     }
 }

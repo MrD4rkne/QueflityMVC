@@ -4,13 +4,13 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image
 {
-    public class ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.ItemSetImage>
+    public record ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.ItemSetImage>
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
-        public string FileUrl { get; set; }
+        public required string FileUrl { get; set; }
 
-        public string AltDescription { get; set; }
+        public string? AltDescription { get; set; }
 
         public IFormFile? FormFile { get; set; }
 

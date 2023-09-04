@@ -4,11 +4,11 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item
 {
-    public class ItemForListVM : IMapFrom<Domain.Models.Item>
+    public record ItemForListVM : IMapFrom<Domain.Models.Item>
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public ImageForListVM? Image { get; set; }
 

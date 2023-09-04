@@ -4,11 +4,11 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item
 {
-    public class ItemForSetSelectionVM : IMapFrom<Domain.Models.Item>
+    public record ItemForSetSelectionVM : IMapFrom<Domain.Models.Item>
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public bool IsSelected { get; set; }
 
@@ -16,7 +16,7 @@ namespace QueflityMVC.Application.ViewModels.Item
 
         public decimal Price { get; set; }
 
-        public ImageForListVM Image { get; set; }
+        public ImageForListVM? Image { get; set; }
 
         public void Mapping(Profile profile)
         {

@@ -4,7 +4,7 @@ namespace QueflityMVC.Application.Interfaces
 {
     public interface IIngredientService
     {
-        ListIngredientsVM GetFilteredList(int? itemId, string nameFilter, int pageSize, int pageIndex);
+        Task<ListIngredientsVM> GetFilteredList(ListIngredientsVM listIngredientsVM);
 
         int CreateIngredient(IngredientDTO ingredientToCreateDTO);
 

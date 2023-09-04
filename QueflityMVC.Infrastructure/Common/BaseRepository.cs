@@ -1,4 +1,6 @@
-﻿using QueflityMVC.Domain.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Infrastructure.Common
 {
@@ -13,7 +15,7 @@ namespace QueflityMVC.Infrastructure.Common
 
         public virtual int Add(T entityToAdd)
         {
-            if (entityToAdd == null)
+            if (entityToAdd is null)
                 throw new ArgumentNullException("Entity cannot be null");
 
             _dbContext.Set<T>().Add(entityToAdd);
@@ -25,6 +27,10 @@ namespace QueflityMVC.Infrastructure.Common
         public virtual void Delete(int entityToDeleteId)
         {
             var entityToDelete = GetById(entityToDeleteId);
+            if (entityToDelete is null)
+            {
+                throw new ArgumentNullException("Entity does not exist!");
+            }
 
             Delete(entityToDelete);
         }
@@ -42,8 +48,17 @@ namespace QueflityMVC.Infrastructure.Common
         {
             if (!Exists(entityToUpdate))
                 throw new ArgumentException("Entity does not exist!");
+            if (_dbContext.Entry(entityToUpdate) is EntityEntry<T> originalEntity)
+            {
+                originalEntity.CurrentValues.SetValues(entityToUpdate);
+            }
+            else
+            {
+                _dbContext.Attach(entityToUpdate);
+                _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
 
-            _dbContext.Set<T>().Update(entityToUpdate);
+            }
+
             _dbContext.SaveChanges();
 
             return GetById(entityToUpdate.Id)!;
@@ -51,7 +66,7 @@ namespace QueflityMVC.Infrastructure.Common
 
         public virtual bool Exists(T entityToCheck)
         {
-            if (entityToCheck == null)
+            if (entityToCheck is null)
                 throw new ArgumentNullException("Entity cannot be null");
 
             return Exists(entityToCheck.Id);

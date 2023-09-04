@@ -1,18 +1,20 @@
-﻿using QueflityMVC.Application.ViewModels.ItemCategory;
+﻿using QueflityMVC.Application.ViewModels.Category;
 
 namespace QueflityMVC.Application.Interfaces
 {
-    public interface IItemCategoryService
+    public interface ICategoryService
     {
-        int CreateItemCategory(ItemCategoryDTO createItemCategoryVM);
+        int CreateCategory(CategoryDTO createcategoryVM);
 
-        void DeleteItemCategory(int id);
+        void DeleteCategory(int id);
 
-        ListItemCategoriesVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
+        Task<ListCategoriesVM> GetFilteredList(ListCategoriesVM listCategoriesVM);
 
-        ItemCategoryDTO? GetVMForEdit(int id);
+        CategoryDTO GetVMForCreate();
 
-        void UpdateItemCategory(ItemCategoryDTO createItemCategoryVM);
+        CategoryDTO? GetVMForEdit(int id);
+
+        CategoryDTO UpdateCategory(CategoryDTO createcategoryVM);
 
     }
 }

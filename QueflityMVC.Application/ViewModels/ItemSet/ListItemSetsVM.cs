@@ -1,18 +1,14 @@
 ﻿
+using QueflityMVC.Application.ViewModels.Pagination;
+
 namespace QueflityMVC.Application.ViewModels.ItemSet
 {
-    public class ListItemSetsVM
+    public record ListItemSetsVM
     {
-        public int PageSize { get; set; }
+        public required PaginationVM<ItemSetForListVM> Pagination { get; set; }
 
-        public int PageIndex { get; set; }
+        public int? CategoryId { get; set; }
 
-        public int TotalCount { get; set; }
-
-        public int? ItemCategoryId { get; set; }
-
-        public List<ItemSetForListVM> Items { get; set; }
-
-        public string NameFilter { get; set; }
+        public string? NameFilter { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace QueflityMVC.Application.Interfaces
         Task<int> EditItemSet(ItemSetDTO editItemSetDTO, string contentRootPath);
         ItemSetDetailsVM GetDetailsVM(int id);
 
-        ListItemSetsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
+        Task<ListItemSetsVM> GetFilteredList(ListItemSetsVM listItemSetsVM);
 
         ItemSetDTO GetItemSetVMForAdding();
         ItemSetDTO GetItemSetVMForEdit(int id);

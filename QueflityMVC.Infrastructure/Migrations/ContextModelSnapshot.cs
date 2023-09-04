@@ -239,6 +239,23 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categorie");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.Ingredient", b =>
                 {
                     b.Property<int>("Id")
@@ -264,7 +281,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ItemCategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ItemImageId")
@@ -283,30 +300,13 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemCategoryId");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ItemImageId")
                         .IsUnique()
                         .HasFilter("[ItemImageId] IS NOT NULL");
 
                     b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ItemCategories");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemImage", b =>
@@ -385,7 +385,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("ItemSetImages");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.SetMembership", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.SetElement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -412,7 +412,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasIndex("ItemSetId");
 
-                    b.ToTable("SetMemberships");
+                    b.ToTable("SetElements");
                 });
 
             modelBuilder.Entity("IngredientItem", b =>
@@ -483,9 +483,9 @@ namespace QueflityMVC.Infrastructure.Migrations
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
                 {
-                    b.HasOne("QueflityMVC.Domain.Models.ItemCategory", "ItemCategory")
+                    b.HasOne("QueflityMVC.Domain.Models.Category", "Category")
                         .WithMany("Items")
-                        .HasForeignKey("ItemCategoryId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -494,9 +494,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .HasForeignKey("QueflityMVC.Domain.Models.Item", "ItemImageId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("Image");
+                    b.Navigation("Category");
 
-                    b.Navigation("ItemCategory");
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
@@ -509,16 +509,16 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Navigation("Image");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.SetMembership", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.SetElement", b =>
                 {
                     b.HasOne("QueflityMVC.Domain.Models.Item", "Item")
-                        .WithMany("SetMemberships")
+                        .WithMany("SetElements")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("QueflityMVC.Domain.Models.ItemSet", "ItemSet")
-                        .WithMany("SetMemberships")
+                        .WithMany("Elements")
                         .HasForeignKey("ItemSetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -528,31 +528,29 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Navigation("ItemSet");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
-                {
-                    b.Navigation("SetMemberships");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemCategory", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Category", b =>
                 {
                     b.Navigation("Items");
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
+                {
+                    b.Navigation("SetElements");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemImage", b =>
                 {
-                    b.Navigation("Item")
-                        .IsRequired();
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
                 {
-                    b.Navigation("SetMemberships");
+                    b.Navigation("Elements");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSetImage", b =>
                 {
-                    b.Navigation("ItemSet")
-                        .IsRequired();
+                    b.Navigation("ItemSet");
                 });
 #pragma warning restore 612, 618
         }

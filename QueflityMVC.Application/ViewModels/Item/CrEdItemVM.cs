@@ -1,11 +1,11 @@
-﻿using QueflityMVC.Application.ViewModels.ItemCategory;
+﻿using QueflityMVC.Application.ViewModels.Category;
 
 namespace QueflityMVC.Application.ViewModels.Item
 {
-    public class CrEdItemVM
+    public record CrEdItemVM
     {
-        public ItemDTO ItemVM { get; set; }
+        public required ItemDTO ItemVM { get; set; }
 
-        public List<ItemCategoryForSelectVM> ItemCategories { get; set; }
+        public required List<CategoryForSelectVM> Categories { get; set; }
     }
 }

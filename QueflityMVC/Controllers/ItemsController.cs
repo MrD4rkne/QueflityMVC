@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Item;
 
@@ -10,8 +11,6 @@ namespace QueflityMVC.Web.Controllers
     [Route("Items")]
     public class ItemsController : Controller
     {
-        private const int DEFAULT_PAGE_SIZE = 2;
-
         private readonly IItemService _itemService;
         private readonly IValidator<ItemDTO> _itemValidator;
         private readonly IWebHostEnvironment _env;
@@ -23,39 +22,27 @@ namespace QueflityMVC.Web.Controllers
             _env = env;
         }
 
-        public IActionResult Index(int? itemCategoryId)
+        public async Task<IActionResult> Index(int? categoryId)
         {
-            return Index(itemCategoryId, string.Empty, DEFAULT_PAGE_SIZE, 1);
+            ListItemsVM listItemsVM = new()
+            {
+                Pagination = PaginationFactory.Default<ItemForListVM>(),
+                CategoryId = categoryId,
+                NameFilter = string.Empty
+            };
+            return await Index(listItemsVM);
         }
 
         [HttpPost]
-        public IActionResult Index(int? itemCategoryId, string nameFilter, int pageSize, int pageIndex)
+        public async Task<IActionResult> Index(ListItemsVM listItemsVM)
         {
-            if (nameFilter == null)
+            if (listItemsVM is null)
             {
-                nameFilter = string.Empty;
+                return BadRequest();
             }
-            if (pageSize <= 1)
-            {
-                pageSize = 2;
-            }
-            if (pageIndex < 1)
-            {
-                pageIndex = 1;
-            }
+            listItemsVM.NameFilter ??= string.Empty;
 
-            ListItemsVM listVM;
-            if (itemCategoryId.HasValue)
-            {
-                listVM = _itemService.GetFilteredList(itemCategoryId.Value, nameFilter, pageSize, pageIndex);
-            }
-            else
-            {
-                listVM = _itemService.GetFilteredList(nameFilter, pageSize, pageIndex);
-            }
-
-            listVM.ItemCategoryId = itemCategoryId;
-
+            ListItemsVM listVM = await _itemService.GetFilteredList(listItemsVM);
             return View(listVM);
         }
 
@@ -76,9 +63,9 @@ namespace QueflityMVC.Web.Controllers
             {
                 result.AddToModelState(this.ModelState);
 
-                if (crEdObjItem.ItemCategories == null)
+                if (crEdObjItem.Categories is null)
                 {
-                    crEdObjItem.ItemCategories = _itemService.GetItemCategoriesForSelectVM();
+                    crEdObjItem.Categories = _itemService.GetCategoriesForSelectVM();
                 }
 
                 return View("Create", crEdObjItem);

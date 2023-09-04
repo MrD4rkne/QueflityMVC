@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.ItemSet;
 
@@ -10,8 +11,6 @@ namespace QueflityMVC.Web.Controllers
     [Route("ItemSets")]
     public class ItemSetsController : Controller
     {
-        private const int DEFAULT_PAGE_SIZE = 2;
-
         private readonly IItemSetService _itemSetService;
         private readonly IValidator<ItemSetDTO> _itemSetValidator;
         private readonly IWebHostEnvironment _env;
@@ -23,26 +22,26 @@ namespace QueflityMVC.Web.Controllers
             _env = env;
         }
 
-        public IActionResult Index()
+        //TODO: generic pagination
+        public async Task<IActionResult> Index()
         {
-            return Index(string.Empty, DEFAULT_PAGE_SIZE, 1);
+            ListItemSetsVM listItemSetsVM = new()
+            {
+                Pagination = PaginationFactory.Default<ItemSetForListVM>()
+            };
+            return await Index(listItemSetsVM);
         }
 
         [HttpPost]
-        public IActionResult Index(string nameFilter, int pageSize, int pageIndex)
+        public async Task<IActionResult> Index(ListItemSetsVM listItemSetsVM)
         {
-            nameFilter ??= string.Empty;
-            if (pageSize <= 1)
+            if (listItemSetsVM is null)
             {
-                pageSize = 2;
+                return BadRequest();
             }
-            if (pageIndex < 1)
-            {
-                pageIndex = 1;
-            }
+            listItemSetsVM.NameFilter ??= string.Empty;
 
-            ListItemSetsVM listVM = _itemSetService.GetFilteredList(nameFilter, pageSize, pageIndex);
-
+            ListItemSetsVM listVM = await _itemSetService.GetFilteredList(listItemSetsVM);
             return View(listVM);
         }
 
@@ -69,7 +68,7 @@ namespace QueflityMVC.Web.Controllers
             int itemSetId = await _itemSetService.CreateItemSet(createItemSetDTO, _env.ContentRootPath);
 
             if (shouldRouteToDetails)
-                return RedirectToAction("Details", new { id = itemSetId});
+                return RedirectToAction("Details", new { id = itemSetId });
 
             return RedirectToAction("Index");
         }
@@ -93,7 +92,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpPost]
-        public async Task<IActionResult> Edit(ItemSetDTO editedItemSetDTO) {
+        public async Task<IActionResult> Edit(ItemSetDTO editedItemSetDTO)
+        {
 
             ValidationResult validationResults = await _itemSetValidator.ValidateAsync(editedItemSetDTO);
 
@@ -106,7 +106,7 @@ namespace QueflityMVC.Web.Controllers
 
             int itemSetId = await _itemSetService.EditItemSet(editedItemSetDTO, _env.ContentRootPath);
 
-            return RedirectToAction("Details", new {id = itemSetId});
+            return RedirectToAction("Details", new { id = itemSetId });
         }
 
         // TODO: Add view & logic for adding new components

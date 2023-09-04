@@ -3,11 +3,11 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image
 {
-    public class ImageForListVM : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.ItemSetImage>
+    public record ImageForListVM : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.ItemSetImage>
     {
-        public string FileUrl { get; set; }
+        public string? FileUrl { get; set; }
 
-        public string AltDescription { get; set; }
+        public string? AltDescription { get; set; }
 
         public void Mapping(Profile profile)
         {

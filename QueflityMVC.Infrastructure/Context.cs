@@ -10,7 +10,7 @@ namespace QueflityMVC.Infrastructure
 
         public DbSet<Item> Items { get; set; }
 
-        public DbSet<ItemCategory> ItemCategories { get; set; }
+        public DbSet<Category> Categorie { get; set; }
 
         public DbSet<ItemImage> ItemImages { get; set; }
 
@@ -18,7 +18,7 @@ namespace QueflityMVC.Infrastructure
 
         public DbSet<ItemSetImage> ItemSetImages { get; set; }
 
-        public DbSet<SetMembership> SetMemberships { get; set; }
+        public DbSet<SetElement> SetElements { get; set; }
 
 
         public Context(DbContextOptions options) : base(options)
@@ -46,19 +46,19 @@ namespace QueflityMVC.Infrastructure
                 .WithMany(ing => ing.Items);
 
             builder.Entity<Item>()
-                .HasOne(it => it.ItemCategory)
+                .HasOne(it => it.Category)
                 .WithMany(itCtgr => itCtgr.Items)
-                .HasForeignKey(it => it.ItemCategoryId);
+                .HasForeignKey(it => it.CategoryId);
 
-            builder.Entity<SetMembership>()
-                .HasOne(membership => membership.Item)
-                .WithMany(it => it.SetMemberships)
-                .HasForeignKey(membership => membership.ItemId)
+            builder.Entity<SetElement>()
+                .HasOne(element => element.Item)
+                .WithMany(it => it.SetElements)
+                .HasForeignKey(element => element.ItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<SetMembership>()
-                .HasOne(membership => membership.ItemSet)
-                .WithMany(it => it.SetMemberships)
+            builder.Entity<SetElement>()
+                .HasOne(element => element.ItemSet)
+                .WithMany(it => it.Elements)
                 .HasForeignKey(membership => membership.ItemSetId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using QueflityMVC.Application.ViewModels.ItemCategory;
+using QueflityMVC.Application.ViewModels.Category;
 
 namespace QueflityMVC.Application.Validators
 {
-    public class ItemCategoryValidator : AbstractValidator<ItemCategoryDTO>
+    public class CategoryValidator : AbstractValidator<CategoryDTO>
     {
-        public ItemCategoryValidator()
+        public CategoryValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()

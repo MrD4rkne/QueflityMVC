@@ -23,4 +23,8 @@
     <ProjectReference Include="..\QueflityMVC.Domain\QueflityMVC.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using QueflityMVC.Application.Helpers;
+using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Image;
-using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.ItemSet;
-using QueflityMVC.Application.ViewModels.SetMembership;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using System.Runtime.InteropServices;
 
 namespace QueflityMVC.Application.Services
 {
@@ -16,25 +12,35 @@ namespace QueflityMVC.Application.Services
     {
         private readonly IItemSetRepository _itemSetRepository;
         private readonly IMapper _mapper;
+        private readonly IFileService _fileService;
 
-        public ItemSetService(IItemSetRepository itemSetRepository, IMapper mapper)
+        public ItemSetService(IItemSetRepository itemSetRepository, IMapper mapper, IFileService fileService)
         {
             _itemSetRepository = itemSetRepository;
             _mapper = mapper;
+            _fileService = fileService;
         }
 
         public async Task<int> CreateItemSet(ItemSetDTO itemSetDTO, string contentRootPath)
         {
             if (itemSetDTO is null)
             {
-                throw new ArgumentNullException("Viewmodel cannot be null!");
+                throw new ArgumentNullException(nameof(itemSetDTO));
+            }
+            if (itemSetDTO.Image is null)
+            {
+                throw new ArgumentNullException(nameof(itemSetDTO.Image));
+            }
+            if (itemSetDTO.Image.FormFile is null)
+            {
+                throw new ArgumentNullException(nameof(itemSetDTO.Image.FormFile));
             }
 
-            itemSetDTO.Image!.FileUrl = await FileManager.UploadFile(contentRootPath, itemSetDTO.Image.FormFile);
+            itemSetDTO.Image!.FileUrl = await _fileService.UploadFile(contentRootPath, itemSetDTO.Image.FormFile);
 
             var itemSetToCreate = _mapper.Map<ItemSet>(itemSetDTO);
             itemSetToCreate.Price = 0;
-           
+
             return _itemSetRepository.Add(itemSetToCreate);
         }
 
@@ -42,19 +48,19 @@ namespace QueflityMVC.Application.Services
         {
             if (editItemSetDTO is null)
             {
-                throw new ArgumentNullException("Viewmodel cannot be null!");
+                throw new ArgumentNullException(nameof(editItemSetDTO), "Viewmodel cannot be null!");
             }
 
-            if(editItemSetDTO.Image is null) 
+            if (editItemSetDTO.Image is null)
             {
-                throw new ArgumentNullException("Image cannot be null!");
+                throw new ArgumentNullException(nameof(editItemSetDTO.Image), "Image cannot be null!");
             }
 
             if (ShouldSwitchImages(editItemSetDTO?.Image))
             {
-                FileManager.DeleteImage(contentRootPath, editItemSetDTO.Image.FileUrl);
+                _fileService.DeleteImage(contentRootPath, editItemSetDTO!.Image.FileUrl);
 
-                editItemSetDTO.Image.FileUrl = await FileManager.UploadFile(contentRootPath, editItemSetDTO.Image.FormFile!);
+                editItemSetDTO.Image.FileUrl = await _fileService.UploadFile(contentRootPath, editItemSetDTO.Image.FormFile!);
             }
 
             var item = _mapper.Map<ItemSet>(editItemSetDTO);
@@ -81,31 +87,31 @@ namespace QueflityMVC.Application.Services
             return itemSetDetailsVM;
         }
 
-        public ListItemSetsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex)
+        public async Task<ListItemSetsVM> GetFilteredList(ListItemSetsVM listItemSetsVM)
         {
-            int itemsToSkip = (pageIndex - 1) * pageSize;
+            if (listItemSetsVM is null)
+            {
+                throw new ArgumentNullException(nameof(listItemSetsVM));
+            }
+            if (listItemSetsVM.Pagination is null)
+            {
+                throw new ArgumentNullException(nameof(listItemSetsVM.Pagination));
+            }
+
+            var matchingSets = _itemSetRepository.GetFilteredByName(listItemSetsVM.NameFilter);
+            var pagination = await matchingSets.Paginate<ItemSet, ItemSetForListVM>(listItemSetsVM.Pagination, _mapper.ConfigurationProvider);
 
             ListItemSetsVM listItemVM = new()
             {
-                NameFilter = nameFilter,
-                PageIndex = pageIndex,
-                PageSize = pageSize
+                Pagination = pagination
             };
-
-            var allItemsSets = _itemSetRepository.GetAll();
-            var itemsToShow = allItemsSets.Where(x => x.Name.Contains(nameFilter));
-            listItemVM.TotalCount = itemsToShow.Count();
-
-            itemsToShow = itemsToShow.Skip(itemsToSkip).Take(pageSize);
-
-            listItemVM.Items = itemsToShow.ProjectTo<ItemSetForListVM>(_mapper.ConfigurationProvider).ToList();
 
             return listItemVM;
         }
 
         public ItemSetDTO GetItemSetVMForAdding()
         {
-            return new ItemSetDTO();
+            return new ItemSetDTO() { Id = 0, Name = string.Empty };
         }
 
         public ItemSetDTO GetItemSetVMForEdit(int id)
@@ -120,6 +126,5 @@ namespace QueflityMVC.Application.Services
 
             return itemSetDetailsVM;
         }
-
     }
 }

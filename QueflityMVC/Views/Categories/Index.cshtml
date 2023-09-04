@@ -1,0 +1,91 @@
+﻿@using QueflityMVC.Application.ViewModels.Category;
+@model ListCategoriesVM
+
+@{
+    ViewData["Title"] = "List";
+    int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
+}
+
+<h1>Item Categories</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" asp-controller="Categories" method="post">
+    <ul class="nav gap-1">
+        <li class="nav-item">
+            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />
+        </li>
+        <li class="nav-item">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </li>
+        <li class="nav-item">
+            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
+                @foreach (int i in options)
+                {
+                    @if (i == Model.Pagination.PageSize)
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+        </li>
+    </ul>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Pagination.Entities)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                            @Html.ActionLink("View items", "ViewItems", new { id = item.Id }, new { @class = "btn btn-outline-primary btn-sm"})
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <input type="hidden" asp-for="Pagination.Info.CurrentPageNo" />
+        <partial name="_PaginationPartial" model="@Model.Pagination.Info" />
+    </div>
+</form>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        function PagerClick(pageIndex) {
+            document.getElementById("pageIndex").value = pageIndex;
+            document.forms[0].submit();
+        }
+    </script>
+    <script type="text/javascript">
+        function PageSizeSelected() {
+            document.forms[0].submit();
+        }
+    </script>
+}

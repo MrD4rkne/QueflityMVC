@@ -34,9 +34,9 @@
                 <label>Category</label>
                 <select asp-for="ItemVM.CategoryId" class="form-control">
                     <option value="">Select a category</option>
-                    @if (Model.ItemCategories != null && Model.ItemCategories.Count > 0)
+                    @if (Model.Categories != null && Model.Categories.Count > 0)
                     {
-                        @foreach (var category in Model.ItemCategories)
+                        @foreach (var category in Model.Categories)
                         {
                             @if (category.Id == Model.ItemVM.CategoryId)
                             {
