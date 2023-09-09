@@ -2,7 +2,10 @@
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Image;
+using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.ItemSet;
+using QueflityMVC.Application.ViewModels.Pagination;
+using QueflityMVC.Application.ViewModels.SetElement;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 
@@ -11,12 +14,14 @@ namespace QueflityMVC.Application.Services
     public class ItemSetService : IItemSetService
     {
         private readonly IItemSetRepository _itemSetRepository;
+        private readonly IItemRepository _itemRepository;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
 
-        public ItemSetService(IItemSetRepository itemSetRepository, IMapper mapper, IFileService fileService)
+        public ItemSetService(IItemSetRepository itemSetRepository, IItemRepository itemRepository, IMapper mapper, IFileService fileService)
         {
             _itemSetRepository = itemSetRepository;
+            _itemRepository = itemRepository;
             _mapper = mapper;
             _fileService = fileService;
         }
@@ -125,6 +130,67 @@ namespace QueflityMVC.Application.Services
             var itemSetDetailsVM = _mapper.Map<ItemSetDTO>(itemSet);
 
             return itemSetDetailsVM;
+        }
+
+        public Task<ListItemsForComponentsVM> GetFilteredListForComponents(int setId)
+        {
+            PaginationVM<ItemForListVM> paginationVM = PaginationFactory.Default<ItemForListVM>();
+
+            ListItemsForComponentsVM listItemsForComponentsVM = new()
+            {
+                Pagination = paginationVM,
+                SetId = setId
+            };
+            return GetFilteredListForComponents(listItemsForComponentsVM);
+        }
+
+        public async Task<ListItemsForComponentsVM> GetFilteredListForComponents(ListItemsForComponentsVM itemsForComponentsVM)
+        {
+            if (itemsForComponentsVM is null)
+            {
+                throw new ArgumentNullException(nameof(itemsForComponentsVM));
+            }
+            if (itemsForComponentsVM.Pagination is null)
+            {
+                throw new ArgumentNullException(nameof(itemsForComponentsVM.Pagination));
+            }
+            if (!_itemSetRepository.Exists(itemsForComponentsVM.SetId))
+            {
+                throw new Errors.EntityNotFoundException(entityName: "Set");
+            }
+
+            itemsForComponentsVM.SetsComponentsIds = _itemSetRepository.GetComponenetsIdsForSet(itemsForComponentsVM.SetId).ToList();
+            itemsForComponentsVM.SetDetailsVM = GetDetailsVM(itemsForComponentsVM.SetId);
+
+            IQueryable<Item> allItems = _itemRepository.GetFilteredItems(itemsForComponentsVM.NameFilter, itemsForComponentsVM.CategoryId);
+            itemsForComponentsVM.Pagination = await allItems.Paginate<Item, ItemForListVM>(itemsForComponentsVM.Pagination, _mapper.ConfigurationProvider);
+
+            return itemsForComponentsVM;
+        }
+
+        public ElementDTO GetVMForAddingComponent(int setId, int itemId)
+        {
+            ItemSet? itemSet = _itemSetRepository.GetById(setId);
+            if (itemSet is null)
+            {
+                throw new Errors.EntityNotFoundException(entityName: nameof(ItemSet));
+            }
+
+            Item? item = _itemRepository.GetById(itemId);
+            if (item is null)
+            {
+                throw new Errors.EntityNotFoundException(entityName: nameof(Item));
+            }
+
+            ElementDTO elementDTO = new()
+            {
+                ItemSetDetailsVM = _mapper.Map<ItemSetDetailsVM>(itemSet),
+                Item = _mapper.Map<ItemDTO>(item),
+                ItemsAmmount = 1,
+                PricePerItem = item.Price
+            };
+
+            return elementDTO;
         }
     }
 }

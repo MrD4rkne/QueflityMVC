@@ -3,7 +3,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.SetMembership
 {
-    public record SetElementDTO : IMapFrom<Domain.Models.SetElement>
+    public record ElementForListVM : IMapFrom<Domain.Models.SetElement>
     {
         public required int Id { get; set; }
 
@@ -17,7 +17,7 @@ namespace QueflityMVC.Application.ViewModels.SetMembership
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Models.SetElement, SetElementDTO>()
+            profile.CreateMap<Domain.Models.SetElement, ElementForListVM>()
                 .ForMember(vm => vm.Item, opt => opt.MapFrom(sm => sm.Item))
                 .ReverseMap();
         }

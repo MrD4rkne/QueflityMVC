@@ -17,7 +17,7 @@ namespace QueflityMVC.Application.ViewModels.ItemSet
 
         public ImageDTO? Image { get; set; }
 
-        public required List<SetElementDTO> ItemMemberships { get; set; }
+        public required List<ElementForListVM> ItemMemberships { get; set; }
 
         public void Mapping(Profile profile)
         {

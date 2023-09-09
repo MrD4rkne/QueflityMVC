@@ -14,16 +14,20 @@ namespace QueflityMVC.Infrastructure.Repositories
             return _dbContext.Items.Include(it => it.Image).FirstOrDefault(it => it.Id == entityId);
         }
 
-        public IQueryable<Item> GetFilteredItems(string? nameFilter)
+        public IQueryable<Item> GetFilteredItems(string? nameFilter, int? categoryId)
         {
+            var entitiesSource = GetAll();
+
             if (!string.IsNullOrEmpty(nameFilter))
             {
-                return GetAll().Where(ct => ct.Name.StartsWith(nameFilter));
+                entitiesSource = entitiesSource.Where(x => x.Name.StartsWith(nameFilter));
             }
-            else
+            if (categoryId.HasValue)
             {
-                return GetAll();
+                entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
             }
+
+            return entitiesSource;
         }
 
         public Item? GetItemWithIngredientsById(int itemId)

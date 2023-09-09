@@ -9,12 +9,12 @@ namespace QueflityMVC.Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _repository;
+        private readonly ICategoryRepository _categoriesRepository;
         private readonly IMapper _mapper;
 
         public CategoryService(ICategoryRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _categoriesRepository = repository;
             _mapper = mapper;
         }
 
@@ -22,14 +22,14 @@ namespace QueflityMVC.Application.Services
         {
             var categoryToCreate = _mapper.Map<Category>(createcategoryVM);
 
-            return _repository.Add(categoryToCreate);
+            return _categoriesRepository.Add(categoryToCreate);
         }
 
         public void DeleteCategory(int id)
         {
-            if (!_repository.CanDeleteCategory(id))
+            if (!_categoriesRepository.CanDeleteCategory(id))
                 throw new InvalidOperationException("First, remove or change category for items!");
-            _repository.Delete(id);
+            _categoriesRepository.Delete(id);
         }
 
         public async Task<ListCategoriesVM> GetFilteredList(ListCategoriesVM listCategoriesVM)
@@ -39,7 +39,7 @@ namespace QueflityMVC.Application.Services
                 throw new ArgumentNullException(nameof(listCategoriesVM));
             }
 
-            IQueryable<Category> matchingCategories = _repository.GetFiltered(listCategoriesVM.NameFilter);
+            IQueryable<Category> matchingCategories = _categoriesRepository.GetFiltered(listCategoriesVM.NameFilter);
 
             listCategoriesVM.Pagination = await matchingCategories.Paginate<Category, CategoryForListVM>(listCategoriesVM.Pagination, _mapper.ConfigurationProvider);
 
@@ -59,7 +59,7 @@ namespace QueflityMVC.Application.Services
 
         public CategoryDTO? GetVMForEdit(int id)
         {
-            var category = _repository.GetById(id);
+            var category = _categoriesRepository.GetById(id);
 
             if (category is null)
                 return null;
@@ -72,7 +72,7 @@ namespace QueflityMVC.Application.Services
         {
             var category = _mapper.Map<Category>(createcategoryVM);
 
-            var updatedcategory = _repository.Update(category);
+            var updatedcategory = _categoriesRepository.Update(category);
 
             return _mapper.Map<CategoryDTO>(updatedcategory);
         }

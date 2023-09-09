@@ -23,7 +23,6 @@ namespace QueflityMVC.Web.Integrations
                     }
                     else
                     {
-                        // TODO: Add logging
                     }
                 }
                 else

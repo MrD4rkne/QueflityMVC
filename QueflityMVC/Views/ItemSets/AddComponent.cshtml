@@ -1,4 +1,4 @@
-﻿@model IEnumerable<QueflityMVC.Application.ViewModels.Item.ItemForListVM>
+﻿@model QueflityMVC.Application.ViewModels.SetElement.ElementDTO
 
 @{
     ViewData["Title"] = "AddComponent";
@@ -6,36 +6,56 @@
 
 <h1>AddComponent</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+<h4>ElementDTO</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddComponent">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(x=> x.Id)
+            <div class="form-group">
+                <label asp-for="ItemsAmmount" class="control-label">Quantity</label>
+                <input asp-for="ItemsAmmount" class="form-control" onchange="CalculateTotal()" type="number" />
+                <span asp-validation-for="ItemsAmmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PricePerItem" class="control-label">Price per pcs</label>
+                <input asp-for="PricePerItem" class="form-control" onchange="CalculateTotal()" type="number" step=".20"/>
+                <span asp-validation-for="PricePerItem" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Total</label>
+                <label id="total" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        function CalculateTotal() {
+            var pricePerItem = document.getElementById("@Html.IdFor(x=> x.PricePerItem)").value;
+            var quantity = document.getElementById("@Html.IdFor(x=> x.ItemsAmmount)").value;
+            var total = 0;
+
+            if (pricePerItem >= 0 && quantity >= 0) {
+                total = pricePerItem * quantity;
+            }
+            else {
+                total = NaN;
+            }
+
+            var totalLabel = document.getElementById("total");
+            totalLabel.innerHTML = total.toFixed(2);
+        }
+    </script>
 }
-    </tbody>
-</table>
+

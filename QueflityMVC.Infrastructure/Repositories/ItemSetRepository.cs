@@ -9,14 +9,35 @@ namespace QueflityMVC.Infrastructure.Repositories
     {
         public ItemSetRepository(Context dbContext) : base(dbContext) { }
 
-        public IQueryable<ItemSet> GetFilteredByName(string? searchName)
+        public IQueryable<int> GetComponenetsIdsForSet(int setId)
         {
-            if (string.IsNullOrEmpty(searchName))
+            var set = GetFullItemSetWithMembershipsById(setId);
+            if (set is null)
             {
-                return GetAll();
+                throw new ArgumentException(nameof(setId));
             }
 
-            return GetAll().Where(x => x.Name.Contains(searchName));
+            var componentsIds = GetSetComponents(setId).Select(x => x.Id);
+
+            return componentsIds;
+
+        }
+
+        public IQueryable<SetElement> GetSetComponents(int setId)
+        {
+            return _dbContext.SetElements.Where(x => x.ItemSetId == setId);
+        }
+
+        public IQueryable<ItemSet> GetFilteredByName(string? searchName = default)
+        {
+            var itemsSource = GetAll();
+
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                itemsSource = itemsSource.Where(x => x.Name.StartsWith(searchName));
+            }
+
+            return itemsSource;
         }
 
         public ItemSet? GetFullItemSetWithMembershipsById(int id)

@@ -1,4 +1,6 @@
-﻿namespace QueflityMVC.Application.Common.Errors
+﻿using QueflityMVC.Application.Errors;
+
+namespace QueflityMVC.Application.Common.Errors
 {
     public static class ArgumentGuard
     {

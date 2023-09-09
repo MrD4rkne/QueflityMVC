@@ -5,8 +5,11 @@ namespace QueflityMVC.Domain.Interfaces
 {
     public interface IItemSetRepository : IBaseRepository<ItemSet>
     {
-        public ItemSet? GetFullItemSetWithMembershipsById(int id);
+        ItemSet? GetFullItemSetWithMembershipsById(int id);
 
-        public IQueryable<ItemSet> GetFilteredByName(string? searchName);
+        IQueryable<ItemSet> GetFilteredByName(string? searchName);
+        IQueryable<int> GetComponenetsIdsForSet(int setId);
+
+        IQueryable<SetElement> GetSetComponents(int setId);
     }
 }
