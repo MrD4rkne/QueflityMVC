@@ -3,7 +3,7 @@ using QueflityMVC.Infrastructure.Common;
 
 namespace QueflityMVC.Domain.Models
 {
-    public class SetElement : BaseEntity
+    public class Element : BaseEntity
     {
         public uint ItemsAmmount { get; set; }
 
@@ -14,8 +14,8 @@ namespace QueflityMVC.Domain.Models
 
         public int ItemId { get; set; }
 
-        public virtual ItemSet? ItemSet { get; set; }
+        public virtual Kit? Kit { get; set; }
 
-        public int ItemSetId { get; set; }
+        public int KitId { get; set; }
     }
 }

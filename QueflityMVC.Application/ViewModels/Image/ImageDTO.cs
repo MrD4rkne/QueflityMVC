@@ -4,7 +4,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image
 {
-    public record ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.ItemSetImage>
+    public record ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.KitImage>
     {
         public required int Id { get; set; }
 
@@ -20,7 +20,7 @@ namespace QueflityMVC.Application.ViewModels.Image
                 .ForMember(img => img.FormFile, opt => opt.Ignore())
                 .ReverseMap();
 
-            profile.CreateMap<Domain.Models.ItemSetImage, ImageDTO>()
+            profile.CreateMap<Domain.Models.KitImage, ImageDTO>()
                 .ForMember(img => img.FormFile, opt => opt.Ignore())
                 .ReverseMap();
         }

@@ -1,5 +1,5 @@
-﻿@using QueflityMVC.Application.ViewModels.ItemSet;
-@model ItemSetDetailsVM
+﻿@using QueflityMVC.Application.ViewModels.Kit;
+@model KitDetailsVM
 
 <div class="card mb-3">
     <div class="row g-0">
@@ -41,7 +41,7 @@
                         </dl>
                     </div>
                 </div>
-                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary"})
+                @Html.ActionLink("Edit", "Edit","Items", new { id = Model.Id }, new { @class = "btn btn-primary"})
             </div>
         </div>
     </div>

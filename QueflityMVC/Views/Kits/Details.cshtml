@@ -1,4 +1,4 @@
-﻿@model QueflityMVC.Application.ViewModels.ItemSet.ItemSetDetailsVM
+﻿@model QueflityMVC.Application.ViewModels.Kit.KitDetailsVM
 
 @{
     ViewData["Title"] = "Details";
@@ -10,7 +10,7 @@
 
 <h4>Set</h4>
 
-<partial name="_SetDetailsPartial" model="@Model" />
+<partial name="_KitDetailsPartial" model="@Model" />
 
 <hr />
 
@@ -63,11 +63,11 @@
                     @Html.DisplayFor(modelItem => itemMembership.PricePerItem)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => itemMembership.PricePerItem * itemMembership.ItemsAmmount)
+                    @Html.Label((itemMembership.PricePerItem * itemMembership.ItemsAmmount).ToString())
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = itemMembership.Item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
-                    @Html.ActionLink("Delete", "Delete", new {  id = itemMembership.Item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                    @Html.ActionLink("Edit", "EditComponent", new { itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-secondary btn-sm"})
+                    @Html.ActionLink("Delete", "DeleteComponent", new {  itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-danger btn-sm"})
                 </td>
             </tr>
         }

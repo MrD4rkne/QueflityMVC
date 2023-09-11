@@ -256,6 +256,36 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("Categorie");
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Element", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("ItemsAmmount")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("KitId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PricePerItem")
+                        .HasPrecision(14, 2)
+                        .HasColumnType("decimal(14,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("KitId");
+
+                    b.ToTable("SetElements");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.Ingredient", b =>
                 {
                     b.Property<int>("Id")
@@ -330,7 +360,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("ItemImages");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -341,7 +371,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ItemSetImageId")
+                    b.Property<int?>("KitImageId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -357,14 +387,14 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemSetImageId")
+                    b.HasIndex("KitImageId")
                         .IsUnique()
-                        .HasFilter("[ItemSetImageId] IS NOT NULL");
+                        .HasFilter("[KitImageId] IS NOT NULL");
 
-                    b.ToTable("ItemSets");
+                    b.ToTable("Kits");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSetImage", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.KitImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -382,37 +412,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemSetImages");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.SetElement", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemSetId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("ItemsAmmount")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("PricePerItem")
-                        .HasPrecision(14, 2)
-                        .HasColumnType("decimal(14,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("ItemSetId");
-
-                    b.ToTable("SetElements");
+                    b.ToTable("KitImages");
                 });
 
             modelBuilder.Entity("IngredientItem", b =>
@@ -481,6 +481,25 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Element", b =>
+                {
+                    b.HasOne("QueflityMVC.Domain.Models.Item", "Item")
+                        .WithMany("SetElements")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QueflityMVC.Domain.Models.Kit", "Kit")
+                        .WithMany("Elements")
+                        .HasForeignKey("KitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Kit");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
                 {
                     b.HasOne("QueflityMVC.Domain.Models.Category", "Category")
@@ -499,33 +518,14 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Navigation("Image");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
-                    b.HasOne("QueflityMVC.Domain.Models.ItemSetImage", "Image")
-                        .WithOne("ItemSet")
-                        .HasForeignKey("QueflityMVC.Domain.Models.ItemSet", "ItemSetImageId")
+                    b.HasOne("QueflityMVC.Domain.Models.KitImage", "Image")
+                        .WithOne("Kit")
+                        .HasForeignKey("QueflityMVC.Domain.Models.Kit", "KitImageId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Image");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.SetElement", b =>
-                {
-                    b.HasOne("QueflityMVC.Domain.Models.Item", "Item")
-                        .WithMany("SetElements")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QueflityMVC.Domain.Models.ItemSet", "ItemSet")
-                        .WithMany("Elements")
-                        .HasForeignKey("ItemSetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("ItemSet");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Category", b =>
@@ -543,14 +543,14 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
                     b.Navigation("Elements");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSetImage", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.KitImage", b =>
                 {
-                    b.Navigation("ItemSet");
+                    b.Navigation("Kit");
                 });
 #pragma warning restore 612, 618
         }

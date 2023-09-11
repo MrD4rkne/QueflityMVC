@@ -3,7 +3,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.SetMembership
 {
-    public record ElementForListVM : IMapFrom<Domain.Models.SetElement>
+    public record ElementForListVM : IMapFrom<Domain.Models.Element>
     {
         public required int Id { get; set; }
 
@@ -13,11 +13,11 @@ namespace QueflityMVC.Application.ViewModels.SetMembership
 
         public required decimal PricePerItem { get; set; }
 
-        public required int ItemSetId { get; set; }
+        public required int KitId { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Models.SetElement, ElementForListVM>()
+            profile.CreateMap<Domain.Models.Element, ElementForListVM>()
                 .ForMember(vm => vm.Item, opt => opt.MapFrom(sm => sm.Item))
                 .ReverseMap();
         }

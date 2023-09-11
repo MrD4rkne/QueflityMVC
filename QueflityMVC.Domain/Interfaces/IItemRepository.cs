@@ -7,7 +7,6 @@ namespace QueflityMVC.Domain.Interfaces
     {
         IQueryable<Item> GetFilteredItems(string? nameFilter = default, int? categoryId = default);
         Item? GetItemWithIngredientsById(int itemId);
-
         void UpdateIngredients(int itemId, List<Ingredient> ingredients);
     }
 }

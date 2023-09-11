@@ -3,13 +3,23 @@ using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Domain.Interfaces
 {
-    public interface IItemSetRepository : IBaseRepository<ItemSet>
+    public interface IKitRepository : IBaseRepository<Kit>
     {
-        ItemSet? GetFullItemSetWithMembershipsById(int id);
+        Kit? GetFullKitWithMembershipsById(int id);
 
-        IQueryable<ItemSet> GetFilteredByName(string? searchName);
+        IQueryable<Kit> GetFilteredByName(string? searchName);
+
         IQueryable<int> GetComponenetsIdsForSet(int setId);
 
-        IQueryable<SetElement> GetSetComponents(int setId);
+        IQueryable<Element> GetSetComponents(int setId);
+
+        void AddComponent(Element componentToCreate);
+
+        void UpdateKitPrice(int kitId);
+
+        Element? GetElement(int setId, int itemId);
+        void UpdateComponent(Element componentToEdit);
+
+        void DeleteElement(int kitId, int itemId);
     }
 }

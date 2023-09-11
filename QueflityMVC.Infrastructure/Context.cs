@@ -5,7 +5,7 @@ using QueflityMVC.Domain.Models;
 namespace QueflityMVC.Infrastructure
 {
     public class Context : IdentityDbContext
-    {
+    {       
         public DbSet<Ingredient> Ingredients { get; set; }
 
         public DbSet<Item> Items { get; set; }
@@ -14,11 +14,11 @@ namespace QueflityMVC.Infrastructure
 
         public DbSet<ItemImage> ItemImages { get; set; }
 
-        public DbSet<ItemSet> ItemSets { get; set; }
+        public DbSet<Kit> Kits { get; set; }
 
-        public DbSet<ItemSetImage> ItemSetImages { get; set; }
+        public DbSet<KitImage> KitImages { get; set; }
 
-        public DbSet<SetElement> SetElements { get; set; }
+        public DbSet<Element> SetElements { get; set; }
 
 
         public Context(DbContextOptions options) : base(options)
@@ -35,10 +35,10 @@ namespace QueflityMVC.Infrastructure
                 .HasForeignKey<Item>(it => it.ItemImageId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<ItemSet>()
+            builder.Entity<Kit>()
                 .HasOne(it => it.Image)
-                .WithOne(img => img.ItemSet)
-                .HasForeignKey<ItemSet>(it => it.ItemSetImageId)
+                .WithOne(img => img.Kit)
+                .HasForeignKey<Kit>(it => it.KitImageId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Item>()
@@ -50,16 +50,16 @@ namespace QueflityMVC.Infrastructure
                 .WithMany(itCtgr => itCtgr.Items)
                 .HasForeignKey(it => it.CategoryId);
 
-            builder.Entity<SetElement>()
+            builder.Entity<Element>()
                 .HasOne(element => element.Item)
                 .WithMany(it => it.SetElements)
                 .HasForeignKey(element => element.ItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<SetElement>()
-                .HasOne(element => element.ItemSet)
+            builder.Entity<Element>()
+                .HasOne(element => element.Kit)
                 .WithMany(it => it.Elements)
-                .HasForeignKey(membership => membership.ItemSetId)
+                .HasForeignKey(membership => membership.KitId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

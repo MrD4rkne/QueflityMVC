@@ -1,29 +1,25 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
-using QueflityMVC.Application.ViewModels.SetMembership;
 
-namespace QueflityMVC.Application.ViewModels.ItemSet
+namespace QueflityMVC.Application.ViewModels.Kit
 {
-    public record ItemSetDetailsVM : IMapFrom<Domain.Models.ItemSet>
+    public record KitDTO : IMapFrom<Domain.Models.Kit>
     {
         public required int Id { get; set; }
 
         public required string Name { get; set; }
 
-        public required decimal Price { get; set; }
+        public string? Description { get; set; }
 
         public bool ShouldBeShown { get; set; }
 
         public ImageDTO? Image { get; set; }
 
-        public required List<ElementForListVM> ItemMemberships { get; set; }
-
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Models.ItemSet, ItemSetDetailsVM>()
+            profile.CreateMap<Domain.Models.Kit, KitDTO>()
                 .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
-                .ForMember(vm => vm.ItemMemberships, opt => opt.MapFrom(ent => ent.Elements))
                 .ReverseMap();
         }
     }

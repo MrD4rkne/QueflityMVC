@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace QueflityMVC.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initialTest : Migration
+    public partial class DatabaseSwitch : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,7 +91,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemSetImages",
+                name: "KitImages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -100,7 +101,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemSetImages", x => x.Id);
+                    table.PrimaryKey("PK_KitImages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -239,24 +240,24 @@ namespace QueflityMVC.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemSets",
+                name: "Kits",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ItemSetImageId = table.Column<int>(type: "int", nullable: true),
+                    KitImageId = table.Column<int>(type: "int", nullable: true),
                     ShouldBeShown = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemSets", x => x.Id);
+                    table.PrimaryKey("PK_Kits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ItemSets_ItemSetImages_ItemSetImageId",
-                        column: x => x.ItemSetImageId,
-                        principalTable: "ItemSetImages",
+                        name: "FK_Kits_KitImages_KitImageId",
+                        column: x => x.KitImageId,
+                        principalTable: "KitImages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -294,21 +295,21 @@ namespace QueflityMVC.Infrastructure.Migrations
                     ItemsAmmount = table.Column<long>(type: "bigint", nullable: false),
                     PricePerItem = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false),
                     ItemId = table.Column<int>(type: "int", nullable: false),
-                    ItemSetId = table.Column<int>(type: "int", nullable: false)
+                    KitId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SetElements", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SetElements_ItemSets_ItemSetId",
-                        column: x => x.ItemSetId,
-                        principalTable: "ItemSets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_SetElements_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SetElements_Kits_KitId",
+                        column: x => x.KitId,
+                        principalTable: "Kits",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -370,11 +371,11 @@ namespace QueflityMVC.Infrastructure.Migrations
                 filter: "[ItemImageId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemSets_ItemSetImageId",
-                table: "ItemSets",
-                column: "ItemSetImageId",
+                name: "IX_Kits_KitImageId",
+                table: "Kits",
+                column: "KitImageId",
                 unique: true,
-                filter: "[ItemSetImageId] IS NOT NULL");
+                filter: "[KitImageId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SetElements_ItemId",
@@ -382,9 +383,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SetElements_ItemSetId",
+                name: "IX_SetElements_KitId",
                 table: "SetElements",
-                column: "ItemSetId");
+                column: "KitId");
         }
 
         /// <inheritdoc />
@@ -421,19 +422,19 @@ namespace QueflityMVC.Infrastructure.Migrations
                 name: "Ingredients");
 
             migrationBuilder.DropTable(
-                name: "ItemSets");
-
-            migrationBuilder.DropTable(
                 name: "Items");
 
             migrationBuilder.DropTable(
-                name: "ItemSetImages");
+                name: "Kits");
 
             migrationBuilder.DropTable(
                 name: "Categorie");
 
             migrationBuilder.DropTable(
                 name: "ItemImages");
+
+            migrationBuilder.DropTable(
+                name: "KitImages");
         }
     }
 }

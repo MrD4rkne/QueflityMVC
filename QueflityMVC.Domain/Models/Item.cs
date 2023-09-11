@@ -14,7 +14,7 @@ namespace QueflityMVC.Domain.Models
 
         public virtual ItemImage? Image { get; set; }
 
-        public virtual ICollection<SetElement>? SetElements { get; set; }
+        public virtual ICollection<Element>? SetElements { get; set; }
 
         public virtual ICollection<Ingredient>? Ingredients { get; set; }
     }

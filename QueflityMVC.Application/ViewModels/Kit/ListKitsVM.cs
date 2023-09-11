@@ -1,11 +1,11 @@
 ﻿
 using QueflityMVC.Application.ViewModels.Pagination;
 
-namespace QueflityMVC.Application.ViewModels.ItemSet
+namespace QueflityMVC.Application.ViewModels.Kit
 {
-    public record ListItemSetsVM
+    public record ListKitsVM
     {
-        public required PaginationVM<ItemSetForListVM> Pagination { get; set; }
+        public required PaginationVM<KitForListVM> Pagination { get; set; }
 
         public int? CategoryId { get; set; }
 

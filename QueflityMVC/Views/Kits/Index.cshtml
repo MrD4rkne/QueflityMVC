@@ -1,4 +1,4 @@
-﻿@model QueflityMVC.Application.ViewModels.ItemSet.ListItemSetsVM
+﻿@model QueflityMVC.Application.ViewModels.Kit.ListKitsVM
 
 @{
     ViewData["Title"] = "Index";
@@ -11,7 +11,7 @@
     <a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
 
-<form asp-action="Index" asp-controller="ItemSets" method="post" data="@Model.Pagination.Info">
+<form asp-action="Index" asp-controller="Kits" method="post" data="@Model.Pagination.Info">
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" />

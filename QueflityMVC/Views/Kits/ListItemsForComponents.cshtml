@@ -5,9 +5,9 @@
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
 }
 
-@if (Model.SetDetailsVM is not null)
+@if (Model.KitDetailsVM is not null)
 {
-    <partial name="_SetDetailsPartial" model="@Model.SetDetailsVM" />
+    <partial name="_KitDetailsPartial" model="@Model.KitDetailsVM" />
 }
 
 <hr />
@@ -15,7 +15,7 @@
 <h4>Items</h4>
 <h7>Below you can see all available items</h7>
 
-<form asp-action="ListItemsForComponents" asp-controller="ItemSets" method="post">
+<form asp-action="ListItemsForComponents" asp-controller="Kits" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />
@@ -65,13 +65,13 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @if (Model.SetsComponentsIds.Contains(item.Id))
+                            @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
                             {
-                                Html.ActionLink("Edit membership", "EditMembership", new { setId = Model.SetId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" });
+                                @Html.ActionLink("Edit membership", "EditMembership", new { setId = Model.SetId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" });
                             }
                             else
                             {
-                                @Html.ActionLink("Add to set", "AddComponent", new { setId = Model.SetId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" });
+                                @Html.ActionLink("Add to set", "AddComponent", new { setId = Model.SetId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" });
                             }
                         </td>
                     </tr>

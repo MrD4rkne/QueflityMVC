@@ -12,7 +12,7 @@ namespace QueflityMVC.Infrastructure
             services.AddTransient<IIngredientRepository, IngredientRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IItemRepository, ItemRepository>();
-            services.AddTransient<IItemSetRepository, ItemSetRepository>();
+            services.AddTransient<IKitRepository, KitRepository>();
 
             return services;
         }

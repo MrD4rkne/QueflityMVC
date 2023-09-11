@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using QueflityMVC.Application.ViewModels.ItemSet;
+using QueflityMVC.Application.ViewModels.Kit;
 
 namespace QueflityMVC.Application.Validators
 {
-    public class ItemSetValidator : AbstractValidator<ItemSetDTO>
+    public class KitValidator : AbstractValidator<KitDTO>
     {
-        public ItemSetValidator()
+        public KitValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()

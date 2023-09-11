@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.ViewModels.ItemSet;
+﻿using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Application.ViewModels.Pagination;
 
 namespace QueflityMVC.Application.ViewModels.Item
@@ -11,10 +11,10 @@ namespace QueflityMVC.Application.ViewModels.Item
 
         public string? NameFilter { get; set; }
 
-        public List<int>? SetsComponentsIds { get; set; }
+        public List<int>? KitComponentsIds { get; set; }
 
         public required int SetId { get; set; }
 
-        public ItemSetDetailsVM? SetDetailsVM { get; set; }
+        public KitDetailsVM? KitDetailsVM { get; set; }
     }
 }

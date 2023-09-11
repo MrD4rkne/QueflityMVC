@@ -10,7 +10,7 @@ namespace QueflityMVC.Application.ViewModels.Item
 
         public string? Name { get; set; }
 
-        public decimal PricePerItem { get; set; }
+        public decimal Price { get; set; }
 
         public bool ShouldBeShown { get; set; }
 

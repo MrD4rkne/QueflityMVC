@@ -1,21 +1,54 @@
 ﻿@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit item";
 }
 
-<h1>Edit</h1>
+<h1>Edit item</h1>
 
-<h4>CrEdItemVM</h4>
+<h4>Below you can see & edit item's properties</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <img alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image!.FileUrl" style="max-width: 600px;width:100%" />
+            @* TODO: Add partial view for image upload handling *@
+            <div class="mb-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img class="img-fluid rounded-start" alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image?.FileUrl" />
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <h5>Image</h5>
+                                <div class="mb-3">
+                                    <input class="form-control" asp-for="ItemVM.Image!.FormFile" type="file">
+                                    <span asp-validation-for="ItemVM.Image!.FormFile" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="ItemVM.Image!.AltDescription" class="control-label">Alternative description</label>
+                                    <input asp-for="ItemVM.Image!.AltDescription" class="form-control" value="@Model.ItemVM.Image?.AltDescription" />
+                                    <span asp-validation-for="ItemVM.Image!.AltDescription" class="text-danger"></span>
+                                </div>
+                            </li>
+
+                            <li class="list-group-item">
+                                <h5>Item</h5>
+                                <div class="mb-3">
+                                    <label asp-for="ItemVM.Name" class="control-label"></label>
+                                    <input asp-for="ItemVM.Name" class="form-control" value="@Model.ItemVM.Name" />
+                                    <span asp-validation-for="ItemVM.Name" class="text-danger"></span>
+                                </div>
+                            </li>
+                        </ul>
+                        <button type="submit" class="btn btn-outline-primary" formaction="Edit">Edit</button>
+                    </div>
+                </div>
+            </div>
+            @* <img alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image!.FileUrl" style="max-width: 600px;width:100%" />
             <div class="form-group">
-                <input asp-for="ItemVM.Image!.FormFile" type="image>
-                <span asp-validation-for="ItemVM.Image!.FormFile"></span>
+                <input asp-for="ItemVM.Image!.FormFile" type="image">
                 <span asp-validation-for="ItemVM.Image!.FormFile" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -53,9 +86,11 @@
                 <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
             </div>
 
+            </br>
+
             <div class="form-group">
                 <input type="submit" value="Edit" class="btn btn-primary" />
-            </div>
+            </div> *@
 
             <input type="hidden" asp-for="ItemVM.Id" value="@Model.ItemVM.Id" />
             <input type="hidden" asp-for="ItemVM.Image!.FileUrl" value="@Model.ItemVM.Image!.FileUrl" />
@@ -66,11 +101,12 @@
 <div>
     @if (ViewData["categoryId"] is int categoryId)
     {
-        @Html.ActionLink("Back to List", "Index", new {categoryId = categoryId});
+        @Html.ActionLink("Back to List", "Index", new { categoryId = categoryId }, new{ @class="btn btn-info" })
+        ;
     }
     else
     {
-        <a asp-action="Index">Back to List</a>
+        <a class="btn btn-info" asp-action="Index"> Back to List</a>
     }
 </div>
 
