@@ -6,7 +6,7 @@ namespace QueflityMVC.Web.Integrations
     {
         private static string GOOGLE_AUTH_SECTION => "Authentication:Google";
 
-        public static void AddExternalOAth(this AuthenticationBuilder authenticationBuilder, ConfigurationManager configurationManager)
+        public static void AddExternalOAuths(this AuthenticationBuilder authenticationBuilder, ConfigurationManager configurationManager)
         {
             authenticationBuilder.AddGoogle(googleOptions =>
             {

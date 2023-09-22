@@ -23,6 +23,7 @@ namespace QueflityMVC.Application
             services.AddTransient<IItemService, ItemService>();
             services.AddTransient<IIngredientService, IngredientService>();
             services.AddTransient<IKitService, KitService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddSingleton<IFileService, FileService>();
 
             return services;

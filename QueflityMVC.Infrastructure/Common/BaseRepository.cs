@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using QueflityMVC.Application.Errors;
 using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Infrastructure.Common
@@ -29,7 +30,7 @@ namespace QueflityMVC.Infrastructure.Common
             var entityToDelete = GetById(entityToDeleteId);
             if (entityToDelete is null)
             {
-                throw new ArgumentNullException("Entity does not exist!");
+                throw new EntityNotFoundException(entityName: nameof(T));
             }
 
             Delete(entityToDelete);
@@ -38,7 +39,9 @@ namespace QueflityMVC.Infrastructure.Common
         public virtual void Delete(T entityToDelete)
         {
             if (!Exists(entityToDelete))
-                throw new ArgumentException("Entity does not exist!");
+            {
+                throw new EntityNotFoundException(entityName: nameof(T));
+            }
 
             _dbContext.Set<T>().Remove(entityToDelete);
             _dbContext.SaveChanges();
@@ -47,7 +50,10 @@ namespace QueflityMVC.Infrastructure.Common
         public virtual T Update(T entityToUpdate)
         {
             if (!Exists(entityToUpdate))
-                throw new ArgumentException("Entity does not exist!");
+            {
+                throw new EntityNotFoundException(entityName: nameof(T)); throw new ArgumentException("Entity does not exist!");
+            }
+
             if (_dbContext.Entry(entityToUpdate) is EntityEntry<T> originalEntity)
             {
                 originalEntity.CurrentValues.SetValues(entityToUpdate);

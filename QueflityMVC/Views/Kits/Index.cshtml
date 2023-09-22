@@ -85,8 +85,7 @@
     </table>
 
     <div class="row">
-        <input type="hidden" asp-for="Pagination.Info.CurrentPageNo" />
-        <partial name="_PaginationPartial" model="@Model.Pagination.Info" />
+        <partial name="_PaginationPartial" for="Pagination.Info" />
     </div>
 </form>
 

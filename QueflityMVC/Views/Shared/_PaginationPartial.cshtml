@@ -32,6 +32,8 @@
     </ul>
 </nav>
 
+<input type="hidden" asp-for="CurrentPageNo" />
+
 <script type="text/javascript">
     function PagerClick(pageIndex) {
         document.getElementById("Pagination_Info_CurrentPageNo").value = pageIndex;

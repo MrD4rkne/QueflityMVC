@@ -19,9 +19,9 @@
             @Html.HiddenFor(model => model.KitDetailsVM.Price);
             @Html.HiddenFor(model => model.KitDetailsVM.ShouldBeShown);
             @Html.HiddenFor(model => model.KitDetailsVM.Name);
-            @Html.HiddenFor(model => model.KitDetailsVM.Image.Id);
-            @Html.HiddenFor(model => model.KitDetailsVM.Image.AltDescription);
-            @Html.HiddenFor(model => model.KitDetailsVM.Image.FileUrl);
+            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.Id);
+            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.AltDescription);
+            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.FileUrl);
         </div>
         <div class="col-md">
             <h4>Item</h4>
@@ -31,9 +31,9 @@
             @Html.HiddenFor(model => model.Item.ShouldBeShown);
             @Html.HiddenFor(model => model.Item.CategoryId);
             @Html.HiddenFor(model => model.Item.Name);
-            @Html.HiddenFor(model => model.Item.Image.Id);
-            @Html.HiddenFor(model => model.Item.Image.AltDescription);
-            @Html.HiddenFor(model => model.Item.Image.FileUrl);
+            @Html.HiddenFor(model => model.Item!.Image!.Id);
+            @Html.HiddenFor(model => model.Item!.Image!.AltDescription);
+            @Html.HiddenFor(model => model.Item!.Image!.FileUrl);
         </div>
     </div>
     <div class="row">

@@ -44,7 +44,12 @@ namespace QueflityMVC.Infrastructure.Repositories
 
         public Kit? GetFullKitWithMembershipsById(int id)
         {
-            return _dbContext.Set<Kit>().Include(z => z.Image).Include(x => x.Elements).ThenInclude(x=> x.Item).ThenInclude(item => item.Image).FirstOrDefault(y => y.Id == id);
+            return _dbContext.Set<Kit>()
+                .Include(z => z.Image)
+                .Include(x => x.Elements)
+                    .ThenInclude(x=> x.Item)
+                        .ThenInclude(item => item.Image)
+                 .FirstOrDefault(y => y.Id == id);
         }
 
         public IQueryable<decimal> GetPricesOfKitComponents(int kitId)

@@ -26,22 +26,15 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
-builder.Services.AddControllersWithViews();
-
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
-builder.Services.AddAuthentication().AddExternalOAth(builder.Configuration);
+builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthentication()
+    .AddExternalOAuths(builder.Configuration);
 builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("CanManageIngredients", policy =>
-        policy.RequireClaim("AddIngredient", "EditIngredient", "DeleteIngredient"));
-    options.AddPolicy("CanManageItems", policy =>
-        policy.RequireClaim("ViewItemsList", "AddItem", "EditItem", "DeleteItem"));
-    options.AddPolicy("CanManageCategories", policy =>
-        policy.RequireClaim("ViewCategoriesList", "AddCategory", "EditCategory", "DeleteCategory"));
-});
+    options.AddPolicies());
 
 var app = builder.Build();
 
