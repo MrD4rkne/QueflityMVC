@@ -43,6 +43,8 @@ namespace QueflityMVC.Web.Integrations
                 policy.RequireClaim("ViewUserClaims"));
             options.AddPolicy("CanDisableUser", policy =>
                 policy.RequireClaim("DisableUser"));
+            options.AddPolicy("CanEnableUser", policy =>
+                policy.RequireClaim("EnableUser"));
 
             return options;
         }

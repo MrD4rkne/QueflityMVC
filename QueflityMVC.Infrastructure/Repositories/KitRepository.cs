@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using QueflityMVC.Application.Errors;
+using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Common;
@@ -48,7 +49,7 @@ namespace QueflityMVC.Infrastructure.Repositories
                 .Include(z => z.Image)
                 .Include(x => x.Elements)
                     .ThenInclude(x=> x.Item)
-                        .ThenInclude(item => item.Image)
+                        .ThenInclude(item => item!.Image)
                  .FirstOrDefault(y => y.Id == id);
         }
 
@@ -92,9 +93,9 @@ namespace QueflityMVC.Infrastructure.Repositories
         {
             return _dbContext.Set<Element>()
                 .Include(elem => elem.Kit)
-                .ThenInclude(kit=> kit.Image)
-                .Include(elem=>elem.Item)
-                .ThenInclude(item => item.Image)
+                    .ThenInclude(kit => kit!.Image)
+                .Include(elem =>elem.Item)
+                    .ThenInclude(item => item!.Image)
                 .Where(x => x.ItemId == itemId && x.KitId == kitId)
                 .FirstOrDefault();
         }

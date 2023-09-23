@@ -12,6 +12,6 @@ namespace QueflityMVC.Domain.Models
 
         public virtual KitImage? Image { get; set; }
 
-        public virtual ICollection<Element>? Elements { get; set; }
+        public virtual ICollection<Element> Elements { get; set; } = new List<Element>();
     }
 }

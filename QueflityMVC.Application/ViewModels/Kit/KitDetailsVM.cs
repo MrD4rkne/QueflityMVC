@@ -15,7 +15,7 @@ namespace QueflityMVC.Application.ViewModels.Kit
 
         public bool ShouldBeShown { get; set; }
 
-        public ImageDTO? Image { get; set; }
+        public required ImageDTO Image { get; set; }
 
         public required List<ElementForListVM> ItemMemberships { get; set; }
 

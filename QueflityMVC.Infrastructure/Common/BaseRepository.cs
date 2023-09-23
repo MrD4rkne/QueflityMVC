@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using QueflityMVC.Application.Errors;
+using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Infrastructure.Common

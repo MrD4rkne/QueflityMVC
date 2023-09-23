@@ -1,6 +1,6 @@
 ﻿using QueflityMVC.Application.Common.Errors;
 
-namespace QueflityMVC.Application.Errors
+namespace QueflityMVC.Application.Errors.Common
 {
     public class ArgumentOutOfBoundsException<T> : ArgumentOutOfRangeException where T : struct,
           IComparable,

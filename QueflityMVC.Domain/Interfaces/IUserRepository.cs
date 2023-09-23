@@ -10,6 +10,14 @@ namespace QueflityMVC.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        IQueryable<IdentityUser> GetFilteredUsers(string? userNameFilter);
+        Task DisableUser(string userToDisableId);
+
+        Task<bool> DoesUserExist(string userId);
+
+        Task<ApplicationUser?> GetUserById(string userId);
+
+        Task EnableUser(string userToEnableId);
+
+        IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter);
     }
 }

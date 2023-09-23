@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors;
+using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Item;
@@ -157,7 +158,7 @@ namespace QueflityMVC.Application.Services
             }
             if (!_kitRepository.Exists(itemsForComponentsVM.SetId))
             {
-                throw new Errors.EntityNotFoundException(entityName: "Set");
+                throw new EntityNotFoundException(entityName: "Set");
             }
 
             itemsForComponentsVM.KitComponentsIds = _kitRepository.GetComponenetsIdsForSet(itemsForComponentsVM.SetId).ToList();
@@ -174,13 +175,13 @@ namespace QueflityMVC.Application.Services
             Kit? kit = _kitRepository.GetById(setId);
             if (kit is null)
             {
-                throw new Errors.EntityNotFoundException(entityName: nameof(Kit));
+                throw new EntityNotFoundException(entityName: nameof(Kit));
             }
 
             Item? item = _itemRepository.GetById(itemId);
             if (item is null)
             {
-                throw new Errors.EntityNotFoundException(entityName: nameof(Item));
+                throw new EntityNotFoundException(entityName: nameof(Item));
             }
 
             ElementDTO elementDTO = new()

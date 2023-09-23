@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace QueflityMVC.Application.Errors
+namespace QueflityMVC.Domain.Errors
 {
     public class ItemAlreadyInSetException : Exception
     {

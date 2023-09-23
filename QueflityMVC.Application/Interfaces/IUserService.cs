@@ -9,7 +9,10 @@ namespace QueflityMVC.Application.Interfaces
 {
     public interface IUserService
     {
-        void DeleteUser(string userId);
+        Task DisableUser(string userToDisableId);
+
+        Task EnableUser(string userToEnableId);
+
         Task<ListUsersVM> GetFilteredList(ListUsersVM listUsersVM);
     }
 }

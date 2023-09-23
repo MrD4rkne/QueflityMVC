@@ -1,4 +1,5 @@
 ﻿using QueflityMVC.Application.Errors;
+using QueflityMVC.Application.Errors.Common;
 
 namespace QueflityMVC.Application.Common.Errors
 {

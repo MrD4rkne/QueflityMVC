@@ -6,9 +6,9 @@ namespace QueflityMVC.Application.ViewModels.Image
 {
     public record ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.KitImage>
     {
-        public required int Id { get; set; }
+        public int Id { get; set; }
 
-        public required string FileUrl { get; set; }
+        public string FileUrl { get; set; }
 
         public string? AltDescription { get; set; }
 
@@ -23,6 +23,11 @@ namespace QueflityMVC.Application.ViewModels.Image
             profile.CreateMap<Domain.Models.KitImage, ImageDTO>()
                 .ForMember(img => img.FormFile, opt => opt.Ignore())
                 .ReverseMap();
+        }
+
+        public ImageDTO()
+        {
+            FileUrl = string.Empty;
         }
     }
 }

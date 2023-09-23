@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application;
+using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure;
+using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +14,10 @@ builder.Services.AddDbContext<QueflityMVC.Infrastructure.Context>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<QueflityMVC.Infrastructure.Context>();
+    .AddEntityFrameworkStores<QueflityMVC.Infrastructure.Context>()
+    .AddSignInManager<MySignInManager>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = true;

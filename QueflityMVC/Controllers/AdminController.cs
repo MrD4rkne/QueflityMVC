@@ -6,6 +6,9 @@ using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Services;
 using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Application.ViewModels.User;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Security.Claims;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Controllers
 {
@@ -44,14 +47,41 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "")]
-        public IActionResult DeleteUser(string userId)
+        [Route("DisableUser")]
+        [Authorize(Policy = "CanDisableUser")]
+        public async Task<IActionResult> DisableUser(string userId)
         {
             ArgumentException.ThrowIfNullOrEmpty(userId);
+            string? callerId = User.GetLoggedInUserId();
+            if (IsTheSameUser(callerId, userId))
+            {
+                return Unauthorized("User cannot disable himself.");
+            }
 
-            _userService.DeleteUser(userId);
+            await _userService.DisableUser(userId);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Route("EnableUser")]
+        [Authorize(Policy = "CanEnableUser")]
+        public async Task<IActionResult> EnableUser(string userId)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(userId);
+            await _userService.EnableUser(userId);
+
+            return RedirectToAction("Index");
+        }
+
+        private static bool IsTheSameUser(string? userIdA, string? userIdB)
+        {
+            if (string.IsNullOrEmpty(userIdA) || string.IsNullOrEmpty(userIdB))
+            {
+                return false;
+            }
+
+            return userIdA.Equals(userIdB);
         }
     }
 }

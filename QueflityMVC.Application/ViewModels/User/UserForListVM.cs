@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Kit;
+using QueflityMVC.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.ViewModels.User
 {
-    public record UserForListVM : IMapFrom<IdentityUser>
+    public record UserForListVM : IMapFrom<ApplicationUser>
     {
         public required string Id { get; set; }
 
@@ -18,9 +19,11 @@ namespace QueflityMVC.Application.ViewModels.User
 
         public required string? Email { get; set; }
 
+        public required bool IsEnabled { get; set; }
+
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<IdentityUser, UserForListVM>()
+            profile.CreateMap<ApplicationUser, UserForListVM>()
                 .ReverseMap();
         }
     }

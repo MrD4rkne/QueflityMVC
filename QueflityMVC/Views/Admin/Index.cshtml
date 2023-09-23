@@ -61,7 +61,16 @@
                         <td>
                             @Html.ActionLink("Roles", "ManageUserRoles", new { id=item.Id }, new { @class = "btn btn-outline-info btn-sm"})
                             @Html.ActionLink("Claims", "ManageUserClaims", new { id=item.Id }, new { @class = "btn btn-outline-success btn-sm"})
-                            @Html.ActionLink("Delete", "DeleteUser", new { id=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+
+                            @if (item.IsEnabled)
+                            {
+                                @Html.ActionLink("Disable", "DisableUser", new { userId=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Enable", "EnableUser", new { userId=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            }
+
                         </td>
                     </tr>
                 }

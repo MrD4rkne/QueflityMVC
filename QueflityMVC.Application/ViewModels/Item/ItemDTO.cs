@@ -14,7 +14,7 @@ namespace QueflityMVC.Application.ViewModels.Item
 
         public bool ShouldBeShown { get; set; }
 
-        public ImageDTO? Image { get; set; }
+        public ImageDTO Image { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -24,6 +24,11 @@ namespace QueflityMVC.Application.ViewModels.Item
                 .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
                 .ForMember(vm => vm.CategoryId, opt => opt.MapFrom(ent => ent.CategoryId))
                 .ReverseMap();
+        }
+
+        public ItemDTO()
+        {
+            Image = new();
         }
     }
 }

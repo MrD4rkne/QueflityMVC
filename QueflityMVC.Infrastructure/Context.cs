@@ -4,7 +4,7 @@ using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Infrastructure
 {
-    public class Context : IdentityDbContext
+    public class Context : IdentityDbContext<ApplicationUser>
     {       
         public DbSet<Ingredient> Ingredients { get; set; }
 
