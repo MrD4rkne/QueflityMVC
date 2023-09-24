@@ -15,7 +15,7 @@ namespace QueflityMVC.Web.Integrations
 
         public static void Setup(this GoogleOptions googleOptions, IConfigurationSection googleOAuthSection)
         {
-            if(googleOAuthSection is null)
+            if (googleOAuthSection is null)
             {
                 // TODO: ERROR
                 return;

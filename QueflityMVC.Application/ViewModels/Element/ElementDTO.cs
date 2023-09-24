@@ -22,7 +22,7 @@ namespace QueflityMVC.Application.ViewModels.SetElement
                 .ForMember(vm => vm.Item, opt => opt.MapFrom(sm => sm.Item))
                 .ForMember(vm => vm.KitDetailsVM, opt => opt.MapFrom(et => et.Kit))
                 .ReverseMap()
-                .ForMember(ent => ent.KitId, opt=> opt.MapFrom(vm => vm.KitDetailsVM.Id))
+                .ForMember(ent => ent.KitId, opt => opt.MapFrom(vm => vm.KitDetailsVM.Id))
                 .ForMember(ent => ent.ItemId, opt => opt.MapFrom(vm => vm.Item.Id));
         }
     }

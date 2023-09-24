@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Errors;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Image;
@@ -197,11 +196,11 @@ namespace QueflityMVC.Application.Services
 
         public void AddElement(ElementDTO elementToCreate)
         {
-            if(elementToCreate is null)
+            if (elementToCreate is null)
             {
                 throw new ArgumentNullException(nameof(elementToCreate));
             }
-            if(elementToCreate.Item is null)
+            if (elementToCreate.Item is null)
             {
                 throw new ArgumentNullException(nameof(elementToCreate.Item));
             }
@@ -237,7 +236,7 @@ namespace QueflityMVC.Application.Services
         public ElementDTO GetVMForEdittingElement(int setId, int itemId)
         {
             Element? element = _kitRepository.GetElement(setId, itemId);
-            if(element is null)
+            if (element is null)
             {
                 throw new EntityNotFoundException(entityName: nameof(Element));
             }

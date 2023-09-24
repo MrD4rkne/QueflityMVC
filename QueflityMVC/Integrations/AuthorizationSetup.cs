@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System.Reflection.Metadata.Ecma335;
+using QueflityMVC.Web.Constants;
 
 namespace QueflityMVC.Web.Integrations
 {
@@ -34,17 +34,25 @@ namespace QueflityMVC.Web.Integrations
             //    policy.RequireClaim("CanViewKits"));
             //options.AddPolicy("CanDeleteKits", policy =>
             //    policy.RequireClaim("CanDeleteKits", "DeleteKits"));
+            options.AddPolicy(Policies.USER_CLAIMS_VIEW, policy =>
+                policy.RequireClaim(Claims.USER_CLAIMS_VIEW));
+            options.AddPolicy(Policies.USER_CLAIMS_MANAGE, policy =>
+                policy.RequireClaim(Claims.USER_CLAIMS_MANAGE)
+                .RequireClaim(Claims.USER_CLAIMS_VIEW));
 
-            options.AddPolicy("CanManageClaims", policy =>
-                policy.RequireClaim("ManageClaims", "ViewUserClaims"));
-            options.AddPolicy("CanListUsers", policy =>
-                policy.RequireClaim("ListUsers","ListUsers"));
-            options.AddPolicy("CanViewUserClaims", policy =>
-                policy.RequireClaim("ViewUserClaims"));
-            options.AddPolicy("CanDisableUser", policy =>
-                policy.RequireClaim("DisableUser"));
-            options.AddPolicy("CanEnableUser", policy =>
-                policy.RequireClaim("EnableUser"));
+            options.AddPolicy(Policies.USERS_LIST, policy =>
+                policy.RequireClaim(Claims.USERS_LIST));
+
+            options.AddPolicy(Policies.USER_DISABLE, policy =>
+                policy.RequireClaim(Claims.USER_DISABLE));
+            options.AddPolicy(Policies.USER_ENABLE, policy =>
+                policy.RequireClaim(Claims.USER_ENABLE));
+
+            options.AddPolicy(Policies.USER_ROLES_VIEW, policy =>
+                policy.RequireClaim(Claims.USER_ROLES_LIST));
+            options.AddPolicy(Policies.USER_ROLES_MANAGE, policy =>
+                policy.RequireClaim(Claims.USER_ROLES_MANAGE)
+                .RequireClaim(Claims.USER_ROLES_LIST));
 
             return options;
         }

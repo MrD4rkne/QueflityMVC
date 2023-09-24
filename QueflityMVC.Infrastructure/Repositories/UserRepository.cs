@@ -2,11 +2,6 @@
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QueflityMVC.Infrastructure.Repositories
 {
@@ -24,6 +19,7 @@ namespace QueflityMVC.Infrastructure.Repositories
         public IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter)
         {
             IQueryable<ApplicationUser> matchingUsers = _userManager.Users;
+
             if (!string.IsNullOrEmpty(userNameFilter))
             {
                 matchingUsers = matchingUsers.Where(user => user.UserName != null)
@@ -36,7 +32,7 @@ namespace QueflityMVC.Infrastructure.Repositories
         public async Task DisableUser(string userId)
         {
             var userToDisable = await GetUserById(userId);
-            if(userToDisable is null)
+            if (userToDisable is null)
             {
                 throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
             }
@@ -67,6 +63,43 @@ namespace QueflityMVC.Infrastructure.Repositories
 
             userToEnable.IsEnabled = true;
             await _userManager.UpdateAsync(userToEnable);
+        }
+
+        public IQueryable<IdentityRole> GetAllRoles()
+        {
+            var allRoles = _dbContext.Roles;
+
+            return allRoles;
+        }
+
+        public async Task<IList<string>> GetAssignedRolesIds(string userId)
+        {
+            var rolesOwner = (await GetUserById(userId)) ?? throw new ResourceNotFoundException();
+
+            var allAssignedRolesIds = await _userManager.GetRolesAsync(rolesOwner);
+            return allAssignedRolesIds;
+        }
+
+        public async Task AddToRole(string userId, string roleId)
+        {
+            var user = await GetUserById(userId);
+            if (user is null)
+            {
+                throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+            }
+
+            await _userManager.AddToRoleAsync(user, roleId);
+        }
+
+        public async Task RemoveFromRole(string userId, string roleId)
+        {
+            var user = await GetUserById(userId);
+            if (user is null)
+            {
+                throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+            }
+
+            await _userManager.RemoveFromRoleAsync(user, roleId);
         }
     }
 }

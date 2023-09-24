@@ -1,9 +1,4 @@
 ﻿using QueflityMVC.Application.ViewModels.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.Interfaces
 {
@@ -14,5 +9,9 @@ namespace QueflityMVC.Application.Interfaces
         Task EnableUser(string userToEnableId);
 
         Task<ListUsersVM> GetFilteredList(ListUsersVM listUsersVM);
+
+        Task<UserRolesVM> GetUsersRolesVM(string userId);
+
+        Task UpdateUserRoles(UserRolesVM userRolesVM);
     }
 }

@@ -108,12 +108,20 @@ namespace QueflityMVC.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        // TODO: check if any ingredient exists
         [Route("Ingredients")]
         [HttpGet]
         public IActionResult Ingredients(int id)
         {
             var ingredientsViewModel = _itemService.GetIngredientsForSelectionVM(id);
+            if (ingredientsViewModel is null)
+            {
+                return NotFound();
+            }
+            if (ingredientsViewModel.AllIngredients.Count == 0)
+            {
+                return NoContent();
+            }
+
             return View(ingredientsViewModel);
         }
 

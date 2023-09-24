@@ -5,7 +5,7 @@
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
 }
 
-<form asp-action="Index" asp-controller="Admin" method="post">
+<form asp-action="Index" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="UserNameFilter" />
@@ -59,8 +59,8 @@
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
-                            @Html.ActionLink("Roles", "ManageUserRoles", new { id=item.Id }, new { @class = "btn btn-outline-info btn-sm"})
-                            @Html.ActionLink("Claims", "ManageUserClaims", new { id=item.Id }, new { @class = "btn btn-outline-success btn-sm"})
+                            @Html.ActionLink("Roles", "ManageUserRoles", new { userId=item.Id }, new { @class = "btn btn-outline-info btn-sm"})
+                            @Html.ActionLink("Claims", "ManageUserClaims", new { userId=item.Id }, new { @class = "btn btn-outline-success btn-sm"})
 
                             @if (item.IsEnabled)
                             {
@@ -86,7 +86,7 @@
     {
     <script type="text/javascript">
         function PageSizeSelected() {
-            document.forms[0].submit();
+            document.forms[1].submit();
         }
     </script>
 }

@@ -37,11 +37,7 @@ namespace QueflityMVC.Web.Common
             {
                 return true;
             }
-            if (!user.IsEnabled.HasValue)
-            {
-                return false;
-            }
-            return user.IsEnabled.Value;
+            return user.IsEnabled;
         }
     }
 }

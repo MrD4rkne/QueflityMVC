@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.SetElement;
 
 namespace QueflityMVC.Application.Validators

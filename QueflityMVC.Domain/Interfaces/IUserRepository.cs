@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using QueflityMVC.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QueflityMVC.Domain.Interfaces
 {
@@ -19,5 +14,13 @@ namespace QueflityMVC.Domain.Interfaces
         Task EnableUser(string userToEnableId);
 
         IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter);
+
+        IQueryable<IdentityRole> GetAllRoles();
+
+        Task<IList<string>> GetAssignedRolesIds(string userId);
+
+        Task AddToRole(string userId, string roleId);
+
+        Task RemoveFromRole(string userId, string roleId);
     }
 }

@@ -1,19 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+using AutoMapper.QueryableExtensions;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Errors;
 using QueflityMVC.Application.Errors.Common;
-using QueflityMVC.Application.Errors.Identity;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.ViewModels.Item;
+using QueflityMVC.Application.ViewModels.Role;
 using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.Services
 {
@@ -30,10 +23,10 @@ namespace QueflityMVC.Application.Services
 
         public async Task DisableUser(string userToDisableId)
         {
-            ArgumentException.ThrowIfNullOrEmpty(userToDisableId);        
-            
+            ArgumentException.ThrowIfNullOrEmpty(userToDisableId);
+
             bool doesUserExists = await _userRepository.DoesUserExist(userToDisableId);
-            if(!doesUserExists)
+            if (!doesUserExists)
             {
                 throw new EntityNotFoundException(entityName: nameof(ApplicationUser));
             }
@@ -63,6 +56,56 @@ namespace QueflityMVC.Application.Services
             listUsersVM.Pagination = await matchingUsers.Paginate<ApplicationUser, UserForListVM>(listUsersVM.Pagination, _mapper.ConfigurationProvider);
 
             return listUsersVM;
+        }
+
+        public async Task<UserRolesVM> GetUsersRolesVM(string userId)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(userId);
+
+            var user = await _userRepository.GetUserById(userId);
+            if (user is null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            var allRoles = _userRepository.GetAllRoles()
+                .ProjectTo<RoleForSelectionVM>(_mapper.ConfigurationProvider);
+
+            var assignedRolesIds = await _userRepository.GetAssignedRolesIds(userId);
+
+            UserRolesVM userRolesVM = new()
+            {
+                UserId = userId,
+                Username = user.UserName,
+                IsEnabled = user.IsEnabled,
+                AllRoles = allRoles.ToList(),
+                AssignedRolesIds = assignedRolesIds.ToList()
+            };
+            return userRolesVM;
+        }
+
+        public async Task UpdateUserRoles(UserRolesVM userRolesVM)
+        {
+            ArgumentNullException.ThrowIfNull(userRolesVM);
+            ArgumentNullException.ThrowIfNullOrEmpty(userRolesVM.UserId);
+
+            await Parallel.ForEachAsync(userRolesVM.AllRoles,
+                async (role, cs) => { await UpdateRoleMembership(role, userRolesVM.UserId); });
+        }
+
+        private Task UpdateRoleMembership(RoleForSelectionVM role, string userId)
+        {
+            if (role is null)
+                return Task.CompletedTask;
+
+            if (role.IsSelected)
+            {
+                return _userRepository.AddToRole(userId, role.Id);
+            }
+            else
+            {
+                return _userRepository.RemoveFromRole(userId, role.Id);
+            }
         }
     }
 }

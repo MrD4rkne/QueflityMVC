@@ -1,10 +1,4 @@
-﻿using QueflityMVC.Application.ViewModels.Kit;
-using QueflityMVC.Application.ViewModels.Pagination;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using QueflityMVC.Application.ViewModels.Pagination;
 
 namespace QueflityMVC.Application.ViewModels.User
 {

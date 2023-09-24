@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Services;
-using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Application.ViewModels.User;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System.Security.Claims;
 using QueflityMVC.Web.Common;
+using QueflityMVC.Web.Constants;
+using System.Security.Claims;
 
 namespace QueflityMVC.Web.Controllers
 {
@@ -17,12 +14,13 @@ namespace QueflityMVC.Web.Controllers
     {
         private readonly IUserService _userService;
 
-        public AdminController(IUserService userService) {
+        public AdminController(IUserService userService)
+        {
             _userService = userService;
         }
 
         [HttpGet]
-        [Authorize(Policy = "CanListUsers")]
+        [Authorize(Policy = Policies.USERS_LIST)]
         public async Task<IActionResult> Index()
         {
             ListUsersVM listUserVM = new()
@@ -33,7 +31,7 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "CanListUsers")]
+        [Authorize(Policy = Policies.USERS_LIST)]
         public async Task<IActionResult> Index(ListUsersVM listUsersVM)
         {
             if (listUsersVM is null)
@@ -48,7 +46,7 @@ namespace QueflityMVC.Web.Controllers
 
         [HttpGet]
         [Route("DisableUser")]
-        [Authorize(Policy = "CanDisableUser")]
+        [Authorize(Policy = Policies.USER_DISABLE)]
         public async Task<IActionResult> DisableUser(string userId)
         {
             ArgumentException.ThrowIfNullOrEmpty(userId);
@@ -65,13 +63,51 @@ namespace QueflityMVC.Web.Controllers
 
         [HttpGet]
         [Route("EnableUser")]
-        [Authorize(Policy = "CanEnableUser")]
+        [Authorize(Policy = Policies.USER_ENABLE)]
         public async Task<IActionResult> EnableUser(string userId)
         {
             ArgumentException.ThrowIfNullOrEmpty(userId);
             await _userService.EnableUser(userId);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Route("ManageUserRoles")]
+        [Authorize(Policy = Policies.USER_ROLES_MANAGE)]
+        public async Task<IActionResult> ManageUserRoles(string userId)
+        {
+            UserRolesVM userRolesVM = await _userService.GetUsersRolesVM(userId);
+            userRolesVM.CanCallerManage = CanUserManageRoles(callerPrincipal: User, userToBeManagedId: userId);
+
+            return View(userRolesVM);
+        }
+
+        [HttpPost]
+        [Route("ManageUserRoles")]
+        [Authorize(Policy = Policies.USER_ROLES_MANAGE)]
+        public async Task<IActionResult> ManageUserRoles(UserRolesVM userRolesVM)
+        {
+            ArgumentNullException.ThrowIfNull(userRolesVM);
+            ArgumentNullException.ThrowIfNullOrEmpty(userRolesVM.UserId);
+            if (!CanUserManageRoles(callerPrincipal: User, userToBeManagedId: userRolesVM.UserId))
+            {
+                return Forbid();
+            }
+
+            await _userService.UpdateUserRoles(userRolesVM);
+
+            return RedirectToAction("Index");
+        }
+
+        private static bool CanUserManageRoles(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
+        {
+            string? callerId = callerPrincipal.GetLoggedInUserId();
+            if (IsTheSameUser(callerId, userToBeManagedId))
+            {
+                return false;
+            }
+            return callerPrincipal.HasClaim(Claims.USER_ROLES_MANAGE, Claims.USER_ROLES_MANAGE);
         }
 
         private static bool IsTheSameUser(string? userIdA, string? userIdB)

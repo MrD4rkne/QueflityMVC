@@ -14,7 +14,7 @@ namespace QueflityMVC.Infrastructure
             services.AddTransient<IItemRepository, ItemRepository>();
             services.AddTransient<IKitRepository, KitRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
-            
+
             return services;
         }
     }

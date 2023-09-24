@@ -77,14 +77,8 @@
 @section Scripts
     {
     <script type="text/javascript">
-        function PagerClick(pageIndex) {
-            document.getElementById("pageIndex").value = pageIndex;
-            document.forms[0].submit();
-        }
-    </script>
-    <script type="text/javascript">
         function PageSizeSelected() {
-            document.forms[0].submit();
+            SubmitPagination();
         }
     </script>
 }

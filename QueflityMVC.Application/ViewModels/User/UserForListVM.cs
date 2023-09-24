@@ -1,13 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using QueflityMVC.Application.Mapping;
-using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QueflityMVC.Application.ViewModels.User
 {

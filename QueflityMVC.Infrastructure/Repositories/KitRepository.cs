@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using QueflityMVC.Application.Errors;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -48,7 +46,7 @@ namespace QueflityMVC.Infrastructure.Repositories
             return _dbContext.Set<Kit>()
                 .Include(z => z.Image)
                 .Include(x => x.Elements)
-                    .ThenInclude(x=> x.Item)
+                    .ThenInclude(x => x.Item)
                         .ThenInclude(item => item!.Image)
                  .FirstOrDefault(y => y.Id == id);
         }
@@ -62,7 +60,7 @@ namespace QueflityMVC.Infrastructure.Repositories
 
         public void AddComponent(Element componentToCreate)
         {
-            if(componentToCreate is null)
+            if (componentToCreate is null)
             {
                 throw new ArgumentNullException(nameof(componentToCreate));
             }
@@ -94,7 +92,7 @@ namespace QueflityMVC.Infrastructure.Repositories
             return _dbContext.Set<Element>()
                 .Include(elem => elem.Kit)
                     .ThenInclude(kit => kit!.Image)
-                .Include(elem =>elem.Item)
+                .Include(elem => elem.Item)
                     .ThenInclude(item => item!.Image)
                 .Where(x => x.ItemId == itemId && x.KitId == kitId)
                 .FirstOrDefault();
@@ -124,9 +122,9 @@ namespace QueflityMVC.Infrastructure.Repositories
 
         public void DeleteComponent(Element component)
         {
-            if(component is null)
+            if (component is null)
             {
-                throw new ArgumentNullException(nameof (component));
+                throw new ArgumentNullException(nameof(component));
             }
 
         }
@@ -134,7 +132,7 @@ namespace QueflityMVC.Infrastructure.Repositories
         public void DeleteElement(int kitId, int itemId)
         {
             Element? elemToDelete = GetElement(kitId, itemId);
-            if(elemToDelete is null)
+            if (elemToDelete is null)
             {
                 throw new EntityNotFoundException(nameof(Element));
             }

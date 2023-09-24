@@ -1,6 +1,6 @@
 ﻿@using QueflityMVC.Application.ViewModels.Pagination
 @model PaginationInfo
-<nav>
+<nav id="pagination">
     <ul class="pagination justify-content-center">
         @if (Model.CurrentPageNo <= 1)
         {
@@ -36,8 +36,14 @@
 
 <script type="text/javascript">
     function PagerClick(pageIndex) {
-        document.getElementById("Pagination_Info_CurrentPageNo").value = pageIndex;
-        document.forms[0].submit();
+        document.getElementById('@Html.IdFor(info => info.CurrentPageNo)').value = pageIndex;
+        SubmitPagination();
+    }
+
+    function SubmitPagination(){
+        var pagination = document.getElementById('pagination');
+        var form = pagination.closest('form');
+        form.submit();
     }
 </script>
 

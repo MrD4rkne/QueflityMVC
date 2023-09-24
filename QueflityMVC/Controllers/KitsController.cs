@@ -183,7 +183,7 @@ namespace QueflityMVC.Web.Controllers
         [HttpGet]
         public IActionResult DeleteComponent(int kitId, int itemId)
         {
-            _kitService.DeleteElement(kitId,itemId);
+            _kitService.DeleteElement(kitId, itemId);
             return RedirectToAction("Details", new { id = kitId });
         }
     }
