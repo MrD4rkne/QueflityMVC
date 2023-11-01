@@ -29,13 +29,14 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
+
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication()
-    .AddExternalOAuths(builder.Configuration);
+    .AddGoogle(options => options.Setup(new SecretsProvider()));
 builder.Services.AddAuthorization(options =>
     options.AddPolicies());
 
