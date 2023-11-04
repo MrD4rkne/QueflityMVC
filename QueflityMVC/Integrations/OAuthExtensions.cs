@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Google;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Integrations
 {
@@ -23,9 +24,7 @@ namespace QueflityMVC.Web.Integrations
             }
             else
             {
-                throw new NotImplementedException("Missing credentials!");
-                // TODO: ERROR
-
+                throw new ConfigurationException("Could not found Google OAuth credentials.");
             }
         }
     }

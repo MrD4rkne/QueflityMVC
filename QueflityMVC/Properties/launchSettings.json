@@ -22,19 +22,13 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "OAUTH_GOOGLE_CLIENT_ID": "313258013736-cjneh6omvfrfjne2sr0euhpbi17n55du.apps.googleusercontent.com",
-        "OAUTH_GOOGLE_CLIENT_SECRET": "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"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "OAUTH_GOOGLE_CLIENT_ID": "313258013736-cjneh6omvfrfjne2sr0euhpbi17n55du.apps.googleusercontent.com",
-        "OAUTH_GOOGLE_CLIENT_SECRET": "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"
-      },
       "publishAllPorts": true,
       "useSSL": true
     }

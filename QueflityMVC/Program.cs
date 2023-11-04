@@ -36,7 +36,7 @@ builder.Services.AddApplication();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication()
-    .AddGoogle(options => options.Setup(new SecretsProvider()));
+    .AddGoogle(options => options.Setup(new AppSecretsCredentialProvider(builder.Configuration)));
 builder.Services.AddAuthorization(options =>
     options.AddPolicies());
 
