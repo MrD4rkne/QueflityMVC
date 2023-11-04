@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using QueflityMVC.Web.Constants;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -31,6 +32,12 @@
                         <li class="nav-item" s>
                             <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        @if (User.HasClaim(Claims.USERS_LIST, Claims.USERS_LIST))
+                        {
+                            <li class="nav-item" s>
+                                <a class="nav-link active" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                            </li>
+                        }
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown">Entities</a>
                             <ul class="dropdown-menu">

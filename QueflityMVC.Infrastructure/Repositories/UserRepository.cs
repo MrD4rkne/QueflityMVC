@@ -2,6 +2,7 @@
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
+using System.Security.Claims;
 
 namespace QueflityMVC.Infrastructure.Repositories
 {
@@ -100,6 +101,15 @@ namespace QueflityMVC.Infrastructure.Repositories
             }
 
             await _userManager.RemoveFromRoleAsync(user, roleId);
+        }
+
+        public async Task<List<string>> GetAssignedClaimsIds(string userId)
+        {
+            var rolesOwner = (await GetUserById(userId)) ?? throw new ResourceNotFoundException();
+
+            var allAssignedClaimsIds = await _userManager.GetClaimsAsync(rolesOwner);
+            return allAssignedClaimsIds.Select(x=>x.Value)
+                .ToList();
         }
     }
 }

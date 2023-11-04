@@ -100,6 +100,34 @@ namespace QueflityMVC.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        [Route("ManageUserClaims")]
+        [Authorize(Policy = Policies.USER_CLAIMS_MANAGE)]
+        public async Task<IActionResult> ManageUserClaims(string userId)
+        {
+            UserClaimsVM userClaimsVM = await _userService.GetUsersClaimsVM(userId);
+            userClaimsVM.CanCallerManage = CanUserManageClaims(callerPrincipal: User, userToBeManagedId: userId);
+
+            return View(userClaimsVM);
+        }
+
+        [HttpPost]
+        [Route("ManageUserClaims")]
+        [Authorize(Policy = Policies.USER_CLAIMS_MANAGE)]
+        public async Task<IActionResult> ManageUserClaims(UserClaimsVM userClaimsVM)
+        {
+            ArgumentNullException.ThrowIfNull(userClaimsVM);
+            ArgumentNullException.ThrowIfNullOrEmpty(userClaimsVM.UserId);
+            if (!CanUserManageClaims(callerPrincipal: User, userToBeManagedId: userClaimsVM.UserId))
+            {
+                return Forbid();
+            }
+
+            await _userService.UpdateUserClaims(userClaimsVM);
+
+            return RedirectToAction("Index");
+        }
+
         private static bool CanUserManageRoles(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
         {
             string? callerId = callerPrincipal.GetLoggedInUserId();
@@ -108,6 +136,16 @@ namespace QueflityMVC.Web.Controllers
                 return false;
             }
             return callerPrincipal.HasClaim(Claims.USER_ROLES_MANAGE, Claims.USER_ROLES_MANAGE);
+        }
+
+        private bool CanUserManageClaims(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
+        {
+            string? callerId = callerPrincipal.GetLoggedInUserId();
+            if (IsTheSameUser(callerId, userToBeManagedId))
+            {
+                return false;
+            }
+            return callerPrincipal.HasClaim(Claims.USER_ROLES_MANAGE, Claims.USER_ROLES_MANAGE) && callerPrincipal.HasClaim(Claims.USER_CLAIMS_MANAGE, Claims.USER_CLAIMS_MANAGE);
         }
 
         private static bool IsTheSameUser(string? userIdA, string? userIdB)
