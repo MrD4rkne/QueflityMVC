@@ -59,6 +59,7 @@
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
+                            // TODO: Add claim (policy?) checks in views
                             @Html.ActionLink("Roles", "ManageUserRoles", new { userId=item.Id }, new { @class = "btn btn-outline-info btn-sm"})
                             @Html.ActionLink("Claims", "ManageUserClaims", new { userId=item.Id }, new { @class = "btn btn-outline-success btn-sm"})
 

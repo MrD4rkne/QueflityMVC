@@ -24,7 +24,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 8;
     options.Password.RequireUppercase = true;
     options.Password.RequiredUniqueChars = 0;
-
     options.SignIn.RequireConfirmedEmail = false;
     options.User.RequireUniqueEmail = false;
 });

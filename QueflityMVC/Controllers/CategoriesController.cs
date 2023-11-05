@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Category;
 
@@ -20,6 +22,7 @@ namespace QueflityMVC.Web.Controllers
             _categoryValidator = categoryValidator;
         }
 
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index()
         {
             ListCategoriesVM listCategoriesVM = new()
@@ -30,6 +33,7 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index(ListCategoriesVM listCategoriesVM)
         {
             if (listCategoriesVM is null)
@@ -44,6 +48,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Create()
         {
             CategoryDTO defaultCategoryDTO = _categoryService.GetVMForCreate();
@@ -52,6 +57,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpPost]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryDTO createCategoryVM)
         {
@@ -70,6 +76,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public IActionResult Edit(int id)
         {
             return View(_categoryService.GetVMForEdit(id));
@@ -78,6 +85,7 @@ namespace QueflityMVC.Web.Controllers
         [Route("Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public async Task<IActionResult> Edit(CategoryDTO createCategoryVM)
         {
             ValidationResult result = await _categoryValidator.ValidateAsync(createCategoryVM);
@@ -94,6 +102,7 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [Route("Delete")]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Delete(int id)
         {
             try

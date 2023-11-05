@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Ingredient;
 
@@ -19,6 +21,8 @@ namespace QueflityMVC.Web.Controllers
             _categoryValidator = categoryValidator;
         }
 
+        [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index()
         {
             ListIngredientsVM listIngredientsVM = new()
@@ -29,6 +33,7 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index(ListIngredientsVM listIngredients)
         {
             if (listIngredients is null)
@@ -41,6 +46,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Create()
         {
             IngredientDTO freshIngredientDTO = new()
@@ -54,6 +60,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Create(IngredientDTO ingredientToAddDTO)
         {
             var validationResult = _categoryValidator.Validate(ingredientToAddDTO);
@@ -71,6 +79,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public IActionResult Edit(int id)
         {
             var ingredientVM = _ingredientService.GetIngredientVMForEdit(id);
@@ -83,6 +92,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public IActionResult Edit(IngredientDTO ingredientToEditDTO)
         {
             var validationResult = _categoryValidator.Validate(ingredientToEditDTO);
@@ -98,19 +109,8 @@ namespace QueflityMVC.Web.Controllers
             return RedirectToAction("Index");
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         [Route("Delete")]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Delete(int id)
         {
             _ingredientService.DeleteIngredient(id);

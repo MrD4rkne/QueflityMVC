@@ -1,4 +1,4 @@
-﻿@using QueflityMVC.Web.Constants;
+﻿@using QueflityMVC.Application.Constants;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,18 +35,21 @@
                         @if (User.HasClaim(Claims.USERS_LIST, Claims.USERS_LIST))
                         {
                             <li class="nav-item" s>
-                                <a class="nav-link active" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                <a class="nav-link active" asp-area="" asp-controller="User" asp-action="Index">User</a>
                             </li>
                         }
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown">Entities</a>
-                            <ul class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Item Categories</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Ingredients" asp-action="Index">Ingredients</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Kits" asp-action="Index">Sets</a>
-                            </ul>
-                        </li>
+                        @if (User.HasClaim(Claims.ENTITIES_LIST, Claims.ENTITIES_LIST))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown">Entities</a>
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Item Categories</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Ingredients" asp-action="Index">Ingredients</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Kits" asp-action="Index">Sets</a>
+                                </ul>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

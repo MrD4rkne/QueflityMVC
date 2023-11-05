@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Item;
 
@@ -22,6 +24,8 @@ namespace QueflityMVC.Web.Controllers
             _env = env;
         }
 
+        [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index(int? categoryId)
         {
             ListItemsVM listItemsVM = new()
@@ -34,6 +38,7 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index(ListItemsVM listItemsVM)
         {
             if (listItemsVM is null)
@@ -48,6 +53,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Create(int? categoryId)
         {
             return View(_itemService.GetItemVMForAdding(categoryId));
@@ -55,6 +61,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public async Task<IActionResult> Create(CrEdItemVM crEdObjItem)
         {
             ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVM);
@@ -78,6 +86,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public IActionResult Edit(int id)
         {
             return View(_itemService.GetForEdit(id));
@@ -85,6 +94,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public async Task<IActionResult> Edit(CrEdItemVM editItemVM)
         {
             ValidationResult result = await _itemValidator.ValidateAsync(editItemVM.ItemVM);
@@ -102,6 +113,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Delete")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Delete(int id)
         {
             _itemService.DeleteItem(id, _env.ContentRootPath);
@@ -110,6 +122,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Ingredients")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public IActionResult Ingredients(int id)
         {
             var ingredientsViewModel = _itemService.GetIngredientsForSelectionVM(id);
@@ -127,6 +140,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Ingredients")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public IActionResult Ingredients(ItemIngredientsSelectionVM selectionVM)
         {
             _itemService.UpdateItemIngredients(selectionVM);
