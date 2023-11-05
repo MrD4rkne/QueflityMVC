@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QueflityMVC.Web.Models;
 using System.Diagnostics;
 
 namespace QueflityMVC.Web.Controllers
