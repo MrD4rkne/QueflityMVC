@@ -153,7 +153,9 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<ApplicationUser>();
+                var newUser= Activator.CreateInstance<ApplicationUser>();
+                newUser.IsEnabled = true;
+                return newUser;
             }
             catch
             {

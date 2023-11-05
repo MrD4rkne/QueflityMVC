@@ -24,5 +24,9 @@ namespace QueflityMVC.Domain.Interfaces
         Task RemoveFromRole(string userId, string roleId);
 
         Task<List<string>> GetAssignedClaimsIds(string userId);
+
+        Task GiveClaims(string userId, string[] claimsIds);
+
+        Task RemoveClaims(string userId, string[] claimsIds);
     }
 }

@@ -8,6 +8,7 @@ using QueflityMVC.Application.ViewModels.Role;
 using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
+using System.Data;
 using System.Security.Claims;
 
 namespace QueflityMVC.Application.Services
@@ -63,7 +64,6 @@ namespace QueflityMVC.Application.Services
         public async Task<UserClaimsVM> GetUsersClaimsVM(string userId)
         {
             ArgumentException.ThrowIfNullOrEmpty(userId);
-
             var user = await _userRepository.GetUserById(userId);
             if (user is null)
             {
@@ -72,7 +72,6 @@ namespace QueflityMVC.Application.Services
 
             var allClaims = Constants.Claims.GetAll()
                 .Select(str => new ClaimForSelectionVM(str));
-
             var assignedClaimsIds = await _userRepository.GetAssignedClaimsIds(userId);
 
             UserClaimsVM userClaimsVM = new()
@@ -112,9 +111,22 @@ namespace QueflityMVC.Application.Services
             return userRolesVM;
         }
 
-        public Task UpdateUserClaims(UserClaimsVM userClaimsVM)
+        public async Task UpdateUserClaims(UserClaimsVM userClaimsVM)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(userClaimsVM);
+            ArgumentNullException.ThrowIfNullOrEmpty(userClaimsVM.UserId);
+
+            string[] claimsToGive = userClaimsVM.AllClaims
+                .Where(x => x.IsSelected)
+                .Select(x => x.Id)
+                .ToArray();
+            string[] claimsToRemove = userClaimsVM.AllClaims
+                .Where(x => x.IsSelected == false)
+                .Select(x => x.Id)
+                .ToArray();
+
+            await _userRepository.GiveClaims(userClaimsVM.UserId, claimsToGive);
+            await _userRepository.RemoveClaims(userClaimsVM.UserId, claimsToRemove);
         }
 
         public async Task UpdateUserRoles(UserRolesVM userRolesVM)
