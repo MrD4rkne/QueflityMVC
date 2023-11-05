@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Mapping;
+using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Image;
-using QueflityMVC.Application.ViewModels.SetMembership;
 
 namespace QueflityMVC.Application.ViewModels.Kit
 {

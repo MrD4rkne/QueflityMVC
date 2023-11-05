@@ -1,6 +1,6 @@
 ﻿using QueflityMVC.Application.Errors.Common;
 
-namespace QueflityMVC.Application.Common.Errors
+namespace QueflityMVC.Application.Common.ArgumentGuard
 {
     public static class ArgumentGuard
     {

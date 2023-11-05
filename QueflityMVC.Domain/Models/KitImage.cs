@@ -4,6 +4,6 @@ namespace QueflityMVC.Domain.Models
 {
     public class KitImage : BaseImage
     {
-        public required virtual Kit? Kit { get; set; }
+        public virtual required Kit? Kit { get; set; }
     }
 }

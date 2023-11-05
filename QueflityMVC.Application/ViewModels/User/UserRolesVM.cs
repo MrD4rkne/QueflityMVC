@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.ViewModels.Role;
+﻿using QueflityMVC.Application.ViewModels.Other;
 
 namespace QueflityMVC.Application.ViewModels.User
 {

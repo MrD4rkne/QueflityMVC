@@ -1,4 +1,4 @@
-﻿namespace QueflityMVC.Application.Common.Errors
+﻿namespace QueflityMVC.Application.Common.ArgumentGuard
 {
     public enum ArgumentGuardType
     {

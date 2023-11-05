@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using QueflityMVC.Application.Mapping;
 
-namespace QueflityMVC.Application.ViewModels.Role
+namespace QueflityMVC.Application.ViewModels.Other
 {
     public record RoleForSelectionVM : IMapFrom<IdentityRole>
     {

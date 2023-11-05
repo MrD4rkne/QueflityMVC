@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using QueflityMVC.Application.Mapping;
-using System.Security.Claims;
-
-namespace QueflityMVC.Application.ViewModels.Role
+﻿namespace QueflityMVC.Application.ViewModels.Other
 {
     public record ClaimForSelectionVM
     {

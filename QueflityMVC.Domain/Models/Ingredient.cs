@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Infrastructure.Common;
+﻿using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Domain.Models
 {

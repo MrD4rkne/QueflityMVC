@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using QueflityMVC.Application.Constants;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -109,7 +108,7 @@ namespace QueflityMVC.Infrastructure.Repositories
             var rolesOwner = (await GetUserById(userId)) ?? throw new ResourceNotFoundException();
 
             var allAssignedClaimsIds = _dbContext.UserClaims.Where(x => x.UserId == userId);
-            return allAssignedClaimsIds.Select(x=>x.ClaimType).Where(x=>!string.IsNullOrEmpty(x))
+            return allAssignedClaimsIds.Select(x => x.ClaimType).Where(x => !string.IsNullOrEmpty(x))
                 .ToList()!;
         }
 

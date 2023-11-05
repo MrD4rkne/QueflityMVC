@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QueflityMVC.Models;
 using System.Diagnostics;
 
-namespace QueflityMVC.Controllers
+namespace QueflityMVC.Web.Controllers
 {
     public class HomeController : Controller
     {

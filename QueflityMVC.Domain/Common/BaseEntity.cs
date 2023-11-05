@@ -1,4 +1,4 @@
-﻿namespace QueflityMVC.Infrastructure.Common
+﻿namespace QueflityMVC.Domain.Common
 {
     public class BaseEntity
     {

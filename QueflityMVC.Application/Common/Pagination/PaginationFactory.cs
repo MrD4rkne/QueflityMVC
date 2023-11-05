@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.Common.Errors;
+﻿using QueflityMVC.Application.Common.ArgumentGuard;
 using QueflityMVC.Application.ViewModels.Pagination;
 
 namespace QueflityMVC.Application.Common.Pagination

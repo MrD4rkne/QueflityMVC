@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.VisualBasic;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.ViewModels.Role;
+using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using System.Data;
-using System.Security.Claims;
 
 namespace QueflityMVC.Application.Services
 {

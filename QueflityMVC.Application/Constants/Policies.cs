@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace QueflityMVC.Application.Constants
+﻿namespace QueflityMVC.Application.Constants
 {
     public static class Policies
     {

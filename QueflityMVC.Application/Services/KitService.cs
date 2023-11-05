@@ -2,11 +2,11 @@
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Application.ViewModels.Pagination;
-using QueflityMVC.Application.ViewModels.SetElement;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 

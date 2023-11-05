@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using QueflityMVC.Application.ViewModels.SetElement;
+using QueflityMVC.Application.ViewModels.Element;
 
 namespace QueflityMVC.Application.Validators
 {
