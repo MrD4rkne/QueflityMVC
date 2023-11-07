@@ -1,6 +1,6 @@
-﻿using QueflityMVC.Application.ViewModels.Item;
+﻿using QueflityMVC.Application.ViewModels.Element;
+using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
-using QueflityMVC.Application.ViewModels.SetElement;
 
 namespace QueflityMVC.Application.Interfaces
 {

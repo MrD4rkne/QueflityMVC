@@ -1,12 +1,14 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
-using QueflityMVC.Application.ViewModels.SetElement;
 
 namespace QueflityMVC.Web.Controllers
 {
@@ -26,6 +28,8 @@ namespace QueflityMVC.Web.Controllers
             _env = env;
         }
 
+        [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index()
         {
             ListKitsVM listKitsVM = new()
@@ -36,6 +40,7 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> Index(ListKitsVM listKitsVM)
         {
             if (listKitsVM is null)
@@ -50,6 +55,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult Create()
         {
             return View(_kitService.GetKitVMForAdding());
@@ -57,6 +63,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Create")]
         [HttpPost]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public async Task<IActionResult> Create(KitDTO createKitDTO, bool shouldRouteToDetails = false)
         {
             ValidationResult validationResults = await _kitValidator.ValidateAsync(createKitDTO);
@@ -77,6 +84,7 @@ namespace QueflityMVC.Web.Controllers
         }
 
         [Route("Details")]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public IActionResult Details(int id)
         {
             var kitDetailsVM = _kitService.GetDetailsVM(id);
@@ -86,6 +94,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public IActionResult Edit(int id)
         {
             KitDTO kitToEditVM = _kitService.GetKitVMForEdit(id);
@@ -95,6 +104,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("Edit")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public async Task<IActionResult> Edit(KitDTO editedKitDTO)
         {
 
@@ -115,6 +126,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("ListItemsForComponent")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> ListItemsForComponents(int setId)
         {
             var itemsForComponentsListVM = await _kitService.GetFilteredListForComponents(setId);
@@ -123,6 +135,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("ListItemsForComponent")]
         [HttpPost]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> ListItemsForComponents(ListItemsForComponentsVM listItemsForComponentsVM)
         {
             var itemsForComponentsListVM = await _kitService.GetFilteredListForComponents(listItemsForComponentsVM);
@@ -131,6 +144,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("AddComponent")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult AddComponent(int setId, int itemId)
         {
             var addingComponentVM = _kitService.GetVMForAddingElement(setId, itemId);
@@ -139,6 +153,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("AddComponent")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_LIST)]
         public async Task<IActionResult> AddComponent(ElementDTO elementDTO)
         {
             ValidationResult validationResults = await _elemValidator.ValidateAsync(elementDTO);
@@ -156,6 +172,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("EditComponent")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult EditComponent(int kitId, int itemId)
         {
             var addingComponentVM = _kitService.GetVMForEdittingElement(kitId, itemId);
@@ -164,6 +181,8 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("EditComponent")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public async Task<IActionResult> EditComponent(ElementDTO elementDTO)
         {
             ValidationResult validationResults = await _elemValidator.ValidateAsync(elementDTO);
@@ -181,6 +200,7 @@ namespace QueflityMVC.Web.Controllers
 
         [Route("DeleteComponent")]
         [HttpGet]
+        [Authorize(Policy = Policies.ENTITIES_CREATE)]
         public IActionResult DeleteComponent(int kitId, int itemId)
         {
             _kitService.DeleteElement(kitId, itemId);

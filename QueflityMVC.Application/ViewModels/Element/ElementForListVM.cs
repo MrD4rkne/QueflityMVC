@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Mapping;
 
-namespace QueflityMVC.Application.ViewModels.SetMembership
+namespace QueflityMVC.Application.ViewModels.Element
 {
     public record ElementForListVM : IMapFrom<Domain.Models.Element>
     {

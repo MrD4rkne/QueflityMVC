@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using QueflityMVC.Web.Constants;
+using QueflityMVC.Application.Constants;
 
 namespace QueflityMVC.Web.Integrations
 {
@@ -53,6 +53,16 @@ namespace QueflityMVC.Web.Integrations
             options.AddPolicy(Policies.USER_ROLES_MANAGE, policy =>
                 policy.RequireClaim(Claims.USER_ROLES_MANAGE)
                 .RequireClaim(Claims.USER_ROLES_LIST));
+
+            options.AddPolicy(Policies.ENTITIES_LIST, policy =>
+                policy.RequireClaim(Claims.ENTITIES_LIST));
+            options.AddPolicy(Policies.ENTITIES_EDIT, policy =>
+                policy.RequireClaim(Claims.ENTITIES_EDIT)
+                .RequireClaim(Claims.ENTITIES_LIST));
+            options.AddPolicy(Policies.ENTITIES_CREATE, policy =>
+                policy.RequireClaim(Claims.ENTITIES_CREATE)
+                .RequireClaim(Claims.ENTITIES_LIST));
+
 
             return options;
         }

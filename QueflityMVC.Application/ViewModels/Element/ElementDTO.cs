@@ -2,7 +2,7 @@
 using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Kit;
 
-namespace QueflityMVC.Application.ViewModels.SetElement
+namespace QueflityMVC.Application.ViewModels.Element
 {
     public record ElementDTO : IMapFrom<Domain.Models.Element>
     {

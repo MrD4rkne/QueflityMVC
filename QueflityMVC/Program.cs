@@ -24,10 +24,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 8;
     options.Password.RequireUppercase = true;
     options.Password.RequiredUniqueChars = 0;
-
     options.SignIn.RequireConfirmedEmail = false;
     options.User.RequireUniqueEmail = false;
 });
+
 
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
@@ -35,7 +35,7 @@ builder.Services.AddApplication();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication()
-    .AddExternalOAuths(builder.Configuration);
+    .AddGoogle(options => options.Setup(new AppSecretsCredentialProvider(builder.Configuration)));
 builder.Services.AddAuthorization(options =>
     options.AddPolicies());
 

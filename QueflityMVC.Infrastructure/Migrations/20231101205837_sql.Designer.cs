@@ -12,8 +12,8 @@ using QueflityMVC.Infrastructure;
 namespace QueflityMVC.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230923210816_AppUser IsEnable Nullability")]
-    partial class AppUserIsEnableNullability
+    [Migration("20231101205837_sql")]
+    partial class sql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Application.ViewModels.User
 {
-    public record UserRolesVM
+    public record UserClaimsVM
     {
         public required string UserId { get; set; }
 
@@ -10,9 +10,9 @@ namespace QueflityMVC.Application.ViewModels.User
 
         public required bool IsEnabled { get; set; }
 
-        public required List<RoleForSelectionVM> AllRoles { get; set; }
+        public required List<ClaimForSelectionVM> AllClaims { get; set; }
 
-        public required List<string> AssignedRolesIds { get; set; }
+        public required List<string> AssignedClaimsIds { get; set; }
 
         public bool CanCallerManage { get; set; }
     }

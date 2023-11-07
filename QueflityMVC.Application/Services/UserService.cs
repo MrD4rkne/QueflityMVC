@@ -3,10 +3,11 @@ using AutoMapper.QueryableExtensions;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.ViewModels.Role;
+using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
+using System.Data;
 
 namespace QueflityMVC.Application.Services
 {
@@ -58,6 +59,30 @@ namespace QueflityMVC.Application.Services
             return listUsersVM;
         }
 
+        public async Task<UserClaimsVM> GetUsersClaimsVM(string userId)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(userId);
+            var user = await _userRepository.GetUserById(userId);
+            if (user is null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            var allClaims = Constants.Claims.GetAll()
+                .Select(str => new ClaimForSelectionVM(str));
+            var assignedClaimsIds = await _userRepository.GetAssignedClaimsIds(userId);
+
+            UserClaimsVM userClaimsVM = new()
+            {
+                UserId = userId,
+                Username = user.UserName,
+                IsEnabled = user.IsEnabled,
+                AllClaims = allClaims.ToList(),
+                AssignedClaimsIds = assignedClaimsIds.ToList()
+            };
+            return userClaimsVM;
+        }
+
         public async Task<UserRolesVM> GetUsersRolesVM(string userId)
         {
             ArgumentException.ThrowIfNullOrEmpty(userId);
@@ -82,6 +107,24 @@ namespace QueflityMVC.Application.Services
                 AssignedRolesIds = assignedRolesIds.ToList()
             };
             return userRolesVM;
+        }
+
+        public async Task UpdateUserClaims(UserClaimsVM userClaimsVM)
+        {
+            ArgumentNullException.ThrowIfNull(userClaimsVM);
+            ArgumentNullException.ThrowIfNullOrEmpty(userClaimsVM.UserId);
+
+            string[] claimsToGive = userClaimsVM.AllClaims
+                .Where(x => x.IsSelected)
+                .Select(x => x.Id)
+                .ToArray();
+            string[] claimsToRemove = userClaimsVM.AllClaims
+                .Where(x => x.IsSelected == false)
+                .Select(x => x.Id)
+                .ToArray();
+
+            await _userRepository.GiveClaims(userClaimsVM.UserId, claimsToGive);
+            await _userRepository.RemoveClaims(userClaimsVM.UserId, claimsToRemove);
         }
 
         public async Task UpdateUserRoles(UserRolesVM userRolesVM)

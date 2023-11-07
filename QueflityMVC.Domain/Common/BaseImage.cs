@@ -1,6 +1,4 @@
-﻿using QueflityMVC.Infrastructure.Common;
-
-namespace QueflityMVC.Domain.Common
+﻿namespace QueflityMVC.Domain.Common
 {
     public class BaseImage : BaseEntity
     {

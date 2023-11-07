@@ -1,4 +1,4 @@
-namespace QueflityMVC.Models
+namespace QueflityMVC.Web.Models
 {
     public class ErrorViewModel
     {
