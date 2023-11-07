@@ -1,7 +1,11 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
 
 @{
     ViewData["Title"] = "Edit item";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Edit item</h1>
@@ -46,69 +50,25 @@
                     </div>
                 </div>
             </div>
-            @* <img alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image!.FileUrl" style="max-width: 600px;width:100%" />
-            <div class="form-group">
-                <input asp-for="ItemVM.Image!.FormFile" type="image">
-                <span asp-validation-for="ItemVM.Image!.FormFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ItemVM.Image!.AltDescription" class="control-label"></label>
-                <input asp-for="ItemVM.Image!.AltDescription" class="form-control" />
-                <span asp-validation-for="ItemVM.Image!.AltDescription" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ItemVM.Name" class="control-label"></label>
-                <input asp-for="ItemVM.Name" class="form-control" />
-                <span asp-validation-for="ItemVM.Name" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label>Category</label>
-                <select asp-for="ItemVM.CategoryId" class="form-control">
-                    <option value="">Select a category</option>
-                    @if (Model.Categories != null && Model.Categories.Count > 0)
-                    {
-                        @foreach (var category in Model.Categories)
-                        {
-                            @if (category.Id == Model.ItemVM.CategoryId)
-                            {
-                                <option selected="selected" value="@category.Id">@category.Name</option>
-                                ViewData["categoryId"] = category.Id;
-                            }
-                            else
-                            {
-                                <option value="@category.Id">@category.Name</option>
-                            }
-                        }
-                    }
-                </select>
-                <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
-            </div>
-
-            </br>
-
-            <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
-            </div> *@
-
             <input type="hidden" asp-for="ItemVM.Id" value="@Model.ItemVM.Id" />
             <input type="hidden" asp-for="ItemVM.Image!.FileUrl" value="@Model.ItemVM.Image!.FileUrl" />
         </form>
     </div>
 </div>
 
-<div>
-    @if (ViewData["categoryId"] is int categoryId)
-    {
-        @Html.ActionLink("Back to List", "Index", new { categoryId = categoryId }, new{ @class="btn btn-info" })
-        ;
-    }
-    else
-    {
-        <a class="btn btn-info" asp-action="Index"> Back to List</a>
-    }
-</div>
+@if (canListEntities)
+{
+    <div>
+        @if (ViewData["categoryId"] is int categoryId)
+        {
+            @Html.ActionLink("Back to List", "Index", new { categoryId = categoryId }, new{ @class="btn btn-info" })
+        }
+        else
+        {
+            <a class="btn btn-info" asp-action="Index"> Back to List</a>
+        }
+    </div>
+}
 
 @section Scripts {
     @{

@@ -1,4 +1,10 @@
-﻿@using QueflityMVC.Application.Constants;
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@{
+    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,13 +38,13 @@
                         <li class="nav-item" s>
                             <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (User.HasClaim(Claims.USERS_LIST, Claims.USERS_LIST))
+                        @if (canListUsers)
                         {
                             <li class="nav-item" s>
                                 <a class="nav-link active" asp-area="" asp-controller="User" asp-action="Index">User</a>
                             </li>
                         }
-                        @if (User.HasClaim(Claims.ENTITIES_LIST, Claims.ENTITIES_LIST))
+                        @if (canListEntities)
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown">Entities</a>

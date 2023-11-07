@@ -7,33 +7,6 @@ namespace QueflityMVC.Web.Integrations
     {
         public static AuthorizationOptions AddPolicies(this AuthorizationOptions options)
         {
-            //options.AddPolicy("CanManageIngredients", policy =>
-            //        policy.RequireClaim("AddIngredient", "EditIngredient"));
-            //options.AddPolicy("CanViewIngredients", policy =>
-            //    policy.RequireClaim("CanViewIngredients"));
-            //options.AddPolicy("CanDeleteIngredients", policy =>
-            //    policy.RequireClaim("CanDeleteIngredients"));
-
-            //options.AddPolicy("CanManageItems", policy =>
-            //    policy.RequireClaim("AddItems", "EditItems"));
-            //options.AddPolicy("CanViewItems", policy =>
-            //    policy.RequireClaim("CanViewItems"));
-            //options.AddPolicy("CanDeleteItems", policy =>
-            //    policy.RequireClaim("CanDeleteItems"));
-
-            //options.AddPolicy("CanManageCategories", policy =>
-            //    policy.RequireClaim("AddCategories", "EditCategories"));
-            //options.AddPolicy("CanViewCategories", policy =>
-            //    policy.RequireClaim("CanViewCategories"));
-            //options.AddPolicy("CanDeleteCategories", policy =>
-            //    policy.RequireClaim("CanDeleteCategories"));
-
-            //options.AddPolicy("CanManageKits", policy =>
-            //    policy.RequireClaim("CanManageKits", "AddKits", "EditKits"));
-            //options.AddPolicy("CanViewKits", policy =>
-            //    policy.RequireClaim("CanViewKits"));
-            //options.AddPolicy("CanDeleteKits", policy =>
-            //    policy.RequireClaim("CanDeleteKits", "DeleteKits"));
             options.AddPolicy(Policies.USER_CLAIMS_VIEW, policy =>
                 policy.RequireClaim(Claims.USER_CLAIMS_VIEW));
             options.AddPolicy(Policies.USER_CLAIMS_MANAGE, policy =>
@@ -62,7 +35,6 @@ namespace QueflityMVC.Web.Integrations
             options.AddPolicy(Policies.ENTITIES_CREATE, policy =>
                 policy.RequireClaim(Claims.ENTITIES_CREATE)
                 .RequireClaim(Claims.ENTITIES_LIST));
-
 
             return options;
         }

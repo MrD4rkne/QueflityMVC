@@ -46,7 +46,6 @@ namespace QueflityMVC.Web.Controllers
 
         [HttpGet]
         [Route("DisableUser")]
-        [ValidateAntiForgeryToken]
         [Authorize(Policy = Policies.USER_DISABLE)]
         public async Task<IActionResult> DisableUser(string userId)
         {
@@ -64,7 +63,6 @@ namespace QueflityMVC.Web.Controllers
 
         [HttpGet]
         [Route("EnableUser")]
-        [ValidateAntiForgeryToken]
         [Authorize(Policy = Policies.USER_ENABLE)]
         public async Task<IActionResult> EnableUser(string userId)
         {
@@ -76,7 +74,7 @@ namespace QueflityMVC.Web.Controllers
 
         [HttpGet]
         [Route("ManageUserRoles")]
-        [Authorize(Policy = Policies.USER_ROLES_MANAGE)]
+        [Authorize(Policy = Policies.USER_ROLES_VIEW)]
         public async Task<IActionResult> ManageUserRoles(string userId)
         {
             UserRolesVM userRolesVM = await _userService.GetUsersRolesVM(userId);
@@ -105,7 +103,7 @@ namespace QueflityMVC.Web.Controllers
 
         [HttpGet]
         [Route("ManageUserClaims")]
-        [Authorize(Policy = Policies.USER_CLAIMS_MANAGE)]
+        [Authorize(Policy = Policies.USER_CLAIMS_VIEW)]
         public async Task<IActionResult> ManageUserClaims(string userId)
         {
             UserClaimsVM userClaimsVM = await _userService.GetUsersClaimsVM(userId);

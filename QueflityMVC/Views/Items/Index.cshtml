@@ -1,22 +1,31 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.ListItemsVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.ListItemsVM
 
 @{
     ViewData["Title"] = "List";
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Items</h1>
 
-<p>
-    @if (Model.CategoryId.HasValue)
-    {
-        @Html.ActionLink("Create New with this category", "Create", new { categoryId = Model.CategoryId.Value }, new{ @class="btn btn-primary" })
-    }
-    else
-    {
-        <a class="btn btn-primary" asp-action="Create">Create New</a>
-    }
-</p>
+@if (canCreateEntities)
+{
+    <p>
+        @if (Model.CategoryId.HasValue)
+        {
+            @Html.ActionLink("Create New with this category", "Create", new { categoryId = Model.CategoryId.Value }, new{ @class="btn btn-primary" })
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="Create">Create New</a>
+        }
+    </p>
+}
 
 <form asp-action="Index" asp-controller="Items" method="post">
     <ul class="nav gap-1">
@@ -67,9 +76,18 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
-                            @Html.ActionLink("Ingredients", "Ingredients", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm"})
-                            @Html.ActionLink("Delete", "Delete", new {  id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            @if (canEditEntities)
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                            }
+                            @if (canListEntities)
+                            {
+                                @Html.ActionLink("Ingredients", "Ingredients", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm"})
+                            }
+                            @if (canCreateEntities)
+                            {
+                                @Html.ActionLink("Delete", "Delete", new {  id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            }
                         </td>
                     </tr>
                 }

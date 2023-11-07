@@ -1,8 +1,12 @@
-﻿@using QueflityMVC.Application.ViewModels.Element;
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@using QueflityMVC.Application.ViewModels.Element;
 @model ElementDTO
 
 @{
     ViewData["Title"] = "EditComponent";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>AddComponent</h1>
@@ -70,9 +74,12 @@
     </div>
 </form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@if (canListEntities)
+{
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
 
 @section Scripts
     {

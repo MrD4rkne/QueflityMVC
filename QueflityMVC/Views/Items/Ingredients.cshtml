@@ -1,7 +1,11 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.ItemIngredientsSelectionVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.ItemIngredientsSelectionVM
 
 @{
     ViewData["Title"] = "Ingredients";
+    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 <form asp-action="Ingredients" enctype="multipart/form-data">
     <h1>Item</h1>
@@ -10,7 +14,11 @@
         <img src="@Model.Item.Image?.FileUrl" class="card-img-top" alt="@Model.Item.Image?.AltDescription">
         <div class="card-body">
             <h5 class="card-title">@Model.Item.Name</h5>
-            @Html.ActionLink("Edit item", "Edit", new { id = Model.Item.Id }, new { @class = "btn btn-primary"})
+
+            @if (canEditEntities)
+            {
+                @Html.ActionLink("Edit item", "Edit", new { id = Model.Item.Id }, new { @class = "btn btn-primary"})
+            }
         </div>
     </div>
     

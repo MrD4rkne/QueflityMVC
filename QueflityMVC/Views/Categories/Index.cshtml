@@ -1,15 +1,23 @@
 ﻿@using QueflityMVC.Application.ViewModels.Category;
+@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
 @model ListCategoriesVM
 
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "List categories";
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 
-<h1>Item Categories</h1>
+<h1>Categories</h1>
 
 <p>
-    <a class="btn btn-primary" asp-action="Create">Create New</a>
+    @if (canCreateEntities)
+    {
+        <a class="btn btn-primary" asp-action="Create">Create New</a>
+    }
 </p>
 
 <form asp-action="Index" asp-controller="Categories" method="post">
@@ -60,9 +68,15 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
-                            @Html.ActionLink("View items", "ViewItems", new { id = item.Id }, new { @class = "btn btn-outline-primary btn-sm"})
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            @if (canEditEntities)
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                                @Html.ActionLink("View items", "ViewItems", new { id = item.Id }, new { @class = "btn btn-outline-primary btn-sm"})
+                            }
+                            @if (canCreateEntities)
+                            {
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            }
                         </td>
                     </tr>
                 }

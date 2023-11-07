@@ -1,8 +1,16 @@
-﻿@model QueflityMVC.Application.ViewModels.User.ListUsersVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.User.ListUsersVM
 
 @{
     ViewData["Title"] = "Users";
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
+
+    bool canSeeUserClaims = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_CLAIMS_VIEW)).Succeeded;
+    bool canSeeUserRoles = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ROLES_VIEW)).Succeeded;
+    bool canDisableUser = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_DISABLE)).Succeeded;
+    bool canEnableUser = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ENABLE)).Succeeded;
 }
 
 <form asp-action="Index" method="post">
@@ -59,17 +67,29 @@
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
-                            // TODO: Add claim (policy?) checks in views
-                            @Html.ActionLink("Roles", "ManageUserRoles", new { userId=item.Id }, new { @class = "btn btn-outline-info btn-sm"})
-                            @Html.ActionLink("Claims", "ManageUserClaims", new { userId=item.Id }, new { @class = "btn btn-outline-success btn-sm"})
-
+                            @* Action buttons *@
+                            @if (canSeeUserRoles)
+                            {
+                                @Html.ActionLink("Roles", "ManageUserRoles", new { userId=item.Id }, new { @class = "btn btn-outline-info btn-sm"})
+                            }
+                            @if (canSeeUserClaims)
+                            {
+                                @Html.ActionLink("Claims", "ManageUserClaims", new { userId=item.Id }, new { @class = "btn btn-outline-success btn-sm"})
+                            }
+                            
                             @if (item.IsEnabled)
                             {
-                                @Html.ActionLink("Disable", "DisableUser", new { userId=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                                if (canDisableUser)
+                                {
+                                    @Html.ActionLink("Disable", "DisableUser", new { userId=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                                }
                             }
                             else
                             {
-                                @Html.ActionLink("Enable", "EnableUser", new { userId=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                                if (canEnableUser)
+                                {
+                                    @Html.ActionLink("Enable", "EnableUser", new { userId=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                                }
                             }
 
                         </td>
@@ -87,7 +107,7 @@
     {
     <script type="text/javascript">
         function PageSizeSelected() {
-            document.forms[1].submit();
+            SubmitPagination();
         }
     </script>
 }

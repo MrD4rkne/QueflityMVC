@@ -1,12 +1,16 @@
-﻿@model QueflityMVC.Application.ViewModels.Ingredient.IngredientDTO
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Ingredient.IngredientDTO
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create ingredient";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h1>Create</h1>
+<h1>Create ingredient</h1>
 
-<h4>IngredientDTO</h4>
+<h4>Enter your new (surely awesome) ingredient's info below:</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,7 +28,10 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@if (canListEntities)
+{
+    <div>
+            <a asp-action="Index">Back to List</a>
+    </div>
+}
 

@@ -1,7 +1,11 @@
-﻿@model QueflityMVC.Application.ViewModels.Kit.KitDTO
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Kit.KitDTO
 
 @{
     ViewData["Title"] = "Create";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Create</h1>
@@ -51,9 +55,12 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@if (canListEntities)
+{
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
 
 @section Scripts {
     <script type="text/javascript">

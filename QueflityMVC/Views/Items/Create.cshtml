@@ -1,12 +1,16 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
 
 @{
     ViewData["Title"] = "Create";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Create</h1>
 
-<h4>CrEdItemVM</h4>
+<h4>Create your (surely awesome) below:</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -55,9 +59,12 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@if (canListEntities)
+{
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
