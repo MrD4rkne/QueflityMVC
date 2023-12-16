@@ -1,8 +1,11 @@
-version: "3.9"  # optional since v1.27.0
+version: '3.4'
+
 services:
-  web_api:
-    image: web_api
-    container_name: web_api_application
+  queflitymvc.web:
+    image: ${DOCKER_REGISTRY-}queflitymvcweb
+    build:
+      context: .
+      dockerfile: QueflityMVC/Dockerfile
     ports:
       - "5000:80"
   sql:
@@ -12,4 +15,4 @@ services:
       - "1433:1433" 
     environment:
       - ACCEPT_EULA=y
-      - SA_PASSWORD=A&VeryComplex123Password
+      - SA_PASSWORD=AVeryComplex12@
