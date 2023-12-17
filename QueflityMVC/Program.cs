@@ -14,7 +14,7 @@ IVariablesProvider variablesProvider = new EnviromentCredentialsProvider();
 
 // Add logging
 SerilogSetup.SetupLogger();
-builder.Host.UseSerilog();
+builder.Host.UseSerilog(Log.Logger);
 
 // Add services to the container.
 builder.Services.ConfigureDbContext<Context>(variablesProvider);
