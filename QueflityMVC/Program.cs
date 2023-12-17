@@ -1,41 +1,25 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application;
-using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure;
-using QueflityMVC.Web.Common;
-using QueflityMVC.Web.Integrations;
+using QueflityMVC.Web.Setup.Database;
+using QueflityMVC.Web.Setup.Identity;
+using QueflityMVC.Web.Setup.OAuth;
+using QueflityMVC.Web.Setup.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
+// provider for secrets, connection string etc.
+IVariablesProvider variablesProvider = new EnviromentCredentialsProvider();
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<QueflityMVC.Infrastructure.Context>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<QueflityMVC.Infrastructure.Context>()
-    .AddSignInManager<MySignInManager>();
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredUniqueChars = 0;
-    options.SignIn.RequireConfirmedEmail = false;
-    options.User.RequireUniqueEmail = false;
-});
-
+builder.Services.ConfigureDbContext<Context>(variablesProvider);
+builder.Services.ConfigureIdentity();
 
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
-
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication()
-    .AddGoogle(options => options.Setup(new AppSecretsCredentialProvider(builder.Configuration)));
+    .AddOAuths(variablesProvider);
 builder.Services.AddAuthorization(options =>
     options.AddPolicies());
 
@@ -49,7 +33,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -66,16 +49,6 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    var context = services.GetRequiredService<QueflityMVC.Infrastructure.Context>();
-    if (context.Database.GetPendingMigrations().Any())
-    {
-        context.Database.Migrate();
-    }
-}
+app.ApplyPendingMigrations<Context>();
 
 app.Run();

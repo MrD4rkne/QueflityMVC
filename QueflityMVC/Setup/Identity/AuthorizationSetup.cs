@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using QueflityMVC.Application.Constants;
 
-namespace QueflityMVC.Web.Integrations
+namespace QueflityMVC.Web.Setup.Identity
 {
     public static class AuthorizationSetup
     {
