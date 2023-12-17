@@ -4,11 +4,17 @@ using QueflityMVC.Infrastructure;
 using QueflityMVC.Web.Setup.Database;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.OAuth;
+using QueflityMVC.Web.Setup.Other;
 using QueflityMVC.Web.Setup.Secrets;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 // provider for secrets, connection string etc.
 IVariablesProvider variablesProvider = new EnviromentCredentialsProvider();
+
+// Add logging
+SerilogSetup.SetupLogger();
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.ConfigureDbContext<Context>(variablesProvider);
