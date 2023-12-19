@@ -3,11 +3,11 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Ingredient
 {
-    public class IngredientForSelection : IMapFrom<Domain.Models.Ingredient>
+    public record IngredientForSelection : IMapFrom<Domain.Models.Ingredient>
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public bool IsSelected { get; set; }
 

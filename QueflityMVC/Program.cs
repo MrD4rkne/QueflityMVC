@@ -1,50 +1,33 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application;
 using QueflityMVC.Infrastructure;
+using QueflityMVC.Web.Setup.Database;
+using QueflityMVC.Web.Setup.Identity;
+using QueflityMVC.Web.Setup.OAuth;
+using QueflityMVC.Web.Setup.Other;
+using QueflityMVC.Web.Setup.Secrets;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+// provider for secrets, connection string etc.
+IVariablesProvider variablesProvider = new EnviromentCredentialsProvider();
+
+// Add logging
+SerilogSetup.SetupLogger();
+builder.Host.UseSerilog(Log.Logger);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<QueflityMVC.Infrastructure.Context>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<QueflityMVC.Infrastructure.Context>();
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredUniqueChars = 0;
-
-    options.SignIn.RequireConfirmedEmail = false;
-    options.User.RequireUniqueEmail = false;
-});
-
-builder.Services.AddControllersWithViews();
+builder.Services.ConfigureDbContext<Context>(variablesProvider);
+builder.Services.ConfigureIdentity();
 
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
+builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-{
-    IConfigurationSection googleOAuthSection = builder.Configuration.GetSection("Authentication:Google");
-    googleOptions.ClientId = googleOAuthSection["ClientId"];
-    googleOptions.ClientSecret = googleOAuthSection["ClientSecret"];
-});
+builder.Services.AddAuthentication()
+    .AddOAuths(variablesProvider);
 builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("CanManageIngredients", policy =>
-        policy.RequireClaim("AddIngredient", "EditIngredient", "DeleteIngredient"));
-    options.AddPolicy("CanManageItems", policy =>
-        policy.RequireClaim("ViewItemsList", "AddItem", "EditItem", "DeleteItem"));
-    options.AddPolicy("CanManageItemCategories", policy =>
-        policy.RequireClaim("ViewItemCategoriesList", "AddItemCategory", "EditItemCategory", "DeleteItemCategory"));
-});
+    options.AddPolicies());
 
 var app = builder.Build();
 
@@ -56,7 +39,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -70,6 +52,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
+
+app.ApplyPendingMigrations<Context>();
 
 app.Run();

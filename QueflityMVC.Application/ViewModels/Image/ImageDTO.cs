@@ -4,13 +4,13 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image
 {
-    public class ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.ItemSetImage>
+    public record ImageDTO : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.KitImage>
     {
         public int Id { get; set; }
 
         public string FileUrl { get; set; }
 
-        public string AltDescription { get; set; }
+        public string? AltDescription { get; set; }
 
         public IFormFile? FormFile { get; set; }
 
@@ -20,9 +20,14 @@ namespace QueflityMVC.Application.ViewModels.Image
                 .ForMember(img => img.FormFile, opt => opt.Ignore())
                 .ReverseMap();
 
-            profile.CreateMap<Domain.Models.ItemSetImage, ImageDTO>()
+            profile.CreateMap<Domain.Models.KitImage, ImageDTO>()
                 .ForMember(img => img.FormFile, opt => opt.Ignore())
                 .ReverseMap();
+        }
+
+        public ImageDTO()
+        {
+            FileUrl = string.Empty;
         }
     }
 }

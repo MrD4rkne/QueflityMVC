@@ -1,0 +1,94 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Kit.KitDetailsVM
+
+@{
+    ViewData["Title"] = "Details";
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
+}
+
+@if (canListEntities)
+{
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+
+<h4>Set</h4>
+
+<partial name="_KitDetailsPartial" model="@Model" />
+
+<hr />
+
+<h4>Items</h4>
+<div class="row">
+    <div class="col-auto">
+        <h7>Below you can see set's composition</h7>
+    </div>
+    @if (canCreateEntities)
+    {
+        <div class="col-auto">
+            @Html.ActionLink("Add new component", "ListItemsForComponent", new { setId = Model.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+        </div>
+    }
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Name
+            </th>
+            <th>
+                Ammount
+            </th>
+            <th>
+                Price per item
+            </th>
+            <th>
+                Overall price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var itemMembership in Model.ItemMemberships)
+        {
+            <tr>
+                <td>
+                    @if (itemMembership.Item.Image is not null)
+                    {
+                        var thumbnail = itemMembership.Item.Image;
+                        <img src="@thumbnail.FileUrl" alt="@thumbnail.AltDescription" style="height:30px" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => itemMembership.Item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => itemMembership.ItemsAmmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => itemMembership.PricePerItem)
+                </td>
+                <td>
+                    @Html.Label((itemMembership.PricePerItem * itemMembership.ItemsAmmount).ToString())
+                </td>
+                <td>
+                    @if (canEditEntities)
+                    {
+                        @Html.ActionLink("Edit", "EditComponent", new { itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-secondary btn-sm"})
+                    }
+
+                    @if (canCreateEntities)
+                    {
+                        @Html.ActionLink("Delete", "DeleteComponent", new {  itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-danger btn-sm"})
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Infrastructure.Common;
 
 namespace QueflityMVC.Domain.Common
 {

@@ -1,11 +1,9 @@
-﻿using QueflityMVC.Infrastructure.Common;
-
-namespace QueflityMVC.Domain.Common
+﻿namespace QueflityMVC.Domain.Common
 {
     public class BaseImage : BaseEntity
     {
-        public string FileUrl { get; set; }
+        public required string FileUrl { get; set; }
 
-        public string AltDescription { get; set; }
+        public required string AltDescription { get; set; }
     }
 }

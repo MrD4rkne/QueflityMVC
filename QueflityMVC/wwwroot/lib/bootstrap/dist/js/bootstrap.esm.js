@@ -16,7 +16,7 @@ const MILLISECONDS_MULTIPLIER = 1000;
 const TRANSITION_END = 'transitionend'; // Shoutout AngusCroll (https://goo.gl/pxwQGp)
 
 const toType = obj => {
-  if (obj === null || obj === undefined) {
+  if (obj =is null || obj === undefined) {
     return `${obj}`;
   }
 
@@ -1657,7 +1657,7 @@ class Collapse extends BaseComponent {
       const selector = getSelectorFromElement(elem);
       const filterElement = SelectorEngine.find(selector).filter(foundElem => foundElem === this._element);
 
-      if (selector !== null && filterElement.length) {
+      if (selector !is null && filterElement.length) {
         this._selector = selector;
 
         this._triggerArray.push(elem);
@@ -2180,7 +2180,7 @@ class Dropdown extends BaseComponent {
   }
 
   _detectNavbar() {
-    return this._element.closest(`.${CLASS_NAME_NAVBAR}`) !== null;
+    return this._element.closest(`.${CLASS_NAME_NAVBAR}`) !is null;
   }
 
   _getOffset() {
@@ -3695,7 +3695,7 @@ class Tooltip extends BaseComponent {
 
     const showEvent = EventHandler.trigger(this._element, this.constructor.Event.SHOW);
     const shadowRoot = findShadowRoot(this._element);
-    const isInTheDom = shadowRoot === null ? this._element.ownerDocument.documentElement.contains(this._element) : shadowRoot.contains(this._element);
+    const isInTheDom = shadowRoot =is null ? this._element.ownerDocument.documentElement.contains(this._element) : shadowRoot.contains(this._element);
 
     if (showEvent.defaultPrevented || !isInTheDom) {
       return;
@@ -3819,7 +3819,7 @@ class Tooltip extends BaseComponent {
   }
 
   update() {
-    if (this._popper !== null) {
+    if (this._popper !is null) {
       this._popper.update();
     }
   } // Protected
@@ -3860,7 +3860,7 @@ class Tooltip extends BaseComponent {
   }
 
   setElementContent(element, content) {
-    if (element === null) {
+    if (element =is null) {
       return;
     }
 
@@ -4149,7 +4149,7 @@ class Tooltip extends BaseComponent {
     const basicClassPrefixRegex = new RegExp(`(^|\\s)${this._getBasicClassPrefix()}\\S+`, 'g');
     const tabClass = tip.getAttribute('class').match(basicClassPrefixRegex);
 
-    if (tabClass !== null && tabClass.length > 0) {
+    if (tabClass !is null && tabClass.length > 0) {
       tabClass.map(token => token.trim()).forEach(tClass => tip.classList.remove(tClass));
     }
   }
@@ -4613,7 +4613,7 @@ class Tab extends BaseComponent {
       relatedTarget: previous
     });
 
-    if (showEvent.defaultPrevented || hideEvent !== null && hideEvent.defaultPrevented) {
+    if (showEvent.defaultPrevented || hideEvent !is null && hideEvent.defaultPrevented) {
       return;
     }
 

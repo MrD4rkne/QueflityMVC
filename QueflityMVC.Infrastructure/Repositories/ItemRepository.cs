@@ -14,18 +14,20 @@ namespace QueflityMVC.Infrastructure.Repositories
             return _dbContext.Items.Include(it => it.Image).FirstOrDefault(it => it.Id == entityId);
         }
 
-        public override Item? Update(Item entityToUpdate)
+        public IQueryable<Item> GetFilteredItems(string? nameFilter, int? categoryId)
         {
-            if (entityToUpdate is null)
+            var entitiesSource = GetAll();
+
+            if (!string.IsNullOrEmpty(nameFilter))
             {
-                return default;
+                entitiesSource = entitiesSource.Where(x => x.Name.StartsWith(nameFilter));
+            }
+            if (categoryId.HasValue)
+            {
+                entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
             }
 
-            _dbContext.Items.Attach(entityToUpdate);
-            _dbContext.Items.Entry(entityToUpdate).State = EntityState.Modified;
-            _dbContext.SaveChanges();
-
-            return GetById(entityToUpdate.Id);
+            return entitiesSource;
         }
 
         public Item? GetItemWithIngredientsById(int itemId)
@@ -36,12 +38,16 @@ namespace QueflityMVC.Infrastructure.Repositories
         public void UpdateIngredients(int itemId, List<Ingredient> ingredients)
         {
             var item = GetItemWithIngredientsById(itemId);
-
-            item.Ingredients.Clear();
-            foreach (var ing in ingredients)
+            if (item is null)
             {
-                item.Ingredients.Add(ing);
+                throw new NullReferenceException();
             }
+
+            if (ingredients is not null)
+            {
+                item.Ingredients = ingredients;
+            }
+
             Update(item);
         }
     }

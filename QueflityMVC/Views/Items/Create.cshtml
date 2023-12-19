@@ -1,18 +1,22 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
 
 @{
     ViewData["Title"] = "Create";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Create</h1>
 
-<h4>CrEdItemVM</h4>
+<h4>Create your (surely awesome) below:</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <img alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image!.FileUrl" style="max-width: 600px;width:100%" />
+            <img alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image?.FileUrl" style="max-width: 600px;width:100%" />
             <div class="form-group">
                 <input asp-for="ItemVM.Image!.FormFile" type="file">
                 <span asp-validation-for="ItemVM.Image!.FormFile"></span>
@@ -33,7 +37,7 @@
                 <label>Category</label>
                 <select asp-for="ItemVM.CategoryId" class="form-control">
                     <option value="">Select a category</option>
-                    @foreach (var category in Model.ItemCategories)
+                    @foreach (var category in Model.Categories)
                     {
                         @if (category.Id == Model.ItemVM.CategoryId)
                         {
@@ -46,7 +50,7 @@
                     }
                 </select>
                 <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
-            </div
+            </div>
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -55,9 +59,12 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@if (canListEntities)
+{
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

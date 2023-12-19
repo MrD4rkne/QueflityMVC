@@ -1,0 +1,71 @@
+﻿@using QueflityMVC.Application.ViewModels.User;
+@using QueflityMVC.Application.ViewModels.Other;
+@model UserRolesVM
+
+@{
+    ViewData["Title"] = $"{@Model.Username} - roles";
+}
+
+<h2>
+    @Model.Username
+    @if (Model.IsEnabled)
+    {
+        <span class="badge bg-primary">Active</span>
+    }
+    else
+    {
+        <span class="badge bg-secondary">Disabled</span>
+    }
+</h2>
+
+<form asp-action="ManageUserRoles" asp-controller="User">
+    <div class="row">
+        <div class="col-auto">
+            <h4>Manage their's roles</h4>
+        </div>
+        @if (Model.CanCallerManage)
+        {
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        }
+    </div>
+    <div class="row">
+        @Html.HiddenFor(vm => vm.UserId)
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Is assigned
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.AllRoles.Count; i++)
+                {
+                    RoleForSelectionVM role = Model.AllRoles[i];
+                    role.IsSelected = Model.AssignedRolesIds.Contains(role.Id);
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => role.Name)
+                        </td>
+                        <td>
+                            @Html.HiddenFor(vm => vm.AllRoles[i].Id)
+                            @if (Model.CanCallerManage)
+                            {
+                                @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected)
+                            }
+                            else
+                            {
+                                @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected,new{ disabled=""})
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>

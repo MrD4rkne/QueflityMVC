@@ -10,9 +10,10 @@ namespace QueflityMVC.Infrastructure
         {
             services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IIngredientRepository, IngredientRepository>();
-            services.AddTransient<IItemCategoryRepository, ItemCategoryRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IItemRepository, ItemRepository>();
-            services.AddTransient<IItemSetRepository, ItemSetRepository>();
+            services.AddTransient<IKitRepository, KitRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             return services;
         }

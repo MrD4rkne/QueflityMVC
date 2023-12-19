@@ -1,5 +1,5 @@
-﻿using QueflityMVC.Application.ViewModels.Item;
-using QueflityMVC.Application.ViewModels.ItemCategory;
+﻿using QueflityMVC.Application.ViewModels.Category;
+using QueflityMVC.Application.ViewModels.Item;
 
 namespace QueflityMVC.Application.Interfaces
 {
@@ -9,9 +9,7 @@ namespace QueflityMVC.Application.Interfaces
 
         void DeleteItem(int id, string contentRootPath);
 
-        ListItemsVM GetFilteredList(string nameFilter, int pageSize, int pageIndex);
-
-        ListItemsVM GetFilteredList(int itemCategoryId, string nameFilter, int pageSize, int pageIndex);
+        Task<ListItemsVM> GetFilteredList(ListItemsVM listItemsVM);
 
         CrEdItemVM? GetForEdit(int id);
 
@@ -19,7 +17,7 @@ namespace QueflityMVC.Application.Interfaces
 
         Task UpdateItem(ItemDTO createItemVM, string rootPath);
 
-        List<ItemCategoryForSelectVM> GetItemCategoriesForSelectVM();
+        List<CategoryForSelectVM> GetCategoriesForSelectVM();
 
         ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id);
 

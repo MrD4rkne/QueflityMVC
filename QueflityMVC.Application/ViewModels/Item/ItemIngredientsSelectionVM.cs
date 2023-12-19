@@ -2,12 +2,12 @@
 
 namespace QueflityMVC.Application.ViewModels.Item
 {
-    public class ItemIngredientsSelectionVM
+    public record ItemIngredientsSelectionVM
     {
-        public ItemDTO Item { get; set; }
+        public required ItemDTO Item { get; set; }
 
-        public List<int> SelectedIngredients { get; set; }
+        public required List<int> SelectedIngredientsIds { get; set; }
 
-        public List<IngredientForSelection> AllIngredients { get; set; }
+        public required List<IngredientForSelection> AllIngredients { get; set; }
     }
 }

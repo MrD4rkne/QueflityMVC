@@ -17,7 +17,7 @@ namespace QueflityMVC.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("ProductVersion", "7.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -87,71 +87,6 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -239,6 +174,121 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categorie");
+                });
+
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Element", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("ItemsAmmount")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("KitId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PricePerItem")
+                        .HasPrecision(14, 2)
+                        .HasColumnType("decimal(14,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("KitId");
+
+                    b.ToTable("SetElements");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.Ingredient", b =>
                 {
                     b.Property<int>("Id")
@@ -264,7 +314,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ItemCategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ItemImageId")
@@ -283,30 +333,13 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemCategoryId");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ItemImageId")
                         .IsUnique()
                         .HasFilter("[ItemImageId] IS NOT NULL");
 
                     b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ItemCategories");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemImage", b =>
@@ -330,7 +363,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("ItemImages");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -338,7 +371,10 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ItemSetImageId")
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("KitImageId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -354,14 +390,14 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemSetImageId")
+                    b.HasIndex("KitImageId")
                         .IsUnique()
-                        .HasFilter("[ItemSetImageId] IS NOT NULL");
+                        .HasFilter("[KitImageId] IS NOT NULL");
 
-                    b.ToTable("ItemSets");
+                    b.ToTable("Kits");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSetImage", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.KitImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -379,37 +415,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemSetImages");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.SetMembership", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemSetId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("ItemsAmmount")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("PricePerItem")
-                        .HasPrecision(14, 2)
-                        .HasColumnType("decimal(14,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("ItemSetId");
-
-                    b.ToTable("SetMemberships");
+                    b.ToTable("KitImages");
                 });
 
             modelBuilder.Entity("IngredientItem", b =>
@@ -438,7 +444,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("QueflityMVC.Domain.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -447,7 +453,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("QueflityMVC.Domain.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -462,7 +468,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("QueflityMVC.Domain.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -471,18 +477,37 @@ namespace QueflityMVC.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("QueflityMVC.Domain.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Element", b =>
+                {
+                    b.HasOne("QueflityMVC.Domain.Models.Item", "Item")
+                        .WithMany("SetElements")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QueflityMVC.Domain.Models.Kit", "Kit")
+                        .WithMany("Elements")
+                        .HasForeignKey("KitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Kit");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
                 {
-                    b.HasOne("QueflityMVC.Domain.Models.ItemCategory", "ItemCategory")
+                    b.HasOne("QueflityMVC.Domain.Models.Category", "Category")
                         .WithMany("Items")
-                        .HasForeignKey("ItemCategoryId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -491,65 +516,44 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .HasForeignKey("QueflityMVC.Domain.Models.Item", "ItemImageId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("Image");
+                    b.Navigation("Category");
 
-                    b.Navigation("ItemCategory");
+                    b.Navigation("Image");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
-                    b.HasOne("QueflityMVC.Domain.Models.ItemSetImage", "Image")
-                        .WithOne("ItemSet")
-                        .HasForeignKey("QueflityMVC.Domain.Models.ItemSet", "ItemSetImageId")
+                    b.HasOne("QueflityMVC.Domain.Models.KitImage", "Image")
+                        .WithOne("Kit")
+                        .HasForeignKey("QueflityMVC.Domain.Models.Kit", "KitImageId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Image");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.SetMembership", b =>
-                {
-                    b.HasOne("QueflityMVC.Domain.Models.Item", "Item")
-                        .WithMany("SetMemberships")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QueflityMVC.Domain.Models.ItemSet", "ItemSet")
-                        .WithMany("SetMemberships")
-                        .HasForeignKey("ItemSetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("ItemSet");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
-                {
-                    b.Navigation("SetMemberships");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemCategory", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Category", b =>
                 {
                     b.Navigation("Items");
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
+                {
+                    b.Navigation("SetElements");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.ItemImage", b =>
                 {
-                    b.Navigation("Item")
-                        .IsRequired();
+                    b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSet", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
-                    b.Navigation("SetMemberships");
+                    b.Navigation("Elements");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.ItemSetImage", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.KitImage", b =>
                 {
-                    b.Navigation("ItemSet")
-                        .IsRequired();
+                    b.Navigation("Kit");
                 });
 #pragma warning restore 612, 618
         }

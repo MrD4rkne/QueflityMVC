@@ -1,25 +1,31 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.ListItemsVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.ListItemsVM
 
 @{
     ViewData["Title"] = "List";
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
-    int pagesCount = (int)Math.Ceiling((Model.TotalCount / (double)Model.PageSize));
-    if (pagesCount < 1)
-        pagesCount = 1;
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Items</h1>
 
-<p>
-    @if (Model.ItemCategoryId.HasValue)
-    {
-        @Html.ActionLink("Create New with this category", "Create", new { categoryId = Model.ItemCategoryId.Value }, new{ @class="btn btn-primary" })
-    }
-    else
-    {
-        <a class="btn btn-primary" asp-action="Create">Create New</a>
-    }
-</p>
+@if (canCreateEntities)
+{
+    <p>
+        @if (Model.CategoryId.HasValue)
+        {
+            @Html.ActionLink("Create New with this category", "Create", new { categoryId = Model.CategoryId.Value }, new{ @class="btn btn-primary" })
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="Create">Create New</a>
+        }
+    </p>
+}
 
 <form asp-action="Index" asp-controller="Items" method="post">
     <ul class="nav gap-1">
@@ -30,10 +36,10 @@
             <button type="submit" class="btn btn-secondary">Search</button>
         </li>
         <li class="nav-item">
-            <select class="form-select" asp-for="PageSize" name="pageSize" id="pageSize" onchange="javascript:PageSizeSelected()">
+            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
                 @foreach (int i in options)
                 {
-                    @if (i == Model.PageSize)
+                    @if (i == Model.Pagination.PageSize)
                     {
                         <option value="@i" selected>@i</option>
                     }
@@ -57,7 +63,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Items)
+                @foreach (var item in Model.Pagination.Entities)
                 {
                     <tr>
                         <td>
@@ -70,62 +76,35 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
-                            @Html.ActionLink("Ingredients", "Ingredients", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm"})
-                            @Html.ActionLink("Delete", "Delete", new {  id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            @if (canEditEntities)
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                            }
+                            @if (canListEntities)
+                            {
+                                @Html.ActionLink("Ingredients", "Ingredients", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm"})
+                            }
+                            @if (canCreateEntities)
+                            {
+                                @Html.ActionLink("Delete", "Delete", new {  id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            }
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+
     </div>
     <div class="row">
-        <nav>
-            <ul class="pagination justify-content-center">
-                @if (Model.PageIndex <= 1)
-                {
-                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                }
-                else
-                {
-                    <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.PageIndex-1)">Previous</a></li>
-                }
-                @for (int i = 1; i <= pagesCount; i++)
-                {
-                    @if (i != Model.PageIndex)
-                    {
-                        <li class="page-item"><a class="page-link" href="javascript:PagerClick(@i)">@i</a></li>
-                    }
-                    else
-                    {
-                        <li class="page-item disabled"><span class="page-link"><b>@i</b></span></li>
-                    }
-                }
-                @if (Model.PageIndex >= pagesCount)
-                {
-                    <li class="page-item disabled"><span class="page-link">Next</span></li>
-                }
-                else
-                {
-                    <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.PageIndex+1)">Next</a></li>
-                }
-            </ul>
-        </nav>
-        <input type="hidden" name="pageIndex" id="pageIndex" />
+        <partial name="_PaginationPartial" for="Pagination.Info" />
     </div>
 </form>
 
 @section Scripts
     {
     <script type="text/javascript">
-        function PagerClick(pageIndex) {
-            document.getElementById("pageIndex").value = pageIndex;
-            document.forms[0].submit();
-        }
-    </script>
-    <script type="text/javascript">
         function PageSizeSelected() {
-            document.forms[0].submit();
+            SubmitPagination();
         }
     </script>
 }

@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@{
+    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -31,15 +38,24 @@
                         <li class="nav-item" s>
                             <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown">Entities</a>
-                            <ul class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="ItemCategories" asp-action="Index">Item Categories</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Ingredients" asp-action="Index">Ingredients</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="ItemSets" asp-action="Index">Sets</a>
-                            </ul>
-                        </li>
+                        @if (canListUsers)
+                        {
+                            <li class="nav-item" s>
+                                <a class="nav-link active" asp-area="" asp-controller="User" asp-action="Index">User</a>
+                            </li>
+                        }
+                        @if (canListEntities)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown">Entities</a>
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Item Categories</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Ingredients" asp-action="Index">Ingredients</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Kits" asp-action="Index">Sets</a>
+                                </ul>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
