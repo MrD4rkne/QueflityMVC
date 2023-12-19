@@ -140,7 +140,7 @@ namespace QueflityMVC.Web.Controllers
             return callerPrincipal.HasClaim(Claims.USER_ROLES_MANAGE, Claims.USER_ROLES_MANAGE);
         }
 
-        private bool CanUserManageClaims(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
+        private static bool CanUserManageClaims(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
         {
             string? callerId = callerPrincipal.GetLoggedInUserId();
             if (IsTheSameUser(callerId, userToBeManagedId))
