@@ -1,12 +1,13 @@
-﻿using QueflityMVC.Web.Integrations;
+﻿using QueflityMVC.Web.Common;
 
-namespace QueflityMVC.Web.Common
+namespace QueflityMVC.Web.Setup.Secrets
 {
-    public class AppSecretsCredentialProvider : IGoogleOAuthCredentialsProvider
+    public class AppSecretsCredentialProvider : IVariablesProvider
     {
         private const string OAUTH_GOOGLE_CLIENT_ID = "ClientId";
         private const string OAUTH_GOOGLE_CLIENT_SECRET = "ClientSecret";
         private const string OAUTH_GOOGLE_SECTION = "Authentication:Google";
+        private const string DB_CONNECTION_STRING = "Database:ConnectionString";
 
         private ConfigurationManager _configManager;
 
@@ -41,6 +42,14 @@ namespace QueflityMVC.Web.Common
         public Tuple<string?, string?> GetGoogleOAuthCredentials()
         {
             return new(GetGoogleOAuthClientId(), GetGoogleOAuthClientSecret());
+        }
+
+        public string? GetConnectionString()
+        {
+            string? connectionString = _configManager.GetValue<string>(DB_CONNECTION_STRING);
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ConfigurationException("Database connection string is null or empty.");
+            return connectionString;
         }
     }
 }
