@@ -4,9 +4,6 @@
     {
         public PaginationInfo Info { get; set; }
 
-        public int PageSize { get; set; }
-
-        public int CurrentPageNo { get; set; }
         public List<T> Entities { get; set; }
 
         public PaginationVM()
