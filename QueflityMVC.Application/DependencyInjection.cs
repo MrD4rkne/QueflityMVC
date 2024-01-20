@@ -16,15 +16,13 @@ namespace QueflityMVC.Application
 
             // FluentValidation
             services.AddFluentValidationClientsideAdapters();
-            services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+            services.AddValidatorsFromAssemblyContaining<KitValidator>();
 
             // Services
-            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ICategoryService,CategoryService>();
             services.AddTransient<IItemService, ItemService>();
             services.AddTransient<IIngredientService, IngredientService>();
-            services.AddTransient<IKitService, KitService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddSingleton<IFileService, FileService>();
+            services.AddTransient<IKitService, IKitService>();
 
             return services;
         }

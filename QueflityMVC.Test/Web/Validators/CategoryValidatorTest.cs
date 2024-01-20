@@ -2,11 +2,6 @@
 using FluentValidation;
 using QueflityMVC.Application.Validators;
 using QueflityMVC.Application.ViewModels.Category;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace QueflityMVC.Test.Web.Validators
@@ -28,7 +23,7 @@ namespace QueflityMVC.Test.Web.Validators
             emptyName.Name = string.Empty;
             CategoryDTO tooShort = GetPerfectCategoryDTO();
             tooShort.Name = "1";
-            CategoryDTO minimumLength= GetPerfectCategoryDTO();
+            CategoryDTO minimumLength = GetPerfectCategoryDTO();
             minimumLength.Name = "12";
             CategoryDTO validLength = GetPerfectCategoryDTO();
             validLength.Name = "123456";

@@ -21,7 +21,6 @@ namespace QueflityMVC.Infrastructure.Repositories
             {
                 matchingIngredients = matchingIngredients.Where(x => x.Items!.Any(y => y.Id == itemId));
             }
-
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 matchingIngredients = matchingIngredients.Where(x => x.Name.StartsWith(nameFilter));

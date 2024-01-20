@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Domain.Common
 {
-    public class BaseBuyableEntity : BaseEntity
+    public class BasePurchasableEntity : BaseEntity
     {
         public bool ShouldBeShown { get; set; }
 

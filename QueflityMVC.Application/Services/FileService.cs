@@ -36,11 +36,7 @@ namespace QueflityMVC.Application.Services
         public void DeleteImage(string root, string relativeImagePath)
         {
             string path = Path.Combine(GetRootDirectory(root), NormaliseFilePath(relativeImagePath));
-
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
+            File.Delete(path);
         }
 
         private string NormaliseFilePath(string path)
@@ -54,7 +50,6 @@ namespace QueflityMVC.Application.Services
             {
                 path = path.Substring(1);
             }
-
             return path.Replace('/', '\\');
         }
 

@@ -9,9 +9,13 @@ namespace QueflityMVC.Application.Interfaces
         Task EnableUser(string userToEnableId);
 
         Task<ListUsersVM> GetFilteredList(ListUsersVM listUsersVM);
+
         Task<UserClaimsVM> GetUsersClaimsVM(string userId);
+
         Task<UserRolesVM> GetUsersRolesVM(string userId);
+
         Task UpdateUserClaims(UserClaimsVM userClaimsVM);
+
         Task UpdateUserRoles(UserRolesVM userRolesVM);
     }
 }

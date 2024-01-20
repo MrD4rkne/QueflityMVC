@@ -24,8 +24,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task DisableUser(string userToDisableId)
         {
-            ArgumentException.ThrowIfNullOrEmpty(userToDisableId);
-
             bool doesUserExists = await _userRepository.DoesUserExist(userToDisableId);
             if (!doesUserExists)
             {
@@ -37,8 +35,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task EnableUser(string userToEnableId)
         {
-            ArgumentException.ThrowIfNullOrEmpty(userToEnableId);
-
             bool doesUserExists = await _userRepository.DoesUserExist(userToEnableId);
             if (!doesUserExists)
             {
@@ -50,9 +46,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task<ListUsersVM> GetFilteredList(ListUsersVM listUsersVM)
         {
-            ArgumentNullException.ThrowIfNull(listUsersVM);
-            ArgumentNullException.ThrowIfNull(listUsersVM.Pagination);
-
             IQueryable<ApplicationUser> matchingUsers = _userRepository.GetFilteredUsers(listUsersVM.UserNameFilter);
             listUsersVM.Pagination = await matchingUsers.Paginate<ApplicationUser, UserForListVM>(listUsersVM.Pagination, _mapper.ConfigurationProvider);
 
@@ -61,7 +54,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task<UserClaimsVM> GetUsersClaimsVM(string userId)
         {
-            ArgumentException.ThrowIfNullOrEmpty(userId);
             var user = await _userRepository.GetUserById(userId);
             if (user is null)
             {
@@ -85,8 +77,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task<UserRolesVM> GetUsersRolesVM(string userId)
         {
-            ArgumentException.ThrowIfNullOrEmpty(userId);
-
             var user = await _userRepository.GetUserById(userId);
             if (user is null)
             {
@@ -111,9 +101,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task UpdateUserClaims(UserClaimsVM userClaimsVM)
         {
-            ArgumentNullException.ThrowIfNull(userClaimsVM);
-            ArgumentNullException.ThrowIfNullOrEmpty(userClaimsVM.UserId);
-
             string[] claimsToGive = userClaimsVM.AllClaims
                 .Where(x => x.IsSelected)
                 .Select(x => x.Id)
@@ -129,9 +116,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task UpdateUserRoles(UserRolesVM userRolesVM)
         {
-            ArgumentNullException.ThrowIfNull(userRolesVM);
-            ArgumentNullException.ThrowIfNullOrEmpty(userRolesVM.UserId);
-
             await Parallel.ForEachAsync(userRolesVM.AllRoles,
                 async (role, cs) => { await UpdateRoleMembership(role, userRolesVM.UserId); });
         }

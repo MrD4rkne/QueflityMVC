@@ -15,14 +15,12 @@ namespace QueflityMVC.Infrastructure.Repositories
 
         public IQueryable<Category> GetFiltered(string? nameFilter)
         {
+            var filteredCategories = GetAll();
             if (!string.IsNullOrEmpty(nameFilter))
             {
-                return GetAll().Where(ct => ct.Name.StartsWith(nameFilter));
+                filteredCategories = filteredCategories.Where(ct => ct.Name.StartsWith(nameFilter));
             }
-            else
-            {
-                return GetAll();
-            }
+            return filteredCategories;
         }
     }
 }

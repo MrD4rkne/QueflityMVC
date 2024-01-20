@@ -29,21 +29,7 @@ namespace QueflityMVC.Application.Services
 
         public async Task<int> CreateKit(KitDTO kitDTO, string contentRootPath)
         {
-            if (kitDTO is null)
-            {
-                throw new ArgumentNullException(nameof(kitDTO));
-            }
-            if (kitDTO.Image is null)
-            {
-                throw new ArgumentNullException(nameof(kitDTO.Image));
-            }
-            if (kitDTO.Image.FormFile is null)
-            {
-                throw new ArgumentNullException(nameof(kitDTO.Image.FormFile));
-            }
-
             kitDTO.Image!.FileUrl = await _fileService.UploadFile(contentRootPath, kitDTO.Image.FormFile);
-
             var kitToCreate = _mapper.Map<Kit>(kitDTO);
             kitToCreate.Price = 0;
 
@@ -52,26 +38,14 @@ namespace QueflityMVC.Application.Services
 
         public async Task<int> EditKit(KitDTO editKitDTO, string contentRootPath)
         {
-            if (editKitDTO is null)
-            {
-                throw new ArgumentNullException(nameof(editKitDTO), "Viewmodel cannot be null!");
-            }
-
-            if (editKitDTO.Image is null)
-            {
-                throw new ArgumentNullException(nameof(editKitDTO.Image), "Image cannot be null!");
-            }
-
             if (ShouldSwitchImages(editKitDTO?.Image))
             {
                 _fileService.DeleteImage(contentRootPath, editKitDTO!.Image.FileUrl);
-
                 editKitDTO.Image.FileUrl = await _fileService.UploadFile(contentRootPath, editKitDTO.Image.FormFile!);
             }
 
             var item = _mapper.Map<Kit>(editKitDTO);
             var updatedItem = _kitRepository.Update(item) ?? throw new ArgumentException("Item set does not exist!");
-
             return updatedItem.Id;
         }
 
@@ -89,7 +63,6 @@ namespace QueflityMVC.Application.Services
             }
 
             var kitDetailsVM = _mapper.Map<KitDetailsVM>(kit);
-
             return kitDetailsVM;
         }
 
@@ -111,13 +84,7 @@ namespace QueflityMVC.Application.Services
             {
                 Pagination = pagination
             };
-
             return listItemVM;
-        }
-
-        public KitDTO GetKitVMForAdding()
-        {
-            return new KitDTO() { Id = 0, Name = string.Empty };
         }
 
         public KitDTO GetKitVMForEdit(int id)
@@ -129,7 +96,6 @@ namespace QueflityMVC.Application.Services
             }
 
             var kitDetailsVM = _mapper.Map<KitDTO>(kit);
-
             return kitDetailsVM;
         }
 
@@ -147,14 +113,6 @@ namespace QueflityMVC.Application.Services
 
         public async Task<ListItemsForComponentsVM> GetFilteredListForComponents(ListItemsForComponentsVM itemsForComponentsVM)
         {
-            if (itemsForComponentsVM is null)
-            {
-                throw new ArgumentNullException(nameof(itemsForComponentsVM));
-            }
-            if (itemsForComponentsVM.Pagination is null)
-            {
-                throw new ArgumentNullException(nameof(itemsForComponentsVM.Pagination));
-            }
             if (!_kitRepository.Exists(itemsForComponentsVM.SetId))
             {
                 throw new EntityNotFoundException(entityName: "Set");
@@ -171,18 +129,8 @@ namespace QueflityMVC.Application.Services
 
         public ElementDTO GetVMForAddingElement(int setId, int itemId)
         {
-            Kit? kit = _kitRepository.GetById(setId);
-            if (kit is null)
-            {
-                throw new EntityNotFoundException(entityName: nameof(Kit));
-            }
-
-            Item? item = _itemRepository.GetById(itemId);
-            if (item is null)
-            {
-                throw new EntityNotFoundException(entityName: nameof(Item));
-            }
-
+            Kit? kit = _kitRepository.GetById(setId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
+            Item? item = _itemRepository.GetById(itemId) ?? throw new EntityNotFoundException(entityName: nameof(Item));
             ElementDTO elementDTO = new()
             {
                 KitDetailsVM = _mapper.Map<KitDetailsVM>(kit),
@@ -196,19 +144,6 @@ namespace QueflityMVC.Application.Services
 
         public void AddElement(ElementDTO elementToCreate)
         {
-            if (elementToCreate is null)
-            {
-                throw new ArgumentNullException(nameof(elementToCreate));
-            }
-            if (elementToCreate.Item is null)
-            {
-                throw new ArgumentNullException(nameof(elementToCreate.Item));
-            }
-            if (elementToCreate.KitDetailsVM is null)
-            {
-                throw new ArgumentNullException(nameof(elementToCreate.KitDetailsVM));
-            }
-
             var componentToCreate = _mapper.Map<Element>(elementToCreate);
             _kitRepository.AddComponent(componentToCreate);
             _kitRepository.UpdateKitPrice(componentToCreate.KitId);
@@ -216,21 +151,8 @@ namespace QueflityMVC.Application.Services
 
         public void EditElement(ElementDTO elementToEdit)
         {
-            if (elementToEdit is null)
-            {
-                throw new ArgumentNullException(nameof(elementToEdit));
-            }
-            if (elementToEdit.Item is null)
-            {
-                throw new ArgumentNullException(nameof(elementToEdit.Item));
-            }
-            if (elementToEdit.KitDetailsVM is null)
-            {
-                throw new ArgumentNullException(nameof(elementToEdit.KitDetailsVM));
-            }
-
             var componentToEdit = _mapper.Map<Element>(elementToEdit);
-            _kitRepository.UpdateComponent(componentToEdit);
+            _kitRepository.UpdateElement(componentToEdit);
         }
 
         public ElementDTO GetVMForEdittingElement(int setId, int itemId)
@@ -242,7 +164,6 @@ namespace QueflityMVC.Application.Services
             }
 
             ElementDTO elementToEdit = _mapper.Map<ElementDTO>(element);
-
             return elementToEdit;
         }
 

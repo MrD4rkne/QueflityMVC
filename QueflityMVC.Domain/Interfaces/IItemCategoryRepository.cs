@@ -11,6 +11,7 @@ namespace QueflityMVC.Domain.Interfaces
         /// <param name="categoryId">Category's id</param>
         /// <returns></returns>
         bool CanDeleteCategory(int categoryId);
+
         IQueryable<Category> GetFiltered(string? nameFilter);
     }
 }

@@ -13,9 +13,7 @@ namespace QueflityMVC.Application.Common.Pagination
                 PageSize = pageSize,
                 TotalCount = totalCount
             };
-
             paginationBase.FillInfoWhenNull();
-
             paginationBase.PagesCount = CalcPagesCount(pageSize, totalCount);
 
             PaginationVM<T> paginationVM = new()

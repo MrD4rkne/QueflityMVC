@@ -4,17 +4,17 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item
 {
-    public record ItemDTO : IMapFrom<Domain.Models.Item>
+    public class ItemDTO : IMapFrom<Domain.Models.Item>
     {
         public int Id { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         public decimal Price { get; set; }
 
         public bool ShouldBeShown { get; set; }
 
-        public ImageDTO Image { get; set; }
+        public ImageDTO? Image { get; set; } = new ImageDTO();
 
         public int CategoryId { get; set; }
 
@@ -24,11 +24,6 @@ namespace QueflityMVC.Application.ViewModels.Item
                 .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
                 .ForMember(vm => vm.CategoryId, opt => opt.MapFrom(ent => ent.CategoryId))
                 .ReverseMap();
-        }
-
-        public ItemDTO()
-        {
-            Image = new();
         }
     }
 }

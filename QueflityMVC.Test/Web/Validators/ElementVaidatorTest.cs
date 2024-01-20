@@ -1,13 +1,7 @@
 ﻿using FluentAssertions;
 using FluentValidation;
 using QueflityMVC.Application.Validators;
-using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Element;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace QueflityMVC.Test.Web.Validators
@@ -22,7 +16,7 @@ namespace QueflityMVC.Test.Web.Validators
                 ItemsAmmount = 2,
                 PricePerItem = 3,
                 Item = null,
-                KitDetailsVM=null
+                KitDetailsVM = null
             };
             return elementDTO;
         }

@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Domain.Models
 {
-    public class Kit : BaseBuyableEntity
+    public class Kit : BasePurchasableEntity
     {
         public required string Name { get; set; }
 

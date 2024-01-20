@@ -44,10 +44,7 @@ namespace QueflityMVC.Application.Common.Pagination
             where T1 : class
             where T2 : class
         {
-            if (pagination is null)
-            {
-                throw new ArgumentNullException(nameof(pagination));
-            }
+            ArgumentNullException.ThrowIfNull(pagination);
 
             return await entitiesSource.Paginate<T1, T2>(pagination.Info, configurationProvider);
         }
@@ -56,11 +53,7 @@ namespace QueflityMVC.Application.Common.Pagination
             where T1 : class
             where T2 : class
         {
-            if (paginationInfo is null)
-            {
-                throw new ArgumentNullException(nameof(paginationInfo));
-            }
-
+            ArgumentNullException.ThrowIfNull(paginationInfo);
             return await entitiesSource.Paginate<T1, T2>(paginationInfo.CurrentPageNo, paginationInfo.PageSize, configurationProvider);
         }
 
@@ -106,7 +99,6 @@ namespace QueflityMVC.Application.Common.Pagination
             {
                 paginationInfo.PageSize = DEFAULT_PAGE_SIZE;
             }
-
         }
     }
 }

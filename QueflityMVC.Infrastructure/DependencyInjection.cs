@@ -8,7 +8,6 @@ namespace QueflityMVC.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IIngredientRepository, IngredientRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IItemRepository, ItemRepository>();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Common;
@@ -15,16 +16,14 @@ namespace QueflityMVC.Infrastructure.Repositories
             var set = GetFullKitWithMembershipsById(setId);
             if (set is null)
             {
-                throw new ArgumentException(nameof(setId));
+                throw new ResourceNotFoundException();
             }
 
-            var componentsIds = GetSetComponents(setId).Select(x => x.ItemId);
-
+            var componentsIds = GetKitComponents(setId).Select(x => x.ItemId);
             return componentsIds;
-
         }
 
-        public IQueryable<Element> GetSetComponents(int setId)
+        public IQueryable<Element> GetKitComponents(int setId)
         {
             return _dbContext.SetElements.Where(x => x.KitId == setId);
         }
@@ -37,7 +36,6 @@ namespace QueflityMVC.Infrastructure.Repositories
             {
                 itemsSource = itemsSource.Where(x => x.Name.StartsWith(searchName));
             }
-
             return itemsSource;
         }
 
@@ -64,8 +62,6 @@ namespace QueflityMVC.Infrastructure.Repositories
             {
                 throw new ArgumentNullException(nameof(componentToCreate));
             }
-            componentToCreate.Item = null;
-            componentToCreate.Kit = null;
 
             _dbContext.Add(componentToCreate);
             _dbContext.SaveChanges();
@@ -98,35 +94,21 @@ namespace QueflityMVC.Infrastructure.Repositories
                 .FirstOrDefault();
         }
 
-        public void UpdateComponent(Element componentToEdit)
+        public void UpdateElement(Element element)
         {
-            if (componentToEdit is null)
-            {
-                throw new ArgumentNullException(nameof(componentToEdit));
-            }
-
-            Element? elementToEdit = GetElement(componentToEdit.KitId, componentToEdit.ItemId);
+            Element? elementToEdit = GetElement(element.KitId, element.ItemId);
             if (elementToEdit is null)
             {
                 throw new EntityNotFoundException(entityName: nameof(Element));
             }
 
-            elementToEdit.PricePerItem = componentToEdit.PricePerItem;
-            elementToEdit.ItemsAmmount = componentToEdit.ItemsAmmount;
+            elementToEdit.PricePerItem = elementToEdit.PricePerItem;
+            elementToEdit.ItemsAmmount = elementToEdit.ItemsAmmount;
 
             _dbContext.Entry(elementToEdit).State = EntityState.Modified;
             _dbContext.SaveChanges();
 
             UpdateKitPrice(elementToEdit.KitId);
-        }
-
-        public void DeleteComponent(Element component)
-        {
-            if (component is null)
-            {
-                throw new ArgumentNullException(nameof(component));
-            }
-
         }
 
         public void DeleteElement(int kitId, int itemId)
@@ -138,8 +120,8 @@ namespace QueflityMVC.Infrastructure.Repositories
             }
 
             _dbContext.Remove(elemToDelete);
-
             UpdateKitPrice(elemToDelete.KitId);
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Setup.Secrets;
-using System.Diagnostics;
 
 namespace QueflityMVC.Web.Setup.Database
 {

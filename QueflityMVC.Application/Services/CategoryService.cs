@@ -21,7 +21,6 @@ namespace QueflityMVC.Application.Services
         public int CreateCategory(CategoryDTO createcategoryVM)
         {
             var categoryToCreate = _mapper.Map<Category>(createcategoryVM);
-
             return _categoriesRepository.Add(categoryToCreate);
         }
 
@@ -34,15 +33,8 @@ namespace QueflityMVC.Application.Services
 
         public async Task<ListCategoriesVM> GetFilteredList(ListCategoriesVM listCategoriesVM)
         {
-            if (listCategoriesVM is null)
-            {
-                throw new ArgumentNullException(nameof(listCategoriesVM));
-            }
-
             IQueryable<Category> matchingCategories = _categoriesRepository.GetFiltered(listCategoriesVM.NameFilter);
-
             listCategoriesVM.Pagination = await matchingCategories.Paginate<Category, CategoryForListVM>(listCategoriesVM.Pagination, _mapper.ConfigurationProvider);
-
             return listCategoriesVM;
         }
 
@@ -60,7 +52,6 @@ namespace QueflityMVC.Application.Services
         public CategoryDTO? GetVMForEdit(int id)
         {
             var category = _categoriesRepository.GetById(id);
-
             if (category is null)
                 return null;
 
@@ -73,7 +64,6 @@ namespace QueflityMVC.Application.Services
             var category = _mapper.Map<Category>(createcategoryVM);
 
             var updatedcategory = _categoriesRepository.Update(category);
-
             return _mapper.Map<CategoryDTO>(updatedcategory);
         }
     }

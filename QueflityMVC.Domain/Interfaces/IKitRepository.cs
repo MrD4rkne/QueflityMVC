@@ -11,14 +11,14 @@ namespace QueflityMVC.Domain.Interfaces
 
         IQueryable<int> GetComponenetsIdsForSet(int setId);
 
-        IQueryable<Element> GetSetComponents(int setId);
+        IQueryable<Element> GetKitComponents(int setId);
 
         void AddComponent(Element componentToCreate);
 
         void UpdateKitPrice(int kitId);
 
         Element? GetElement(int setId, int itemId);
-        void UpdateComponent(Element componentToEdit);
+        void UpdateElement(Element componentToEdit);
 
         void DeleteElement(int kitId, int itemId);
     }

@@ -21,9 +21,7 @@ namespace QueflityMVC.Application.Services
         public int CreateIngredient(IngredientDTO ingredientToCreateDTO)
         {
             Ingredient ingredientToCreate = _mapper.Map<Ingredient>(ingredientToCreateDTO);
-
             _ingredientRepository.Add(ingredientToCreate);
-
             return ingredientToCreate.Id;
         }
 
@@ -34,23 +32,14 @@ namespace QueflityMVC.Application.Services
 
         public async Task<ListIngredientsVM> GetFilteredList(ListIngredientsVM listIngredientsVM)
         {
-            if (listIngredientsVM is null)
-            {
-                throw new ArgumentNullException(nameof(listIngredientsVM));
-            }
-
             IQueryable<Ingredient> matchingIngredients = _ingredientRepository.GetIngredientsForPagination(listIngredientsVM.ItemId, listIngredientsVM.NameFilter);
-
-
             listIngredientsVM.Pagination = await matchingIngredients.Paginate<Ingredient, IngredientForListVM>(listIngredientsVM.Pagination, _mapper.ConfigurationProvider);
-
             return listIngredientsVM;
         }
 
         public IngredientDTO? GetIngredientVMForEdit(int id)
         {
             var ingredientEntity = _ingredientRepository.GetById(id);
-
             if (ingredientEntity is null)
             {
                 return null;
@@ -62,8 +51,7 @@ namespace QueflityMVC.Application.Services
         public void UpdateIngredient(IngredientDTO ingredientToEditDTO)
         {
             var category = _mapper.Map<Ingredient>(ingredientToEditDTO);
-
-            var updatedcategory = _ingredientRepository.Update(category);
+            _ = _ingredientRepository.Update(category);
         }
     }
 }

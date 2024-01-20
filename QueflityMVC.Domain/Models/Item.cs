@@ -2,13 +2,13 @@
 
 namespace QueflityMVC.Domain.Models
 {
-    public class Item : BaseBuyableEntity
+    public class Item : BasePurchasableEntity
     {
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
         public int CategoryId { get; set; }
 
-        public virtual Category? Category { get; set; }
+        public virtual Category Category { get; set; }
 
         public int? ItemImageId { get; set; }
 

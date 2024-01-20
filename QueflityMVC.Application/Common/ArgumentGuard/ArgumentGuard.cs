@@ -52,7 +52,6 @@ namespace QueflityMVC.Application.Common.ArgumentGuard
             }
 
             // Argument did not match expectations
-
             throw new ArgumentOutOfBoundsException<T>(argGuardType, referencedValue, paramName);
         }
 

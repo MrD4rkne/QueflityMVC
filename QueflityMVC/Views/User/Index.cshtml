@@ -25,7 +25,7 @@
             <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
                 @foreach (int i in options)
                 {
-                    @if (i == Model.Pagination.PageSize)
+                    @if (i == Model.Pagination.Info.PageSize)
                     {
                         <option value="@i" selected>@i</option>
                     }

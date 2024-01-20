@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Common;
@@ -40,7 +41,7 @@ namespace QueflityMVC.Infrastructure.Repositories
             var item = GetItemWithIngredientsById(itemId);
             if (item is null)
             {
-                throw new NullReferenceException();
+                throw new ResourceNotFoundException();
             }
 
             if (ingredients is not null)

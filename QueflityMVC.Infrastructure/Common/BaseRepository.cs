@@ -16,9 +16,6 @@ namespace QueflityMVC.Infrastructure.Common
 
         public virtual int Add(T entityToAdd)
         {
-            if (entityToAdd is null)
-                throw new ArgumentNullException("Entity cannot be null");
-
             _dbContext.Set<T>().Add(entityToAdd);
             _dbContext.SaveChanges();
 

@@ -26,7 +26,6 @@ namespace QueflityMVC.Infrastructure.Repositories
                 matchingUsers = matchingUsers.Where(user => user.UserName != null)
                     .Where(x => x.UserName!.Contains(userNameFilter));
             }
-
             return matchingUsers;
         }
 
