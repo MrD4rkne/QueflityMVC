@@ -15,7 +15,6 @@ namespace QueflityMVC.Application.Validators
                 .Matches("[A-Za-z]*").WithMessage("Alternative description can only contain letters");
             RuleFor(x => x!.FormFile)
                 .NotNull().WithMessage("Image must be attached").When(x => string.IsNullOrEmpty(x!.FileUrl));
-
         }
     }
 }

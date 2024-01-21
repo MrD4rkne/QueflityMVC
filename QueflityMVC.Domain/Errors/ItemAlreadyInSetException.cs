@@ -5,6 +5,7 @@ namespace QueflityMVC.Domain.Errors
     public class ItemAlreadyInSetException : Exception
     {
         private const string DEFAULT_ERROR_MESSAGE = "This item is already part of that set!";
+
         public ItemAlreadyInSetException() : this(DEFAULT_ERROR_MESSAGE)
         {
         }

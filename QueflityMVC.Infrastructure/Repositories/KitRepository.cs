@@ -9,7 +9,9 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class KitRepository : BaseRepository<Kit>, IKitRepository
     {
-        public KitRepository(Context dbContext) : base(dbContext) { }
+        public KitRepository(Context dbContext) : base(dbContext)
+        {
+        }
 
         public IQueryable<int> GetComponenetsIdsForSet(int setId)
         {

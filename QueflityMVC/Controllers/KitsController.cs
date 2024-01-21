@@ -108,7 +108,6 @@ namespace QueflityMVC.Web.Controllers
         [Authorize(Policy = Policies.ENTITIES_EDIT)]
         public async Task<IActionResult> Edit(KitDTO editedKitDTO)
         {
-
             ValidationResult validationResults = await _kitValidator.ValidateAsync(editedKitDTO);
 
             if (!validationResults.IsValid)
@@ -122,7 +121,6 @@ namespace QueflityMVC.Web.Controllers
 
             return RedirectToAction("Details", new { id = kitId });
         }
-
 
         [Route("ListItemsForComponent")]
         [HttpGet]

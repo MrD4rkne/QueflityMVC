@@ -6,7 +6,9 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
-        public CategoryRepository(Context dbContext) : base(dbContext) { }
+        public CategoryRepository(Context dbContext) : base(dbContext)
+        {
+        }
 
         public bool CanDeleteCategory(int categoryId)
         {

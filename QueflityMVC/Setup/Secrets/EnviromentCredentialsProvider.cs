@@ -6,7 +6,8 @@
         private const string OAUTH_GOOGLE_CLIENT_SECRET = "OAUTH_GOOGLE_CLIENT_SECRET";
         private const string DB_CONNECTION_STRING = "DB_CONNECTION_STRING";
 
-        public EnviromentCredentialsProvider() { }
+        public EnviromentCredentialsProvider()
+        { }
 
         public string? GetConnectionString()
         {

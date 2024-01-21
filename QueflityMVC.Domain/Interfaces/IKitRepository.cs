@@ -18,6 +18,7 @@ namespace QueflityMVC.Domain.Interfaces
         void UpdateKitPrice(int kitId);
 
         Element? GetElement(int setId, int itemId);
+
         void UpdateElement(Element componentToEdit);
 
         void DeleteElement(int kitId, int itemId);

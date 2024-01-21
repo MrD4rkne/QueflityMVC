@@ -29,22 +29,27 @@ namespace QueflityMVC.Application.Common.ArgumentGuard
                     if (IsGreaterThan(comparision))
                         return;
                     break;
+
                 case ArgumentGuardType.GreaterThanOrEquals:
                     if (IsGreaterThanOrEquals(comparision))
                         return;
                     break;
+
                 case ArgumentGuardType.LessThan:
                     if (IsLessThan(comparision))
                         return;
                     break;
+
                 case ArgumentGuardType.LessThanOrEquals:
                     if (IsLessThanOrEquals(comparision))
                         return;
                     break;
+
                 case ArgumentGuardType.Equals:
                     if (IsEquals(comparision))
                         return;
                     break;
+
                 case ArgumentGuardType.OtherThan:
                     if (OtherThan(comparision))
                         return;

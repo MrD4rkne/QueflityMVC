@@ -15,6 +15,5 @@ namespace QueflityMVC.Application.Interfaces
         CategoryDTO? GetVMForEdit(int id);
 
         CategoryDTO UpdateCategory(CategoryDTO createcategoryVM);
-
     }
 }

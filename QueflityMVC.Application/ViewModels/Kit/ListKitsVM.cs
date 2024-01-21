@@ -1,5 +1,4 @@
-﻿
-using QueflityMVC.Application.ViewModels.Pagination;
+﻿using QueflityMVC.Application.ViewModels.Pagination;
 
 namespace QueflityMVC.Application.ViewModels.Kit
 {

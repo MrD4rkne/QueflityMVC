@@ -20,7 +20,6 @@ namespace QueflityMVC.Infrastructure
 
         public DbSet<Element> SetElements { get; set; }
 
-
         public Context(DbContextOptions options) : base(options)
         {
         }

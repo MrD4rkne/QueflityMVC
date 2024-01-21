@@ -11,6 +11,5 @@
             Entities = Enumerable.Empty<T>().ToList();
             Info = new PaginationInfo();
         }
-
     }
 }

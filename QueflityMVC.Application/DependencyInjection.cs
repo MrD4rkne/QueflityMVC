@@ -19,7 +19,7 @@ namespace QueflityMVC.Application
             services.AddValidatorsFromAssemblyContaining<KitValidator>();
 
             // Services
-            services.AddTransient<ICategoryService,CategoryService>();
+            services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IItemService, ItemService>();
             services.AddTransient<IIngredientService, IngredientService>();
             services.AddTransient<IKitService, IKitService>();

@@ -8,7 +8,9 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class ItemRepository : BaseRepository<Item>, IItemRepository
     {
-        public ItemRepository(Context dbContext) : base(dbContext) { }
+        public ItemRepository(Context dbContext) : base(dbContext)
+        {
+        }
 
         public override Item? GetById(int entityId)
         {

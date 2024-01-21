@@ -6,7 +6,9 @@ namespace QueflityMVC.Infrastructure.Repositories
 {
     public class IngredientRepository : BaseRepository<Ingredient>, IIngredientRepository
     {
-        public IngredientRepository(Context dbContext) : base(dbContext) { }
+        public IngredientRepository(Context dbContext) : base(dbContext)
+        {
+        }
 
         public IQueryable<Ingredient> GetIngredientsForItem(int itemId)
         {

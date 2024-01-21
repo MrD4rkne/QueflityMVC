@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application;
 using QueflityMVC.Infrastructure;
 using QueflityMVC.Web.Setup.Database;

@@ -11,7 +11,6 @@ namespace QueflityMVC.Application.Errors.Common
     {
         public ArgumentOutOfBoundsException(ArgumentGuardType argumentGuardType, T referencedValue, string? paramName) : base(paramName, GetErrorMessage(argumentGuardType, referencedValue))
         {
-
         }
 
         private static string? GetErrorMessage(ArgumentGuardType argumentGuardType, T referencedValue) => argumentGuardType switch

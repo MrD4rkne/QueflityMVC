@@ -42,7 +42,6 @@ namespace QueflityMVC.Test.Web.Validators
             minResults.IsValid.Should().BeTrue();
             validResults.Should().NotBeNull();
             validResults.IsValid.Should().BeTrue();
-
         }
     }
 }

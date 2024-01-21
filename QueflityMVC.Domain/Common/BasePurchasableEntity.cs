@@ -8,6 +8,5 @@ namespace QueflityMVC.Domain.Common
 
         [Precision(14, 2)]
         public decimal Price { get; set; }
-
     }
 }

@@ -8,7 +8,6 @@ namespace QueflityMVC.Domain.Models
 
         public ApplicationUser()
         {
-
         }
     }
 }
