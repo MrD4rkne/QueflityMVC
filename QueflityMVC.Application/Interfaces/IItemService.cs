@@ -1,26 +1,25 @@
 ﻿using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Item;
 
-namespace QueflityMVC.Application.Interfaces
+namespace QueflityMVC.Application.Interfaces;
+
+public interface IItemService
 {
-    public interface IItemService
-    {
-        Task<int> CreateItem(ItemDTO createItemVM, string contentRootPath);
+    Task<int> CreateItem(ItemDTO createItemVM, string contentRootPath);
 
-        void DeleteItem(int id, string contentRootPath);
+    void DeleteItem(int id, string contentRootPath);
 
-        Task<ListItemsVM> GetFilteredList(ListItemsVM listItemsVM);
+    Task<ListItemsVM> GetFilteredList(ListItemsVM listItemsVM);
 
-        CrEdItemVM? GetForEdit(int id);
+    CrEdItemVM? GetForEdit(int id);
 
-        CrEdItemVM GetItemVMForAdding(int? categoryId);
+    CrEdItemVM GetItemVMForAdding(int? categoryId);
 
-        Task UpdateItem(ItemDTO createItemVM, string rootPath);
+    Task UpdateItem(ItemDTO createItemVM, string rootPath);
 
-        List<CategoryForSelectVM> GetCategoriesForSelectVM();
+    List<CategoryForSelectVM> GetCategoriesForSelectVM();
 
-        ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id);
+    ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id);
 
-        void UpdateItemIngredients(ItemIngredientsSelectionVM selectionVM);
-    }
+    void UpdateItemIngredients(ItemIngredientsSelectionVM selectionVM);
 }

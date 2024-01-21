@@ -4,54 +4,53 @@ using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Common;
 
-namespace QueflityMVC.Infrastructure.Repositories
+namespace QueflityMVC.Infrastructure.Repositories;
+
+public class ItemRepository : BaseRepository<Item>, IItemRepository
 {
-    public class ItemRepository : BaseRepository<Item>, IItemRepository
+    public ItemRepository(Context dbContext) : base(dbContext)
     {
-        public ItemRepository(Context dbContext) : base(dbContext)
+    }
+
+    public override Item? GetById(int entityId)
+    {
+        return _dbContext.Items.Include(it => it.Image).FirstOrDefault(it => it.Id == entityId);
+    }
+
+    public IQueryable<Item> GetFilteredItems(string? nameFilter, int? categoryId)
+    {
+        var entitiesSource = GetAll();
+
+        if (!string.IsNullOrEmpty(nameFilter))
         {
+            entitiesSource = entitiesSource.Where(x => x.Name.StartsWith(nameFilter));
+        }
+        if (categoryId.HasValue)
+        {
+            entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
         }
 
-        public override Item? GetById(int entityId)
+        return entitiesSource;
+    }
+
+    public Item? GetItemWithIngredientsById(int itemId)
+    {
+        return _dbContext.Items.Include(x => x.Ingredients).Include(it => it.Image).FirstOrDefault(x => x.Id == itemId);
+    }
+
+    public void UpdateIngredients(int itemId, List<Ingredient> ingredients)
+    {
+        var item = GetItemWithIngredientsById(itemId);
+        if (item is null)
         {
-            return _dbContext.Items.Include(it => it.Image).FirstOrDefault(it => it.Id == entityId);
+            throw new ResourceNotFoundException();
         }
 
-        public IQueryable<Item> GetFilteredItems(string? nameFilter, int? categoryId)
+        if (ingredients is not null)
         {
-            var entitiesSource = GetAll();
-
-            if (!string.IsNullOrEmpty(nameFilter))
-            {
-                entitiesSource = entitiesSource.Where(x => x.Name.StartsWith(nameFilter));
-            }
-            if (categoryId.HasValue)
-            {
-                entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
-            }
-
-            return entitiesSource;
+            item.Ingredients = ingredients;
         }
 
-        public Item? GetItemWithIngredientsById(int itemId)
-        {
-            return _dbContext.Items.Include(x => x.Ingredients).Include(it => it.Image).FirstOrDefault(x => x.Id == itemId);
-        }
-
-        public void UpdateIngredients(int itemId, List<Ingredient> ingredients)
-        {
-            var item = GetItemWithIngredientsById(itemId);
-            if (item is null)
-            {
-                throw new ResourceNotFoundException();
-            }
-
-            if (ingredients is not null)
-            {
-                item.Ingredients = ingredients;
-            }
-
-            Update(item);
-        }
+        Update(item);
     }
 }

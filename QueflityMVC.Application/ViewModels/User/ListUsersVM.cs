@@ -1,11 +1,10 @@
 ﻿using QueflityMVC.Application.ViewModels.Pagination;
 
-namespace QueflityMVC.Application.ViewModels.User
-{
-    public record ListUsersVM
-    {
-        public required PaginationVM<UserForListVM> Pagination { get; set; }
+namespace QueflityMVC.Application.ViewModels.User;
 
-        public string? UserNameFilter { get; set; }
-    }
+public record ListUsersVM
+{
+    public required PaginationVM<UserForListVM> Pagination { get; set; }
+
+    public string? UserNameFilter { get; set; }
 }

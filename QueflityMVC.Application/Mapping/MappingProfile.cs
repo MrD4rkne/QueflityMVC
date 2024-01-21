@@ -1,28 +1,27 @@
-﻿using AutoMapper;
-using System.Reflection;
+﻿using System.Reflection;
+using AutoMapper;
 
-namespace QueflityMVC.Application.Mapping
+namespace QueflityMVC.Application.Mapping;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            ApplyMappingFromAssembly(Assembly.GetExecutingAssembly());
-        }
+        ApplyMappingFromAssembly(Assembly.GetExecutingAssembly());
+    }
 
-        private void ApplyMappingFromAssembly(Assembly assembly)
-        {
-            var types = assembly.GetExportedTypes()
-                .Where(t => t.GetInterfaces().Any(
-                    i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
-                .ToList();
+    private void ApplyMappingFromAssembly(Assembly assembly)
+    {
+        var types = assembly.GetExportedTypes()
+            .Where(t => t.GetInterfaces().Any(
+                i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
+            .ToList();
 
-            foreach (var type in types)
-            {
-                var instance = Activator.CreateInstance(type);
-                var methodInfo = type.GetMethod("Mapping");
-                methodInfo?.Invoke(instance, new object[] { this });
-            }
+        foreach (var type in types)
+        {
+            var instance = Activator.CreateInstance(type);
+            var methodInfo = type.GetMethod("Mapping");
+            methodInfo?.Invoke(instance, new object[] { this });
         }
     }
 }

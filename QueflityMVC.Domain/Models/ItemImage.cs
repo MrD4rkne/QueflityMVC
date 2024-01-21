@@ -1,9 +1,8 @@
 ﻿using QueflityMVC.Domain.Common;
 
-namespace QueflityMVC.Domain.Models
+namespace QueflityMVC.Domain.Models;
+
+public class ItemImage : BaseImage
 {
-    public class ItemImage : BaseImage
-    {
-        public virtual Item? Item { get; set; }
-    }
+    public virtual Item? Item { get; set; }
 }

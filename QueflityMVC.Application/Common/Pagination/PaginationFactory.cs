@@ -1,55 +1,54 @@
 ﻿using QueflityMVC.Application.Common.ArgumentGuard;
 using QueflityMVC.Application.ViewModels.Pagination;
 
-namespace QueflityMVC.Application.Common.Pagination
+namespace QueflityMVC.Application.Common.Pagination;
+
+public static class PaginationFactory
 {
-    public static class PaginationFactory
+    public static PaginationVM<T> CreatePagination<T>(int pageSize, int totalCount, int currPageNo, List<T> entities) where T : class
     {
-        public static PaginationVM<T> CreatePagination<T>(int pageSize, int totalCount, int currPageNo, List<T> entities) where T : class
+        PaginationInfo paginationBase = new()
         {
-            PaginationInfo paginationBase = new()
-            {
-                CurrentPageNo = currPageNo,
-                PageSize = pageSize,
-                TotalCount = totalCount
-            };
-            paginationBase.FillInfoWhenNull();
-            paginationBase.PagesCount = CalcPagesCount(pageSize, totalCount);
+            CurrentPageNo = currPageNo,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+        paginationBase.FillInfoWhenNull();
+        paginationBase.PagesCount = CalcPagesCount(pageSize, totalCount);
 
-            PaginationVM<T> paginationVM = new()
-            {
-                Info = paginationBase,
-                Entities = entities,
-            };
-
-            return paginationVM;
-        }
-
-        public static PaginationVM<T> Default<T>(int currentPageNo = 1, int pageSize = 2) where T : class
+        PaginationVM<T> paginationVM = new()
         {
-            PaginationInfo paginationBase = new()
-            {
-                CurrentPageNo = currentPageNo,
-                PageSize = pageSize,
-                PagesCount = 1
-            };
+            Info = paginationBase,
+            Entities = entities,
+        };
 
-            PaginationVM<T> paginationVM = new()
-            {
-                Info = paginationBase,
-                Entities = Enumerable.Empty<T>().ToList()
-            };
+        return paginationVM;
+    }
 
-            return paginationVM;
-        }
-
-        public static int CalcPagesCount(int pageSize, int totalCount)
+    public static PaginationVM<T> Default<T>(int currentPageNo = 1, int pageSize = 2) where T : class
+    {
+        PaginationInfo paginationBase = new()
         {
-            pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
-            totalCount.MustBe(ArgumentGuardType.GreaterThanOrEquals, 0);
+            CurrentPageNo = currentPageNo,
+            PageSize = pageSize,
+            PagesCount = 1
+        };
 
-            double pageRatio = (totalCount * 1.0) / pageSize;
-            return (int)Math.Ceiling(pageRatio);
-        }
+        PaginationVM<T> paginationVM = new()
+        {
+            Info = paginationBase,
+            Entities = Enumerable.Empty<T>().ToList()
+        };
+
+        return paginationVM;
+    }
+
+    public static int CalcPagesCount(int pageSize, int totalCount)
+    {
+        pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
+        totalCount.MustBe(ArgumentGuardType.GreaterThanOrEquals, 0);
+
+        double pageRatio = (totalCount * 1.0) / pageSize;
+        return (int)Math.Ceiling(pageRatio);
     }
 }

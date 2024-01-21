@@ -1,32 +1,31 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using QueflityMVC.Domain.Models;
 
-namespace QueflityMVC.Domain.Interfaces
+namespace QueflityMVC.Domain.Interfaces;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        Task DisableUser(string userToDisableId);
+    Task DisableUser(string userToDisableId);
 
-        Task<bool> DoesUserExist(string userId);
+    Task<bool> DoesUserExist(string userId);
 
-        Task<ApplicationUser?> GetUserById(string userId);
+    Task<ApplicationUser?> GetUserById(string userId);
 
-        Task EnableUser(string userToEnableId);
+    Task EnableUser(string userToEnableId);
 
-        IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter);
+    IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter);
 
-        IQueryable<IdentityRole> GetAllRoles();
+    IQueryable<IdentityRole> GetAllRoles();
 
-        Task<IList<string>> GetAssignedRolesIds(string userId);
+    Task<IList<string>> GetAssignedRolesIds(string userId);
 
-        Task AddToRole(string userId, string roleId);
+    Task AddToRole(string userId, string roleId);
 
-        Task RemoveFromRole(string userId, string roleId);
+    Task RemoveFromRole(string userId, string roleId);
 
-        Task<List<string>> GetAssignedClaimsIds(string userId);
+    Task<List<string>> GetAssignedClaimsIds(string userId);
 
-        Task GiveClaims(string userId, string[] claimsIds);
+    Task GiveClaims(string userId, string[] claimsIds);
 
-        Task RemoveClaims(string userId, string[] claimsIds);
-    }
+    Task RemoveClaims(string userId, string[] claimsIds);
 }

@@ -1,13 +1,12 @@
-﻿namespace QueflityMVC.Web.Setup.Secrets
+﻿namespace QueflityMVC.Web.Setup.Secrets;
+
+public interface IVariablesProvider
 {
-    public interface IVariablesProvider
-    {
-        string? GetGoogleOAuthClientId();
+    string? GetGoogleOAuthClientId();
 
-        string? GetGoogleOAuthClientSecret();
+    string? GetGoogleOAuthClientSecret();
 
-        Tuple<string?, string?> GetGoogleOAuthCredentials();
+    Tuple<string?, string?> GetGoogleOAuthCredentials();
 
-        string? GetConnectionString();
-    }
+    string? GetConnectionString();
 }

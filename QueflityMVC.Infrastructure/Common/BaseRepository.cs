@@ -3,90 +3,89 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Domain.Common;
 
-namespace QueflityMVC.Infrastructure.Common
+namespace QueflityMVC.Infrastructure.Common;
+
+public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
-    public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+    protected Context _dbContext;
+
+    public BaseRepository(Context dbContext)
     {
-        protected Context _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public BaseRepository(Context dbContext)
+    public virtual int Add(T entityToAdd)
+    {
+        _dbContext.Set<T>().Add(entityToAdd);
+        _dbContext.SaveChanges();
+
+        return entityToAdd.Id;
+    }
+
+    public virtual void Delete(int entityToDeleteId)
+    {
+        var entityToDelete = GetById(entityToDeleteId);
+        if (entityToDelete is null)
         {
-            _dbContext = dbContext;
+            throw new EntityNotFoundException(entityName: nameof(T));
         }
 
-        public virtual int Add(T entityToAdd)
-        {
-            _dbContext.Set<T>().Add(entityToAdd);
-            _dbContext.SaveChanges();
+        Delete(entityToDelete);
+    }
 
-            return entityToAdd.Id;
+    public virtual void Delete(T entityToDelete)
+    {
+        if (!Exists(entityToDelete))
+        {
+            throw new EntityNotFoundException(entityName: nameof(T));
         }
 
-        public virtual void Delete(int entityToDeleteId)
-        {
-            var entityToDelete = GetById(entityToDeleteId);
-            if (entityToDelete is null)
-            {
-                throw new EntityNotFoundException(entityName: nameof(T));
-            }
+        _dbContext.Set<T>().Remove(entityToDelete);
+        _dbContext.SaveChanges();
+    }
 
-            Delete(entityToDelete);
+    public virtual T Update(T entityToUpdate)
+    {
+        if (!Exists(entityToUpdate))
+        {
+            throw new EntityNotFoundException(entityName: nameof(T)); throw new ArgumentException("Entity does not exist!");
         }
 
-        public virtual void Delete(T entityToDelete)
+        if (_dbContext.Entry(entityToUpdate) is EntityEntry<T> originalEntity)
         {
-            if (!Exists(entityToDelete))
-            {
-                throw new EntityNotFoundException(entityName: nameof(T));
-            }
-
-            _dbContext.Set<T>().Remove(entityToDelete);
-            _dbContext.SaveChanges();
+            originalEntity.CurrentValues.SetValues(entityToUpdate);
+        }
+        else
+        {
+            _dbContext.Attach(entityToUpdate);
+            _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
         }
 
-        public virtual T Update(T entityToUpdate)
-        {
-            if (!Exists(entityToUpdate))
-            {
-                throw new EntityNotFoundException(entityName: nameof(T)); throw new ArgumentException("Entity does not exist!");
-            }
+        _dbContext.SaveChanges();
 
-            if (_dbContext.Entry(entityToUpdate) is EntityEntry<T> originalEntity)
-            {
-                originalEntity.CurrentValues.SetValues(entityToUpdate);
-            }
-            else
-            {
-                _dbContext.Attach(entityToUpdate);
-                _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
-            }
+        return GetById(entityToUpdate.Id)!;
+    }
 
-            _dbContext.SaveChanges();
+    public virtual bool Exists(T entityToCheck)
+    {
+        if (entityToCheck is null)
+            throw new ArgumentNullException("Entity cannot be null");
 
-            return GetById(entityToUpdate.Id)!;
-        }
+        return Exists(entityToCheck.Id);
+    }
 
-        public virtual bool Exists(T entityToCheck)
-        {
-            if (entityToCheck is null)
-                throw new ArgumentNullException("Entity cannot be null");
+    public virtual bool Exists(int entityId)
+    {
+        return GetById(entityId) != null;
+    }
 
-            return Exists(entityToCheck.Id);
-        }
+    public virtual T? GetById(int entityId)
+    {
+        return _dbContext.Set<T>().FirstOrDefault(ent => ent.Id == entityId);
+    }
 
-        public virtual bool Exists(int entityId)
-        {
-            return GetById(entityId) != null;
-        }
-
-        public virtual T? GetById(int entityId)
-        {
-            return _dbContext.Set<T>().FirstOrDefault(ent => ent.Id == entityId);
-        }
-
-        public IQueryable<T> GetAll()
-        {
-            return _dbContext.Set<T>();
-        }
+    public IQueryable<T> GetAll()
+    {
+        return _dbContext.Set<T>();
     }
 }
