@@ -7,7 +7,7 @@ public record ElementForListVM : IMapFrom<Domain.Models.Element>
 {
     public required int Id { get; set; }
 
-    public required Item.ItemDTO Item { get; set; }
+    public required Item.ItemVM Item { get; set; }
 
     public required uint ItemsAmmount { get; set; }
 

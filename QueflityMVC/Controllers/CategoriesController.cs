@@ -14,9 +14,9 @@ namespace QueflityMVC.Web.Controllers;
 public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;
-    private readonly IValidator<CategoryDTO> _categoryValidator;
+    private readonly IValidator<CategoryVM> _categoryValidator;
 
-    public CategoriesController(ICategoryService categoryService, IValidator<CategoryDTO> categoryValidator)
+    public CategoriesController(ICategoryService categoryService, IValidator<CategoryVM> categoryValidator)
     {
         _categoryService = categoryService;
         _categoryValidator = categoryValidator;
@@ -42,7 +42,7 @@ public class CategoriesController : Controller
         }
         listCategoriesVM.NameFilter ??= string.Empty;
 
-        var listVm = await _categoryService.GetFilteredList(listCategoriesVM);
+        var listVm = await _categoryService.GetFilteredListAsync(listCategoriesVM);
         return View(listVm);
     }
 
@@ -58,7 +58,7 @@ public class CategoriesController : Controller
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CategoryDTO createCategoryVM)
+    public async Task<IActionResult> Create(CategoryVM createCategoryVM)
     {
         ValidationResult result = await _categoryValidator.ValidateAsync(createCategoryVM);
 
@@ -68,7 +68,7 @@ public class CategoriesController : Controller
             return View("Create", createCategoryVM);
         }
 
-        int id = _categoryService.CreateCategory(createCategoryVM);
+        _ = await _categoryService.CreateCategoryAsync(createCategoryVM);
 
         return RedirectToAction("Index");
     }
@@ -76,16 +76,17 @@ public class CategoriesController : Controller
     [Route("Edit")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        return View(_categoryService.GetVMForEdit(id));
+        var vmForEdit = await _categoryService.GetVMForEditAsync(id);
+        return View(vmForEdit);
     }
 
     [Route("Edit")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(CategoryDTO createCategoryVM)
+    public async Task<IActionResult> Edit(CategoryVM createCategoryVM)
     {
         ValidationResult result = await _categoryValidator.ValidateAsync(createCategoryVM);
 
@@ -95,18 +96,17 @@ public class CategoriesController : Controller
             return View("Edit", createCategoryVM);
         }
 
-        _categoryService.UpdateCategory(createCategoryVM);
-
+        _ =await _categoryService.UpdateCategoryAsync(createCategoryVM);
         return RedirectToAction("Index");
     }
 
     [Route("Delete")]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            _categoryService.DeleteCategory(id);
+            await _categoryService.DeleteCategoryAsync(id);
         }
         catch (InvalidOperationException invOpEx)
         {

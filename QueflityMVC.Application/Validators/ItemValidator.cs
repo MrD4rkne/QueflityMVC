@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Item;
 
 namespace QueflityMVC.Application.Validators;
 
-public class ItemValidator : AbstractValidator<ItemDTO>
+public class ItemValidator : AbstractValidator<ItemVM>
 {
     public ItemValidator()
     {

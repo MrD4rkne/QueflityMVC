@@ -15,20 +15,18 @@ public class UserServiceTest
     [Fact]
     public async void DisableUserTest()
     {
-        string emptyId = string.Empty;
-        string nullId = null;
         string existingId = "1";
         string nonExistingId = "D";
         var userRepository = new Mock<IUserRepository>();
-        userRepository.Setup(x => x.DoesUserExist(existingId)).ReturnsAsync(true);
-        userRepository.Setup(x => x.DoesUserExist(nonExistingId)).ReturnsAsync(false);
-        //userRepository.Setup(x => x.DisableUser(existingId)).Returns(Task.CompletedTask);
-        IUserService userService = new UserService(userRepository.Object, null);
+        userRepository.Setup(x => x.DoesUserExistAsync(existingId)).ReturnsAsync(true);
+        userRepository.Setup(x => x.DoesUserExistAsync(nonExistingId)).ReturnsAsync(false);
 
-        Func<Task> emptyAct = async () => { await userService.DisableUser(emptyId); };
-        Func<Task> nullAct = async () => { await userService.DisableUser(nullId); };
-        Func<Task> existingAct = async () => { await userService.DisableUser(existingId); };
-        Func<Task> nonExistingAct = async () => { await userService.DisableUser(nonExistingId); };
+        var mapper = new Mock<IMapper>();
+        //userRepository.Setup(x => x.DisableUser(existingId)).Returns(Task.CompletedTask);
+        IUserService userService = new UserService(userRepository.Object, mapper.Object);
+
+        Func<Task> existingAct = async () => { await userService.DisableUserAsync(existingId); };
+        Func<Task> nonExistingAct = async () => { await userService.DisableUserAsync(nonExistingId); };
 
         await nonExistingAct.Should().ThrowAsync<EntityNotFoundException>();
         await existingAct.Should().NotThrowAsync<EntityNotFoundException>();
@@ -37,20 +35,15 @@ public class UserServiceTest
     [Fact]
     public async void EnableUserTest()
     {
-        string emptyId = string.Empty;
-        string nullId = null;
         string existingId = "1";
         string nonExistingId = "D";
         var userRepository = new Mock<IUserRepository>();
-        userRepository.Setup(x => x.DoesUserExist(existingId)).ReturnsAsync(true);
-        userRepository.Setup(x => x.DoesUserExist(nonExistingId)).ReturnsAsync(false);
-        //userRepository.Setup(x => x.DisableUser(existingId)).Returns(Task.CompletedTask);
+        userRepository.Setup(x => x.DoesUserExistAsync(existingId)).ReturnsAsync(true);
+        userRepository.Setup(x => x.DoesUserExistAsync(nonExistingId)).ReturnsAsync(false);
         IUserService userService = new UserService(userRepository.Object, null);
 
-        Func<Task> emptyAct = async () => { await userService.EnableUser(emptyId); };
-        Func<Task> nullAct = async () => { await userService.EnableUser(nullId); };
-        Func<Task> existingAct = async () => { await userService.EnableUser(existingId); };
-        Func<Task> nonExistingAct = async () => { await userService.EnableUser(nonExistingId); };
+        Func<Task> existingAct = async () => { await userService.EnableUserAsync(existingId); };
+        Func<Task> nonExistingAct = async () => { await userService.EnableUserAsync(nonExistingId); };
 
         await nonExistingAct.Should().ThrowAsync<EntityNotFoundException>();
         await existingAct.Should().NotThrowAsync<EntityNotFoundException>();

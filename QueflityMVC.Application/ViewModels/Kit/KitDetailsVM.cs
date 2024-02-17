@@ -15,7 +15,7 @@ public record KitDetailsVM : IMapFrom<Domain.Models.Kit>
 
     public bool ShouldBeShown { get; set; }
 
-    public required ImageDTO Image { get; set; }
+    public required ImageVM Image { get; set; }
 
     public required List<ElementForListVM> ItemMemberships { get; set; }
 

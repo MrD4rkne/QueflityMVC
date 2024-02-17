@@ -4,17 +4,17 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IUserService
 {
-    Task DisableUser(string userToDisableId);
+    Task DisableUserAsync(string userToDisableId);
 
-    Task EnableUser(string userToEnableId);
+    Task EnableUserAsync(string userToEnableId);
 
-    Task<ListUsersVM> GetFilteredList(ListUsersVM listUsersVM);
+    Task<ListUsersVM> GetFilteredListAsync(ListUsersVM listUsersVM);
 
-    Task<UserClaimsVM> GetUsersClaimsVM(string userId);
+    Task<UserClaimsVM> GetUsersClaimsVMAsync(string userId);
 
-    Task<UserRolesVM> GetUsersRolesVM(string userId);
+    Task<UserRolesVM> GetUsersRolesVMAsync(string userId);
 
-    Task UpdateUserClaims(UserClaimsVM userClaimsVM);
+    Task UpdateUserClaimsAsync(UserClaimsVM userClaimsVM);
 
-    Task UpdateUserRoles(UserRolesVM userRolesVM);
+    Task UpdateUserRolesAsync(UserRolesVM userRolesVM);
 }

@@ -8,9 +8,9 @@ namespace QueflityMVC.Test.Web.Validators;
 
 public class ElementValidatorTest
 {
-    public ElementDTO GetPerfectDTO()
+    public ElementVM GetPerfectVM()
     {
-        ElementDTO elementDTO = new()
+        ElementVM elementVM = new()
         {
             Id = 0,
             ItemsAmmount = 2,
@@ -18,19 +18,19 @@ public class ElementValidatorTest
             Item = null,
             KitDetailsVM = null
         };
-        return elementDTO;
+        return elementVM;
     }
 
     [Fact]
     public void PriceValidation()
     {
-        ElementDTO tooLow = GetPerfectDTO();
+        ElementVM tooLow = GetPerfectVM();
         tooLow.PricePerItem = (decimal)(0 - 0.01);
-        ElementDTO minimum = GetPerfectDTO();
+        ElementVM minimum = GetPerfectVM();
         minimum.PricePerItem = (decimal)(0);
-        ElementDTO valid = GetPerfectDTO();
+        ElementVM valid = GetPerfectVM();
         valid.PricePerItem = (decimal)(5);
-        IValidator<ElementDTO> validator = new ElementValidator();
+        IValidator<ElementVM> validator = new ElementValidator();
 
         var lowResults = validator.Validate(tooLow);
         var minResults = validator.Validate(minimum);

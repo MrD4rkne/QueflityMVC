@@ -1,4 +1,5 @@
-﻿using QueflityMVC.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Common;
 
@@ -10,9 +11,9 @@ public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
     }
 
-    public bool CanDeleteCategory(int categoryId)
+    public async Task<bool> CanDeleteCategoryAsync(int categoryId)
     {
-        return !_dbContext.Items.Any(x => x.CategoryId == categoryId);
+        return !(await _dbContext.Items.AnyAsync(x => x.CategoryId == categoryId));
     }
 
     public IQueryable<Category> GetFiltered(string? nameFilter)

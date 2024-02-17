@@ -4,11 +4,11 @@ using QueflityMVC.Application.ViewModels.Kit;
 
 namespace QueflityMVC.Application.ViewModels.Element;
 
-public record ElementDTO : IMapFrom<Domain.Models.Element>
+public record ElementVM : IMapFrom<Domain.Models.Element>
 {
     public int Id { get; set; }
 
-    public required Item.ItemDTO Item { get; set; }
+    public required Item.ItemVM Item { get; set; }
 
     public required KitDetailsVM KitDetailsVM { get; set; }
 
@@ -18,7 +18,7 @@ public record ElementDTO : IMapFrom<Domain.Models.Element>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Element, ElementDTO>()
+        profile.CreateMap<Domain.Models.Element, ElementVM>()
             .ForMember(vm => vm.Item, opt => opt.MapFrom(sm => sm.Item))
             .ForMember(vm => vm.KitDetailsVM, opt => opt.MapFrom(et => et.Kit))
             .ReverseMap()

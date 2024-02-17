@@ -3,7 +3,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image;
 
-public record ImageForListVM : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domain.Models.KitImage>
+public record ImageForListVM : IMapFrom<Domain.Models.Image>
 {
     public string? FileUrl { get; set; }
 
@@ -11,10 +11,7 @@ public record ImageForListVM : IMapFrom<Domain.Models.ItemImage>, IMapFrom<Domai
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.ItemImage, ImageForListVM>()
-            .ReverseMap();
-
-        profile.CreateMap<Domain.Models.KitImage, ImageForListVM>()
+        profile.CreateMap<Domain.Models.Image, ImageForListVM>()
             .ReverseMap();
     }
 }

@@ -5,21 +5,21 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IItemService
 {
-    Task<int> CreateItem(ItemDTO createItemVM, string contentRootPath);
+    Task<int> CreateItemAsync(ItemVM createItemVM);
 
-    void DeleteItem(int id, string contentRootPath);
+    Task DeleteItemAsync(int id);
 
-    Task<ListItemsVM> GetFilteredList(ListItemsVM listItemsVM);
+    Task<ListItemsVM> GetFilteredListAsync(ListItemsVM listItemsVM);
 
-    CrEdItemVM? GetForEdit(int id);
+    Task<CrEdItemVM?> GetForEditAsync(int id);
 
-    CrEdItemVM GetItemVMForAdding(int? categoryId);
+    Task<CrEdItemVM> GetItemVMForAddingAsync(int? categoryId);
 
-    Task UpdateItem(ItemDTO createItemVM, string rootPath);
+    Task UpdateItemAsync(ItemVM createItemVM);
 
-    List<CategoryForSelectVM> GetCategoriesForSelectVM();
+    Task<List<CategoryForSelectVM>> GetCategoriesForSelectVMAsync();
 
-    ItemIngredientsSelectionVM? GetIngredientsForSelectionVM(int id);
+    Task<ItemIngredientsSelectionVM?> GetIngredientsForSelectionVMAsync(int id);
 
-    void UpdateItemIngredients(ItemIngredientsSelectionVM selectionVM);
+    Task UpdateItemIngredientsAsync(ItemIngredientsSelectionVM selectionVM);
 }

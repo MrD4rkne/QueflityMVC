@@ -29,9 +29,9 @@ public class UserRepository : IUserRepository
         return matchingUsers;
     }
 
-    public async Task DisableUser(string userId)
+    public async Task DisableUserAsync(string userId)
     {
-        var userToDisable = await GetUserById(userId);
+        var userToDisable = await GetUserByIdAsync(userId);
         if (userToDisable is null)
         {
             throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
@@ -42,25 +42,20 @@ public class UserRepository : IUserRepository
         await _userManager.UpdateSecurityStampAsync(userToDisable);
     }
 
-    public Task<ApplicationUser?> GetUserById(string userId)
+    public Task<ApplicationUser?> GetUserByIdAsync(string userId)
     {
         return _userManager.FindByIdAsync(userId);
     }
 
-    public async Task<bool> DoesUserExist(string userId)
+    public async Task<bool> DoesUserExistAsync(string userId)
     {
         ApplicationUser? allegedUser = await _userManager.FindByIdAsync(userId);
         return allegedUser is not null;
     }
 
-    public async Task EnableUser(string userToEnableId)
+    public async Task EnableUserAsync(string userToEnableId)
     {
-        var userToEnable = await GetUserById(userToEnableId);
-        if (userToEnable is null)
-        {
-            throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        }
-
+        var userToEnable = await GetUserByIdAsync(userToEnableId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
         userToEnable.IsEnabled = true;
         await _userManager.UpdateAsync(userToEnable);
     }
@@ -68,32 +63,25 @@ public class UserRepository : IUserRepository
     public IQueryable<IdentityRole> GetAllRoles()
     {
         var allRoles = _dbContext.Roles;
-
         return allRoles;
     }
 
-    public async Task<IList<string>> GetAssignedRolesIds(string userId)
+    public async Task<IList<string>> GetAssignedRolesIdsAsync(string userId)
     {
-        var rolesOwner = (await GetUserById(userId)) ?? throw new ResourceNotFoundException();
-
+        var rolesOwner = (await GetUserByIdAsync(userId)) ?? throw new ResourceNotFoundException();
         var allAssignedRolesIds = await _userManager.GetRolesAsync(rolesOwner);
         return allAssignedRolesIds;
     }
 
-    public async Task AddToRole(string userId, string roleId)
+    public async Task AddToRoleAsync(string userId, string roleId)
     {
-        var user = await GetUserById(userId);
-        if (user is null)
-        {
-            throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        }
-
+        var user = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
         await _userManager.AddToRoleAsync(user, roleId);
     }
 
-    public async Task RemoveFromRole(string userId, string roleId)
+    public async Task RemoveFromRoleAsync(string userId, string roleId)
     {
-        var user = await GetUserById(userId);
+        var user = await GetUserByIdAsync(userId);
         if (user is null)
         {
             throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
@@ -102,18 +90,18 @@ public class UserRepository : IUserRepository
         await _userManager.RemoveFromRoleAsync(user, roleId);
     }
 
-    public async Task<List<string>> GetAssignedClaimsIds(string userId)
+    public async Task<List<string>> GetAssignedClaimsIdsAsync(string userId)
     {
-        var rolesOwner = (await GetUserById(userId)) ?? throw new ResourceNotFoundException();
+        var rolesOwner = (await GetUserByIdAsync(userId)) ?? throw new ResourceNotFoundException();
 
         var allAssignedClaimsIds = _dbContext.UserClaims.Where(x => x.UserId == userId);
         return allAssignedClaimsIds.Select(x => x.ClaimType).Where(x => !string.IsNullOrEmpty(x))
             .ToList()!;
     }
 
-    public async Task GiveClaims(string userId, string[] claimsIds)
+    public async Task GiveClaimsAsync(string userId, string[] claimsIds)
     {
-        var user = await GetUserById(userId);
+        var user = await GetUserByIdAsync(userId);
         if (user is null)
         {
             throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
@@ -123,15 +111,14 @@ public class UserRepository : IUserRepository
         await _userManager.AddClaimsAsync(user, claimsToAdd);
     }
 
-    public async Task RemoveClaims(string userId, string[] claimsIds)
+    public async Task RemoveClaimsAsync(string userId, string[] claimsIds)
     {
-        var user = await GetUserById(userId);
-        if (user is null)
-        {
-            throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        }
-
-        IEnumerable<Claim> claimsToRemove = ParallelEnumerable.Select(claimsIds.AsParallel(), (string cl) => { return new Claim(cl, cl); });
+        var user = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+        IEnumerable<Claim> claimsToRemove = ParallelEnumerable.Select(claimsIds.AsParallel(), 
+            (string cl) => 
+            { 
+                return new Claim(cl, cl); 
+            });
         await _userManager.RemoveClaimsAsync(user, claimsToRemove);
     }
 }

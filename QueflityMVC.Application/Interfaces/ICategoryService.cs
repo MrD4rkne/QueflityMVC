@@ -4,13 +4,13 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface ICategoryService
 {
-    int CreateCategory(CategoryDTO createcategoryVM);
+    Task<int> CreateCategoryAsync(CategoryVM createcategoryVM);
 
-    void DeleteCategory(int id);
+    Task DeleteCategoryAsync(int id);
 
-    Task<ListCategoriesVM> GetFilteredList(ListCategoriesVM listCategoriesVM);
+    Task<ListCategoriesVM> GetFilteredListAsync(ListCategoriesVM listCategoriesVM);
 
-    CategoryDTO? GetVMForEdit(int id);
+    Task<CategoryVM?> GetVMForEditAsync(int id);
 
-    CategoryDTO UpdateCategory(CategoryDTO createcategoryVM);
+    Task<CategoryVM> UpdateCategoryAsync(CategoryVM createcategoryVM);
 }

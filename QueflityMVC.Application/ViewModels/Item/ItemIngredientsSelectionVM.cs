@@ -4,7 +4,7 @@ namespace QueflityMVC.Application.ViewModels.Item;
 
 public record ItemIngredientsSelectionVM
 {
-    public required ItemDTO Item { get; set; }
+    public required ItemVM Item { get; set; }
 
     public required List<int> SelectedIngredientsIds { get; set; }
 

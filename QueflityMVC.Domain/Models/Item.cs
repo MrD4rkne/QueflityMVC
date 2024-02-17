@@ -4,17 +4,15 @@ namespace QueflityMVC.Domain.Models;
 
 public class Item : BasePurchasableEntity
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    public int CategoryId { get; set; }
+    public required int CategoryId { get; set; }
 
-    public virtual Category Category { get; set; }
+    public Category? Category { get; set; }
 
-    public int? ItemImageId { get; set; }
+    public ICollection<Element>? SetElements { get; set; }
 
-    public virtual ItemImage? Image { get; set; }
+    public ICollection<Kit>? Kits { get; set; }
 
-    public virtual ICollection<Element>? SetElements { get; set; }
-
-    public virtual ICollection<Ingredient>? Ingredients { get; set; }
+    public ICollection<Ingredient>? Ingredients { get; set; }
 }

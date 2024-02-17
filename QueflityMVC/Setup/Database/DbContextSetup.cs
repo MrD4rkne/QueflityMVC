@@ -66,7 +66,9 @@ public static class DbContextSetup
         try
         {
             services.AddDbContext<TContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString,
+                provider => provider.EnableRetryOnFailure()
+            ));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;

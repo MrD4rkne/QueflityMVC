@@ -13,9 +13,9 @@ namespace QueflityMVC.Web.Controllers;
 public class IngredientsController : Controller
 {
     private readonly IIngredientService _ingredientService;
-    private readonly IValidator<IngredientDTO> _categoryValidator;
+    private readonly IValidator<IngredientVM> _categoryValidator;
 
-    public IngredientsController(IIngredientService ingredientService, IValidator<IngredientDTO> categoryValidator)
+    public IngredientsController(IIngredientService ingredientService, IValidator<IngredientVM> categoryValidator)
     {
         _ingredientService = ingredientService;
         _categoryValidator = categoryValidator;
@@ -40,7 +40,7 @@ public class IngredientsController : Controller
             return BadRequest();
         listIngredients.NameFilter ??= string.Empty;
 
-        var listVm = await _ingredientService.GetFilteredList(listIngredients);
+        var listVm = await _ingredientService.GetFilteredListAsync(listIngredients);
         return View(listVm);
     }
 
@@ -56,27 +56,25 @@ public class IngredientsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult Create(IngredientDTO ingredientToAddDTO)
+    public async Task<IActionResult> Create(IngredientVM ingredientToAddVM)
     {
-        var validationResult = _categoryValidator.Validate(ingredientToAddDTO);
-
+        var validationResult = _categoryValidator.Validate(ingredientToAddVM);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(this.ModelState);
-            return View("Create", ingredientToAddDTO);
+            return View("Create", ingredientToAddVM);
         }
 
-        _ingredientService.CreateIngredient(ingredientToAddDTO);
-
+        await _ingredientService.CreateIngredientAsync(ingredientToAddVM);
         return RedirectToAction("Index");
     }
 
     [Route("Edit")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var ingredientVM = _ingredientService.GetIngredientVMForEdit(id);
+        var ingredientVM = await _ingredientService.GetIngredientVMForEditAsync(id);
         if (ingredientVM is null)
         {
             return NotFound();
@@ -88,26 +86,24 @@ public class IngredientsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public IActionResult Edit(IngredientDTO ingredientToEditDTO)
+    public async Task<IActionResult> Edit(IngredientVM ingredientToEditVM)
     {
-        var validationResult = _categoryValidator.Validate(ingredientToEditDTO);
-
+        var validationResult = await _categoryValidator.ValidateAsync(ingredientToEditVM);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(this.ModelState);
-            return View("Edit", ingredientToEditDTO);
+            return View("Edit", ingredientToEditVM);
         }
 
-        _ingredientService.UpdateIngredient(ingredientToEditDTO);
-
+        await _ingredientService.UpdateIngredientAsync(ingredientToEditVM);
         return RedirectToAction("Index");
     }
 
     [Route("Delete")]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        _ingredientService.DeleteIngredient(id);
+        await _ingredientService.DeleteIngredientAsync(id);
         return RedirectToAction("Index");
     }
 }

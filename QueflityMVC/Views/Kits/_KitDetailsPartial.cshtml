@@ -46,7 +46,7 @@
                 </div>
                 @if ((await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded)
                 {
-                    @Html.ActionLink("Edit", "Edit","Items", new { id = Model.Id }, new { @class = "btn btn-primary"})
+                    @Html.ActionLink("Edit", "Edit","Kits", new { id = Model.Id }, new { @class = "btn btn-primary"})
                 }
             </div>
         </div>

@@ -3,7 +3,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Category;
 
-public record CategoryDTO : IMapFrom<Domain.Models.Category>
+public record CategoryVM : IMapFrom<Domain.Models.Category>
 {
     public required int Id { get; set; }
 
@@ -11,6 +11,6 @@ public record CategoryDTO : IMapFrom<Domain.Models.Category>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Category, CategoryDTO>().ReverseMap();
+        profile.CreateMap<Domain.Models.Category, CategoryVM>().ReverseMap();
     }
 }

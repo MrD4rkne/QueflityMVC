@@ -1,25 +1,24 @@
-﻿using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Models;
+﻿using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Domain.Interfaces;
 
 public interface IKitRepository : IBaseRepository<Kit>
 {
-    Kit? GetFullKitWithMembershipsById(int id);
+    Task<Kit?> GetFullKitWithMembershipsByIdAsync(int id);
 
     IQueryable<Kit> GetFilteredByName(string? searchName);
 
-    IQueryable<int> GetComponenetsIdsForSet(int setId);
+    Task<IQueryable<int>> GetComponenetsIdsForSet(int setId);
 
     IQueryable<Element> GetKitComponents(int setId);
 
-    void AddComponent(Element componentToCreate);
+    Task AddComponentAsync(Element componentToCreate);
 
-    void UpdateKitPrice(int kitId);
+    Task UpdateKitPriceAsync(int kitId);
 
-    Element? GetElement(int setId, int itemId);
+    Task<Element?> GetElementAsync(int setId, int itemId);
 
-    void UpdateElement(Element componentToEdit);
+    Task UpdateElementAsync(Element componentToEdit);
 
-    void DeleteElement(int kitId, int itemId);
+    Task DeleteElementAsync(int kitId, int itemId);
 }

@@ -40,7 +40,7 @@ public class UserController : Controller
         }
         listUsersVM.UserNameFilter ??= string.Empty;
 
-        ListUsersVM listVM = await _userService.GetFilteredList(listUsersVM);
+        ListUsersVM listVM = await _userService.GetFilteredListAsync(listUsersVM);
         return View(listVM);
     }
 
@@ -56,8 +56,7 @@ public class UserController : Controller
             return Unauthorized("User cannot disable himself.");
         }
 
-        await _userService.DisableUser(userId);
-
+        await _userService.DisableUserAsync(userId);
         return RedirectToAction("Index");
     }
 
@@ -67,8 +66,7 @@ public class UserController : Controller
     public async Task<IActionResult> EnableUser(string userId)
     {
         ArgumentException.ThrowIfNullOrEmpty(userId);
-        await _userService.EnableUser(userId);
-
+        await _userService.EnableUserAsync(userId);
         return RedirectToAction("Index");
     }
 
@@ -77,9 +75,8 @@ public class UserController : Controller
     [Authorize(Policy = Policies.USER_ROLES_VIEW)]
     public async Task<IActionResult> ManageUserRoles(string userId)
     {
-        UserRolesVM userRolesVM = await _userService.GetUsersRolesVM(userId);
+        UserRolesVM userRolesVM = await _userService.GetUsersRolesVMAsync(userId);
         userRolesVM.CanCallerManage = CanUserManageRoles(callerPrincipal: User, userToBeManagedId: userId);
-
         return View(userRolesVM);
     }
 
@@ -96,7 +93,7 @@ public class UserController : Controller
             return Forbid();
         }
 
-        await _userService.UpdateUserRoles(userRolesVM);
+        await _userService.UpdateUserRolesAsync(userRolesVM);
 
         return RedirectToAction("Index");
     }
@@ -106,7 +103,7 @@ public class UserController : Controller
     [Authorize(Policy = Policies.USER_CLAIMS_VIEW)]
     public async Task<IActionResult> ManageUserClaims(string userId)
     {
-        UserClaimsVM userClaimsVM = await _userService.GetUsersClaimsVM(userId);
+        UserClaimsVM userClaimsVM = await _userService.GetUsersClaimsVMAsync(userId);
         userClaimsVM.CanCallerManage = CanUserManageClaims(callerPrincipal: User, userToBeManagedId: userId);
 
         return View(userClaimsVM);
@@ -125,7 +122,7 @@ public class UserController : Controller
             return Forbid();
         }
 
-        await _userService.UpdateUserClaims(userClaimsVM);
+        await _userService.UpdateUserClaimsAsync(userClaimsVM);
         return RedirectToAction("Index");
     }
 

@@ -4,13 +4,13 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IIngredientService
 {
-    Task<ListIngredientsVM> GetFilteredList(ListIngredientsVM listIngredientsVM);
+    Task<ListIngredientsVM> GetFilteredListAsync(ListIngredientsVM listIngredientsVM);
 
-    int CreateIngredient(IngredientDTO ingredientToCreateDTO);
+    Task<int> CreateIngredientAsync(IngredientVM ingredientToCreateVM);
 
-    IngredientDTO? GetIngredientVMForEdit(int id);
+    Task<IngredientVM?> GetIngredientVMForEditAsync(int id);
 
-    void UpdateIngredient(IngredientDTO ingredientToEditDTO);
+    Task UpdateIngredientAsync(IngredientVM ingredientToEditVM);
 
-    void DeleteIngredient(int id);
+    Task DeleteIngredientAsync(int id);
 }

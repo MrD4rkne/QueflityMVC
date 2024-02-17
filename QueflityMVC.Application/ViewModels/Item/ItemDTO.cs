@@ -4,7 +4,7 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public class ItemDTO : IMapFrom<Domain.Models.Item>
+public record ItemVM : IMapFrom<Domain.Models.Item>
 {
     public int Id { get; set; }
 
@@ -14,13 +14,13 @@ public class ItemDTO : IMapFrom<Domain.Models.Item>
 
     public bool ShouldBeShown { get; set; }
 
-    public ImageDTO? Image { get; set; } = new ImageDTO();
+    public ImageVM Image { get; set; }
 
     public int CategoryId { get; set; }
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Item, ItemDTO>()
+        profile.CreateMap<Domain.Models.Item, ItemVM>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
             .ForMember(vm => vm.CategoryId, opt => opt.MapFrom(ent => ent.CategoryId))
             .ReverseMap();

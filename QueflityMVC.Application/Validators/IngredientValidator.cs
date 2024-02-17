@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Ingredient;
 
 namespace QueflityMVC.Application.Validators;
 
-public class IngredientValidator : AbstractValidator<IngredientDTO>
+public class IngredientValidator : AbstractValidator<IngredientVM>
 {
     public IngredientValidator()
     {

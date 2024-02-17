@@ -13,9 +13,9 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     {
     }
 
-    public IQueryable<int> GetComponenetsIdsForSet(int setId)
+    public async Task<IQueryable<int>> GetComponenetsIdsForSet(int setId)
     {
-        var set = GetFullKitWithMembershipsById(setId);
+        var set = await GetFullKitWithMembershipsByIdAsync(setId);
         if (set is null)
         {
             throw new ResourceNotFoundException();
@@ -41,14 +41,14 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         return itemsSource;
     }
 
-    public Kit? GetFullKitWithMembershipsById(int id)
+    public Task<Kit?> GetFullKitWithMembershipsByIdAsync(int id)
     {
         return _dbContext.Set<Kit>()
             .Include(z => z.Image)
             .Include(x => x.Elements)
                 .ThenInclude(x => x.Item)
                     .ThenInclude(item => item!.Image)
-             .FirstOrDefault(y => y.Id == id);
+             .FirstOrDefaultAsync(y => y.Id == id);
     }
 
     public IQueryable<decimal> GetPricesOfKitComponents(int kitId)
@@ -58,34 +58,26 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
             .Select(x => x.PricePerItem * x.ItemsAmmount);
     }
 
-    public void AddComponent(Element componentToCreate)
+    public async Task AddComponentAsync(Element componentToCreate)
     {
-        if (componentToCreate is null)
-        {
-            throw new ArgumentNullException(nameof(componentToCreate));
-        }
-
+        componentToCreate.Kit = null;
+        componentToCreate.Item = null;
         _dbContext.Add(componentToCreate);
-        _dbContext.SaveChanges();
-
-        UpdateKitPrice(componentToCreate.KitId);
+        await _dbContext.SaveChangesAsync();
+        await UpdateKitPriceAsync(componentToCreate.KitId);
     }
 
-    public void UpdateKitPrice(int kitId)
+    public async Task UpdateKitPriceAsync(int kitId)
     {
-        Kit? kit = GetById(kitId);
-        if (kit is null)
-        {
-            throw new EntityNotFoundException(entityName: nameof(Kit));
-        }
+        Kit? kit = await GetByIdAsync(kitId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
 
         var componentsPrices = GetPricesOfKitComponents(kitId);
         decimal sumOfComponentPrices = componentsPrices.Sum();
         kit.Price = sumOfComponentPrices;
-        Update(kit);
+        await UpdateAsync(kit);
     }
 
-    public Element? GetElement(int kitId, int itemId)
+    public Task<Element?> GetElementAsync(int kitId, int itemId)
     {
         return _dbContext.Set<Element>()
             .Include(elem => elem.Kit)
@@ -93,12 +85,12 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
             .Include(elem => elem.Item)
                 .ThenInclude(item => item!.Image)
             .Where(x => x.ItemId == itemId && x.KitId == kitId)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
     }
 
-    public void UpdateElement(Element element)
+    public async Task UpdateElementAsync(Element element)
     {
-        Element? elementToEdit = GetElement(element.KitId, element.ItemId);
+        Element? elementToEdit = await GetElementAsync(element.KitId, element.ItemId);
         if (elementToEdit is null)
         {
             throw new EntityNotFoundException(entityName: nameof(Element));
@@ -108,21 +100,21 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         elementToEdit.ItemsAmmount = elementToEdit.ItemsAmmount;
 
         _dbContext.Entry(elementToEdit).State = EntityState.Modified;
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
-        UpdateKitPrice(elementToEdit.KitId);
+        await UpdateKitPriceAsync(elementToEdit.KitId);
     }
 
-    public void DeleteElement(int kitId, int itemId)
+    public async Task DeleteElementAsync(int kitId, int itemId)
     {
-        Element? elemToDelete = GetElement(kitId, itemId);
+        Element? elemToDelete = await GetElementAsync(kitId, itemId);
         if (elemToDelete is null)
         {
             throw new EntityNotFoundException(nameof(Element));
         }
 
         _dbContext.Remove(elemToDelete);
-        UpdateKitPrice(elemToDelete.KitId);
-        _dbContext.SaveChanges();
+        await UpdateKitPriceAsync(elemToDelete.KitId);
+        await _dbContext.SaveChangesAsync();
     }
 }

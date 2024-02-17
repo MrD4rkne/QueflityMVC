@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using QueflityMVC.Application.Interfaces;
 
 namespace QueflityMVC.Application.Services;
@@ -6,10 +7,16 @@ namespace QueflityMVC.Application.Services;
 public class FileService : IFileService
 {
     private const string RELATIVE_IMAGES_PATH = "Images";
+    private readonly string ROOT_DIRECTORY;
 
-    public async Task<string> UploadFile(string root, IFormFile file)
+    public FileService(IWebHostEnvironment appEnvironment)
     {
-        string directory = GetImagesDirectory(root);
+        ROOT_DIRECTORY = appEnvironment.ContentRootPath;
+    }
+
+    public async Task<string> UploadFileAsync(IFormFile file)
+    {
+        string directory = GetImagesDirectory(ROOT_DIRECTORY);
         if (!Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
@@ -33,9 +40,9 @@ public class FileService : IFileService
         return path;
     }
 
-    public void DeleteImage(string root, string relativeImagePath)
+    public void DeleteImage(string relativeImagePath)
     {
-        string path = Path.Combine(GetRootDirectory(root), NormaliseFilePath(relativeImagePath));
+        string path = Path.Combine(GetRootDirectory(ROOT_DIRECTORY), NormaliseFilePath(relativeImagePath));
         File.Delete(path);
     }
 

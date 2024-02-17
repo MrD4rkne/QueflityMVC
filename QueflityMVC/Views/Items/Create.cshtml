@@ -16,7 +16,6 @@
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <img alt="@Model.ItemVM.Image?.AltDescription" src="@Model.ItemVM.Image?.FileUrl" style="max-width: 600px;width:100%" />
             <div class="form-group">
                 <input asp-for="ItemVM.Image!.FormFile" type="file">
                 <span asp-validation-for="ItemVM.Image!.FormFile"></span>
@@ -39,14 +38,7 @@
                     <option value="">Select a category</option>
                     @foreach (var category in Model.Categories)
                     {
-                        @if (category.Id == Model.ItemVM.CategoryId)
-                        {
-                            <option selected="selected" value="@category.Id">@category.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@category.Id">@category.Name</option>
-                        }
+                        <option value="@category.Id">@category.Name</option>
                     }
                 </select>
                 <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>

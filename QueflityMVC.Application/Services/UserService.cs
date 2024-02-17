@@ -22,29 +22,29 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task DisableUser(string userToDisableId)
+    public async Task DisableUserAsync(string userToDisableId)
     {
-        bool doesUserExists = await _userRepository.DoesUserExist(userToDisableId);
+        bool doesUserExists = await _userRepository.DoesUserExistAsync(userToDisableId);
         if (!doesUserExists)
         {
             throw new EntityNotFoundException(entityName: nameof(ApplicationUser));
         }
 
-        await _userRepository.DisableUser(userToDisableId);
+        await _userRepository.DisableUserAsync(userToDisableId);
     }
 
-    public async Task EnableUser(string userToEnableId)
+    public async Task EnableUserAsync(string userToEnableId)
     {
-        bool doesUserExists = await _userRepository.DoesUserExist(userToEnableId);
+        bool doesUserExists = await _userRepository.DoesUserExistAsync(userToEnableId);
         if (!doesUserExists)
         {
             throw new EntityNotFoundException(entityName: nameof(ApplicationUser));
         }
 
-        await _userRepository.EnableUser(userToEnableId);
+        await _userRepository.EnableUserAsync(userToEnableId);
     }
 
-    public async Task<ListUsersVM> GetFilteredList(ListUsersVM listUsersVM)
+    public async Task<ListUsersVM> GetFilteredListAsync(ListUsersVM listUsersVM)
     {
         IQueryable<ApplicationUser> matchingUsers = _userRepository.GetFilteredUsers(listUsersVM.UserNameFilter);
         listUsersVM.Pagination = await matchingUsers.Paginate<ApplicationUser, UserForListVM>(listUsersVM.Pagination, _mapper.ConfigurationProvider);
@@ -52,9 +52,9 @@ public class UserService : IUserService
         return listUsersVM;
     }
 
-    public async Task<UserClaimsVM> GetUsersClaimsVM(string userId)
+    public async Task<UserClaimsVM> GetUsersClaimsVMAsync(string userId)
     {
-        var user = await _userRepository.GetUserById(userId);
+        var user = await _userRepository.GetUserByIdAsync(userId);
         if (user is null)
         {
             throw new EntityNotFoundException();
@@ -62,7 +62,7 @@ public class UserService : IUserService
 
         var allClaims = Constants.Claims.GetAll()
             .Select(str => new ClaimForSelectionVM(str));
-        var assignedClaimsIds = await _userRepository.GetAssignedClaimsIds(userId);
+        var assignedClaimsIds = await _userRepository.GetAssignedClaimsIdsAsync(userId);
 
         UserClaimsVM userClaimsVM = new()
         {
@@ -75,9 +75,9 @@ public class UserService : IUserService
         return userClaimsVM;
     }
 
-    public async Task<UserRolesVM> GetUsersRolesVM(string userId)
+    public async Task<UserRolesVM> GetUsersRolesVMAsync(string userId)
     {
-        var user = await _userRepository.GetUserById(userId);
+        var user = await _userRepository.GetUserByIdAsync(userId);
         if (user is null)
         {
             throw new EntityNotFoundException();
@@ -86,7 +86,7 @@ public class UserService : IUserService
         var allRoles = _userRepository.GetAllRoles()
             .ProjectTo<RoleForSelectionVM>(_mapper.ConfigurationProvider);
 
-        var assignedRolesIds = await _userRepository.GetAssignedRolesIds(userId);
+        var assignedRolesIds = await _userRepository.GetAssignedRolesIdsAsync(userId);
 
         UserRolesVM userRolesVM = new()
         {
@@ -99,7 +99,7 @@ public class UserService : IUserService
         return userRolesVM;
     }
 
-    public async Task UpdateUserClaims(UserClaimsVM userClaimsVM)
+    public async Task UpdateUserClaimsAsync(UserClaimsVM userClaimsVM)
     {
         string[] claimsToGive = userClaimsVM.AllClaims
             .Where(x => x.IsSelected)
@@ -110,11 +110,11 @@ public class UserService : IUserService
             .Select(x => x.Id)
             .ToArray();
 
-        await _userRepository.GiveClaims(userClaimsVM.UserId, claimsToGive);
-        await _userRepository.RemoveClaims(userClaimsVM.UserId, claimsToRemove);
+        await _userRepository.GiveClaimsAsync(userClaimsVM.UserId, claimsToGive);
+        await _userRepository.RemoveClaimsAsync(userClaimsVM.UserId, claimsToRemove);
     }
 
-    public async Task UpdateUserRoles(UserRolesVM userRolesVM)
+    public async Task UpdateUserRolesAsync(UserRolesVM userRolesVM)
     {
         await Parallel.ForEachAsync(userRolesVM.AllRoles,
             async (role, cs) => { await UpdateRoleMembership(role, userRolesVM.UserId); });
@@ -127,11 +127,11 @@ public class UserService : IUserService
 
         if (role.IsSelected)
         {
-            return _userRepository.AddToRole(userId, role.Id);
+            return _userRepository.AddToRoleAsync(userId, role.Id);
         }
         else
         {
-            return _userRepository.RemoveFromRole(userId, role.Id);
+            return _userRepository.RemoveFromRoleAsync(userId, role.Id);
         }
     }
 }

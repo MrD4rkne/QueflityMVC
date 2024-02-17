@@ -3,7 +3,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Ingredient;
 
-public record IngredientDTO : IMapFrom<Domain.Models.Ingredient>
+public record IngredientVM : IMapFrom<Domain.Models.Ingredient>
 {
     public required int Id { get; set; }
 
@@ -11,6 +11,6 @@ public record IngredientDTO : IMapFrom<Domain.Models.Ingredient>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Ingredient, IngredientDTO>().ReverseMap();
+        profile.CreateMap<Domain.Models.Ingredient, IngredientVM>().ReverseMap();
     }
 }

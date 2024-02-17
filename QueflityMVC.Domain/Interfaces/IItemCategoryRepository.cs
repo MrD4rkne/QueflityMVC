@@ -1,5 +1,4 @@
-﻿using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Models;
+﻿using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Domain.Interfaces;
 
@@ -10,7 +9,7 @@ public interface ICategoryRepository : IBaseRepository<Category>
     /// </summary>
     /// <param name="categoryId">Category's id</param>
     /// <returns></returns>
-    bool CanDeleteCategory(int categoryId);
+    Task<bool> CanDeleteCategoryAsync(int categoryId);
 
     IQueryable<Category> GetFiltered(string? nameFilter);
 }

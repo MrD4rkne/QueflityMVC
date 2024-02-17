@@ -4,7 +4,7 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IFileService
 {
-    Task<string> UploadFile(string root, IFormFile file);
+    Task<string> UploadFileAsync(IFormFile file);
 
-    void DeleteImage(string root, string relativeImagePath);
+    void DeleteImage(string relativeImagePath);
 }

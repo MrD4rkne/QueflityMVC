@@ -5,27 +5,27 @@ namespace QueflityMVC.Domain.Interfaces;
 
 public interface IUserRepository
 {
-    Task DisableUser(string userToDisableId);
+    Task DisableUserAsync(string userToDisableId);
 
-    Task<bool> DoesUserExist(string userId);
+    Task<bool> DoesUserExistAsync(string userId);
 
-    Task<ApplicationUser?> GetUserById(string userId);
+    Task<ApplicationUser?> GetUserByIdAsync(string userId);
 
-    Task EnableUser(string userToEnableId);
+    Task EnableUserAsync(string userToEnableId);
 
     IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter);
 
     IQueryable<IdentityRole> GetAllRoles();
 
-    Task<IList<string>> GetAssignedRolesIds(string userId);
+    Task<IList<string>> GetAssignedRolesIdsAsync(string userId);
 
-    Task AddToRole(string userId, string roleId);
+    Task AddToRoleAsync(string userId, string roleId);
 
-    Task RemoveFromRole(string userId, string roleId);
+    Task RemoveFromRoleAsync(string userId, string roleId);
 
-    Task<List<string>> GetAssignedClaimsIds(string userId);
+    Task<List<string>> GetAssignedClaimsIdsAsync(string userId);
 
-    Task GiveClaims(string userId, string[] claimsIds);
+    Task GiveClaimsAsync(string userId, string[] claimsIds);
 
-    Task RemoveClaims(string userId, string[] claimsIds);
+    Task RemoveClaimsAsync(string userId, string[] claimsIds);
 }

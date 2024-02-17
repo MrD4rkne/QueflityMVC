@@ -14,14 +14,12 @@ namespace QueflityMVC.Web.Controllers;
 public class ItemsController : Controller
 {
     private readonly IItemService _itemService;
-    private readonly IValidator<ItemDTO> _itemValidator;
-    private readonly IWebHostEnvironment _env;
+    private readonly IValidator<ItemVM> _itemValidator;
 
-    public ItemsController(IItemService itemService, IValidator<ItemDTO> itemValidator, IWebHostEnvironment env)
+    public ItemsController(IItemService itemService, IValidator<ItemVM> itemValidator)
     {
         _itemService = itemService;
         _itemValidator = itemValidator;
-        _env = env;
     }
 
     [HttpGet]
@@ -47,16 +45,16 @@ public class ItemsController : Controller
         }
         listItemsVM.NameFilter ??= string.Empty;
 
-        ListItemsVM listVM = await _itemService.GetFilteredList(listItemsVM);
+        ListItemsVM listVM = await _itemService.GetFilteredListAsync(listItemsVM);
         return View(listVM);
     }
 
     [Route("Create")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult Create(int? categoryId)
+    public async Task<IActionResult> Create(int? categoryId)
     {
-        var addingVm = _itemService.GetItemVMForAdding(categoryId);
+        var addingVm = await _itemService.GetItemVMForAddingAsync(categoryId);
         return View(addingVm);
     }
 
@@ -71,26 +69,21 @@ public class ItemsController : Controller
         if (!result.IsValid)
         {
             result.AddToModelState(this.ModelState);
-
-            if (crEdObjItem.Categories is null)
-            {
-                crEdObjItem.Categories = _itemService.GetCategoriesForSelectVM();
-            }
-
+            crEdObjItem.Categories ??= await _itemService.GetCategoriesForSelectVMAsync();
             return View("Create", crEdObjItem);
         }
 
-        int id = await _itemService.CreateItem(crEdObjItem.ItemVM, _env.ContentRootPath);
-
+        _ = await _itemService.CreateItemAsync(crEdObjItem.ItemVM);
         return RedirectToAction("Index");
     }
 
     [Route("Edit")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        return View(_itemService.GetForEdit(id));
+        var itemForEdit = await _itemService.GetForEditAsync(id);
+        return View(itemForEdit);
     }
 
     [Route("Edit")]
@@ -100,33 +93,31 @@ public class ItemsController : Controller
     public async Task<IActionResult> Edit(CrEdItemVM editItemVM)
     {
         ValidationResult result = await _itemValidator.ValidateAsync(editItemVM.ItemVM);
-
         if (!result.IsValid)
         {
             result.AddToModelState(this.ModelState);
             return View("Edit", editItemVM);
         }
 
-        await _itemService.UpdateItem(editItemVM.ItemVM, _env.ContentRootPath);
-
+        await _itemService.UpdateItemAsync(editItemVM.ItemVM);
         return RedirectToAction("Index");
     }
 
     [Route("Delete")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        _itemService.DeleteItem(id, _env.ContentRootPath);
+        await _itemService.DeleteItemAsync(id);
         return RedirectToAction("Index");
     }
 
     [Route("Ingredients")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public IActionResult Ingredients(int id)
+    public async Task<IActionResult> Ingredients(int id)
     {
-        var ingredientsViewModel = _itemService.GetIngredientsForSelectionVM(id);
+        var ingredientsViewModel = await _itemService.GetIngredientsForSelectionVMAsync(id);
         if (ingredientsViewModel is null)
         {
             return NotFound();
@@ -143,9 +134,9 @@ public class ItemsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public IActionResult Ingredients(ItemIngredientsSelectionVM selectionVM)
+    public async Task<IActionResult> Ingredients(ItemIngredientsSelectionVM selectionVM)
     {
-        _itemService.UpdateItemIngredients(selectionVM);
+        await _itemService.UpdateItemIngredientsAsync(selectionVM);
         return RedirectToAction("Index");
     }
 }

@@ -35,6 +35,7 @@
                                     <input asp-for="ItemVM.Image!.AltDescription" class="form-control" value="@Model.ItemVM.Image?.AltDescription" />
                                     <span asp-validation-for="ItemVM.Image!.AltDescription" class="text-danger"></span>
                                 </div>
+                                @Html.HiddenFor(model => model.ItemVM.Image.Id)
                             </li>
 
                             <li class="list-group-item">
@@ -45,6 +46,17 @@
                                     <span asp-validation-for="ItemVM.Name" class="text-danger"></span>
                                 </div>
                             </li>
+                            <div class="form-group">
+                                <h5>Item</h5>
+                                <select asp-for="ItemVM.CategoryId" class="form-control">
+                                    <option value="">Select a category</option>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
+                            </div>
                         </ul>
                         <button type="submit" class="btn btn-outline-primary" formaction="Edit">Edit</button>
                     </div>

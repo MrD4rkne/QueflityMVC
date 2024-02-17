@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
 @inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Kit.KitDTO
+@model QueflityMVC.Application.ViewModels.Kit.KitVM
 
 @{
     ViewData["Title"] = "Create";
@@ -23,8 +23,8 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="mb-3">
-                            <input class="form-control" asp-for="Image!.FormFile" type="file" value="@Model.Image?.FormFile">
-                            <span asp-validation-for="Image!.FormFile" class="text-danger"></span>
+                            <input class="form-control" asp-for="Image!.FormFile" type="file">
+                            <span asp-validation-for="Image.FormFile" class="text-danger"></span>
                         </div>
                     </li>
                     <li class="list-group-item">

@@ -16,16 +16,14 @@ namespace QueflityMVC.Web.Controllers;
 public class KitsController : Controller
 {
     private readonly IKitService _kitService;
-    private readonly IValidator<KitDTO> _kitValidator;
-    private readonly IValidator<ElementDTO> _elemValidator;
-    private readonly IWebHostEnvironment _env;
+    private readonly IValidator<KitVM> _kitValidator;
+    private readonly IValidator<ElementVM> _elemValidator;
 
-    public KitsController(IKitService kitService, IValidator<KitDTO> kitValidator, IValidator<ElementDTO> elemValidator, IWebHostEnvironment env)
+    public KitsController(IKitService kitService, IValidator<KitVM> kitValidator, IValidator<ElementVM> elemValidator)
     {
         _kitService = kitService;
         _kitValidator = kitValidator;
         _elemValidator = elemValidator;
-        _env = env;
     }
 
     [HttpGet]
@@ -49,7 +47,7 @@ public class KitsController : Controller
         }
         listKitsVM.NameFilter ??= string.Empty;
 
-        ListKitsVM listVM = await _kitService.GetFilteredList(listKitsVM);
+        ListKitsVM listVM = await _kitService.GetFilteredListAsync(listKitsVM);
         return View(listVM);
     }
 
@@ -64,18 +62,18 @@ public class KitsController : Controller
     [Route("Create")]
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Create(KitDTO createKitDTO, bool shouldRouteToDetails = false)
+    public async Task<IActionResult> Create(KitVM createKitVM, bool shouldRouteToDetails = false)
     {
-        ValidationResult validationResults = await _kitValidator.ValidateAsync(createKitDTO);
+        ValidationResult validationResults = await _kitValidator.ValidateAsync(createKitVM);
 
         if (!validationResults.IsValid)
         {
             validationResults.AddToModelState(this.ModelState);
 
-            return View("Create", createKitDTO);
+            return View("Create", createKitVM);
         }
 
-        int kitId = await _kitService.CreateKit(createKitDTO, _env.ContentRootPath);
+        int kitId = await _kitService.CreateKitAsync(createKitVM);
 
         if (shouldRouteToDetails)
             return RedirectToAction("Details", new { id = kitId });
@@ -85,20 +83,18 @@ public class KitsController : Controller
 
     [Route("Details")]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var kitDetailsVM = _kitService.GetDetailsVM(id);
-
+        var kitDetailsVM = await _kitService.GetDetailsVMAsync(id);
         return View(kitDetailsVM);
     }
 
     [Route("Edit")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        KitDTO kitToEditVM = _kitService.GetKitVMForEdit(id);
-
+        KitVM kitToEditVM = await _kitService.GetKitVMForEditAsync(id);
         return View(kitToEditVM);
     }
 
@@ -106,19 +102,16 @@ public class KitsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(KitDTO editedKitDTO)
+    public async Task<IActionResult> Edit(KitVM editedKitVM)
     {
-        ValidationResult validationResults = await _kitValidator.ValidateAsync(editedKitDTO);
-
+        ValidationResult validationResults = await _kitValidator.ValidateAsync(editedKitVM);
         if (!validationResults.IsValid)
         {
             validationResults.AddToModelState(this.ModelState);
-
-            return View("Edit", editedKitDTO);
+            return View("Edit", editedKitVM);
         }
 
-        int kitId = await _kitService.EditKit(editedKitDTO, _env.ContentRootPath);
-
+        int kitId = await _kitService.EditKitAsync(editedKitVM);
         return RedirectToAction("Details", new { id = kitId });
     }
 
@@ -127,7 +120,7 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> ListItemsForComponents(int setId)
     {
-        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponents(setId);
+        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponentsAsync(setId);
         return View(itemsForComponentsListVM);
     }
 
@@ -136,16 +129,16 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> ListItemsForComponents(ListItemsForComponentsVM listItemsForComponentsVM)
     {
-        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponents(listItemsForComponentsVM);
+        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponentsAsync(listItemsForComponentsVM);
         return View(itemsForComponentsListVM);
     }
 
     [Route("AddComponent")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult AddComponent(int setId, int itemId)
+    public async Task<IActionResult> AddComponent(int setId, int itemId)
     {
-        var addingComponentVM = _kitService.GetVMForAddingElement(setId, itemId);
+        var addingComponentVM = await _kitService.GetVMForAddingElementAsync(setId, itemId);
         return View(addingComponentVM);
     }
 
@@ -153,27 +146,25 @@ public class KitsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> AddComponent(ElementDTO elementDTO)
+    public async Task<IActionResult> AddComponent(ElementVM elementVM)
     {
-        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementDTO);
-
+        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementVM);
         if (!validationResults.IsValid)
         {
             validationResults.AddToModelState(this.ModelState);
-
-            return View("AddComponent", elementDTO);
+            return View("AddComponent", elementVM);
         }
 
-        _kitService.AddElement(elementDTO);
-        return RedirectToAction("Details", new { id = elementDTO.KitDetailsVM.Id });
+        await _kitService.AddElementAsync(elementVM);
+        return RedirectToAction("Details", new { id = elementVM.KitDetailsVM.Id });
     }
 
     [Route("EditComponent")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult EditComponent(int kitId, int itemId)
+    public async Task<IActionResult> EditComponent(int kitId, int itemId)
     {
-        var addingComponentVM = _kitService.GetVMForEdittingElement(kitId, itemId);
+        var addingComponentVM = await _kitService.GetVMForEdittingElementAsync(kitId, itemId);
         return View(addingComponentVM);
     }
 
@@ -181,27 +172,25 @@ public class KitsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> EditComponent(ElementDTO elementDTO)
+    public async Task<IActionResult> EditComponent(ElementVM elementVM)
     {
-        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementDTO);
-
+        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementVM);
         if (!validationResults.IsValid)
         {
             validationResults.AddToModelState(this.ModelState);
-
-            return View("AddComponent", elementDTO);
+            return View("AddComponent", elementVM);
         }
 
-        _kitService.EditElement(elementDTO);
-        return RedirectToAction("Details", new { id = elementDTO.KitDetailsVM.Id });
+        await _kitService.EditElementAsync(elementVM);
+        return RedirectToAction("Details", new { id = elementVM.KitDetailsVM.Id });
     }
 
     [Route("DeleteComponent")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public IActionResult DeleteComponent(int kitId, int itemId)
+    public async Task<IActionResult> DeleteComponent(int kitId, int itemId)
     {
-        _kitService.DeleteElement(kitId, itemId);
+        await _kitService.DeleteElementAsync(kitId, itemId);
         return RedirectToAction("Details", new { id = kitId });
     }
 }

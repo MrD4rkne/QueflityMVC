@@ -1,4 +1,4 @@
-﻿@model QueflityMVC.Application.ViewModels.Category.CategoryDTO
+﻿@model QueflityMVC.Application.ViewModels.Category.CategoryVM
 
 @{
     ViewData["Title"] = "Edit category";
@@ -20,6 +20,7 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+            @Html.HiddenFor(model => model.Id)
         </form>
     </div>
 </div>

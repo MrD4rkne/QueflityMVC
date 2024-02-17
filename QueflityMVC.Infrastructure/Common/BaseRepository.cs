@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Interfaces;
+using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Infrastructure.Common;
 
@@ -14,78 +16,78 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
         _dbContext = dbContext;
     }
 
-    public virtual int Add(T entityToAdd)
+    public virtual async Task<int> AddAsync(T entityToAdd)
     {
         _dbContext.Set<T>().Add(entityToAdd);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         return entityToAdd.Id;
     }
 
-    public virtual void Delete(int entityToDeleteId)
+    public virtual async Task DeleteAsync(int entityToDeleteId)
     {
-        var entityToDelete = GetById(entityToDeleteId);
-        if (entityToDelete is null)
-        {
-            throw new EntityNotFoundException(entityName: nameof(T));
-        }
-
-        Delete(entityToDelete);
+        var entityToDelete = (await GetByIdAsync(entityToDeleteId)) ?? throw new EntityNotFoundException(entityName: nameof(T));
+        await DeleteAsync(entityToDelete);
     }
 
-    public virtual void Delete(T entityToDelete)
+    public virtual async Task DeleteAsync(T entityToDelete)
     {
-        if (!Exists(entityToDelete))
+        if (!await ExistsAsync(entityToDelete))
         {
             throw new EntityNotFoundException(entityName: nameof(T));
         }
 
         _dbContext.Set<T>().Remove(entityToDelete);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public virtual T Update(T entityToUpdate)
+    /*
+     TODO: fix adding item to kits
+     TODO: add remove from kit
+     TODO: fix updating items
+     */
+
+    public virtual async Task<T> UpdateAsync(T entityToUpdate)
     {
-        if (!Exists(entityToUpdate))
+        if (!await ExistsAsync(entityToUpdate))
         {
             throw new EntityNotFoundException(entityName: nameof(T)); throw new ArgumentException("Entity does not exist!");
         }
-
-        if (_dbContext.Entry(entityToUpdate) is EntityEntry<T> originalEntity)
+        if (_dbContext.Entry(entityToUpdate).State == EntityState.Detached)
         {
-            originalEntity.CurrentValues.SetValues(entityToUpdate);
+            _dbContext.Update(entityToUpdate);
         }
         else
         {
-            _dbContext.Attach(entityToUpdate);
             _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
         }
-
-        _dbContext.SaveChanges();
-
-        return GetById(entityToUpdate.Id)!;
+        await _dbContext.SaveChangesAsync();
+        return await GetByIdAsync(entityToUpdate.Id);
     }
 
-    public virtual bool Exists(T entityToCheck)
+    public virtual Task<bool> ExistsAsync(T entityToCheck)
     {
         if (entityToCheck is null)
             throw new ArgumentNullException("Entity cannot be null");
 
-        return Exists(entityToCheck.Id);
+        return ExistsAsync(entityToCheck.Id);
     }
 
-    public virtual bool Exists(int entityId)
+    public virtual async Task<bool> ExistsAsync(int entityId)
     {
-        return GetById(entityId) != null;
+        return (await GetByIdAsync(entityId)) != null;
     }
 
-    public virtual T? GetById(int entityId)
+    public virtual Task<T?> GetByIdAsync(int entityId)
     {
-        return _dbContext.Set<T>().FirstOrDefault(ent => ent.Id == entityId);
+        return _dbContext.Set<T>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(ent => ent.Id == entityId);
     }
 
     public IQueryable<T> GetAll()
     {
-        return _dbContext.Set<T>();
+        return _dbContext.Set<T>()
+            .AsNoTracking();
     }
 }

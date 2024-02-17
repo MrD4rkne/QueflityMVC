@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -12,9 +13,11 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
     {
     }
 
-    public override Item? GetById(int entityId)
+    public override Task<Item?> GetByIdAsync(int entityId)
     {
-        return _dbContext.Items.Include(it => it.Image).FirstOrDefault(it => it.Id == entityId);
+        return _dbContext.Items
+            .Include(it => it.Image)
+            .FirstOrDefaultAsync(it => it.Id == entityId);
     }
 
     public IQueryable<Item> GetFilteredItems(string? nameFilter, int? categoryId)
@@ -33,14 +36,17 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         return entitiesSource;
     }
 
-    public Item? GetItemWithIngredientsById(int itemId)
+    public Task<Item?> GetItemWithIngredientsByIdAsync(int itemId)
     {
-        return _dbContext.Items.Include(x => x.Ingredients).Include(it => it.Image).FirstOrDefault(x => x.Id == itemId);
+        return _dbContext.Items
+            .Include(x => x.Ingredients)
+            .Include(it => it.Image)
+            .FirstOrDefaultAsync(x => x.Id == itemId);
     }
 
-    public void UpdateIngredients(int itemId, List<Ingredient> ingredients)
+    public async Task UpdateIngredientsAsync(int itemId, List<Ingredient> ingredients)
     {
-        var item = GetItemWithIngredientsById(itemId);
+        var item = await GetItemWithIngredientsByIdAsync(itemId);
         if (item is null)
         {
             throw new ResourceNotFoundException();
@@ -51,6 +57,6 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
             item.Ingredients = ingredients;
         }
 
-        Update(item);
+        await UpdateAsync(item);
     }
 }

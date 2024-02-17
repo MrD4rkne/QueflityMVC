@@ -4,7 +4,7 @@ namespace QueflityMVC.Application.ViewModels.Item;
 
 public record CrEdItemVM
 {
-    public required ItemDTO ItemVM { get; set; }
+    public ItemVM ItemVM { get; set; }
 
     public required List<CategoryForSelectVM> Categories { get; set; }
 }

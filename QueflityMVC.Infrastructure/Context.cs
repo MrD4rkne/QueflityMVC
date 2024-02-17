@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Infrastructure;
@@ -10,13 +11,11 @@ public class Context : IdentityDbContext<ApplicationUser>
 
     public DbSet<Item> Items { get; set; }
 
-    public DbSet<Category> Categorie { get; set; }
-
-    public DbSet<ItemImage> ItemImages { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     public DbSet<Kit> Kits { get; set; }
 
-    public DbSet<KitImage> KitImages { get; set; }
+    public DbSet<Image> Images { get; set; }
 
     public DbSet<Element> SetElements { get; set; }
 
@@ -28,17 +27,8 @@ public class Context : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Item>()
-            .HasOne(it => it.Image)
-            .WithOne(img => img.Item)
-            .HasForeignKey<Item>(it => it.ItemImageId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<Kit>()
-            .HasOne(it => it.Image)
-            .WithOne(img => img.Kit)
-            .HasForeignKey<Kit>(it => it.KitImageId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<BasePurchasableEntity>()
+            .HasOne(it => it.Image);       
 
         builder.Entity<Item>()
             .HasMany(it => it.Ingredients)
@@ -52,13 +42,15 @@ public class Context : IdentityDbContext<ApplicationUser>
         builder.Entity<Element>()
             .HasOne(element => element.Item)
             .WithMany(it => it.SetElements)
+            .IsRequired()
             .HasForeignKey(element => element.ItemId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<Element>()
             .HasOne(element => element.Kit)
             .WithMany(it => it.Elements)
+            .IsRequired()
             .HasForeignKey(membership => membership.KitId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
