@@ -13,7 +13,7 @@ public record ListItemsForComponentsVM
 
     public List<int>? KitComponentsIds { get; set; }
 
-    public required int SetId { get; set; }
+    public required int kitId { get; set; }
 
     public KitDetailsVM? KitDetailsVM { get; set; }
 }

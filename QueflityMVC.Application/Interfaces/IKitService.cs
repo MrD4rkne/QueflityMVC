@@ -26,7 +26,7 @@ public interface IKitService
 
     Task<KitVM> GetKitVMForEditAsync(int id);
 
-    Task<ElementVM> GetVMForAddingElementAsync(int setId, int itemId);
+    Task<ElementVM> GetVMForAddingElementAsync(int kitId, int itemId);
 
     Task<ElementVM> GetVMForEdittingElementAsync(int kitId, int itemId);
 }

@@ -13,21 +13,28 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     {
     }
 
-    public async Task<IQueryable<int>> GetComponenetsIdsForSet(int setId)
+    public override Task<Kit?> GetByIdAsync(int entityId)
     {
-        var set = await GetFullKitWithMembershipsByIdAsync(setId);
+        return _dbContext.Kits
+            .Include(kit => kit.Image)
+            .FirstOrDefaultAsync(kit => kit.Id == entityId);
+    }
+
+    public async Task<IQueryable<int>> GetComponenetsIdsForSet(int kitId)
+    {
+        var set = await GetFullKitWithMembershipsByIdAsync(kitId);
         if (set is null)
         {
             throw new ResourceNotFoundException();
         }
 
-        var componentsIds = GetKitComponents(setId).Select(x => x.ItemId);
+        var componentsIds = GetKitComponents(kitId).Select(x => x.ItemId);
         return componentsIds;
     }
 
-    public IQueryable<Element> GetKitComponents(int setId)
+    public IQueryable<Element> GetKitComponents(int kitId)
     {
-        return _dbContext.SetElements.Where(x => x.KitId == setId);
+        return _dbContext.SetElements.Where(x => x.KitId == kitId);
     }
 
     public IQueryable<Kit> GetFilteredByName(string? searchName = default)
@@ -116,5 +123,20 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         _dbContext.Remove(elemToDelete);
         await UpdateKitPriceAsync(elemToDelete.KitId);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public override async Task<Kit> UpdateAsync(Kit entityToUpdate)
+    {
+        Kit originalEntity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
+        originalEntity.Name = entityToUpdate.Name;
+        originalEntity.Description = entityToUpdate.Description;
+        originalEntity.Price = entityToUpdate.Price;
+        originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
+        originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
+        originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
+
+        _dbContext.Entry(originalEntity).State = EntityState.Modified;
+        await _dbContext.SaveChangesAsync();
+        return originalEntity;
     }
 }

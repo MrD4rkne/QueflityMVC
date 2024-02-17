@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -16,6 +17,7 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
     public override Task<Item?> GetByIdAsync(int entityId)
     {
         return _dbContext.Items
+            .AsNoTracking()
             .Include(it => it.Image)
             .FirstOrDefaultAsync(it => it.Id == entityId);
     }
@@ -58,5 +60,22 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         }
 
         await UpdateAsync(item);
+    }
+
+    public override async Task<Item> UpdateAsync(Item entityToUpdate)
+    {
+        Item originalEntity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Item));
+        originalEntity.Name = entityToUpdate.Name;
+        originalEntity.Price = entityToUpdate.Price;
+        originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
+        originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
+        originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
+        if(_dbContext.Entry(originalEntity).State == EntityState.Detached)
+        {
+            _dbContext.Attach(originalEntity);
+        }
+        _dbContext.Entry(originalEntity).State = EntityState.Modified;
+        await _dbContext.SaveChangesAsync();
+        return originalEntity;
     }
 }

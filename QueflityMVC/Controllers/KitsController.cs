@@ -118,9 +118,9 @@ public class KitsController : Controller
     [Route("ListItemsForComponent")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> ListItemsForComponents(int setId)
+    public async Task<IActionResult> ListItemsForComponents(int kitId)
     {
-        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponentsAsync(setId);
+        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponentsAsync(kitId);
         return View(itemsForComponentsListVM);
     }
 
@@ -136,9 +136,9 @@ public class KitsController : Controller
     [Route("AddComponent")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> AddComponent(int setId, int itemId)
+    public async Task<IActionResult> AddComponent(int kitId, int itemId)
     {
-        var addingComponentVM = await _kitService.GetVMForAddingElementAsync(setId, itemId);
+        var addingComponentVM = await _kitService.GetVMForAddingElementAsync(kitId, itemId);
         return View(addingComponentVM);
     }
 

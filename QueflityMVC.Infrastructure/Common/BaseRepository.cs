@@ -49,18 +49,12 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
 
     public virtual async Task<T> UpdateAsync(T entityToUpdate)
     {
-        if (!await ExistsAsync(entityToUpdate))
+        var entity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(T));
+        if (_dbContext.Entry(entity).State == EntityState.Detached)
         {
-            throw new EntityNotFoundException(entityName: nameof(T)); throw new ArgumentException("Entity does not exist!");
+            _dbContext.Set<T>().Attach(entity);
         }
-        if (_dbContext.Entry(entityToUpdate).State == EntityState.Detached)
-        {
-            _dbContext.Update(entityToUpdate);
-        }
-        else
-        {
-            _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
-        }
+        _dbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
         await _dbContext.SaveChangesAsync();
         return await GetByIdAsync(entityToUpdate.Id);
     }

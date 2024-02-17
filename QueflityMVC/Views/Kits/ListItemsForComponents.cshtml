@@ -1,7 +1,11 @@
-﻿@model QueflityMVC.Application.ViewModels.Item.ListItemsForComponentsVM
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@model QueflityMVC.Application.ViewModels.Item.ListItemsForComponentsVM
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "List";
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
 }
 
@@ -39,7 +43,7 @@
             </select>
         </li>
     </ul>
-    @Html.HiddenFor(x=>x.SetId)
+    @Html.HiddenFor(x => x.kitId)
     <div class="row">
         <table class="table">
             <thead>
@@ -67,11 +71,17 @@
                         <td>
                             @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
                             {
-                                @Html.ActionLink("Edit membership", "EditMembership", new { setId = Model.SetId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" });
+                                @Html.ActionLink("Edit membership", "EditMembership", new { kitId = Model.kitId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                ;
+                                @if (canCreateEntities)
+                                {
+                                    @Html.ActionLink("Delete", "DeleteComponent", new { itemId = item.Id, kitId = Model.kitId }, new { @class = "btn btn-outline-danger btn-sm" })
+                                }
                             }
                             else
                             {
-                                @Html.ActionLink("Add to set", "AddComponent", new { setId = Model.SetId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" });
+                                @Html.ActionLink("Add to set", "AddComponent", new { kitId = Model.kitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
+                                ;
                             }
                         </td>
                     </tr>
@@ -86,7 +96,7 @@
 </form>
 
 @section Scripts
-    {
+{
     <script type="text/javascript">
         function PageSizeSelected() {
             SubmitPagination();

@@ -23,6 +23,7 @@ public record ItemVM : IMapFrom<Domain.Models.Item>
         profile.CreateMap<Domain.Models.Item, ItemVM>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
             .ForMember(vm => vm.CategoryId, opt => opt.MapFrom(ent => ent.CategoryId))
-            .ReverseMap();
+            .ReverseMap()
+            .ForMember(ent => ent.ImageId, opt => opt.MapFrom(vm => vm.Image.Id));
     }
 }

@@ -20,6 +20,7 @@ public record KitVM : IMapFrom<Domain.Models.Kit>
     {
         profile.CreateMap<Domain.Models.Kit, KitVM>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
-            .ReverseMap();
+            .ReverseMap()
+            .ForMember(ent => ent.ImageId, opt=>opt.MapFrom(vm=>vm.Image.Id));
     }
 }

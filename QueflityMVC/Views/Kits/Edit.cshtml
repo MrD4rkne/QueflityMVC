@@ -33,6 +33,7 @@
                                 <input asp-for="Image!.AltDescription" class="form-control" value="@Model.Image?.AltDescription"/>
                                 <span asp-validation-for="Image!.AltDescription" class="text-danger"></span>
                             </div>
+                            @Html.HiddenFor(m => m.Image.Id);
                         </li>
 
                         <li class="list-group-item">

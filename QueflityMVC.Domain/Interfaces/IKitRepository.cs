@@ -8,15 +8,15 @@ public interface IKitRepository : IBaseRepository<Kit>
 
     IQueryable<Kit> GetFilteredByName(string? searchName);
 
-    Task<IQueryable<int>> GetComponenetsIdsForSet(int setId);
+    Task<IQueryable<int>> GetComponenetsIdsForSet(int kitId);
 
-    IQueryable<Element> GetKitComponents(int setId);
+    IQueryable<Element> GetKitComponents(int kitId);
 
     Task AddComponentAsync(Element componentToCreate);
 
     Task UpdateKitPriceAsync(int kitId);
 
-    Task<Element?> GetElementAsync(int setId, int itemId);
+    Task<Element?> GetElementAsync(int kitId, int itemId);
 
     Task UpdateElementAsync(Element componentToEdit);
 

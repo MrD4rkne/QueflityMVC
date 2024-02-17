@@ -81,35 +81,35 @@ public class KitService : IKitService
         return kitDetailsVM;
     }
 
-    public Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(int setId)
+    public Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(int kitId)
     {
         PaginationVM<ItemForListVM> paginationVM = PaginationFactory.Default<ItemForListVM>();
 
         ListItemsForComponentsVM listItemsForComponentsVM = new()
         {
             Pagination = paginationVM,
-            SetId = setId
+            kitId = kitId
         };
         return GetFilteredListForComponentsAsync(listItemsForComponentsVM);
     }
 
     public async Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(ListItemsForComponentsVM itemsForComponentsVM)
     {
-        if (!await _kitRepository.ExistsAsync(itemsForComponentsVM.SetId))
+        if (!await _kitRepository.ExistsAsync(itemsForComponentsVM.kitId))
         {
             throw new EntityNotFoundException(entityName: "Set");
         }
-        itemsForComponentsVM.KitComponentsIds = await (await _kitRepository.GetComponenetsIdsForSet(itemsForComponentsVM.SetId)).ToListAsync();
-        itemsForComponentsVM.KitDetailsVM = await GetDetailsVMAsync(itemsForComponentsVM.SetId);
+        itemsForComponentsVM.KitComponentsIds = await (await _kitRepository.GetComponenetsIdsForSet(itemsForComponentsVM.kitId)).ToListAsync();
+        itemsForComponentsVM.KitDetailsVM = await GetDetailsVMAsync(itemsForComponentsVM.kitId);
 
         IQueryable<Item> allItems = _itemRepository.GetFilteredItems(itemsForComponentsVM.NameFilter, itemsForComponentsVM.CategoryId);
         itemsForComponentsVM.Pagination = await allItems.Paginate<Item, ItemForListVM>(itemsForComponentsVM.Pagination, _mapper.ConfigurationProvider);
         return itemsForComponentsVM;
     }
 
-    public async Task<ElementVM> GetVMForAddingElementAsync(int setId, int itemId)
+    public async Task<ElementVM> GetVMForAddingElementAsync(int kitId, int itemId)
     {
-        Kit? kit = await _kitRepository.GetByIdAsync(setId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
+        Kit? kit = await _kitRepository.GetByIdAsync(kitId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
         Item? item = await _itemRepository.GetByIdAsync(itemId) ?? throw new EntityNotFoundException(entityName: nameof(Item));
         ElementVM elementVM = new()
         {
@@ -135,9 +135,9 @@ public class KitService : IKitService
         return _kitRepository.UpdateElementAsync(componentToEdit);
     }
 
-    public async Task<ElementVM> GetVMForEdittingElementAsync(int setId, int itemId)
+    public async Task<ElementVM> GetVMForEdittingElementAsync(int kitId, int itemId)
     {
-        Element? element = await _kitRepository.GetElementAsync(setId, itemId);
+        Element? element = await _kitRepository.GetElementAsync(kitId, itemId);
         if (element is null)
         {
             throw new EntityNotFoundException(entityName: nameof(Element));
