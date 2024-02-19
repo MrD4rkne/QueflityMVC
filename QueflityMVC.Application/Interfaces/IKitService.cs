@@ -1,4 +1,5 @@
-﻿using QueflityMVC.Application.ViewModels.Element;
+﻿using QueflityMVC.Application.Results.Kit;
+using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
 
@@ -11,6 +12,8 @@ public interface IKitService
     Task<int> CreateKitAsync(KitVM KitVM);
 
     Task DeleteElementAsync(int kitId, int itemId);
+
+    Task<DeleteKitResult> DeleteKitAsync(int id);
 
     Task EditElementAsync(ElementVM elementVM);
 

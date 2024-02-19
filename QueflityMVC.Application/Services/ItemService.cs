@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results.Item;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Ingredient;
 using QueflityMVC.Application.ViewModels.Item;
+using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 
@@ -36,14 +38,36 @@ public class ItemService : IItemService
         return await _itemRepository.AddAsync(itemToCreate);
     }
 
-    public async Task DeleteItemAsync(int id)
+    public async Task<DeleteItemResult> DeleteItemAsync(int id)
     {
-        Item? itemToDelete = await _itemRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
+        Item? itemToDelete = await _itemRepository.GetByIdAsync(id);
+        if(itemToDelete is null)
+        {
+            return DeleteItemResultsFactory.NotExist();
+        }
+        if(await _itemRepository.IsItemAPartOfAnyKitAsync(id))
+        {
+            return DeleteItemResultsFactory.ItemIsPartOfKit();
+        }
+
+        try
+        {
+            await _itemRepository.DeleteAsync(id);
+        }
+        catch(ResourceNotFoundException)
+        {
+            return DeleteItemResultsFactory.NotExist();
+        }
+        catch (Exception ex)
+        {
+            return DeleteItemResultsFactory.Exception(ex);
+        }
+
         if (itemToDelete.Image is not null)
         {
             _fileService.DeleteImage(itemToDelete.Image!.FileUrl);
         }
-        await _itemRepository.DeleteAsync(id);
+        return DeleteItemResultsFactory.Success();
     }
 
     public async Task<ListItemsVM> GetFilteredListAsync(ListItemsVM listItemsVM)

@@ -6,7 +6,7 @@ public record ListKitsVM
 {
     public required PaginationVM<KitForListVM> Pagination { get; set; }
 
-    public int? CategoryId { get; set; }
+    public int? ItemId { get; set; }
 
     public string? NameFilter { get; set; }
 }

@@ -6,7 +6,7 @@ public interface IKitRepository : IBaseRepository<Kit>
 {
     Task<Kit?> GetFullKitWithMembershipsByIdAsync(int id);
 
-    IQueryable<Kit> GetFilteredByName(string? searchName);
+    IQueryable<Kit> GetFilteredKits(string? searchName, int? itemId);
 
     Task<IQueryable<int>> GetComponenetsIdsForSet(int kitId);
 

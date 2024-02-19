@@ -30,8 +30,6 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-await app.Services.SeedData();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -57,5 +55,6 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.ApplyPendingMigrations<Context>();
+await app.Services.SeedData();
 
 app.Run();

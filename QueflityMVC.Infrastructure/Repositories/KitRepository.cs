@@ -37,10 +37,13 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         return _dbContext.SetElements.Where(x => x.KitId == kitId);
     }
 
-    public IQueryable<Kit> GetFilteredByName(string? searchName = default)
+    public IQueryable<Kit> GetFilteredKits(string? searchName = default, int? itemId = null)
     {
         var itemsSource = GetAll();
-
+        if (itemId.HasValue)
+        {
+            itemsSource = itemsSource.Where(x => x.Elements.Any(y => y.ItemId == itemId));
+        }
         if (!string.IsNullOrEmpty(searchName))
         {
             itemsSource = itemsSource.Where(x => x.Name.StartsWith(searchName));

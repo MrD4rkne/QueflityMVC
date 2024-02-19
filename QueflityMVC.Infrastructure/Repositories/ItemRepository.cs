@@ -64,18 +64,29 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
 
     public override async Task<Item> UpdateAsync(Item entityToUpdate)
     {
-        Item originalEntity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Item));
+        Item originalEntity = await GetItemWithIngredientsByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Item));
+        if (_dbContext.Entry(originalEntity).State == EntityState.Detached)
+        {
+            _dbContext.Attach(originalEntity);
+        }
         originalEntity.Name = entityToUpdate.Name;
+        originalEntity.CategoryId = entityToUpdate.CategoryId;
         originalEntity.Price = entityToUpdate.Price;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-        if(_dbContext.Entry(originalEntity).State == EntityState.Detached)
+        if(entityToUpdate.Ingredients is not null)
         {
-            _dbContext.Attach(originalEntity);
+            originalEntity.Ingredients = entityToUpdate.Ingredients;
         }
         _dbContext.Entry(originalEntity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return originalEntity;
+    }
+
+    public Task<bool> IsItemAPartOfAnyKitAsync(int id)
+    {
+        return _dbContext.SetElements
+            .AnyAsync(x => x.ItemId == id);
     }
 }

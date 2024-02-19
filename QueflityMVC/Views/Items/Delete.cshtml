@@ -1,0 +1,16 @@
+﻿@model QueflityMVC.Application.ViewModels.Item.DeleteFailedItemVM
+
+@{
+    ViewData["Title"] = "Deletion failed";
+}
+
+<h1>Delete</h1>
+
+<div>
+    <h4>@Model.Message</h4>
+    <hr />
+</div>
+<div>
+    @Html.ActionLink("View kits with this item", "Index","Kits", new { itemId = Model.ItemId }) |
+    <a asp-action="Index">Back to List</a>
+</div>

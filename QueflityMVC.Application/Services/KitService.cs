@@ -3,11 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results.Item;
+using QueflityMVC.Application.Results.Kit;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Application.ViewModels.Pagination;
+using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 
@@ -64,7 +67,7 @@ public class KitService : IKitService
 
     public async Task<ListKitsVM> GetFilteredListAsync(ListKitsVM listKitsVM)
     {
-        var matchingSets = _kitRepository.GetFilteredByName(listKitsVM.NameFilter);
+        var matchingSets = _kitRepository.GetFilteredKits(listKitsVM.NameFilter, listKitsVM.ItemId);
         var pagination = await matchingSets.Paginate(listKitsVM.Pagination, _mapper.ConfigurationProvider);
 
         ListKitsVM listItemVM = new()
@@ -150,5 +153,32 @@ public class KitService : IKitService
     public Task DeleteElementAsync(int kitId, int itemId)
     {
         return _kitRepository.DeleteElementAsync(kitId, itemId);
+    }
+
+    public async Task<DeleteKitResult> DeleteKitAsync(int id) {
+        Kit? kitToDelete = await _kitRepository.GetByIdAsync(id);
+        if (kitToDelete is null)
+        {
+            return DeleteKitResultsFactory.NotExist();
+        }
+
+        try
+        {
+            await _kitRepository.DeleteAsync(id);
+        }
+        catch (ResourceNotFoundException)
+        {
+            return DeleteKitResultsFactory.NotExist();
+        }
+        catch (Exception ex)
+        {
+            return DeleteKitResultsFactory.Exception(ex);
+        }
+
+        if (kitToDelete.Image is not null)
+        {
+            _fileService.DeleteImage(kitToDelete.Image!.FileUrl);
+        }
+        return DeleteKitResultsFactory.Success();
     }
 }

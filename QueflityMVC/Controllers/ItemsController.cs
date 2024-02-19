@@ -3,10 +3,12 @@ using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Item;
+using QueflityMVC.Web.Models;
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -108,8 +110,23 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Delete(int id)
     {
-        await _itemService.DeleteItemAsync(id);
-        return RedirectToAction("Index");
+        var results = await _itemService.DeleteItemAsync(id);
+        switch (results.Status)
+        {
+            case Application.Results.Item.DeleteItemStatus.Success:
+                return RedirectToAction("Index");
+            case Application.Results.Item.DeleteItemStatus.NotExist:
+                return NotFound();
+            case Application.Results.Item.DeleteItemStatus.ItemIsPartOfKit:
+                return View(new DeleteFailedItemVM() { 
+                    ItemId = id,
+                    Message = "Item is part of a kit and cannot be deleted."
+                });
+            case Application.Results.Item.DeleteItemStatus.Exception:
+                return RedirectToAction("Error", "Home", new ErrorViewModel());
+            default:
+                throw new NotImplementedException();
+        }
     }
 
     [Route("Ingredients")]

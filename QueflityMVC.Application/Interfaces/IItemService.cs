@@ -1,4 +1,5 @@
-﻿using QueflityMVC.Application.ViewModels.Category;
+﻿using QueflityMVC.Application.Results.Item;
+using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Item;
 
 namespace QueflityMVC.Application.Interfaces;
@@ -7,7 +8,7 @@ public interface IItemService
 {
     Task<int> CreateItemAsync(ItemVM createItemVM);
 
-    Task DeleteItemAsync(int id);
+    Task<DeleteItemResult> DeleteItemAsync(int id);
 
     Task<ListItemsVM> GetFilteredListAsync(ListItemsVM listItemsVM);
 

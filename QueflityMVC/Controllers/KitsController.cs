@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results.Kit;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
+using QueflityMVC.Web.Models;
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -28,10 +30,11 @@ public class KitsController : Controller
 
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? itemId)
     {
         ListKitsVM listKitsVM = new()
         {
+            ItemId= itemId,
             Pagination = PaginationFactory.Default<KitForListVM>()
         };
         return await Index(listKitsVM);
@@ -113,6 +116,25 @@ public class KitsController : Controller
 
         int kitId = await _kitService.EditKitAsync(editedKitVM);
         return RedirectToAction("Details", new { id = kitId });
+    }
+
+    [Route("Delete")]
+    [HttpGet]
+    [Authorize(Policy = Policies.ENTITIES_CREATE)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var results = await _kitService.DeleteKitAsync(id);
+        switch (results.Status)
+        {
+            case DeleteKitStatus.Success:
+                return RedirectToAction("Index");
+            case DeleteKitStatus.NotExist:
+                return NotFound();
+            case DeleteKitStatus.Exception:
+                return RedirectToAction("Error", "Home", new ErrorViewModel());
+            default:
+                throw new NotImplementedException();
+        }
     }
 
     [Route("ListItemsForComponent")]
