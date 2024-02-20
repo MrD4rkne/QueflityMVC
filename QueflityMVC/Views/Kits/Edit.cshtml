@@ -14,62 +14,71 @@
 <hr />
 <div class="row">
     <form asp-action="Edit" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="mb-3">
-            <div class="row">
-                <div class="col-md-4">
-                    <img class="img-fluid rounded-start" alt="@Model.Image?.AltDescription" src="@Model.Image?.FileUrl" />
-                </div>
-                <div class="col-md-8">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <h5>Image</h5>
-                            <div class="mb-3">
-                                <input class="form-control" asp-for="Image!.FormFile" type="file">
-                                <span asp-validation-for="Image!.FormFile" class="text-danger"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label asp-for="Image!.AltDescription" class="control-label">Alternative description</label>
-                                <input asp-for="Image!.AltDescription" class="form-control" value="@Model.Image?.AltDescription"/>
-                                <span asp-validation-for="Image!.AltDescription" class="text-danger"></span>
-                            </div>
-                            @Html.HiddenFor(m => m.Image.Id);
-                        </li>
+        <div asp-validation-summary="ModelOnly" class="text-danger" />
+        <input type="hidden" asp-for="Id" value="@Model.Id" />
+        <partial name="_ImageEditPartial" for="Image" />
 
-                        <li class="list-group-item">
-                            <h5>Set</h5>
-                            <div class="mb-3">
-                                <label asp-for="Name" class="control-label"></label>
-                                <input asp-for="Name" class="form-control" value="@Model.Name"/>
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Description" class="control-label"></label>
-                                <textarea asp-for="Description" class="form-control" rows="5" value="@Model.Description"></textarea>
-                                <span asp-validation-for="Description" class="text-danger"></span>
-                            </div>
-                        </li>
-                    </ul>
-                    <button type="submit" class="btn btn-outline-primary" formaction="Edit">Edit</button>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-auto">
+                    <h5>Set</h5>
+                </div>
+                <div class="col-md-auto">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" asp-for="ShouldBeShown" type="checkbox" checked="@(Model.ShouldBeShown ? "checked":null)" onchange="VisibilityChanged()">
+                    @if (Model.ShouldBeShown)
+                    {
+                        <label id="visibility-label" class="form-check-label">Visible</label>
+                    }
+                    else
+                    {
+                        <label id="visibility-label" class="form-check-label">Hidden</label>
+                    }
+                </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" value="@Model.Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-auto">
+                    <label class="control-label">Price</label>
+                    <input asp-for="ShouldBeShown" type="number" readonly class="form-control" value="@Model.Price" />
+                </div>
+            </div>
+            <div class="row">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="5" value="@Model.Description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
         </div>
-
-        <input type="hidden" asp-for="Id" value="@Model.Id"/>
-        <input type="hidden" asp-for="Image!.FileUrl" value="@Model.Image!.FileUrl" />
+        <div class="container" style="display:flex">
+            <button type="submit" class="btn btn-primary" formaction="Edit">Edit</button>
+            @if (canListEntities)
+            {
+                @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-outline-secondary" })
+            }
+        </div>
     </form>
 </div>
-
-@if (canListEntities)
-{
-    <div>
-        <a asp-action="Index">Back to List</a>
-    </div>
-}
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script type="text/javascript">
+        function VisibilityChanged() {
+            var label = document.getElementById("visibility-label");
+            if (label.innerText == "Visible") {
+                label.innerText = "Hidden";
+            }
+            else {
+                label.innerText = "Visible";
+            }
+        }
+    </script>
 }
+
 

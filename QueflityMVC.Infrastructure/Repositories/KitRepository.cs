@@ -134,6 +134,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
         originalEntity.Price = entityToUpdate.Price;
+        originalEntity.ShouldBeShown=entityToUpdate.ShouldBeShown;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;

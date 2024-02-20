@@ -141,10 +141,18 @@ public class ItemsController : Controller
         }
         if (ingredientsViewModel.AllIngredients.Count == 0)
         {
-            return NoContent();
+            return RedirectToAction("NoIngredients");
         }
 
         return View(ingredientsViewModel);
+    }
+
+    [Route("NoIngredients")]
+    [HttpGet]
+    [Authorize(Policy = Policies.ENTITIES_LIST)]
+    public IActionResult NoIngredients()
+    {
+        return View();
     }
 
     [Route("Ingredients")]

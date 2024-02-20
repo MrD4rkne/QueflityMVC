@@ -14,6 +14,8 @@ public record KitVM : IMapFrom<Domain.Models.Kit>
 
     public bool ShouldBeShown { get; set; }
 
+    public decimal Price { get; set; }
+
     public required ImageVM Image { get; set; }
 
     public void Mapping(Profile profile)

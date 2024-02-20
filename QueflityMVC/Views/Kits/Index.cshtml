@@ -1,7 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
+@using QueflityMVC.Application.ViewModels.Kit
 @inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Kit.ListKitsVM
+@model ListKitsVM
 
 @{
     ViewData["Title"] = "Index";
@@ -11,7 +12,8 @@
     bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h1>Index</h1>
+<h1>Sets</h1>
+<h2>Below you can list and filtr your sets.</h2>
 
 @if (canCreateEntities)
 {
@@ -21,16 +23,19 @@
 }
 
 <form asp-action="Index" asp-controller="Kits" method="post" data="@Model.Pagination.Info">
+    @if (Model.ItemId.HasValue)
+    {
+        <p>
+            Curretnly you see sets that have item of id @Model.ItemId as a part of them
+            <a href="#" onclick="RemoveItemFilter()">Click here to remove item filter</a>
+        </p>
+
+    }
+
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" />
         </li>
-        @if (Model.ItemId.HasValue)
-        {
-            <li class="nav-item">
-                <p>With item if id @Model.ItemId as element</p>
-            </li>
-        }
         <li class="nav-item">
             <button type="submit" class="btn btn-secondary">Search</button>
         </li>
@@ -92,15 +97,15 @@
                     <td>
                         @if (canEditEntities)
                         {
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
                         }
                         @if (canListEntities)
                         {
-                            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm"})
+                            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
                         }
                         @if (canCreateEntities)
                         {
-                            @Html.ActionLink("Delete", "Delete", new {  id = item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
                         }
                     </td>
                 </tr>
@@ -114,10 +119,15 @@
 </form>
 
 @section Scripts
-    {
+{
     <script type="text/javascript">
         function PageSizeSelected() {
             SubmitPagination();
+        }
+
+        function RemoveItemFilter() {
+            document.getElementById("@Html.IdFor(x=>x.ItemId)").value = "";
+            document.forms[1].submit();
         }
     </script>
 }

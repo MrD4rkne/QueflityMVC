@@ -72,7 +72,9 @@ public class KitService : IKitService
 
         ListKitsVM listItemVM = new()
         {
-            Pagination = pagination
+            Pagination = pagination,
+            ItemId = listKitsVM.ItemId,
+            NameFilter = listKitsVM.NameFilter
         };
         return listItemVM;
     }
