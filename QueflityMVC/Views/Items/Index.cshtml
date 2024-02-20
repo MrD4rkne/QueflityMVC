@@ -59,6 +59,9 @@
                     <th>
                         Name
                     </th>
+                    <th>
+                        Visibility
+                    </th>
                     <th></th>
                 </tr>
             </thead>
@@ -74,6 +77,19 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked="@(item.ShouldBeShown? "checked":null)" disabled>
+                                @if (item.ShouldBeShown)
+                                {
+                                    <label class="form-check-label">Visible</label>
+                                }
+                                else
+                                {
+                                    <label class="form-check-label">Hidden</label>
+                                }
+                            </div>
                         </td>
                         <td>
                             @if (canEditEntities)

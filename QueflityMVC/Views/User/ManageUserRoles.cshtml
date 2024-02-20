@@ -47,7 +47,7 @@
                 @for (int i = 0; i < Model.AllRoles.Count; i++)
                 {
                     RoleForSelectionVM role = Model.AllRoles[i];
-                    role.IsSelected = Model.AssignedRolesIds.Contains(role.Id);
+                    role.IsSelected = Model.AssignedRolesNames.Contains(role.Name);
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => role.Name)

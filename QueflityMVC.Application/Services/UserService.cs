@@ -86,7 +86,7 @@ public class UserService : IUserService
         var allRoles = _userRepository.GetAllRoles()
             .ProjectTo<RoleForSelectionVM>(_mapper.ConfigurationProvider);
 
-        var assignedRolesIds = await _userRepository.GetAssignedRolesIdsAsync(userId);
+        var assignedRolesIds = await _userRepository.GetAssignedRolesNamesAsync(userId);
 
         UserRolesVM userRolesVM = new()
         {
@@ -94,7 +94,7 @@ public class UserService : IUserService
             Username = user.UserName,
             IsEnabled = user.IsEnabled,
             AllRoles = allRoles.ToList(),
-            AssignedRolesIds = assignedRolesIds.ToList()
+            AssignedRolesNames = assignedRolesIds.ToList()
         };
         return userRolesVM;
     }

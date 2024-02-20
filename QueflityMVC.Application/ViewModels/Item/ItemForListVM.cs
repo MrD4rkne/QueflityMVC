@@ -10,6 +10,8 @@ public record ItemForListVM : IMapFrom<Domain.Models.Item>
 
     public required string Name { get; set; }
 
+    public required bool ShouldBeShown { get; set; }
+
     public ImageForListVM? Image { get; set; }
 
     public void Mapping(Profile profile)

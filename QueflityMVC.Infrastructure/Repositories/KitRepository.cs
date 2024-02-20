@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
@@ -142,5 +143,18 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         _dbContext.Entry(originalEntity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return originalEntity;
+    }
+
+    public override async Task DeleteAsync(Kit entityToDelete)
+    {
+        if(!await ExistsAsync(entityToDelete))
+        {
+            throw new EntityNotFoundException(entityName: nameof(Kit));
+        }
+        await _dbContext.SetElements.
+            Where(x => x.KitId == entityToDelete.Id)
+            .ExecuteDeleteAsync();
+        _dbContext.Kits.Remove(entityToDelete);
+        await _dbContext.SaveChangesAsync();
     }
 }

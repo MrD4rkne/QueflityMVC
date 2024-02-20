@@ -17,7 +17,7 @@ public interface IUserRepository
 
     IQueryable<IdentityRole> GetAllRoles();
 
-    Task<IList<string>> GetAssignedRolesIdsAsync(string userId);
+    Task<IList<string>> GetAssignedRolesNamesAsync(string userId);
 
     Task AddToRoleAsync(string userId, string roleId);
 

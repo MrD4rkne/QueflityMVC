@@ -14,6 +14,6 @@ public class ItemValidator : AbstractValidator<ItemVM>
             .Matches("[A-Za-z]*").WithMessage("Name can only contain letters");
         RuleFor(x => x.Image)
             .NotNull()
-            ?.SetValidator(new ImageValidator());
+            !.SetValidator(new ImageValidator());
     }
 }

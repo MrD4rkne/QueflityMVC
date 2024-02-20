@@ -39,18 +39,14 @@ public class Context : IdentityDbContext<ApplicationUser>
             .WithMany(itCtgr => itCtgr.Items)
             .HasForeignKey(it => it.CategoryId);
 
-        builder.Entity<Element>()
-            .HasOne(element => element.Item)
-            .WithMany(it => it.SetElements)
-            .IsRequired()
-            .HasForeignKey(element => element.ItemId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Entity<Item>()
+            .HasMany(it => it.SetElements)
+            .WithOne(elem => elem.Item)
+            .IsRequired();
 
-        builder.Entity<Element>()
-            .HasOne(element => element.Kit)
-            .WithMany(it => it.Elements)
-            .IsRequired()
-            .HasForeignKey(membership => membership.KitId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Entity<Kit>()
+            .HasMany(it => it.Elements)
+            .WithOne(elem => elem.Kit)
+            .IsRequired();
     }
 }

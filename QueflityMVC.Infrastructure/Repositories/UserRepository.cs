@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -10,11 +11,13 @@ public class UserRepository : IUserRepository
 {
     protected Context _dbContext;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public UserRepository(Context dbContext, UserManager<ApplicationUser> userManager)
+    public UserRepository(Context dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
     {
         _dbContext = dbContext;
         _userManager = userManager;
+        _roleManager = roleManager;
     }
 
     public IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter)
@@ -66,28 +69,31 @@ public class UserRepository : IUserRepository
         return allRoles;
     }
 
-    public async Task<IList<string>> GetAssignedRolesIdsAsync(string userId)
+    public async Task<IList<string>> GetAssignedRolesNamesAsync(string userId)
     {
         var rolesOwner = (await GetUserByIdAsync(userId)) ?? throw new ResourceNotFoundException();
         var allAssignedRolesIds = await _userManager.GetRolesAsync(rolesOwner);
         return allAssignedRolesIds;
     }
 
+    private Task<IdentityRole?> GetRoleByIdAsync(string roleId)
+    {
+        return _dbContext.Roles.
+            FirstOrDefaultAsync(x=> x.Id == roleId);
+    }
+
     public async Task AddToRoleAsync(string userId, string roleId)
     {
         var user = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        await _userManager.AddToRoleAsync(user, roleId);
+        var role = await GetRoleByIdAsync(roleId) ?? throw new ResourceNotFoundException(entityName: nameof(IdentityRole));
+        await _userManager.AddToRoleAsync(user, role.Name);
     }
 
     public async Task RemoveFromRoleAsync(string userId, string roleId)
     {
-        var user = await GetUserByIdAsync(userId);
-        if (user is null)
-        {
-            throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        }
-
-        await _userManager.RemoveFromRoleAsync(user, roleId);
+        var user = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+        var role = await GetRoleByIdAsync(roleId) ?? throw new ResourceNotFoundException(entityName: nameof(IdentityRole));
+        await _userManager.RemoveFromRoleAsync(user, role.Name);
     }
 
     public async Task<List<string>> GetAssignedClaimsIdsAsync(string userId)

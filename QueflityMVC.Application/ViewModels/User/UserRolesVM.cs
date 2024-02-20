@@ -12,7 +12,7 @@ public record UserRolesVM
 
     public required List<RoleForSelectionVM> AllRoles { get; set; }
 
-    public required List<string> AssignedRolesIds { get; set; }
+    public required List<string> AssignedRolesNames { get; set; }
 
     public bool CanCallerManage { get; set; }
 }
