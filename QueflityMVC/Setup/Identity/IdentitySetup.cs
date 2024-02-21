@@ -9,9 +9,10 @@ public static class IdentitySetup
     public static IServiceCollection ConfigureIdentity(this IServiceCollection services)
     {
         services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddDefaultUI()
 .AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<QueflityMVC.Infrastructure.Context>()
-.AddSignInManager<MySignInManager>();
+.AddSignInManager<MySignInManager>()
+.AddEntityFrameworkStores<QueflityMVC.Infrastructure.Context>();
         services.Configure<IdentityOptions>(options =>
         {
             options.Password.RequireDigit = true;

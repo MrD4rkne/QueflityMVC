@@ -6,6 +6,8 @@ using QueflityMVC.Web.Setup.OAuth;
 using QueflityMVC.Web.Setup.Other;
 using QueflityMVC.Web.Setup.Secrets;
 using Serilog;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);
