@@ -10,7 +10,7 @@ public class KitValidator : AbstractValidator<KitVM>
         RuleFor(x => x.Name)
             .NotEmpty()
             .MinimumLength(2)
-            .MaximumLength(20)
+            .MaximumLength(30)
             .Matches("[A-Za-z]*").WithMessage("Name can only contain letters");
         RuleFor(x => x.Image)
             .NotNull()

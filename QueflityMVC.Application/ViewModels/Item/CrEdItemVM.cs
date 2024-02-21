@@ -6,5 +6,5 @@ public record CrEdItemVM
 {
     public ItemVM ItemVM { get; set; }
 
-    public required List<CategoryForSelectVM> Categories { get; set; }
+    public List<CategoryForSelectVM>? Categories { get; set; }
 }

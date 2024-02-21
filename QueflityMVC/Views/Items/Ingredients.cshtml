@@ -46,12 +46,12 @@
             {
                 var item = Model.AllIngredients[i];
                 <tr>
-                    <th scope="row">
+                    <td scope="row" style="width: 50px">
                         <input class="form-check-input" asp-for="AllIngredients[i].IsSelected" type="checkbox" checked="@(Model.SelectedIngredientsIds.Contains(item.Id)?"checked":null)">
                         <input class="form-check-input" asp-for="AllIngredients[i].Id" type="hidden" value="@item.Id">
                         <input class="form-check-input" asp-for="AllIngredients[i].Name" type="hidden" value="@item.Name">
-                    </th>
-                    <td>
+                    </td>
+                    <td class="w-auto">
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                 </tr>
