@@ -1,9 +1,20 @@
-﻿@using QueflityMVC.Application.ViewModels.User;
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@using QueflityMVC.Application.ViewModels.User;
 @using QueflityMVC.Application.ViewModels.Other;
 @model UserRolesVM
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = $"{@Model.Username} - roles";
+    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+}
+
+@if (canListUsers)
+{
+    <div>
+        <a asp-action="Index">Back to Users</a>
+    </div>
 }
 
 <h2>

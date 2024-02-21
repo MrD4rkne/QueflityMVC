@@ -12,14 +12,17 @@
 
 <h1>Ingredients</h1>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">Create New</a>
-</p>
+@if (canCreateEntities)
+{
+    <p>
+        <a class="btn btn-primary" asp-action="Create">Create New</a>
+    </p>
+}
 
 <form asp-action="Index" asp-controller="Ingredients" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
-           <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" />
+            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" />
         </li>
         <li class="nav-item">
             <button type="submit" class="btn btn-secondary">Search</button>
@@ -66,11 +69,11 @@
                         <td>
                             @if (canEditEntities)
                             {
-                                @Html.ActionLink("Edit", "Edit", new { id=item.Id }, new { @class = "btn btn-outline-secondary btn-sm"})
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
                             }
                             @if (canCreateEntities)
                             {
-                                @Html.ActionLink("Delete", "Delete", new { id=item.Id }, new { @class = "btn btn-outline-danger btn-sm"})
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
                             }
                         </td>
                     </tr>
@@ -84,7 +87,7 @@
 </form>
 
 @section Scripts
-    {
+{
     <script type="text/javascript">
         function PageSizeSelected() {
             SubmitPagination();
