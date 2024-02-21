@@ -126,6 +126,8 @@ public class UserController : Controller
         return RedirectToAction("Index");
     }
 
+    // TODO: force user to logout after permissions update
+
     private static bool CanUserManageRoles(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
     {
         string? callerId = callerPrincipal.GetLoggedInUserId();

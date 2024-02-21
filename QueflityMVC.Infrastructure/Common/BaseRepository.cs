@@ -41,12 +41,6 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
         await _dbContext.SaveChangesAsync();
     }
 
-    /*
-     TODO: fix adding item to kits
-     TODO: add remove from kit
-     TODO: fix updating items
-     */
-
     public virtual async Task<T> UpdateAsync(T entityToUpdate)
     {
         var entity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(T));

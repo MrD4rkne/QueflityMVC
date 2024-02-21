@@ -87,6 +87,7 @@ public class UserRepository : IUserRepository
         var user = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
         var role = await GetRoleByIdAsync(roleId) ?? throw new ResourceNotFoundException(entityName: nameof(IdentityRole));
         await _userManager.AddToRoleAsync(user, role.Name);
+        await _userManager.UpdateSecurityStampAsync(user);
     }
 
     public async Task RemoveFromRoleAsync(string userId, string roleId)
@@ -94,6 +95,7 @@ public class UserRepository : IUserRepository
         var user = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
         var role = await GetRoleByIdAsync(roleId) ?? throw new ResourceNotFoundException(entityName: nameof(IdentityRole));
         await _userManager.RemoveFromRoleAsync(user, role.Name);
+        await _userManager.UpdateSecurityStampAsync(user);
     }
 
     public async Task<List<string>> GetAssignedClaimsIdsAsync(string userId)
@@ -115,6 +117,7 @@ public class UserRepository : IUserRepository
 
         IEnumerable<Claim> claimsToAdd = ParallelEnumerable.Select(claimsIds.AsParallel(), (string cl) => { return new Claim(cl, cl); });
         await _userManager.AddClaimsAsync(user, claimsToAdd);
+        await _userManager.UpdateSecurityStampAsync(user);
     }
 
     public async Task RemoveClaimsAsync(string userId, string[] claimsIds)
@@ -126,5 +129,6 @@ public class UserRepository : IUserRepository
                 return new Claim(cl, cl); 
             });
         await _userManager.RemoveClaimsAsync(user, claimsToRemove);
+        await _userManager.UpdateSecurityStampAsync(user);
     }
 }

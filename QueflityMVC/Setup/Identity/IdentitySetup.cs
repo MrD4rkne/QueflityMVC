@@ -22,6 +22,11 @@ public static class IdentitySetup
             options.User.RequireUniqueEmail = false;
         });
 
+        services.Configure<SecurityStampValidatorOptions>(options =>
+        {
+            options.ValidationInterval = TimeSpan.Zero;
+        });
+
         return services;
     }
 }
