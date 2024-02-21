@@ -12,6 +12,7 @@ public class ImageValidator : AbstractValidator<ImageVM?>
             .NotEmpty()
             .MinimumLength(2)
             .MaximumLength(20)
+            .WithName("Alternative description")
             .Matches("[A-Za-z]*").WithMessage("Alternative description can only contain letters");
         RuleFor(x => x!.FormFile)
             .NotNull().WithMessage("Image must be attached").When(x => string.IsNullOrEmpty(x!.FileUrl));

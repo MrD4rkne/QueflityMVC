@@ -8,6 +8,8 @@ using QueflityMVC.Web.Setup.Secrets;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);
+
 // provider for secrets, connection string etc.
 IVariablesProvider variablesProvider = new EnviromentCredentialsProvider();
 

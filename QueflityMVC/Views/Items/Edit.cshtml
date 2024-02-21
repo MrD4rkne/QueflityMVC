@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-md-auto">
                     <label class="control-label">Price</label>
-                    <input type="number" asp-for="ItemVM.Price" class="form-control" min="0" value="@Model.ItemVM.Price" />
+                    <input type="number" asp-for="ItemVM.Price" class="form-control" min="0" step="0.01" value="@Model.ItemVM.Price" />
                 </div>
                 <div class="col-md-auto" style="max-width: 200px">
                     <label class="control-label">Category</label>

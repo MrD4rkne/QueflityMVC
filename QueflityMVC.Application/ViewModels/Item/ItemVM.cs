@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel;
+using AutoMapper;
 using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
 
@@ -16,6 +17,7 @@ public record ItemVM : IMapFrom<Domain.Models.Item>
 
     public ImageVM Image { get; set; }
 
+    [DisplayName("Category")]
     public int CategoryId { get; set; }
 
     public void Mapping(Profile profile)

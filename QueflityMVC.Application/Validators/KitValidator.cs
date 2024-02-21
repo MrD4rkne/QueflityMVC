@@ -14,7 +14,7 @@ public class KitValidator : AbstractValidator<KitVM>
             .Matches("[A-Za-z]*").WithMessage("Name can only contain letters");
         RuleFor(x => x.Image)
             .NotNull()
-            ?.SetValidator(new ImageValidator());
+            !.SetValidator(new ImageValidator());
         RuleFor(x => x.Description)
             .Matches("[A-Za-z]*").WithMessage("Description can only contain letters");
     }

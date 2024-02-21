@@ -11,7 +11,10 @@ public class ItemValidator : AbstractValidator<ItemVM>
             .NotEmpty()
             .MinimumLength(2)
             .MaximumLength(20)
-            .Matches("[A-Za-z]*").WithMessage("Name can only contain letters");
+            .Matches("[A-Za-z]*")
+            .WithMessage("Name can only contain letters");
+        RuleFor(x => x.Price)
+            .GreaterThanOrEqualTo(0);
         RuleFor(x => x.Image)
             .NotNull()
             !.SetValidator(new ImageValidator());
