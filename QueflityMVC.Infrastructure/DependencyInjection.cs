@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Repositories;
+using QueflityMVC.Infrastructure.Seeding;
 
 namespace QueflityMVC.Infrastructure;
 
@@ -24,6 +25,6 @@ public static class DependencyInjection
         using IServiceScope scope = serviceProvider.CreateScope();
         UserManager<ApplicationUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        await ContextSeed.SeedData(userManager,roleManager);
+        await IdentitySeed.SeedIdentity(userManager,roleManager);
     }
 }

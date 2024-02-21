@@ -5,13 +5,13 @@
 @model ElementVM
 
 @{
-    ViewData["Title"] = "AddComponent";
+    ViewData["Title"] = "Add item to kit";
     bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h1>AddComponent</h1>
+<h1>Create membership</h1>
 
-<h4>ElementVM</h4>
+<h4>Add item in your set!</h4>
 <hr />
 
 <form asp-action="AddComponent">

@@ -73,7 +73,7 @@ public class ItemService : IItemService
 
     public async Task<ListItemsVM> GetFilteredListAsync(ListItemsVM listItemsVM)
     {
-        IQueryable<Item> matchingItems = _itemRepository.GetFilteredItems(listItemsVM.NameFilter);
+        IQueryable<Item> matchingItems = _itemRepository.GetFilteredItems(listItemsVM.NameFilter, listItemsVM.CategoryId);
         listItemsVM.Pagination = await matchingItems.Paginate<Item, ItemForListVM>(listItemsVM.Pagination, _mapper.ConfigurationProvider);
         return listItemsVM;
     }

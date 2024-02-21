@@ -28,6 +28,8 @@
 }
 
 <form asp-action="Index" asp-controller="Items" method="post">
+    @Html.HiddenFor(model => model.CategoryId)
+
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />

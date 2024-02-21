@@ -6,10 +6,12 @@ namespace QueflityMVC.Domain.Common;
 
 public class BasePurchasableEntity : BaseEntity
 {
+    public required string Name { get; set; }
+
     public bool ShouldBeShown { get; set; }
 
     [Precision(14, 2)]
-    public decimal Price { get; set; }
+    public required decimal Price { get; set; }
 
     public required int? ImageId { get; set; }
 

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Models;
+using QueflityMVC.Infrastructure.Seeding;
 
 namespace QueflityMVC.Infrastructure;
 
@@ -42,11 +43,21 @@ public class Context : IdentityDbContext<ApplicationUser>
         builder.Entity<Item>()
             .HasMany(it => it.SetElements)
             .WithOne(elem => elem.Item)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<Kit>()
             .HasMany(it => it.Elements)
             .WithOne(elem => elem.Kit)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
+
+        EntitySeeder entitySeeder = new();
+        builder.Entity<Element>().HasData(entitySeeder.Elements);
+        builder.Entity<Kit>().HasData(entitySeeder.Kits);
+        builder.Entity<Item>().HasData(entitySeeder.Items);
+        builder.Entity<Ingredient>().HasData(entitySeeder.Ingredients);
+        builder.Entity<Category>().HasData(entitySeeder.Categories);
+        builder.Entity<Image>().HasData(entitySeeder.Images);
     }
 }

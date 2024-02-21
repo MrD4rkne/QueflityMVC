@@ -36,6 +36,7 @@ public static class DbContextSetup
         using (var scope = appBuilder.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<TContext>();
+            context.Database.EnsureCreated();
             if (context.Database.GetPendingMigrations().Any())
             {
                 context.Database.Migrate();

@@ -75,7 +75,7 @@
                     @Html.DisplayFor(modelItem => itemMembership.PricePerItem)
                 </td>
                 <td>
-                    @Html.Label((itemMembership.PricePerItem * itemMembership.ItemsAmmount).ToString())
+                    <p>@((itemMembership.PricePerItem * (decimal)itemMembership.ItemsAmmount))</p>
                 </td>
                 <td>
                     @if (canEditEntities)

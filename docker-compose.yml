@@ -12,10 +12,10 @@ services:
     environment:
           - OAUTH_GOOGLE_CLIENT_ID=313258013736-cjneh6omvfrfjne2sr0euhpbi17n55du.apps.googleusercontent.com
           - OAUTH_GOOGLE_CLIENT_SECRET=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
-          - DB_CONNECTION_STRING=Server=queflity_db;Database=QueflityMvc;User Id=SA;Password=Lf5892dENz;MultipleActiveResultSets=true;TrustServerCertificate=true
+          - DB_CONNECTION_STRING=Server=queflity_database;Database=Queflity;User Id=SA;Password=Lf5892dENz;MultipleActiveResultSets=true;TrustServerCertificate=true
           - ASPNETCORE_URLS=https://+:5001;http://+:5000
   sql:
-    container_name: queflity_db
+    container_name: queflity_database
     build:
       context: .
       dockerfile: Database/Dockerfile

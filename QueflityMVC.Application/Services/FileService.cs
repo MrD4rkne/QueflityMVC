@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using QueflityMVC.Application.Interfaces;
+using Serilog;
 
 namespace QueflityMVC.Application.Services;
 
@@ -43,7 +44,13 @@ public class FileService : IFileService
     public void DeleteImage(string relativeImagePath)
     {
         string path = Path.Combine(GetRootDirectory(ROOT_DIRECTORY), NormaliseFilePath(relativeImagePath));
-        File.Delete(path);
+        try
+        {
+            File.Delete(path);
+        }catch(Exception e)
+        {
+            Log.Error($"Error while deleting file {path}", e);
+        }
     }
 
     private string NormaliseFilePath(string path)
