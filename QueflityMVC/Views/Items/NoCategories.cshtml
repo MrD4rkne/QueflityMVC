@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@inject IAuthorizationService AuthorizationService
+@{
+    ViewData["Title"] = "No categories";
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+}
+
+<h1 class="text-danger">No categories!</h1>
+<h3 class="text-danger">First add any to be able to create your first item!</h3>
+
+
+@if (canCreateEntities)
+{
+    @Html.ActionLink("Create first category", "Create", "Categories", new{}, new { @class = "btn btn-primary" })
+}

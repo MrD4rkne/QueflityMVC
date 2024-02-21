@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
+using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Web.Models;
@@ -56,8 +57,15 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(int? categoryId)
     {
-        var addingVm = await _itemService.GetItemVMForAddingAsync(categoryId);
-        return View(addingVm);
+        try
+        {
+            var addingVm = await _itemService.GetItemVMForAddingAsync(categoryId);
+            return View(addingVm);
+        }
+        catch (NoCategoriesException)
+        {
+            return RedirectToAction("NoCategories", "Items");
+        }
     }
 
     [Route("Create")]
@@ -149,8 +157,14 @@ public class ItemsController : Controller
 
     [Route("NoIngredients")]
     [HttpGet]
-    [Authorize(Policy = Policies.ENTITIES_LIST)]
     public IActionResult NoIngredients()
+    {
+        return View();
+    }
+
+    [Route("NoCategories")]
+    [HttpGet]
+    public IActionResult NoCategories()
     {
         return View();
     }

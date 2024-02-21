@@ -120,7 +120,7 @@ public class KitService : IKitService
         {
             KitDetailsVM = _mapper.Map<KitDetailsVM>(kit),
             Item = _mapper.Map<ItemVM>(item),
-            ItemsAmmount = 1,
+            ItemsAmmount = 1,            
             PricePerItem = item.Price
         };
 

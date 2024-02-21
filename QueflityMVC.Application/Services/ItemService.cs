@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Item;
 using QueflityMVC.Application.ViewModels.Category;
@@ -111,6 +112,11 @@ public class ItemService : IItemService
         {
             Categories = await GetCategoriesForSelectVMAsync()
         };
+        if(crEdObjItem.Categories.Count == 0)
+        {
+            throw new NoCategoriesException();
+        }
+
         if(categoryId.HasValue)
         {
             crEdObjItem.ItemVM = new()
