@@ -13,7 +13,7 @@ public class EntitySeeder
     private const string FAKER_LOCALE = "en";
     private const int CATEGORIES_COUNT = 5;
     private const int ITEMS_COUNT = 10;
-    private const int INGREDIENTS_COUNT = 20;
+    private const int COMPONENTS_COUNT = 20;
     private const int KITS_COUNT = 10;
     private const int IMAGES_COUNT = ITEMS_COUNT + KITS_COUNT;
     private const int ELEMENTS_COUNT = 15;
@@ -22,7 +22,7 @@ public class EntitySeeder
 
     public IReadOnlyCollection<Item> Items { get; init; }
 
-    public IReadOnlyCollection<Ingredient> Ingredients { get; init; }
+    public IReadOnlyCollection<Component> Components { get; init; }
 
     public IReadOnlyCollection<Kit> Kits { get; init; }
 
@@ -33,7 +33,7 @@ public class EntitySeeder
     public EntitySeeder()
     {
         Categories = GenerateCategories();
-        Ingredients = GenerateIngredients();
+        Components = GenerateComponents();
         Images = GenerateImages();
         Items = GenerateItems();
         Elements = GenerateElements();
@@ -48,16 +48,16 @@ public class EntitySeeder
         return categoryFaker.Generate(CATEGORIES_COUNT);
     }
 
-    private IReadOnlyCollection<Ingredient> GenerateIngredients()
+    private IReadOnlyCollection<Component> GenerateComponents()
     {
-        var ingredientFaker = new Faker<Ingredient>(FAKER_LOCALE)
+        var componentFaker = new Faker<Component>(FAKER_LOCALE)
             .RuleFor(ing => ing.Id, f => f.GetPositiveIndexFaker())
             .RuleFor(ing => ing.Name, f => f.Commerce.ProductMaterial());
-        return ingredientFaker.Generate(INGREDIENTS_COUNT);
+        return componentFaker.Generate(COMPONENTS_COUNT);
     }
 
     /// <summary>
-    /// generate categories, ingredients and images before items
+    /// generate categories, components and images before items
     /// </summary>
     /// <returns></returns>
     private IReadOnlyCollection<Item> GenerateItems()

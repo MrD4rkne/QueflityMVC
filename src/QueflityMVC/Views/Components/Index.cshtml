@@ -1,16 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
 @inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Ingredient.ListIngredientsVM
+@model QueflityMVC.Application.ViewModels.Component.ListComponentsVM
 
 @{
-    ViewData["Title"] = "List ingredients";
+    ViewData["Title"] = "List components";
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
     bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 
-<h1>Ingredients</h1>
+<h1>Components</h1>
 
 @if (canCreateEntities)
 {
@@ -19,7 +19,7 @@
     </p>
 }
 
-<form asp-action="Index" asp-controller="Ingredients" method="post">
+<form asp-action="Index" asp-controller="Components" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" />

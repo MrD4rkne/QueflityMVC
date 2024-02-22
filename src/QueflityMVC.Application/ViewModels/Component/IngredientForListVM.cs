@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Mapping;
 
-namespace QueflityMVC.Application.ViewModels.Ingredient;
+namespace QueflityMVC.Application.ViewModels.Component;
 
-public record IngredientVM : IMapFrom<Domain.Models.Ingredient>
+public record ComponentForListVM : IMapFrom<Domain.Models.Component>
 {
     public required int Id { get; set; }
 
@@ -11,6 +11,6 @@ public record IngredientVM : IMapFrom<Domain.Models.Ingredient>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Ingredient, IngredientVM>().ReverseMap();
+        profile.CreateMap<Domain.Models.Component, ComponentForListVM>();
     }
 }

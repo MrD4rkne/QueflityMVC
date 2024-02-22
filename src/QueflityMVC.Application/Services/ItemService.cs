@@ -7,7 +7,7 @@ using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Item;
 using QueflityMVC.Application.ViewModels.Category;
-using QueflityMVC.Application.ViewModels.Ingredient;
+using QueflityMVC.Application.ViewModels.Component;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
@@ -19,16 +19,16 @@ public class ItemService : IItemService
 {
     private readonly IItemRepository _itemRepository;
     private readonly ICategoryRepository _categoryRepository;
-    private readonly IIngredientRepository _ingredientRepository;
+    private readonly IComponentRepository _componentRepository;
     private readonly IMapper _mapper;
     private readonly IFileService _fileService;
 
-    public ItemService(IItemRepository itemRepository, IMapper mapper, ICategoryRepository categoryRepository, IIngredientRepository ingredientRepository, IFileService fileService)
+    public ItemService(IItemRepository itemRepository, IMapper mapper, ICategoryRepository categoryRepository, IComponentRepository componentRepository, IFileService fileService)
     {
         _itemRepository = itemRepository;
         _mapper = mapper;
         _categoryRepository = categoryRepository;
-        _ingredientRepository = ingredientRepository;
+        _componentRepository = componentRepository;
         _fileService = fileService;
     }
 
@@ -139,28 +139,28 @@ public class ItemService : IItemService
         return updatedItem != null && updatedItem.Image != null && updatedItem.Image.FormFile != null;
     }
 
-    public async Task<ItemIngredientsSelectionVM?> GetIngredientsForSelectionVMAsync(int id)
+    public async Task<ItemComponentsSelectionVM?> GetComponentsForSelectionVMAsync(int id)
     {
-        var item = await _itemRepository.GetItemWithIngredientsByIdAsync(id) ?? throw new EntityNotFoundException();
+        var item = await _itemRepository.GetItemWithComponentsByIdAsync(id) ?? throw new EntityNotFoundException();
 
-        var allIngredients = _ingredientRepository.GetAll();
-        List<IngredientForSelection> allIngredientsVMs = await allIngredients.ProjectTo<IngredientForSelection>(_mapper.ConfigurationProvider)
+        var allComponents = _componentRepository.GetAll();
+        List<ComponentForSelection> allComponentsVMs = await allComponents.ProjectTo<ComponentForSelection>(_mapper.ConfigurationProvider)
             .ToListAsync();
-        List<int> selectedIngredientsIds = item.Ingredients!
+        List<int> selectedComponentsIds = item.Components!
             .Select(x => x.Id)
             .ToList();
-        ItemIngredientsSelectionVM selectionVM = new ItemIngredientsSelectionVM()
+        ItemComponentsSelectionVM selectionVM = new ItemComponentsSelectionVM()
         {
             Item = _mapper.Map<ItemVM>(item),
-            AllIngredients = allIngredientsVMs,
-            SelectedIngredientsIds = selectedIngredientsIds
+            AllComponents = allComponentsVMs,
+            SelectedComponentsIds = selectedComponentsIds
         };
         return selectionVM;
     }
 
-    public Task UpdateItemIngredientsAsync(ItemIngredientsSelectionVM selectionVM)
+    public Task UpdateItemComponentsAsync(ItemComponentsSelectionVM selectionVM)
     {
-        var selectedIngredients = _mapper.Map<IEnumerable<Ingredient>>(selectionVM.AllIngredients.Where(x => x.IsSelected)).ToList();
-        return _itemRepository.UpdateIngredientsAsync(selectionVM.Item.Id, selectedIngredients);
+        var selectedComponents = _mapper.Map<IEnumerable<Component>>(selectionVM.AllComponents.Where(x => x.IsSelected)).ToList();
+        return _itemRepository.UpdateComponentsAsync(selectionVM.Item.Id, selectedComponents);
     }
 }

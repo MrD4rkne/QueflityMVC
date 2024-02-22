@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using QueflityMVC.Application.ViewModels.Ingredient;
+using QueflityMVC.Application.ViewModels.Component;
 
 namespace QueflityMVC.Application.Validators;
 
-public class IngredientValidator : AbstractValidator<IngredientVM>
+public class ComponentValidator : AbstractValidator<ComponentVM>
 {
-    public IngredientValidator()
+    public ComponentValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()

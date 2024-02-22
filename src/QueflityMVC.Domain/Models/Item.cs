@@ -12,5 +12,5 @@ public class Item : BasePurchasableEntity
 
     public ICollection<Kit>? Kits { get; set; }
 
-    public ICollection<Ingredient>? Ingredients { get; set; }
+    public ICollection<Component>? Components { get; set; }
 }

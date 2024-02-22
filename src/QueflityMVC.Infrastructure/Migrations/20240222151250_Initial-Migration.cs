@@ -79,7 +79,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ingredients",
+                name: "Components",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -88,7 +88,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ingredients", x => x.Id);
+                    table.PrimaryKey("PK_Components", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -234,25 +234,25 @@ namespace QueflityMVC.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IngredientItem",
+                name: "ComponentItem",
                 columns: table => new
                 {
-                    IngredientsId = table.Column<int>(type: "int", nullable: false),
+                    ComponentsId = table.Column<int>(type: "int", nullable: false),
                     ItemsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IngredientItem", x => new { x.IngredientsId, x.ItemsId });
+                    table.PrimaryKey("PK_ComponentItem", x => new { x.ComponentsId, x.ItemsId });
                     table.ForeignKey(
-                        name: "FK_IngredientItem_BasePurchasableEntity_ItemsId",
+                        name: "FK_ComponentItem_BasePurchasableEntity_ItemsId",
                         column: x => x.ItemsId,
                         principalTable: "BasePurchasableEntity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_IngredientItem_Ingredients_IngredientsId",
-                        column: x => x.IngredientsId,
-                        principalTable: "Ingredients",
+                        name: "FK_ComponentItem_Components_ComponentsId",
+                        column: x => x.ComponentsId,
+                        principalTable: "Components",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -338,8 +338,8 @@ namespace QueflityMVC.Infrastructure.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IngredientItem_ItemsId",
-                table: "IngredientItem",
+                name: "IX_ComponentItem_ItemsId",
+                table: "ComponentItem",
                 column: "ItemsId");
 
             migrationBuilder.CreateIndex(
@@ -372,7 +372,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "IngredientItem");
+                name: "ComponentItem");
 
             migrationBuilder.DropTable(
                 name: "SetElements");
@@ -384,7 +384,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Ingredients");
+                name: "Components");
 
             migrationBuilder.DropTable(
                 name: "BasePurchasableEntity");

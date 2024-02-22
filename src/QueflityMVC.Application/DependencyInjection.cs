@@ -21,7 +21,7 @@ public static class DependencyInjection
         // Services
         services.AddTransient<ICategoryService, CategoryService>();
         services.AddTransient<IItemService, ItemService>();
-        services.AddTransient<IIngredientService, IngredientService>();
+        services.AddTransient<IComponentService, ComponentService>();
         services.AddTransient<IKitService, KitService>();
         services.AddTransient<IFileService, FileService>();
         services.AddTransient<IUserService, UserService>();

@@ -16,4 +16,6 @@ public class BasePurchasableEntity : BaseEntity
     public required int? ImageId { get; set; }
 
     public virtual Image? Image { get; set; }
+
+    public uint? OrderNo { get; set; }
 }

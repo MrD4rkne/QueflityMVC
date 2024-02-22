@@ -137,27 +137,27 @@ public class ItemsController : Controller
         }
     }
 
-    [Route("Ingredients")]
+    [Route("Components")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Ingredients(int id)
+    public async Task<IActionResult> Components(int id)
     {
-        var ingredientsViewModel = await _itemService.GetIngredientsForSelectionVMAsync(id);
-        if (ingredientsViewModel is null)
+        var componentsViewModel = await _itemService.GetComponentsForSelectionVMAsync(id);
+        if (componentsViewModel is null)
         {
             return NotFound();
         }
-        if (ingredientsViewModel.AllIngredients.Count == 0)
+        if (componentsViewModel.AllComponents.Count == 0)
         {
-            return RedirectToAction("NoIngredients");
+            return RedirectToAction("NoComponents");
         }
 
-        return View(ingredientsViewModel);
+        return View(componentsViewModel);
     }
 
-    [Route("NoIngredients")]
+    [Route("NoComponents")]
     [HttpGet]
-    public IActionResult NoIngredients()
+    public IActionResult NoComponents()
     {
         return View();
     }
@@ -169,13 +169,13 @@ public class ItemsController : Controller
         return View();
     }
 
-    [Route("Ingredients")]
+    [Route("Components")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Ingredients(ItemIngredientsSelectionVM selectionVM)
+    public async Task<IActionResult> Components(ItemComponentsSelectionVM selectionVM)
     {
-        await _itemService.UpdateItemIngredientsAsync(selectionVM);
+        await _itemService.UpdateItemComponentsAsync(selectionVM);
         return RedirectToAction("Index");
     }
 }

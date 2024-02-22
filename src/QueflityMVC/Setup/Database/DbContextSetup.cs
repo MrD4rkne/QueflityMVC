@@ -33,33 +33,28 @@ public static class DbContextSetup
 
     public static void ApplyPendingMigrations<TContext>(this WebApplication appBuilder) where TContext : DbContext
     {
-        using (var scope = appBuilder.Services.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<TContext>();
-            context.Database.EnsureCreated();
-            if (context.Database.GetPendingMigrations().Any())
-            {
-                context.Database.Migrate();
-            }
-        }
+        using var scope = appBuilder.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        context.Database.EnsureCreated();
+        scope.Dispose();
     }
 
     private static string PrepareConnectionString(IVariablesProvider variablesProvider)
     {
         ArgumentNullException.ThrowIfNull(variablesProvider);
-        string builtConnectionString = string.Empty;
         try
         {
+            string builtConnectionString = string.Empty;
             if (!TryBuildConnectionString(variablesProvider.GetConnectionString(), out builtConnectionString))
             {
                 throw new ConfigurationException("Connection string is invalid. Please fix this and provide valid one.");
             }
+            return builtConnectionString;
         }
         catch (Exception ex)
         {
             throw new DbSetupException("Connection string exception occured. See inner exception for more details.", ex);
         }
-        return builtConnectionString;
     }
 
     private static IServiceCollection ConfigureConnection<TContext>(this IServiceCollection services, string connectionString) where TContext : DbContext

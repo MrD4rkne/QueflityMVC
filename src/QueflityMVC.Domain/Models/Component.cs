@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Domain.Models;
 
-public class Ingredient : BaseEntity
+public class Component : BaseEntity
 {
     public required string Name { get; set; }
 

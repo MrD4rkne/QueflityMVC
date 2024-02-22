@@ -9,7 +9,7 @@ public interface ICategoryRepository : IBaseRepository<Category>
     /// </summary>
     /// <param name="categoryId">Category's id</param>
     /// <returns></returns>
-    Task<bool> CanDeleteCategoryAsync(int categoryId);
+    Task<bool> IsAnyItemWithCategory(int categoryId);
 
     IQueryable<Category> GetFiltered(string? nameFilter);
 }

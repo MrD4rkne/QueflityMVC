@@ -1,12 +1,12 @@
-﻿using QueflityMVC.Application.ViewModels.Ingredient;
+﻿using QueflityMVC.Application.ViewModels.Component;
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public record ItemIngredientsSelectionVM
+public record ItemComponentsSelectionVM
 {
     public required ItemVM Item { get; set; }
 
-    public required List<int> SelectedIngredientsIds { get; set; }
+    public required List<int> SelectedComponentsIds { get; set; }
 
-    public required List<IngredientForSelection> AllIngredients { get; set; }
+    public required List<ComponentForSelection> AllComponents { get; set; }
 }

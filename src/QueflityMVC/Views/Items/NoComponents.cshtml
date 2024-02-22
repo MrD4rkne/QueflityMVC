@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@inject IAuthorizationService AuthorizationService
+@{
+    ViewData["Title"] = "No components";
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+}
+
+<h1 class="text-danger">No components!</h1>
+<h3 class="text-danger">First add any component to be able to add it to item's components'.</h3>
+
+
+@if (canCreateEntities)
+{
+    @Html.ActionLink("Create first component", "Create", "Components", new{}, new { @class = "btn btn-primary" })
+}

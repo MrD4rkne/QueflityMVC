@@ -8,7 +8,7 @@ namespace QueflityMVC.Infrastructure;
 
 public class Context : IdentityDbContext<ApplicationUser>
 {
-    public DbSet<Ingredient> Ingredients { get; set; }
+    public DbSet<Component> Components { get; set; }
 
     public DbSet<Item> Items { get; set; }
 
@@ -32,7 +32,7 @@ public class Context : IdentityDbContext<ApplicationUser>
             .HasOne(it => it.Image);       
 
         builder.Entity<Item>()
-            .HasMany(it => it.Ingredients)
+            .HasMany(it => it.Components)
             .WithMany(ing => ing.Items);
 
         builder.Entity<Item>()
@@ -56,7 +56,7 @@ public class Context : IdentityDbContext<ApplicationUser>
         builder.Entity<Element>().HasData(entitySeeder.Elements);
         builder.Entity<Kit>().HasData(entitySeeder.Kits);
         builder.Entity<Item>().HasData(entitySeeder.Items);
-        builder.Entity<Ingredient>().HasData(entitySeeder.Ingredients);
+        builder.Entity<Component>().HasData(entitySeeder.Components);
         builder.Entity<Category>().HasData(entitySeeder.Categories);
         builder.Entity<Image>().HasData(entitySeeder.Images);
     }

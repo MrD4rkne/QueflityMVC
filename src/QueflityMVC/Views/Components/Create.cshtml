@@ -1,16 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
 @inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Ingredient.IngredientVM
+@model QueflityMVC.Application.ViewModels.Component.ComponentVM
 
 @{
-    ViewData["Title"] = "Create ingredient";
+    ViewData["Title"] = "Create component";
     bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h1>Create ingredient</h1>
+<h1>Create component</h1>
 
-<h4>Enter your new (surely awesome) ingredient's info below:</h4>
+<h4>Enter your new (surely awesome) component's info below:</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">

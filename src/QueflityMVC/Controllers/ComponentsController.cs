@@ -5,19 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.ViewModels.Ingredient;
+using QueflityMVC.Application.ViewModels.Component;
 
 namespace QueflityMVC.Web.Controllers;
 
-[Route("Ingredients")]
-public class IngredientsController : Controller
+[Route("Components")]
+public class ComponentsController : Controller
 {
-    private readonly IIngredientService _ingredientService;
-    private readonly IValidator<IngredientVM> _categoryValidator;
+    private readonly IComponentService _componentService;
+    private readonly IValidator<ComponentVM> _categoryValidator;
 
-    public IngredientsController(IIngredientService ingredientService, IValidator<IngredientVM> categoryValidator)
+    public ComponentsController(IComponentService componentService, IValidator<ComponentVM> categoryValidator)
     {
-        _ingredientService = ingredientService;
+        _componentService = componentService;
         _categoryValidator = categoryValidator;
     }
 
@@ -25,22 +25,22 @@ public class IngredientsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index()
     {
-        ListIngredientsVM listIngredientsVM = new()
+        ListComponentsVM listComponentsVM = new()
         {
-            Pagination = PaginationFactory.Default<IngredientForListVM>()
+            Pagination = PaginationFactory.Default<ComponentForListVM>()
         };
-        return await Index(listIngredientsVM);
+        return await Index(listComponentsVM);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Index(ListIngredientsVM listIngredients)
+    public async Task<IActionResult> Index(ListComponentsVM listComponents)
     {
-        if (listIngredients is null)
+        if (listComponents is null)
             return BadRequest();
-        listIngredients.NameFilter ??= string.Empty;
+        listComponents.NameFilter ??= string.Empty;
 
-        var listVm = await _ingredientService.GetFilteredListAsync(listIngredients);
+        var listVm = await _componentService.GetFilteredListAsync(listComponents);
         return View(listVm);
     }
 
@@ -56,16 +56,16 @@ public class IngredientsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Create(IngredientVM ingredientToAddVM)
+    public async Task<IActionResult> Create(ComponentVM componentToAddVM)
     {
-        var validationResult = _categoryValidator.Validate(ingredientToAddVM);
+        var validationResult = _categoryValidator.Validate(componentToAddVM);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(this.ModelState);
-            return View("Create", ingredientToAddVM);
+            return View("Create", componentToAddVM);
         }
 
-        await _ingredientService.CreateIngredientAsync(ingredientToAddVM);
+        await _componentService.CreateComponentAsync(componentToAddVM);
         return RedirectToAction("Index");
     }
 
@@ -74,28 +74,28 @@ public class IngredientsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        var ingredientVM = await _ingredientService.GetIngredientVMForEditAsync(id);
-        if (ingredientVM is null)
+        var componentVM = await _componentService.GetComponentVMForEditAsync(id);
+        if (componentVM is null)
         {
             return NotFound();
         }
-        return View(ingredientVM);
+        return View(componentVM);
     }
 
     [Route("Edit")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(IngredientVM ingredientToEditVM)
+    public async Task<IActionResult> Edit(ComponentVM componentToEditVM)
     {
-        var validationResult = await _categoryValidator.ValidateAsync(ingredientToEditVM);
+        var validationResult = await _categoryValidator.ValidateAsync(componentToEditVM);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(this.ModelState);
-            return View("Edit", ingredientToEditVM);
+            return View("Edit", componentToEditVM);
         }
 
-        await _ingredientService.UpdateIngredientAsync(ingredientToEditVM);
+        await _componentService.UpdateComponentAsync(componentToEditVM);
         return RedirectToAction("Index");
     }
 
@@ -103,7 +103,7 @@ public class IngredientsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Delete(int id)
     {
-        await _ingredientService.DeleteIngredientAsync(id);
+        await _componentService.DeleteComponentAsync(id);
         return RedirectToAction("Index");
     }
 }

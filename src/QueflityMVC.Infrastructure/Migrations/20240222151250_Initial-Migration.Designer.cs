@@ -25,19 +25,19 @@ namespace QueflityMVC.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("IngredientItem", b =>
+            modelBuilder.Entity("ComponentItem", b =>
                 {
-                    b.Property<int>("IngredientsId")
+                    b.Property<int>("ComponentsId")
                         .HasColumnType("int");
 
                     b.Property<int>("ItemsId")
                         .HasColumnType("int");
 
-                    b.HasKey("IngredientsId", "ItemsId");
+                    b.HasKey("ComponentsId", "ItemsId");
 
                     b.HasIndex("ItemsId");
 
-                    b.ToTable("IngredientItem");
+                    b.ToTable("ComponentItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -351,7 +351,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Models.Ingredient", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Component", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -365,7 +365,7 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Components");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
@@ -395,11 +395,11 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("Kit");
                 });
 
-            modelBuilder.Entity("IngredientItem", b =>
+            modelBuilder.Entity("ComponentItem", b =>
                 {
-                    b.HasOne("QueflityMVC.Domain.Models.Ingredient", null)
+                    b.HasOne("QueflityMVC.Domain.Models.Component", null)
                         .WithMany()
-                        .HasForeignKey("IngredientsId")
+                        .HasForeignKey("ComponentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

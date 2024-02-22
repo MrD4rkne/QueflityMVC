@@ -38,25 +38,25 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         return entitiesSource;
     }
 
-    public Task<Item?> GetItemWithIngredientsByIdAsync(int itemId)
+    public Task<Item?> GetItemWithComponentsByIdAsync(int itemId)
     {
         return _dbContext.Items
-            .Include(x => x.Ingredients)
+            .Include(x => x.Components)
             .Include(it => it.Image)
             .FirstOrDefaultAsync(x => x.Id == itemId);
     }
 
-    public async Task UpdateIngredientsAsync(int itemId, List<Ingredient> ingredients)
+    public async Task UpdateComponentsAsync(int itemId, List<Component> components)
     {
-        var item = await GetItemWithIngredientsByIdAsync(itemId);
+        var item = await GetItemWithComponentsByIdAsync(itemId);
         if (item is null)
         {
             throw new ResourceNotFoundException();
         }
 
-        if (ingredients is not null)
+        if (components is not null)
         {
-            item.Ingredients = ingredients;
+            item.Components = components;
         }
 
         await UpdateAsync(item);
@@ -64,7 +64,7 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
 
     public override async Task<Item> UpdateAsync(Item entityToUpdate)
     {
-        Item originalEntity = await GetItemWithIngredientsByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Item));
+        Item originalEntity = await GetItemWithComponentsByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Item));
         if (_dbContext.Entry(originalEntity).State == EntityState.Detached)
         {
             _dbContext.Attach(originalEntity);
@@ -75,9 +75,9 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-        if(entityToUpdate.Ingredients is not null)
+        if(entityToUpdate.Components is not null)
         {
-            originalEntity.Ingredients = entityToUpdate.Ingredients;
+            originalEntity.Components = entityToUpdate.Components;
         }
         _dbContext.Entry(originalEntity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();

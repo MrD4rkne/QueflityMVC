@@ -1,13 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
 @inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Item.ItemIngredientsSelectionVM
+@model QueflityMVC.Application.ViewModels.Item.ItemComponentsSelectionVM
 
 @{
-    ViewData["Title"] = "Ingredients";
+    ViewData["Title"] = "Components";
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
-<form asp-action="Ingredients" enctype="multipart/form-data">
+<form asp-action="Components" enctype="multipart/form-data">
     <h1>Item</h1>
     <input type="hidden" asp-for="Item.Id" value="@Model.Item.Id"/>
     <div class="card" style="width: 18rem;">
@@ -24,10 +24,10 @@
     
     <div class="row justify-content-start" style="margin-top:40px">
         <div class="col-auto">
-            <h2>Ingredients</h2>
+            <h2>Components</h2>
         </div>
         <div class="col-auto">
-            <input type="submit" class="btn btn-primary btn-lg" value="Save ingredients" />
+            <input type="submit" class="btn btn-primary btn-lg" value="Save components" />
         </div>
     </div>
     <table class="table">
@@ -42,14 +42,14 @@
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < Model.AllIngredients.Count; i++)
+            @for (int i = 0; i < Model.AllComponents.Count; i++)
             {
-                var item = Model.AllIngredients[i];
+                var item = Model.AllComponents[i];
                 <tr>
                     <td scope="row" style="width: 50px">
-                        <input class="form-check-input" asp-for="AllIngredients[i].IsSelected" type="checkbox" checked="@(Model.SelectedIngredientsIds.Contains(item.Id)?"checked":null)">
-                        <input class="form-check-input" asp-for="AllIngredients[i].Id" type="hidden" value="@item.Id">
-                        <input class="form-check-input" asp-for="AllIngredients[i].Name" type="hidden" value="@item.Name">
+                        <input class="form-check-input" asp-for="AllComponents[i].IsSelected" type="checkbox" checked="@(Model.SelectedComponentsIds.Contains(item.Id)?"checked":null)">
+                        <input class="form-check-input" asp-for="AllComponents[i].Id" type="hidden" value="@item.Id">
+                        <input class="form-check-input" asp-for="AllComponents[i].Name" type="hidden" value="@item.Name">
                     </td>
                     <td class="w-auto">
                         @Html.DisplayFor(modelItem => item.Name)
