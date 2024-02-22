@@ -35,10 +35,10 @@ Queflity is an application designed for crafting and showcasing your list of ser
     - password: *Password1#*
     - you cannot remove this account, only change it's password
 ## Screenshots
-<img src="./images/listItems.jpg" width="500" alt="List items">
-<img src="./images/kitDetails.jpg" width="500" alt="Kit's details">
-<img src="./images/itemIngredients.jpg" width="500" alt="Item's ingredients">
-<img src="./images/editKit.jpg" width="500" alt="Edit kit">
+<img src="./images/listItems.png" width="500" alt="List items">
+<img src="./images/kitDetails.png" width="500" alt="Kit's details">
+<img src="./images/itemIngredients.png" width="500" alt="Item's ingredients">
+<img src="./images/editKit.png" width="500" alt="Edit kit">
 
 
 ## Authors
