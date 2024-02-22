@@ -51,4 +51,4 @@ Queflity is an application designed for crafting and showcasing your list of ser
 
 
 ## License
-[MIT](./LICENSE)
+[MIT](./LICENSE.txt)
