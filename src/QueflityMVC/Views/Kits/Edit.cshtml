@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Kit.KitVM
+
+@{
+    ViewData["Title"] = "Edit";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+}
+
+<h2>Edit</h2>
+
+<h4>Change your awesome kit!</h4>
+<hr />
+<div class="row">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger" />
+        <input type="hidden" asp-for="Id" value="@Model.Id" />
+        <partial name="_ImageEditPartial" for="Image" />
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-auto">
+                    <h5>Set</h5>
+                </div>
+                <div class="col-md-auto">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" asp-for="ShouldBeShown" type="checkbox" checked="@(Model.ShouldBeShown ? "checked":null)" onchange="VisibilityChanged()">
+                    @if (Model.ShouldBeShown)
+                    {
+                        <label id="visibility-label" class="form-check-label">Visible</label>
+                    }
+                    else
+                    {
+                        <label id="visibility-label" class="form-check-label">Hidden</label>
+                    }
+                </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" value="@Model.Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-auto">
+                    <label class="control-label">Price</label>
+                    <input type="number" readonly class="form-control" value="@Model.Price" />
+                </div>
+            </div>
+            <div class="row">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="5" value="@Model.Description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="container" style="display:flex">
+            <button type="submit" class="btn btn-primary" formaction="Edit">Edit</button>
+            @if (canListEntities)
+            {
+                @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-outline-secondary" })
+            }
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        function VisibilityChanged() {
+            var label = document.getElementById("visibility-label");
+            if (label.innerText == "Visible") {
+                label.innerText = "Hidden";
+            }
+            else {
+                label.innerText = "Visible";
+            }
+        }
+    </script>
+}
+
+

@@ -1,0 +1,100 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
+
+@{
+    ViewData["Title"] = "Edit";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+}
+
+<h1>Edit item</h1>
+
+<h4>Below you can see & edit item's properties</h4>
+<hr />
+<div class="row">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <input type="hidden" asp-for="ItemVM.Id" value="@Model.ItemVM.Id" />
+        <partial name="_ImageEditPartial" for="ItemVM.Image" />
+        <div class="container">
+            <div class="row">
+                <div class="col-md-auto">
+                    <h5>Item</h5>
+                </div>
+                <div class="col-md-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" asp-for="ItemVM.ShouldBeShown" type="checkbox" checked="@(Model.ItemVM.ShouldBeShown ? "checked":null)" onchange="VisibilityChanged()">
+                        @if (Model.ItemVM.ShouldBeShown)
+                        {
+                            <label id="visibility-label" class="form-check-label">Visible</label>
+                        }
+                        else
+                        {
+                            <label id="visibility-label" class="form-check-label">Hidden</label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md">
+                    <label asp-for="ItemVM.Name" class="control-label"></label>
+                    <input asp-for="ItemVM.Name" class="form-control" value="@Model.ItemVM.Name" />
+                    <span asp-validation-for="ItemVM.Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-auto">
+                    <label class="control-label">Price</label>
+                    <input type="number" asp-for="ItemVM.Price" class="form-control" min="0" step="0.01" value="@Model.ItemVM.Price" />
+                    <span asp-validation-for="ItemVM.Price" class="text-danger"></span>
+                </div>
+                <div class="col-md-auto" style="max-width: 200px">
+                    <label class="control-label">Category</label>
+                    <select asp-for="ItemVM.CategoryId" class="form-control">
+                        <option value="">Select a category</option>
+                        @for (int i = 0; i < Model.Categories.Count; i++)
+                        {
+                            var category = Model.Categories[i];
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
+                    @for (int i = 0; i < Model.Categories.Count; i++)
+                    {
+                        @Html.HiddenFor(x => x.Categories[i].Id)
+                        @Html.HiddenFor(x => x.Categories[i].Name)
+                    }
+                </div>
+            </div>
+            <div class="container" style="display:flex; margin:5px">
+                <button type="submit" class="btn btn-primary" style="margin-right: 5px" formaction="Edit">Edit</button>
+                @if (canListEntities)
+                {
+                    @if (ViewData["categoryId"] is int categoryId)
+                    {
+                        @Html.ActionLink("Back to List", "Index", new { categoryId = categoryId }, new { @class = "btn btn-info" })
+                    }
+                    else
+                    {
+                        <a class="btn btn-info" asp-action="Index"> Back to List</a>
+                    }
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        function VisibilityChanged() {
+            var label = document.getElementById("visibility-label");
+            if (label.innerText == "Visible") {
+                label.innerText = "Hidden";
+            }
+            else {
+                label.innerText = "Visible";
+            }
+        }
+    </script>
+}

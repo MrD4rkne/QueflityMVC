@@ -1,0 +1,81 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants;
+@inject IAuthorizationService AuthorizationService
+@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
+
+@{
+    ViewData["Title"] = "Create";
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+}
+
+<h1>Create</h1>
+
+<h4>Create your (surely awesome) below:</h4>
+<hr />
+<div class="row">
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="card">
+            <div class="card-header">
+                Image
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="mb-3">
+                        <input class="form-control" asp-for="ItemVM.Image!.FormFile" type="file">
+                        <span asp-validation-for="ItemVM.Image.FormFile" class="text-danger"></span>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="mb-3">
+                        <label asp-for="ItemVM.Image!.AltDescription" class="control-label">Alternative description</label>
+                        <input asp-for="ItemVM.Image!.AltDescription" class="form-control" />
+                        <span asp-validation-for="ItemVM.Image!.AltDescription" class="text-danger"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <h5 style="margin-top: 10px">Item's details</h5>
+        <hr />
+
+        <div class="row">
+            <div class="col-md">
+                <label asp-for="ItemVM.Name" class="control-label"></label>
+                <input asp-for="ItemVM.Name" class="form-control" />
+                <span asp-validation-for="ItemVM.Name" class="text-danger"></span>
+            </div>
+            <div class="col-md-auto">
+                <label class="control-label">Price</label>
+                <input type="number" asp-for="ItemVM.Price" class="form-control" min="0" step="0.01" />
+                <span asp-validation-for="ItemVM.Price" class="text-danger"></span>
+            </div>
+            <div class="col-md-auto" style="max-width: 200px">
+                <label class="control-label">Category</label>
+                <select asp-for="ItemVM.CategoryId" class="form-control">
+                    <option value="">Select a category</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin: 5px">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+@if (canListEntities)
+{
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
