@@ -13,7 +13,7 @@ Queflity is an application designed for crafting and showcasing your list of ser
 - **Docker**: Leveraging Docker as the runtime environment for the application and its associated database ensures consistency and portability across different platforms.
 - **Clean Architecture**: Following the principles of clean architecture, the application employs a repository-service pattern, enhancing maintainability, and testability.
 - **FluentValidation**: Utilized for both frontend and backend validation, FluentValidation simplifies the validation process, ensuring data integrity and user experience.
-- **Bogus**: Employed for seeding data during development, Bogus streamlines the process of generating test data, enabling efficient testing and debugging.
+- **Bogus**: Used for seeding data during development, Bogus streamlines the process of generating test data, enabling efficient testing and debugging.
 - **EF Core**: Utilized as the Object-Relational Mapping (ORM) tool, Entity Framework Core facilitates database interaction, simplifying data access and manipulation within the application.
 - **Custom pagination**: A custom, reusable pagination module has been developed, featuring a factory and partial view for enhanced usability and flexibility. This module streamlines pagination implementation across various sections of the application, offering a seamless user experience and reducing development overhead.
 
