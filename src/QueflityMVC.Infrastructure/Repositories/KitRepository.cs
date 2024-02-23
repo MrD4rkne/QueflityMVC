@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -135,7 +136,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
         originalEntity.Price = entityToUpdate.Price;
-        originalEntity.ShouldBeShown=entityToUpdate.ShouldBeShown;
+        originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
@@ -147,7 +148,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public override async Task DeleteAsync(Kit entityToDelete)
     {
-        if(!await ExistsAsync(entityToDelete))
+        if (!await ExistsAsync(entityToDelete))
         {
             throw new EntityNotFoundException(entityName: nameof(Kit));
         }
@@ -156,5 +157,11 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
             .ExecuteDeleteAsync();
         _dbContext.Kits.Remove(entityToDelete);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public IQueryable<BasePurchasableEntity> GetVisibileEntities()
+    {
+        return _dbContext.Kits
+            .Where(x => x.ShouldBeShown);
     }
 }

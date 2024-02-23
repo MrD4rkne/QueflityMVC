@@ -59,6 +59,6 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.ApplyPendingMigrations<Context>();
-await app.Services.SeedData();
+await app.Services.SeedIdentity();
 
 app.Run();

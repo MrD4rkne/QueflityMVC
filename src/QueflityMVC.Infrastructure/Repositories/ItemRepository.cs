@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -75,7 +76,7 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-        if(entityToUpdate.Components is not null)
+        if (entityToUpdate.Components is not null)
         {
             originalEntity.Components = entityToUpdate.Components;
         }
@@ -88,5 +89,11 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
     {
         return _dbContext.SetElements
             .AnyAsync(x => x.ItemId == id);
+    }
+
+    public IQueryable<BasePurchasableEntity> GetVisibileEntities()
+    {
+        return _dbContext.Items
+            .Where(x => x.ShouldBeShown);
     }
 }

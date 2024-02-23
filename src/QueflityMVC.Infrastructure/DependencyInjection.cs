@@ -20,7 +20,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task SeedData(this IServiceProvider serviceProvider)
+    public static async Task SeedIdentity(this IServiceProvider serviceProvider)
     {
         using IServiceScope scope = serviceProvider.CreateScope();
         UserManager<ApplicationUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
