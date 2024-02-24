@@ -26,7 +26,6 @@ Queflity is an application designed for crafting and showcasing your list of ser
 - launch app from VS
     - make sure ports **5000**, **5001** are not used by any other process
     - in debug there will be seeded data
-    - you may have to [create database 'Queflity' manually](./DBMANUAL)
 - navigate to app in browser
     - [localhost:5001](https://localhost:5001) for https connection
     - [localhost:5000](https://localhost:5000) for http connection
