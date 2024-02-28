@@ -1,5 +1,5 @@
 ﻿@using QueflityMVC.Application.ViewModels.Purchasable
-@model List<PurchasableVM>
+@model EditOrderVM
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -39,50 +39,54 @@
         }
     </style>
 }
-
-<div class="table-responsive">
-    <table class="table" id="table-1" cellspacing="0" cellpadding="0">
-        <thead>
-            <tr>
-                <th></th>
-                <th>ON</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody style="cursor:pointer;">
-            @for (int i = 1; i <= Model.Count; i++)
-            {
-                var currentEntity = Model[i - 1];
-                <tr id="@i">
-                    @Html.HiddenFor(model => model[i - 1].Id)
-                    @Html.HiddenFor(model => model[i - 1].Type)
-                    @Html.HiddenFor(model => model[i - 1].OrderNo)
-                    <td>
-                        <img src="@currentEntity.Image.FileUrl" alt="@currentEntity.Image.AltDescription" style="height:30px" />
-                    </td>
-                    <td>@currentEntity.OrderNo</td>
-                    <td>@currentEntity.Name</td>
-                    <td>@currentEntity.Price</td>
-                    <td>
-                        @switch (currentEntity.Type)
-                        {
-                            case PurchasableType.Item:
-                                <span class="badge bg-primary">Item</span>
-                                break;
-                            case PurchasableType.Kit:
-                                <span class="badge bg-secondary">Kit</span>
-                                break;
-                            default:
-                                throw new NotImplementedException();
-                        }
-                    </td>
+<form asp-action="Index" asp-controller="Dashboard">
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+    <div class="table-responsive">
+        <table class="table" id="table-1" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>ON</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Type</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody style="cursor:pointer;">
+                @for (int i = 1; i <= Model.PurchasablesVMs.Count; i++)
+                {
+                    var currentEntity = Model.PurchasablesVMs[i - 1];
+                    <tr id="@i">
+                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Id)
+                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Type)
+                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].OrderNo)
+                        <td>
+                            <img src="@currentEntity.Image.FileUrl" alt="@currentEntity.Image.AltDescription" style="height:30px" />
+                        </td>
+                        <td>@currentEntity.OrderNo</td>
+                        <td>@currentEntity.Name</td>
+                        <td>@currentEntity.Price</td>
+                        <td>
+                            @switch (currentEntity.Type)
+                            {
+                                case PurchasableType.Item:
+                                    <span class="badge bg-primary">Item</span>
+                                    break;
+                                case PurchasableType.Kit:
+                                    <span class="badge bg-secondary">Kit</span>
+                                    break;
+                                default:
+                                    throw new NotImplementedException();
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>
 
 @section Scripts
 {

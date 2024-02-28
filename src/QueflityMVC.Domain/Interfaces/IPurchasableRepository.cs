@@ -8,5 +8,7 @@ using QueflityMVC.Domain.Common;
 namespace QueflityMVC.Domain.Interfaces;
 public interface IPurchasableRepository
 {
+    Task<bool> AreTheseAllVisiblePurchasablesAsync(List<BasePurchasableEntity> purchasableModels);
     IQueryable<BasePurchasableEntity> GetVisibileEntities();
+    Task UpdatePurchasablesOrderAsync(List<BasePurchasableEntity> purchasableModels);
 }

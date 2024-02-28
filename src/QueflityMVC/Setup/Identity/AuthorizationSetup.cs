@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using QueflityMVC.Application.Constants;
 
 namespace QueflityMVC.Web.Setup.Identity;
@@ -35,6 +36,9 @@ public static class AuthorizationSetup
         options.AddPolicy(Policies.ENTITIES_CREATE, policy =>
             policy.RequireClaim(Claims.ENTITIES_CREATE)
             .RequireClaim(Claims.ENTITIES_LIST));
+        options.AddPolicy(Policies.ENTITIES_ORDER, policy =>
+                   policy.RequireClaim(Claims.ENTITIES_ORDER)
+                              .RequireClaim(Claims.ENTITIES_LIST));
 
         return options;
     }

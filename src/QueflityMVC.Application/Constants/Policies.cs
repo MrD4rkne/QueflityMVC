@@ -12,6 +12,7 @@ public static class Policies
     public const string ENTITIES_EDIT = "CanEditEntities";
     public const string ENTITIES_LIST = "CanListEntities";
     public const string ENTITIES_CREATE = "CanCreateEntities";
+    public const string ENTITIES_ORDER = "OrderEntities";
 }
 
 public static class Claims
@@ -26,6 +27,7 @@ public static class Claims
     public const string ENTITIES_EDIT = "EditEntities";
     public const string ENTITIES_LIST = "ListEntities";
     public const string ENTITIES_CREATE = "CreateEntities";
+    public const string ENTITIES_ORDER = "OrderEntities";
 
     public static List<string> GetAll()
     {
@@ -40,7 +42,8 @@ public static class Claims
             USER_ROLES_MANAGE,
             ENTITIES_EDIT,
             ENTITIES_CREATE,
-            ENTITIES_LIST
+            ENTITIES_LIST,
+            ENTITIES_ORDER
         };
     }
 }

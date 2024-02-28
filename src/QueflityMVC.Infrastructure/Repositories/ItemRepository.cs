@@ -90,10 +90,4 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         return _dbContext.SetElements
             .AnyAsync(x => x.ItemId == id);
     }
-
-    public IQueryable<BasePurchasableEntity> GetVisibileEntities()
-    {
-        return _dbContext.Items
-            .Where(x => x.ShouldBeShown);
-    }
 }

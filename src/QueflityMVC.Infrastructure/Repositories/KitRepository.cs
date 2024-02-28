@@ -158,10 +158,4 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         _dbContext.Kits.Remove(entityToDelete);
         await _dbContext.SaveChangesAsync();
     }
-
-    public IQueryable<BasePurchasableEntity> GetVisibileEntities()
-    {
-        return _dbContext.Kits
-            .Where(x => x.ShouldBeShown);
-    }
 }

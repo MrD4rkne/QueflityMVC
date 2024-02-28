@@ -34,7 +34,7 @@ public class IdentitySeed
 
     private static async Task SeedRolesClaims(RoleManager<IdentityRole> roleManager)
     {
-        string[] claims = { Claims.ENTITIES_LIST, Claims.ENTITIES_EDIT, Claims.ENTITIES_CREATE, Claims.USERS_LIST, Claims.USER_CLAIMS_MANAGE, Claims.USER_CLAIMS_VIEW, Claims.USER_DISABLE, Claims.USER_ENABLE, Claims.USER_ROLES_LIST, Claims.USER_ROLES_MANAGE };
+        string[] claims = { Claims.ENTITIES_LIST, Claims.ENTITIES_EDIT, Claims.ENTITIES_CREATE, Claims.USERS_LIST, Claims.USER_CLAIMS_MANAGE, Claims.USER_CLAIMS_VIEW, Claims.USER_DISABLE, Claims.USER_ENABLE, Claims.USER_ROLES_LIST, Claims.USER_ROLES_MANAGE, Claims.ENTITIES_ORDER };
         var adminRole = await roleManager.FindByNameAsync("Admin") ?? throw new Exception("Admin role not found");
         foreach (string claim in claims)
         {

@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Domain.Interfaces;
 
-public interface IItemRepository : IBaseRepository<Item>, IPurchasableRepository
+public interface IItemRepository : IBaseRepository<Item>
 {
     IQueryable<Item> GetFilteredItems(string? nameFilter = default, int? categoryId = default);
 
