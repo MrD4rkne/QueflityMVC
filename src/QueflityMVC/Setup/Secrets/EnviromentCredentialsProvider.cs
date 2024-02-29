@@ -12,7 +12,8 @@ public class EnviromentCredentialsProvider : IVariablesProvider
     }
 
     public string? GetConnectionString()
-    {
+    { 
+        //return "Server=172.24.48.126;Database=QueflityDb;User Id=SA;Password=Lf5892dENz;MultipleActiveResultSets=true;TrustServerCertificate=true";
         return Environment.GetEnvironmentVariable(DB_CONNECTION_STRING);
     }
 

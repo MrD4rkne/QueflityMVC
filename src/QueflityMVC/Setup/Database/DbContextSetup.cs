@@ -65,7 +65,11 @@ public static class DbContextSetup
                 options.UseSqlServer(connectionString,
                 provider => provider.EnableRetryOnFailure()
             ));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                services.AddDatabaseDeveloperPageExceptionFilter();
+            }
 
             return services;
         }

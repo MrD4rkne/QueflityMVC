@@ -82,7 +82,6 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     public async Task UpdateKitPriceAsync(int kitId)
     {
         Kit? kit = await GetByIdAsync(kitId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
-
         var componentsPrices = GetPricesOfKitComponents(kitId);
         decimal sumOfComponentPrices = componentsPrices.Sum();
         kit.Price = sumOfComponentPrices;
@@ -110,7 +109,6 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
         elementToEdit.ItemsAmmount = elementToEdit.ItemsAmmount;
-
         _dbContext.Entry(elementToEdit).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
 

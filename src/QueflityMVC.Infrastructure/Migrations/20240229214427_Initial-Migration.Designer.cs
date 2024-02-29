@@ -12,7 +12,7 @@ using QueflityMVC.Infrastructure;
 namespace QueflityMVC.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240222151250_Initial-Migration")]
+    [Migration("20240229214427_Initial-Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -197,6 +197,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("OrderNo")
+                        .HasColumnType("bigint");
+
                     b.Property<decimal>("Price")
                         .HasPrecision(14, 2)
                         .HasColumnType("decimal(14,2)");
@@ -300,6 +303,23 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Component", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Components");
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.Element", b =>
                 {
                     b.Property<int>("Id")
@@ -349,23 +369,6 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Images");
-                });
-
-            modelBuilder.Entity("QueflityMVC.Domain.Models.Component", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Components");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>

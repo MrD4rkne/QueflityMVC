@@ -21,8 +21,10 @@ public class PurchasableRepository : IPurchasableRepository
 
     public async Task<bool> AreTheseAllVisiblePurchasablesAsync(List<BasePurchasableEntity> purchasableModels)
     {
-        var groupedModels = purchasableModels.GroupBy(x => x.GetType());
-        return true;
+        bool isAnyNotInList = await _dbContext.Set<BasePurchasableEntity>()
+            .Where(x => !purchasableModels.Contains(x))
+            .AnyAsync(x => x.ShouldBeShown);
+        return !isAnyNotInList;
     }
 
     public IQueryable<BasePurchasableEntity> GetVisibileEntities()

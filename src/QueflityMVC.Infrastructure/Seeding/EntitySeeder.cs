@@ -17,6 +17,8 @@ public class EntitySeeder
     private const int KITS_COUNT = 10;
     private const int IMAGES_COUNT = ITEMS_COUNT + KITS_COUNT;
     private const int ELEMENTS_COUNT = 15;
+    private const int VISIBLE_PURCHASABLE = 10;
+    private int _visiblePurchasable = 0;
 
     public IReadOnlyCollection<Category> Categories { get; init; }
 
@@ -29,6 +31,8 @@ public class EntitySeeder
     public IReadOnlyCollection<Image> Images { get; init; }
 
     public IReadOnlyCollection<Element> Elements { get; init; }
+
+    private readonly HashSet<uint> _orderNumbers = new();
 
     public EntitySeeder()
     {
@@ -67,8 +71,14 @@ public class EntitySeeder
             .RuleFor(it => it.Name, f => f.Commerce.ProductName())
             .RuleFor(it => it.Price, f=> Math.Round(f.Random.Decimal(0.01m,10) * f.Random.Number(1,20),2))
             .RuleFor(it => it.ImageId, f=>f.GetPositiveIndexFaker())
+            .RuleFor(it => it.ShouldBeShown, f=> GetVisibility())
             .RuleFor(it => it.CategoryId, f => f.Random.Number(1, CATEGORIES_COUNT));
-        return itemFaker.Generate(ITEMS_COUNT);
+        var items = itemFaker.Generate(ITEMS_COUNT);
+        foreach (var item in items)
+        {
+            item.OrderNo = GetRandomOrderNumber(item.ShouldBeShown);
+        }
+        return items;
     }
 
     private IReadOnlyCollection<Kit> GenerateKits()
@@ -77,11 +87,13 @@ public class EntitySeeder
             .RuleFor(kit => kit.Id, f => ITEMS_COUNT+f.GetPositiveIndexFaker())
             .RuleFor(kit => kit.Name, f => f.Commerce.ProductName())
             .RuleFor(kit => kit.ImageId, f => ITEMS_COUNT + f.GetPositiveIndexFaker())
+            .RuleFor(it => it.ShouldBeShown, f => GetVisibility())
             .RuleFor(kit => kit.Description, f=> f.Lorem.Sentence());
         var kits = kitFaker.Generate(KITS_COUNT);
         foreach(var kit in kits)
         {
             kit.Price = Elements.Where(elem => elem.KitId == kit.Id).Sum(elem => elem.ItemsAmmount * elem.PricePerItem);
+            kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
         }
         return kits;
     }
@@ -116,5 +128,34 @@ public class EntitySeeder
             .RuleFor(img => img.FileUrl, f => f.Image.PicsumUrl())
             .RuleFor(img => img.AltDescription, f=> f.Lorem.Word());
         return imageFaker.Generate(IMAGES_COUNT);
+    }
+
+    private uint? GetRandomOrderNumber(bool isVisible)
+    {
+        if(!isVisible)
+        {
+            return null;
+        }
+        uint orderNumber;
+        do
+        {
+            orderNumber = (uint)Random.Shared.Next(0, VISIBLE_PURCHASABLE);
+        } while (_orderNumbers.Contains(orderNumber));
+        _orderNumbers.Add(orderNumber);
+        return orderNumber;
+    }
+
+    private bool GetVisibility()
+    {
+        if(_visiblePurchasable >= VISIBLE_PURCHASABLE)
+        {
+            return false;
+        }
+        bool shouldBeVisible= Random.Shared.Next(0, 2) == 0 ? true : false;
+        if(shouldBeVisible)
+        {
+            _visiblePurchasable++;
+        }
+        return shouldBeVisible;
     }
 }

@@ -62,6 +62,10 @@
                         @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Id)
                         @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Type)
                         @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].OrderNo)
+                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.FileUrl)
+                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.AltDescription)
+                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Price)
+                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Name)
                         <td>
                             <img src="@currentEntity.Image.FileUrl" alt="@currentEntity.Image.AltDescription" style="height:30px" />
                         </td>

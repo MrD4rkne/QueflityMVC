@@ -17,38 +17,11 @@ namespace QueflityMVC.Infrastructure.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Music" },
-                    { 2, "Games" },
-                    { 3, "Jewelery" },
-                    { 4, "Garden" },
-                    { 5, "Grocery" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Images",
-                columns: new[] { "Id", "AltDescription", "FileUrl" },
-                values: new object[,]
-                {
-                    { 1, "aut", "https://picsum.photos/640/480/?image=204" },
-                    { 2, "quo", "https://picsum.photos/640/480/?image=298" },
-                    { 3, "omnis", "https://picsum.photos/640/480/?image=1032" },
-                    { 4, "doloremque", "https://picsum.photos/640/480/?image=68" },
-                    { 5, "eius", "https://picsum.photos/640/480/?image=381" },
-                    { 6, "tempora", "https://picsum.photos/640/480/?image=489" },
-                    { 7, "amet", "https://picsum.photos/640/480/?image=684" },
-                    { 8, "aut", "https://picsum.photos/640/480/?image=857" },
-                    { 9, "eligendi", "https://picsum.photos/640/480/?image=439" },
-                    { 10, "nam", "https://picsum.photos/640/480/?image=684" },
-                    { 11, "eos", "https://picsum.photos/640/480/?image=653" },
-                    { 12, "dolor", "https://picsum.photos/640/480/?image=1018" },
-                    { 13, "quis", "https://picsum.photos/640/480/?image=484" },
-                    { 14, "soluta", "https://picsum.photos/640/480/?image=436" },
-                    { 15, "recusandae", "https://picsum.photos/640/480/?image=651" },
-                    { 16, "impedit", "https://picsum.photos/640/480/?image=304" },
-                    { 17, "doloremque", "https://picsum.photos/640/480/?image=885" },
-                    { 18, "quo", "https://picsum.photos/640/480/?image=457" },
-                    { 19, "id", "https://picsum.photos/640/480/?image=268" },
-                    { 20, "doloremque", "https://picsum.photos/640/480/?image=166" }
+                    { 1, "Jewelery" },
+                    { 2, "Movies" },
+                    { 3, "Beauty" },
+                    { 4, "Computers" },
+                    { 5, "Toys" }
                 });
 
             migrationBuilder.InsertData(
@@ -56,60 +29,87 @@ namespace QueflityMVC.Infrastructure.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Plastic" },
-                    { 2, "Granite" },
-                    { 3, "Frozen" },
-                    { 4, "Steel" },
-                    { 5, "Frozen" },
-                    { 6, "Steel" },
-                    { 7, "Concrete" },
-                    { 8, "Plastic" },
-                    { 9, "Fresh" },
-                    { 10, "Wooden" },
-                    { 11, "Steel" },
-                    { 12, "Metal" },
-                    { 13, "Plastic" },
-                    { 14, "Steel" },
-                    { 15, "Wooden" },
-                    { 16, "Concrete" },
-                    { 17, "Rubber" },
-                    { 18, "Fresh" },
-                    { 19, "Frozen" },
-                    { 20, "Fresh" }
+                    { 1, "Granite" },
+                    { 2, "Frozen" },
+                    { 3, "Plastic" },
+                    { 4, "Concrete" },
+                    { 5, "Plastic" },
+                    { 6, "Frozen" },
+                    { 7, "Plastic" },
+                    { 8, "Granite" },
+                    { 9, "Rubber" },
+                    { 10, "Steel" },
+                    { 11, "Concrete" },
+                    { 12, "Soft" },
+                    { 13, "Concrete" },
+                    { 14, "Concrete" },
+                    { 15, "Metal" },
+                    { 16, "Plastic" },
+                    { 17, "Metal" },
+                    { 18, "Metal" },
+                    { 19, "Fresh" },
+                    { 20, "Wooden" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Images",
+                columns: new[] { "Id", "AltDescription", "FileUrl" },
+                values: new object[,]
+                {
+                    { 1, "repellendus", "https://picsum.photos/640/480/?image=630" },
+                    { 2, "voluptatum", "https://picsum.photos/640/480/?image=421" },
+                    { 3, "et", "https://picsum.photos/640/480/?image=619" },
+                    { 4, "accusantium", "https://picsum.photos/640/480/?image=74" },
+                    { 5, "sed", "https://picsum.photos/640/480/?image=721" },
+                    { 6, "doloribus", "https://picsum.photos/640/480/?image=571" },
+                    { 7, "aliquid", "https://picsum.photos/640/480/?image=160" },
+                    { 8, "quis", "https://picsum.photos/640/480/?image=506" },
+                    { 9, "necessitatibus", "https://picsum.photos/640/480/?image=590" },
+                    { 10, "amet", "https://picsum.photos/640/480/?image=62" },
+                    { 11, "mollitia", "https://picsum.photos/640/480/?image=86" },
+                    { 12, "similique", "https://picsum.photos/640/480/?image=633" },
+                    { 13, "voluptates", "https://picsum.photos/640/480/?image=315" },
+                    { 14, "dolore", "https://picsum.photos/640/480/?image=567" },
+                    { 15, "ullam", "https://picsum.photos/640/480/?image=611" },
+                    { 16, "quasi", "https://picsum.photos/640/480/?image=14" },
+                    { 17, "dolor", "https://picsum.photos/640/480/?image=116" },
+                    { 18, "facere", "https://picsum.photos/640/480/?image=492" },
+                    { 19, "quae", "https://picsum.photos/640/480/?image=866" },
+                    { 20, "accusamus", "https://picsum.photos/640/480/?image=948" }
                 });
 
             migrationBuilder.InsertData(
                 table: "BasePurchasableEntity",
-                columns: new[] { "Id", "CategoryId", "Discriminator", "ImageId", "Name", "Price", "ShouldBeShown" },
+                columns: new[] { "Id", "CategoryId", "Discriminator", "ImageId", "Name", "OrderNo", "Price", "ShouldBeShown" },
                 values: new object[,]
                 {
-                    { 1, 4, "Item", 1, "Ergonomic Cotton Sausages", 100.03m, false },
-                    { 2, 3, "Item", 2, "Intelligent Wooden Pants", 34.74m, false },
-                    { 3, 2, "Item", 3, "Ergonomic Wooden Towels", 44.30m, false },
-                    { 4, 2, "Item", 4, "Licensed Plastic Cheese", 4.27m, false },
-                    { 5, 4, "Item", 5, "Refined Rubber Chair", 18.71m, false },
-                    { 6, 2, "Item", 6, "Awesome Plastic Pants", 14.02m, false },
-                    { 7, 2, "Item", 7, "Rustic Steel Sausages", 52.57m, false },
-                    { 8, 1, "Item", 8, "Awesome Soft Chips", 131.47m, false },
-                    { 9, 3, "Item", 9, "Intelligent Concrete Ball", 25.95m, false },
-                    { 10, 5, "Item", 10, "Awesome Soft Bike", 14.77m, false }
+                    { 1, 3, "Item", 1, "Tasty Wooden Chips", 4L, 143.18m, true },
+                    { 2, 2, "Item", 2, "Incredible Wooden Cheese", 8L, 1.68m, true },
+                    { 3, 4, "Item", 3, "Tasty Concrete Bike", 9L, 3.06m, true },
+                    { 4, 3, "Item", 4, "Ergonomic Steel Table", null, 25.90m, false },
+                    { 5, 3, "Item", 5, "Practical Plastic Chair", 7L, 17.79m, true },
+                    { 6, 5, "Item", 6, "Handmade Steel Tuna", null, 32.53m, false },
+                    { 7, 5, "Item", 7, "Licensed Fresh Mouse", 1L, 29.96m, true },
+                    { 8, 1, "Item", 8, "Fantastic Concrete Shirt", null, 52.06m, false },
+                    { 9, 5, "Item", 9, "Rustic Rubber Sausages", null, 42.29m, false },
+                    { 10, 1, "Item", 10, "Awesome Frozen Hat", 3L, 65.26m, true }
                 });
 
             migrationBuilder.InsertData(
                 table: "BasePurchasableEntity",
-                columns: new[] { "Id", "Description", "Discriminator", "ImageId", "ItemId", "Name", "Price", "ShouldBeShown" },
+                columns: new[] { "Id", "Description", "Discriminator", "ImageId", "ItemId", "Name", "OrderNo", "Price", "ShouldBeShown" },
                 values: new object[,]
                 {
-                    { 11, "Iste eaque consequatur repellendus.", "Kit", 11, null, "Tasty Cotton Car", 652.89m, false },
-                    { 12, "Tempora sit odit nihil.", "Kit", 12, null, "Fantastic Granite Salad", 685.80m, false },
-                    { 13, "Aperiam id dolorum cum.", "Kit", 13, null, "Fantastic Cotton Computer", 0m, false },
-                    { 14, "Dolorum sit voluptas unde ad natus qui.", "Kit", 14, null, "Licensed Steel Tuna", 1090.35m, false },
-                    { 15, "Tempore quo modi omnis delectus saepe possimus voluptatibus ut.", "Kit", 15, null, "Sleek Frozen Chicken", 310.10m, false },
-                    { 16, "Animi dolor a.", "Kit", 16, null, "Fantastic Steel Chicken", 0m, false },
-                    { 17, "Laudantium praesentium sit inventore non voluptatem deserunt doloremque.", "Kit", 17, null, "Awesome Wooden Towels", 224.34m, false },
-                    { 18, "Qui rerum consequatur autem adipisci dolorem voluptate.", "Kit", 18, null, "Gorgeous Granite Ball", 451.67m, false },
-                    { 19, "Et eius nemo numquam aperiam.", "Kit", 19, null, "Practical Steel Pizza", 394.10m, false },
-                    { 20, "Quis quo omnis aut ducimus vitae corrupti.", "Kit", 20, null, "Handmade Steel Sausages", 0m, false }
+                    { 11, "Corrupti impedit fuga velit harum iure ullam culpa.", "Kit", 11, null, "Awesome Soft Bacon", null, 237.50m, false },
+                    { 12, "Quibusdam corrupti optio.", "Kit", 12, null, "Handmade Metal Hat", 5L, 71.92m, true },
+                    { 13, "Enim maxime tenetur perspiciatis temporibus cupiditate ut quas.", "Kit", 13, null, "Small Wooden Table", null, 982.40m, false },
+                    { 14, "Odio sunt id possimus voluptate.", "Kit", 14, null, "Practical Frozen Pizza", null, 0m, false },
+                    { 15, "Voluptatem autem consequatur id ipsam.", "Kit", 15, null, "Awesome Cotton Car", 2L, 459.80m, true },
+                    { 16, "Possimus magnam at quibusdam in voluptas saepe eos.", "Kit", 16, null, "Intelligent Cotton Pants", null, 769.18m, false },
+                    { 17, "Et et illum sunt.", "Kit", 17, null, "Small Fresh Keyboard", 0L, 782.36m, true },
+                    { 18, "Omnis consequatur porro corporis sed dolor.", "Kit", 18, null, "Incredible Soft Shirt", 6L, 459.20m, true },
+                    { 19, "Asperiores odit velit aut quo neque.", "Kit", 19, null, "Handmade Concrete Chicken", null, 1524.61m, false },
+                    { 20, "Provident voluptas earum voluptatem cum ad est eum.", "Kit", 20, null, "Incredible Plastic Sausages", null, 0m, false }
                 });
 
             migrationBuilder.InsertData(
@@ -117,21 +117,21 @@ namespace QueflityMVC.Infrastructure.Migrations
                 columns: new[] { "Id", "ItemId", "ItemsAmmount", "KitId", "PricePerItem" },
                 values: new object[,]
                 {
-                    { 1, 3, 2L, 19, 9.77m },
-                    { 2, 9, 2L, 19, 118.28m },
-                    { 3, 3, 1L, 14, 36.30m },
-                    { 4, 4, 9L, 12, 76.20m },
-                    { 5, 5, 10L, 14, 18.26m },
-                    { 6, 9, 9L, 11, 61.67m },
-                    { 7, 4, 6L, 18, 63.88m },
-                    { 8, 4, 2L, 19, 69.00m },
-                    { 9, 3, 2L, 11, 48.93m },
-                    { 12, 9, 4L, 15, 62.12m },
-                    { 13, 6, 7L, 18, 9.77m },
-                    { 14, 9, 5L, 14, 78.13m },
-                    { 15, 2, 2L, 15, 30.81m },
-                    { 16, 2, 10L, 14, 48.08m },
-                    { 18, 6, 3L, 17, 74.78m }
+                    { 1, 8, 8L, 16, 46.90m },
+                    { 2, 10, 4L, 13, 21.43m },
+                    { 3, 4, 8L, 18, 57.40m },
+                    { 4, 8, 5L, 11, 47.50m },
+                    { 5, 8, 4L, 13, 53.41m },
+                    { 6, 6, 8L, 13, 85.38m },
+                    { 7, 10, 2L, 16, 127.19m },
+                    { 8, 1, 8L, 17, 72.87m },
+                    { 9, 3, 10L, 15, 45.98m },
+                    { 10, 4, 7L, 19, 20.53m },
+                    { 11, 10, 8L, 12, 8.99m },
+                    { 12, 9, 1L, 19, 90.48m },
+                    { 13, 6, 4L, 16, 34.90m },
+                    { 14, 2, 9L, 19, 143.38m },
+                    { 15, 4, 10L, 17, 19.94m }
                 });
         }
 
@@ -141,7 +141,7 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
                 keyColumn: "Id",
-                keyValue: 1);
+                keyValue: 5);
 
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
@@ -151,22 +151,7 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
                 keyColumn: "Id",
-                keyValue: 8);
-
-            migrationBuilder.DeleteData(
-                table: "BasePurchasableEntity",
-                keyColumn: "Id",
-                keyValue: 10);
-
-            migrationBuilder.DeleteData(
-                table: "BasePurchasableEntity",
-                keyColumn: "Id",
-                keyValue: 13);
-
-            migrationBuilder.DeleteData(
-                table: "BasePurchasableEntity",
-                keyColumn: "Id",
-                keyValue: 16);
+                keyValue: 14);
 
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
@@ -321,6 +306,16 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "SetElements",
                 keyColumn: "Id",
+                keyValue: 10);
+
+            migrationBuilder.DeleteData(
+                table: "SetElements",
+                keyColumn: "Id",
+                keyValue: 11);
+
+            migrationBuilder.DeleteData(
+                table: "SetElements",
+                keyColumn: "Id",
                 keyValue: 12);
 
             migrationBuilder.DeleteData(
@@ -339,14 +334,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                 keyValue: 15);
 
             migrationBuilder.DeleteData(
-                table: "SetElements",
+                table: "BasePurchasableEntity",
                 keyColumn: "Id",
-                keyValue: 16);
-
-            migrationBuilder.DeleteData(
-                table: "SetElements",
-                keyColumn: "Id",
-                keyValue: 18);
+                keyValue: 1);
 
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
@@ -366,17 +356,22 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
                 keyColumn: "Id",
-                keyValue: 5);
-
-            migrationBuilder.DeleteData(
-                table: "BasePurchasableEntity",
-                keyColumn: "Id",
                 keyValue: 6);
 
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
                 keyColumn: "Id",
+                keyValue: 8);
+
+            migrationBuilder.DeleteData(
+                table: "BasePurchasableEntity",
+                keyColumn: "Id",
                 keyValue: 9);
+
+            migrationBuilder.DeleteData(
+                table: "BasePurchasableEntity",
+                keyColumn: "Id",
+                keyValue: 10);
 
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
@@ -391,12 +386,17 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
                 keyColumn: "Id",
-                keyValue: 14);
+                keyValue: 13);
 
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
                 keyColumn: "Id",
                 keyValue: 15);
+
+            migrationBuilder.DeleteData(
+                table: "BasePurchasableEntity",
+                keyColumn: "Id",
+                keyValue: 16);
 
             migrationBuilder.DeleteData(
                 table: "BasePurchasableEntity",
@@ -414,19 +414,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                 keyValue: 19);
 
             migrationBuilder.DeleteData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 5);
-
-            migrationBuilder.DeleteData(
                 table: "Images",
                 keyColumn: "Id",
-                keyValue: 1);
+                keyValue: 5);
 
             migrationBuilder.DeleteData(
                 table: "Images",
@@ -436,22 +426,7 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "Images",
                 keyColumn: "Id",
-                keyValue: 8);
-
-            migrationBuilder.DeleteData(
-                table: "Images",
-                keyColumn: "Id",
-                keyValue: 10);
-
-            migrationBuilder.DeleteData(
-                table: "Images",
-                keyColumn: "Id",
-                keyValue: 13);
-
-            migrationBuilder.DeleteData(
-                table: "Images",
-                keyColumn: "Id",
-                keyValue: 16);
+                keyValue: 14);
 
             migrationBuilder.DeleteData(
                 table: "Images",
@@ -461,6 +436,11 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "Categories",
                 keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Categories",
+                keyColumn: "Id",
                 keyValue: 2);
 
             migrationBuilder.DeleteData(
@@ -474,24 +454,29 @@ namespace QueflityMVC.Infrastructure.Migrations
                 keyValue: 4);
 
             migrationBuilder.DeleteData(
-                table: "Images",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "Images",
-                keyColumn: "Id",
-                keyValue: 3);
-
-            migrationBuilder.DeleteData(
-                table: "Images",
-                keyColumn: "Id",
-                keyValue: 4);
-
-            migrationBuilder.DeleteData(
-                table: "Images",
+                table: "Categories",
                 keyColumn: "Id",
                 keyValue: 5);
+
+            migrationBuilder.DeleteData(
+                table: "Images",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Images",
+                keyColumn: "Id",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "Images",
+                keyColumn: "Id",
+                keyValue: 3);
+
+            migrationBuilder.DeleteData(
+                table: "Images",
+                keyColumn: "Id",
+                keyValue: 4);
 
             migrationBuilder.DeleteData(
                 table: "Images",
@@ -501,7 +486,17 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "Images",
                 keyColumn: "Id",
+                keyValue: 8);
+
+            migrationBuilder.DeleteData(
+                table: "Images",
+                keyColumn: "Id",
                 keyValue: 9);
+
+            migrationBuilder.DeleteData(
+                table: "Images",
+                keyColumn: "Id",
+                keyValue: 10);
 
             migrationBuilder.DeleteData(
                 table: "Images",
@@ -516,12 +511,17 @@ namespace QueflityMVC.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "Images",
                 keyColumn: "Id",
-                keyValue: 14);
+                keyValue: 13);
 
             migrationBuilder.DeleteData(
                 table: "Images",
                 keyColumn: "Id",
                 keyValue: 15);
+
+            migrationBuilder.DeleteData(
+                table: "Images",
+                keyColumn: "Id",
+                keyValue: 16);
 
             migrationBuilder.DeleteData(
                 table: "Images",

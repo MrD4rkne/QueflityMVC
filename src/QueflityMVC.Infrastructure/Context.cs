@@ -29,7 +29,7 @@ public class Context : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(builder);
 
         builder.Entity<BasePurchasableEntity>()
-            .HasOne(it => it.Image);       
+            .HasOne(it => it.Image);
 
         builder.Entity<Item>()
             .HasMany(it => it.Components)

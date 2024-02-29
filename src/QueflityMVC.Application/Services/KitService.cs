@@ -48,9 +48,9 @@ public class KitService : IKitService
             editKitVM.Image.FileUrl = await _fileService.UploadFileAsync(editKitVM.Image.FormFile!);
         }
 
-        var item = _mapper.Map<Kit>(editKitVM);
-        var updatedItem = await _kitRepository.UpdateAsync(item) ?? throw new ArgumentException("Item set does not exist!");
-        return updatedItem.Id;
+        var kit = _mapper.Map<Kit>(editKitVM);
+        var updatedKit = await _kitRepository.UpdateAsync(kit) ?? throw new ArgumentException("Item set does not exist!");
+        return updatedKit.Id;
     }
 
     private static bool ShouldSwitchImages(ImageVM? image)

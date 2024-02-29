@@ -131,7 +131,7 @@ public class ItemsController : Controller
                     Message = "Item is part of a kit and cannot be deleted."
                 });
             case Application.Results.Item.DeleteItemStatus.Exception:
-                return RedirectToAction("Error", "Home", new ErrorViewModel());
+                throw results.Exception!;
             default:
                 throw new NotImplementedException();
         }

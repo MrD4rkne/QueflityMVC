@@ -6,7 +6,7 @@ namespace QueflityMVC.Domain.Common;
 
 public class BasePurchasableEntity : BaseEntity
 {
-    public  string Name { get; set; }
+    public string Name { get; set; }
 
     public bool ShouldBeShown { get; set; }
 
