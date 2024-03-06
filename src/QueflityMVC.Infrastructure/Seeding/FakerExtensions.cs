@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bogus;
+﻿using Bogus;
 
 namespace QueflityMVC.Infrastructure.Seeding;
+
 internal static class FakerExtensions
 {
     public static T SeedRow<T>(this Faker<T> faker, int index) where T : class

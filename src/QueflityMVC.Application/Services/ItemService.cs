@@ -20,33 +20,36 @@ public class ItemService : IItemService
     private readonly IItemRepository _itemRepository;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IComponentRepository _componentRepository;
+    private readonly IPurchasableRepository _purchasableRepository;
     private readonly IMapper _mapper;
     private readonly IFileService _fileService;
 
-    public ItemService(IItemRepository itemRepository, IMapper mapper, ICategoryRepository categoryRepository, IComponentRepository componentRepository, IFileService fileService)
+    public ItemService(IItemRepository itemRepository, IMapper mapper, ICategoryRepository categoryRepository, IComponentRepository componentRepository, IFileService fileService, IPurchasableRepository purchasableRepository)
     {
         _itemRepository = itemRepository;
         _mapper = mapper;
         _categoryRepository = categoryRepository;
         _componentRepository = componentRepository;
         _fileService = fileService;
+        _purchasableRepository = purchasableRepository;
     }
 
     public async Task<int> CreateItemAsync(ItemVM createItemVM)
     {
         createItemVM.Image!.FileUrl = await _fileService.UploadFileAsync(createItemVM.Image.FormFile);
         var itemToCreate = _mapper.Map<Item>(createItemVM);
+        itemToCreate.OrderNo = await _purchasableRepository.GetNextOrderNumberAsync();
         return await _itemRepository.AddAsync(itemToCreate);
     }
 
     public async Task<DeleteItemResult> DeleteItemAsync(int id)
     {
         Item? itemToDelete = await _itemRepository.GetByIdAsync(id);
-        if(itemToDelete is null)
+        if (itemToDelete is null)
         {
             return DeleteItemResultsFactory.NotExist();
         }
-        if(await _itemRepository.IsItemAPartOfAnyKitAsync(id))
+        if (await _itemRepository.IsItemAPartOfAnyKitAsync(id))
         {
             return DeleteItemResultsFactory.ItemIsPartOfKit();
         }
@@ -54,8 +57,13 @@ public class ItemService : IItemService
         try
         {
             await _itemRepository.DeleteAsync(id);
+            _fileService.DeleteImage(itemToDelete.Image.FileUrl);
+            if (itemToDelete.ShouldBeShown)
+            {
+                await _purchasableRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
+            }
         }
-        catch(ResourceNotFoundException)
+        catch (ResourceNotFoundException)
         {
             return DeleteItemResultsFactory.NotExist();
         }
@@ -93,17 +101,25 @@ public class ItemService : IItemService
     public async Task UpdateItemAsync(ItemVM updateItemVM)
     {
         var item = _mapper.Map<Item>(updateItemVM);
-
         if (ShouldSwitchImages(updateItemVM))
         {
             if (item.Image != null)
             {
                 _fileService.DeleteImage(item.Image.FileUrl);
             }
-
             item.Image!.FileUrl = await _fileService.UploadFileAsync(updateItemVM.Image!.FormFile!);
         }
-        _ = _itemRepository.UpdateAsync(item);
+
+        if (!item.ShouldBeShown)
+        {
+            item.OrderNo = null;
+            await _purchasableRepository.BulkUpdateOrderAsync(item.OrderNo.Value);
+        }
+        if (item.ShouldBeShown && item.OrderNo is null)
+        {
+            item.OrderNo = await _purchasableRepository.GetNextOrderNumberAsync();
+        }
+        _ = await _itemRepository.UpdateAsync(item);
     }
 
     public async Task<CrEdItemVM> GetItemVMForAddingAsync(int? categoryId)
@@ -112,12 +128,12 @@ public class ItemService : IItemService
         {
             Categories = await GetCategoriesForSelectVMAsync()
         };
-        if(crEdObjItem.Categories.Count == 0)
+        if (crEdObjItem.Categories.Count == 0)
         {
             throw new NoCategoriesException();
         }
 
-        if(categoryId.HasValue)
+        if (categoryId.HasValue)
         {
             crEdObjItem.ItemVM = new()
             {

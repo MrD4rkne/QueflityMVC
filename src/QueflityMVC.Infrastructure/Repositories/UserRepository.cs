@@ -22,7 +22,7 @@ public class UserRepository : IUserRepository
 
     public IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter)
     {
-        IQueryable<ApplicationUser> matchingUsers = _userManager.Users;
+        IQueryable<ApplicationUser> matchingUsers = _userManager.Users.AsNoTracking();
 
         if (!string.IsNullOrEmpty(userNameFilter))
         {
@@ -65,7 +65,8 @@ public class UserRepository : IUserRepository
 
     public IQueryable<IdentityRole> GetAllRoles()
     {
-        var allRoles = _dbContext.Roles;
+        var allRoles = _dbContext.Roles
+            .AsNoTracking();
         return allRoles;
     }
 
@@ -78,8 +79,9 @@ public class UserRepository : IUserRepository
 
     private Task<IdentityRole?> GetRoleByIdAsync(string roleId)
     {
-        return _dbContext.Roles.
-            FirstOrDefaultAsync(x=> x.Id == roleId);
+        return _dbContext.Roles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == roleId);
     }
 
     public async Task AddToRoleAsync(string userId, string roleId)
@@ -123,10 +125,10 @@ public class UserRepository : IUserRepository
     public async Task RemoveClaimsAsync(string userId, string[] claimsIds)
     {
         var user = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        IEnumerable<Claim> claimsToRemove = ParallelEnumerable.Select(claimsIds.AsParallel(), 
-            (string cl) => 
-            { 
-                return new Claim(cl, cl); 
+        IEnumerable<Claim> claimsToRemove = ParallelEnumerable.Select(claimsIds.AsParallel(),
+            (string cl) =>
+            {
+                return new Claim(cl, cl);
             });
         await _userManager.RemoveClaimsAsync(user, claimsToRemove);
         await _userManager.UpdateSecurityStampAsync(user);

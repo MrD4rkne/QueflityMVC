@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-using Bogus;
+﻿using Bogus;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Infrastructure.Seeding;
+
 public class EntitySeeder
 {
     private const string FAKER_LOCALE = "en";
@@ -47,7 +42,7 @@ public class EntitySeeder
     private IReadOnlyCollection<Category> GenerateCategories()
     {
         var categoryFaker = new Faker<Category>(FAKER_LOCALE)
-            .RuleFor(ctg => ctg.Id, f=> f.GetPositiveIndexFaker())
+            .RuleFor(ctg => ctg.Id, f => f.GetPositiveIndexFaker())
             .RuleFor(ctg => ctg.Name, f => f.Commerce.Categories(1)[0]);
         return categoryFaker.Generate(CATEGORIES_COUNT);
     }
@@ -69,9 +64,9 @@ public class EntitySeeder
         var itemFaker = new Faker<Item>(FAKER_LOCALE)
             .RuleFor(it => it.Id, f => f.GetPositiveIndexFaker())
             .RuleFor(it => it.Name, f => f.Commerce.ProductName())
-            .RuleFor(it => it.Price, f=> Math.Round(f.Random.Decimal(0.01m,10) * f.Random.Number(1,20),2))
-            .RuleFor(it => it.ImageId, f=>f.GetPositiveIndexFaker())
-            .RuleFor(it => it.ShouldBeShown, f=> GetVisibility())
+            .RuleFor(it => it.Price, f => Math.Round(f.Random.Decimal(0.01m, 10) * f.Random.Number(1, 20), 2))
+            .RuleFor(it => it.ImageId, f => f.GetPositiveIndexFaker())
+            .RuleFor(it => it.ShouldBeShown, f => GetVisibility())
             .RuleFor(it => it.CategoryId, f => f.Random.Number(1, CATEGORIES_COUNT));
         var items = itemFaker.Generate(ITEMS_COUNT);
         foreach (var item in items)
@@ -84,13 +79,13 @@ public class EntitySeeder
     private IReadOnlyCollection<Kit> GenerateKits()
     {
         var kitFaker = new Faker<Kit>(FAKER_LOCALE)
-            .RuleFor(kit => kit.Id, f => ITEMS_COUNT+f.GetPositiveIndexFaker())
+            .RuleFor(kit => kit.Id, f => ITEMS_COUNT + f.GetPositiveIndexFaker())
             .RuleFor(kit => kit.Name, f => f.Commerce.ProductName())
             .RuleFor(kit => kit.ImageId, f => ITEMS_COUNT + f.GetPositiveIndexFaker())
             .RuleFor(it => it.ShouldBeShown, f => GetVisibility())
-            .RuleFor(kit => kit.Description, f=> f.Lorem.Sentence());
+            .RuleFor(kit => kit.Description, f => f.Lorem.Sentence());
         var kits = kitFaker.Generate(KITS_COUNT);
-        foreach(var kit in kits)
+        foreach (var kit in kits)
         {
             kit.Price = Elements.Where(elem => elem.KitId == kit.Id).Sum(elem => elem.ItemsAmmount * elem.PricePerItem);
             kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
@@ -102,16 +97,16 @@ public class EntitySeeder
     {
         var elementFaker = new Faker<Element>(FAKER_LOCALE)
             .RuleFor(elem => elem.Id, f => f.GetPositiveIndexFaker())
-            .RuleFor(elem => elem.PricePerItem, f => Math.Round(f.Random.Decimal(0.01m, 10) * f.Random.Number(1, 20),2))
+            .RuleFor(elem => elem.PricePerItem, f => Math.Round(f.Random.Decimal(0.01m, 10) * f.Random.Number(1, 20), 2))
             .RuleFor(elem => elem.ItemsAmmount, f => (uint)f.Random.Number(1, ITEMS_COUNT))
             .RuleFor(elem => elem.KitId, f => ITEMS_COUNT + f.Random.Number(1, KITS_COUNT))
             .RuleFor(elem => elem.ItemId, f => f.Random.Number(1, ITEMS_COUNT));
         List<Element> elements = new(ELEMENTS_COUNT);
         int elementsCreatedCount = 0;
-        while(elementsCreatedCount < ELEMENTS_COUNT)
+        while (elementsCreatedCount < ELEMENTS_COUNT)
         {
             var element = elementFaker.Generate();
-            if(elements.Any(e=>e.ItemId == element.ItemId && e.KitId == element.KitId))
+            if (elements.Any(e => e.ItemId == element.ItemId && e.KitId == element.KitId))
             {
                 continue;
             }
@@ -126,13 +121,13 @@ public class EntitySeeder
         var imageFaker = new Faker<Image>(FAKER_LOCALE)
             .RuleFor(img => img.Id, f => f.GetPositiveIndexFaker())
             .RuleFor(img => img.FileUrl, f => f.Image.PicsumUrl())
-            .RuleFor(img => img.AltDescription, f=> f.Lorem.Word());
+            .RuleFor(img => img.AltDescription, f => f.Lorem.Word());
         return imageFaker.Generate(IMAGES_COUNT);
     }
 
     private uint? GetRandomOrderNumber(bool isVisible)
     {
-        if(!isVisible)
+        if (!isVisible)
         {
             return null;
         }
@@ -147,12 +142,12 @@ public class EntitySeeder
 
     private bool GetVisibility()
     {
-        if(_visiblePurchasable >= VISIBLE_PURCHASABLE)
+        if (_visiblePurchasable >= VISIBLE_PURCHASABLE)
         {
             return false;
         }
-        bool shouldBeVisible= Random.Shared.Next(0, 2) == 0 ? true : false;
-        if(shouldBeVisible)
+        bool shouldBeVisible = Random.Shared.Next(0, 2) == 0 ? true : false;
+        if (shouldBeVisible)
         {
             _visiblePurchasable++;
         }

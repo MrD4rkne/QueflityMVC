@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Purchasable;
 using QueflityMVC.Application.ViewModels.Purchasable;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.Services;
+
 public class PurchasableEntityService : IPurchasableEntityService
 {
     private readonly IMapper _mapper;
@@ -24,7 +18,6 @@ public class PurchasableEntityService : IPurchasableEntityService
         _purchasableRepository = purchasableRepository;
     }
 
-
     public async Task<EditOrderVM> GetEnitiesOrderVM()
     {
         var purchasableTypes = Enum.GetValues<PurchasableType>();
@@ -33,8 +26,8 @@ public class PurchasableEntityService : IPurchasableEntityService
             throw new InvalidOperationException("No purchasable types found");
         }
 
-        var models = await _purchasableRepository.GetVisibileEntities().OrderBy(x=> x.OrderNo).ToListAsync();
-        var results = models.Select(x=> _mapper.Map<PurchasableVM>(x)).ToList();
+        var models = await _purchasableRepository.GetVisibileEntities().OrderBy(x => x.OrderNo).ToListAsync();
+        var results = models.Select(x => _mapper.Map<PurchasableVM>(x)).ToList();
         var editVM = new EditOrderVM
         {
             PurchasablesVMs = results
@@ -62,13 +55,13 @@ public class PurchasableEntityService : IPurchasableEntityService
 
     private bool IsProperOrder(List<PurchasableVM> purchasables)
     {
-        if(!purchasables.All(p => p.OrderNo >= 0))
+        if (!purchasables.All(p => p.OrderNo >= 0))
         {
             return false;
         }
         var orders = purchasables.Select(purchasables => purchasables.OrderNo).ToList();
         orders.Sort();
-        for(int i = 0; i < orders.Count; i++)
+        for (int i = 0; i < orders.Count; i++)
         {
             if (orders[i] != i)
             {

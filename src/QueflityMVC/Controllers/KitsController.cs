@@ -34,7 +34,7 @@ public class KitsController : Controller
     {
         ListKitsVM listKitsVM = new()
         {
-            ItemId= itemId,
+            ItemId = itemId,
             Pagination = PaginationFactory.Default<KitForListVM>()
         };
         return await Index(listKitsVM);
@@ -128,10 +128,13 @@ public class KitsController : Controller
         {
             case DeleteKitStatus.Success:
                 return RedirectToAction("Index");
+
             case DeleteKitStatus.NotExist:
                 return NotFound();
+
             case DeleteKitStatus.Exception:
                 return RedirectToAction("Error", "Home", new ErrorViewModel());
+
             default:
                 throw new NotImplementedException();
         }

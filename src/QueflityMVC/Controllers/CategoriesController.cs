@@ -96,7 +96,7 @@ public class CategoriesController : Controller
             return View("Edit", createCategoryVM);
         }
 
-        _ =await _categoryService.UpdateCategoryAsync(createCategoryVM);
+        _ = await _categoryService.UpdateCategoryAsync(createCategoryVM);
         return RedirectToAction("Index");
     }
 

@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QueflityMVC.Domain.Models;
-using AutoMapper;
+﻿using AutoMapper;
 using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
-using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Domain.Common;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
+
 public class PurchasableVM : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Models.Kit>
 {
-    public required int Id { get; init; }
+    public int Id { get; init; }
 
-    public required string Name { get; init; }
+    public string Name { get; init; }
 
-    public required decimal Price { get; init; }
+    public decimal Price { get; init; }
 
-    public required uint? OrderNo { get; init; }
+    public uint? OrderNo { get; init; }
 
-    public required ImageForListVM Image { get; init; }
+    public ImageForListVM Image { get; init; }
 
-    public required PurchasableType Type { get; init; }
+    public PurchasableType Type { get; init; }
 
     public void Mapping(Profile profile)
     {
@@ -38,8 +31,8 @@ public class PurchasableVM : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Model
             .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => PurchasableType.Kit))
             .ReverseMap();
 
-        profile.CreateMap<PurchasableVM,BasePurchasableEntity>()
-            .ConstructUsing((vm,ctx) => vm.Type switch
+        profile.CreateMap<PurchasableVM, BasePurchasableEntity>()
+            .ConstructUsing((vm, ctx) => vm.Type switch
             {
                 PurchasableType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(PurchasableVM), typeof(Domain.Models.Item)),
                 PurchasableType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(PurchasableVM), typeof(Domain.Models.Kit)),
@@ -50,13 +43,16 @@ public class PurchasableVM : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Model
 
 public class PurchasableToTypeConvert : IValueConverter<BasePurchasableEntity, PurchasableType>
 {
-    public PurchasableType Convert(BasePurchasableEntity sourceMember, ResolutionContext context) { 
+    public PurchasableType Convert(BasePurchasableEntity sourceMember, ResolutionContext context)
+    {
         switch (sourceMember)
         {
             case Domain.Models.Item _:
                 return PurchasableType.Item;
+
             case Domain.Models.Kit _:
                 return PurchasableType.Kit;
+
             default:
                 throw new InvalidOperationException("Unknown purchasable type");
         }

@@ -3,13 +3,11 @@ using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Item;
-using QueflityMVC.Web.Models;
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -123,13 +121,17 @@ public class ItemsController : Controller
         {
             case Application.Results.Item.DeleteItemStatus.Success:
                 return RedirectToAction("Index");
+
             case Application.Results.Item.DeleteItemStatus.NotExist:
                 return NotFound();
+
             case Application.Results.Item.DeleteItemStatus.ItemIsPartOfKit:
-                return View(new DeleteFailedItemVM() { 
+                return View(new DeleteFailedItemVM()
+                {
                     ItemId = id,
                     Message = "Item is part of a kit and cannot be deleted."
                 });
+
             case Application.Results.Item.DeleteItemStatus.Exception:
                 throw results.Exception!;
             default:

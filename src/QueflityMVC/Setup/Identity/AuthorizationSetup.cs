@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using QueflityMVC.Application.Constants;
 
 namespace QueflityMVC.Web.Setup.Identity;

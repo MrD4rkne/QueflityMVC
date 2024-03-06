@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Drawing.Printing;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Web.Models;

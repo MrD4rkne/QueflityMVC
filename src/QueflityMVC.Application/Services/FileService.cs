@@ -47,7 +47,8 @@ public class FileService : IFileService
         try
         {
             File.Delete(path);
-        }catch(Exception e)
+        }
+        catch (Exception e)
         {
             Log.Error($"Error while deleting file {path}", e);
         }

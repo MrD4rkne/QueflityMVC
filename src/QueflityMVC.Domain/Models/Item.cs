@@ -3,8 +3,8 @@
 namespace QueflityMVC.Domain.Models;
 
 public class Item : BasePurchasableEntity
-{ 
-    public  int CategoryId { get; set; }
+{
+    public int CategoryId { get; set; }
 
     public Category? Category { get; set; }
 

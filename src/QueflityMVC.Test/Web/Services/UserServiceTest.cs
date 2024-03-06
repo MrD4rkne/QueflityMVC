@@ -4,7 +4,6 @@ using Moq;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Services;
-using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
 using Xunit;
 

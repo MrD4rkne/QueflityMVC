@@ -1,7 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Errors.Common;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -42,6 +40,7 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
     public Task<Item?> GetItemWithComponentsByIdAsync(int itemId)
     {
         return _dbContext.Items
+            .AsNoTracking()
             .Include(x => x.Components)
             .Include(it => it.Image)
             .FirstOrDefaultAsync(x => x.Id == itemId);

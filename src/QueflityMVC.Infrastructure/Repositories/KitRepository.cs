@@ -1,7 +1,5 @@
-﻿using System.Xml.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Errors.Common;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -18,25 +16,23 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     public override Task<Kit?> GetByIdAsync(int entityId)
     {
         return _dbContext.Kits
+            .AsNoTracking()
             .Include(kit => kit.Image)
             .FirstOrDefaultAsync(kit => kit.Id == entityId);
     }
 
     public async Task<IQueryable<int>> GetComponenetsIdsForSet(int kitId)
     {
-        var set = await GetFullKitWithMembershipsByIdAsync(kitId);
-        if (set is null)
-        {
-            throw new ResourceNotFoundException();
-        }
-
+        var set = await GetFullKitWithMembershipsByIdAsync(kitId) ?? throw new ResourceNotFoundException();
         var componentsIds = GetKitComponents(kitId).Select(x => x.ItemId);
         return componentsIds;
     }
 
     public IQueryable<Element> GetKitComponents(int kitId)
     {
-        return _dbContext.SetElements.Where(x => x.KitId == kitId);
+        return _dbContext.SetElements
+            .AsNoTracking()
+            .Where(x => x.KitId == kitId);
     }
 
     public IQueryable<Kit> GetFilteredKits(string? searchName = default, int? itemId = null)
@@ -66,6 +62,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     public IQueryable<decimal> GetPricesOfKitComponents(int kitId)
     {
         return _dbContext.Set<Element>()
+            .AsNoTracking()
             .Where(x => x.KitId == kitId)
             .Select(x => x.PricePerItem * x.ItemsAmmount);
     }
@@ -111,7 +108,6 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         elementToEdit.ItemsAmmount = elementToEdit.ItemsAmmount;
         _dbContext.Entry(elementToEdit).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-
         await UpdateKitPriceAsync(elementToEdit.KitId);
     }
 

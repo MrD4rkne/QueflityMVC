@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Item;
 using QueflityMVC.Application.Results.Kit;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Image;
@@ -18,17 +17,19 @@ namespace QueflityMVC.Application.Services;
 
 public class KitService : IKitService
 {
+    private readonly IPurchasableRepository _purchasableRepository;
     private readonly IKitRepository _kitRepository;
     private readonly IItemRepository _itemRepository;
     private readonly IMapper _mapper;
     private readonly IFileService _fileService;
 
-    public KitService(IKitRepository kitRepository, IItemRepository itemRepository, IMapper mapper, IFileService fileService)
+    public KitService(IKitRepository kitRepository, IItemRepository itemRepository, IMapper mapper, IFileService fileService, IPurchasableRepository purchasableRepository)
     {
         _kitRepository = kitRepository;
         _itemRepository = itemRepository;
         _mapper = mapper;
         _fileService = fileService;
+        _purchasableRepository = purchasableRepository;
     }
 
     public async Task<int> CreateKitAsync(KitVM kitVM)
@@ -36,7 +37,6 @@ public class KitService : IKitService
         kitVM.Image!.FileUrl = await _fileService.UploadFileAsync(kitVM.Image.FormFile);
         var kitToCreate = _mapper.Map<Kit>(kitVM);
         kitToCreate.Price = 0;
-
         return await _kitRepository.AddAsync(kitToCreate);
     }
 
@@ -49,7 +49,16 @@ public class KitService : IKitService
         }
 
         var kit = _mapper.Map<Kit>(editKitVM);
-        var updatedKit = await _kitRepository.UpdateAsync(kit) ?? throw new ArgumentException("Item set does not exist!");
+        if (!kit.ShouldBeShown)
+        {
+            kit.OrderNo = null;
+            await _purchasableRepository.BulkUpdateOrderAsync(kit.OrderNo.Value);
+        }
+        if (kit.ShouldBeShown && kit.OrderNo is null)
+        {
+            kit.OrderNo = await _purchasableRepository.GetNextOrderNumberAsync();
+        }
+        var updatedKit = await _kitRepository.UpdateAsync(kit);
         return updatedKit.Id;
     }
 
@@ -120,10 +129,9 @@ public class KitService : IKitService
         {
             KitDetailsVM = _mapper.Map<KitDetailsVM>(kit),
             Item = _mapper.Map<ItemVM>(item),
-            ItemsAmmount = 1,            
+            ItemsAmmount = 1,
             PricePerItem = item.Price
         };
-
         return elementVM;
     }
 
@@ -142,12 +150,7 @@ public class KitService : IKitService
 
     public async Task<ElementVM> GetVMForEdittingElementAsync(int kitId, int itemId)
     {
-        Element? element = await _kitRepository.GetElementAsync(kitId, itemId);
-        if (element is null)
-        {
-            throw new EntityNotFoundException(entityName: nameof(Element));
-        }
-
+        Element? element = await _kitRepository.GetElementAsync(kitId, itemId) ?? throw new EntityNotFoundException(entityName: nameof(Element));
         ElementVM elementToEdit = _mapper.Map<ElementVM>(element);
         return elementToEdit;
     }
@@ -157,7 +160,8 @@ public class KitService : IKitService
         return _kitRepository.DeleteElementAsync(kitId, itemId);
     }
 
-    public async Task<DeleteKitResult> DeleteKitAsync(int id) {
+    public async Task<DeleteKitResult> DeleteKitAsync(int id)
+    {
         Kit? kitToDelete = await _kitRepository.GetByIdAsync(id);
         if (kitToDelete is null)
         {
@@ -167,6 +171,11 @@ public class KitService : IKitService
         try
         {
             await _kitRepository.DeleteAsync(id);
+            _fileService.DeleteImage(kitToDelete.Image.FileUrl);
+            if (kitToDelete.ShouldBeShown)
+            {
+                await _purchasableRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
+            }
         }
         catch (ResourceNotFoundException)
         {

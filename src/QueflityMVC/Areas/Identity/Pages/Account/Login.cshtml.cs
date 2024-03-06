@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using QueflityMVC.Domain.Models;
 using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account;

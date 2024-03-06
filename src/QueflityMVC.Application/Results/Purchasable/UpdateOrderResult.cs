@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QueflityMVC.Application.Results.Kit;
+﻿namespace QueflityMVC.Application.Results.Purchasable;
 
-namespace QueflityMVC.Application.Results.Purchasable;
 public class UpdateOrderResult
 {
     public Exception? Exception { get; init; }
 
-    public required UpdateOrderStatus Status { get; init; }
+    public UpdateOrderStatus Status { get; init; }
 }
 
 public static class UpdateOrderResultsFactory
