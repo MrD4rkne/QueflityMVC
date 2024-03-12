@@ -1,6 +1,6 @@
 ﻿namespace QueflityMVC.Application.ViewModels.Category;
 
-public class DeleteFailedCategoryVM
+public class DeleteFailedCategoryVm
 {
     public int CategoryId { get; set; }
 

@@ -5,7 +5,7 @@ using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
 
-public class PurchasableVM : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Models.Kit>
+public class PurchasableVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Models.Kit>
 {
     public int Id { get; init; }
 
@@ -15,27 +15,27 @@ public class PurchasableVM : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Model
 
     public uint? OrderNo { get; init; }
 
-    public ImageForListVM Image { get; init; }
+    public ImageForListVm Image { get; init; }
 
     public PurchasableType Type { get; init; }
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Item, PurchasableVM>()
+        profile.CreateMap<Domain.Models.Item, PurchasableVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
             .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => PurchasableType.Item))
             .ReverseMap();
 
-        profile.CreateMap<Domain.Models.Kit, PurchasableVM>()
+        profile.CreateMap<Domain.Models.Kit, PurchasableVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
             .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => PurchasableType.Kit))
             .ReverseMap();
 
-        profile.CreateMap<PurchasableVM, BasePurchasableEntity>()
+        profile.CreateMap<PurchasableVm, BasePurchasableEntity>()
             .ConstructUsing((vm, ctx) => vm.Type switch
             {
-                PurchasableType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(PurchasableVM), typeof(Domain.Models.Item)),
-                PurchasableType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(PurchasableVM), typeof(Domain.Models.Kit)),
+                PurchasableType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(PurchasableVm), typeof(Domain.Models.Item)),
+                PurchasableType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(PurchasableVm), typeof(Domain.Models.Kit)),
                 _ => throw new InvalidOperationException("Unknown purchasable type")
             });
     }

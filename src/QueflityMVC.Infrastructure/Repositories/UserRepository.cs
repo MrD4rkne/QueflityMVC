@@ -9,13 +9,13 @@ namespace QueflityMVC.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    protected Context _dbContext;
+    protected Context DbContext;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
 
     public UserRepository(Context dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
     {
-        _dbContext = dbContext;
+        DbContext = dbContext;
         _userManager = userManager;
         _roleManager = roleManager;
     }
@@ -65,7 +65,7 @@ public class UserRepository : IUserRepository
 
     public IQueryable<IdentityRole> GetAllRoles()
     {
-        var allRoles = _dbContext.Roles
+        var allRoles = DbContext.Roles
             .AsNoTracking();
         return allRoles;
     }
@@ -79,7 +79,7 @@ public class UserRepository : IUserRepository
 
     private Task<IdentityRole?> GetRoleByIdAsync(string roleId)
     {
-        return _dbContext.Roles
+        return DbContext.Roles
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == roleId);
     }
@@ -104,7 +104,7 @@ public class UserRepository : IUserRepository
     {
         var rolesOwner = (await GetUserByIdAsync(userId)) ?? throw new ResourceNotFoundException();
 
-        var allAssignedClaimsIds = _dbContext.UserClaims.Where(x => x.UserId == userId);
+        var allAssignedClaimsIds = DbContext.UserClaims.Where(x => x.UserId == userId);
         return allAssignedClaimsIds.Select(x => x.ClaimType).Where(x => !string.IsNullOrEmpty(x))
             .ToList()!;
     }

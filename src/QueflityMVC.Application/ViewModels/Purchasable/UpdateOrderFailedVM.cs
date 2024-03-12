@@ -1,6 +1,6 @@
 ﻿namespace QueflityMVC.Application.ViewModels.Purchasable;
 
-public class UpdateOrderFailedVM
+public class UpdateOrderFailedVm
 {
     public string Message { get; set; }
 }

@@ -8,13 +8,13 @@ public interface IUserService
 
     Task EnableUserAsync(string userToEnableId);
 
-    Task<ListUsersVM> GetFilteredListAsync(ListUsersVM listUsersVM);
+    Task<ListUsersVm> GetFilteredListAsync(ListUsersVm listUsersVm);
 
-    Task<UserClaimsVM> GetUsersClaimsVMAsync(string userId);
+    Task<UserClaimsVm> GetUsersClaimsVmAsync(string userId);
 
-    Task<UserRolesVM> GetUsersRolesVMAsync(string userId);
+    Task<UserRolesVm> GetUsersRolesVmAsync(string userId);
 
-    Task UpdateUserClaimsAsync(UserClaimsVM userClaimsVM);
+    Task UpdateUserClaimsAsync(UserClaimsVm userClaimsVm);
 
-    Task UpdateUserRolesAsync(UserRolesVM userRolesVM);
+    Task UpdateUserRolesAsync(UserRolesVm userRolesVm);
 }

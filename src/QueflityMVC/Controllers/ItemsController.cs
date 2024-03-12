@@ -15,9 +15,9 @@ namespace QueflityMVC.Web.Controllers;
 public class ItemsController : Controller
 {
     private readonly IItemService _itemService;
-    private readonly IValidator<ItemVM> _itemValidator;
+    private readonly IValidator<ItemVm> _itemValidator;
 
-    public ItemsController(IItemService itemService, IValidator<ItemVM> itemValidator)
+    public ItemsController(IItemService itemService, IValidator<ItemVm> itemValidator)
     {
         _itemService = itemService;
         _itemValidator = itemValidator;
@@ -27,27 +27,27 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(int? categoryId)
     {
-        ListItemsVM listItemsVM = new()
+        ListItemsVm listItemsVm = new()
         {
-            Pagination = PaginationFactory.Default<ItemForListVM>(),
+            Pagination = PaginationFactory.Default<ItemForListVm>(),
             CategoryId = categoryId,
             NameFilter = string.Empty
         };
-        return await Index(listItemsVM);
+        return await Index(listItemsVm);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Index(ListItemsVM listItemsVM)
+    public async Task<IActionResult> Index(ListItemsVm listItemsVm)
     {
-        if (listItemsVM is null)
+        if (listItemsVm is null)
         {
             return BadRequest();
         }
-        listItemsVM.NameFilter ??= string.Empty;
+        listItemsVm.NameFilter ??= string.Empty;
 
-        ListItemsVM listVM = await _itemService.GetFilteredListAsync(listItemsVM);
-        return View(listVM);
+        ListItemsVm listVm = await _itemService.GetFilteredListAsync(listItemsVm);
+        return View(listVm);
     }
 
     [Route("Create")]
@@ -57,7 +57,7 @@ public class ItemsController : Controller
     {
         try
         {
-            var addingVm = await _itemService.GetItemVMForAddingAsync(categoryId);
+            var addingVm = await _itemService.GetItemVmForAddingAsync(categoryId);
             return View(addingVm);
         }
         catch (NoCategoriesException)
@@ -70,18 +70,18 @@ public class ItemsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Create(CrEdItemVM crEdObjItem)
+    public async Task<IActionResult> Create(CrEdItemVm crEdObjItem)
     {
-        ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVM);
+        ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVm);
 
         if (!result.IsValid)
         {
             result.AddToModelState(this.ModelState);
-            crEdObjItem.Categories ??= await _itemService.GetCategoriesForSelectVMAsync();
+            crEdObjItem.Categories ??= await _itemService.GetCategoriesForSelectVmAsync();
             return View("Create", crEdObjItem);
         }
 
-        _ = await _itemService.CreateItemAsync(crEdObjItem.ItemVM);
+        _ = await _itemService.CreateItemAsync(crEdObjItem.ItemVm);
         return RedirectToAction("Index");
     }
 
@@ -98,16 +98,16 @@ public class ItemsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(CrEdItemVM editItemVM)
+    public async Task<IActionResult> Edit(CrEdItemVm editItemVm)
     {
-        ValidationResult result = await _itemValidator.ValidateAsync(editItemVM.ItemVM);
+        ValidationResult result = await _itemValidator.ValidateAsync(editItemVm.ItemVm);
         if (!result.IsValid)
         {
             result.AddToModelState(this.ModelState);
-            return View("Edit", editItemVM);
+            return View("Edit", editItemVm);
         }
 
-        await _itemService.UpdateItemAsync(editItemVM.ItemVM);
+        await _itemService.UpdateItemAsync(editItemVm.ItemVm);
         return RedirectToAction("Index");
     }
 
@@ -126,7 +126,7 @@ public class ItemsController : Controller
                 return NotFound();
 
             case Application.Results.Item.DeleteItemStatus.ItemIsPartOfKit:
-                return View(new DeleteFailedItemVM()
+                return View(new DeleteFailedItemVm()
                 {
                     ItemId = id,
                     Message = "Item is part of a kit and cannot be deleted."
@@ -144,7 +144,7 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Components(int id)
     {
-        var componentsViewModel = await _itemService.GetComponentsForSelectionVMAsync(id);
+        var componentsViewModel = await _itemService.GetComponentsForSelectionVmAsync(id);
         if (componentsViewModel is null)
         {
             return NotFound();
@@ -175,9 +175,9 @@ public class ItemsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Components(ItemComponentsSelectionVM selectionVM)
+    public async Task<IActionResult> Components(ItemComponentsSelectionVm selectionVm)
     {
-        await _itemService.UpdateItemComponentsAsync(selectionVM);
+        await _itemService.UpdateItemComponentsAsync(selectionVm);
         return RedirectToAction("Index");
     }
 }

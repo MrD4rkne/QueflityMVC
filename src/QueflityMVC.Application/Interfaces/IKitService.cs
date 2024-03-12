@@ -7,29 +7,29 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IKitService
 {
-    Task AddElementAsync(ElementVM elementVM);
+    Task AddElementAsync(ElementVm elementVm);
 
-    Task<int> CreateKitAsync(KitVM KitVM);
+    Task<int> CreateKitAsync(KitVm kitVm);
 
     Task DeleteElementAsync(int kitId, int itemId);
 
     Task<DeleteKitResult> DeleteKitAsync(int id);
 
-    Task EditElementAsync(ElementVM elementVM);
+    Task EditElementAsync(ElementVm elementVm);
 
-    Task<int> EditKitAsync(KitVM editKitVM);
+    Task<int> EditKitAsync(KitVm editKitVm);
 
-    Task<KitDetailsVM> GetDetailsVMAsync(int id);
+    Task<KitDetailsVm> GetDetailsVmAsync(int id);
 
-    Task<ListKitsVM> GetFilteredListAsync(ListKitsVM listKitsVM);
+    Task<ListKitsVm> GetFilteredListAsync(ListKitsVm listKitsVm);
 
-    Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(int id);
+    Task<ListItemsForComponentsVm> GetFilteredListForComponentsAsync(int id);
 
-    Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(ListItemsForComponentsVM listItemsForComponentsVM);
+    Task<ListItemsForComponentsVm> GetFilteredListForComponentsAsync(ListItemsForComponentsVm listItemsForComponentsVm);
 
-    Task<KitVM> GetKitVMForEditAsync(int id);
+    Task<KitVm> GetKitVmForEditAsync(int id);
 
-    Task<ElementVM> GetVMForAddingElementAsync(int kitId, int itemId);
+    Task<ElementVm> GetVmForAddingElementAsync(int kitId, int itemId);
 
-    Task<ElementVM> GetVMForEdittingElementAsync(int kitId, int itemId);
+    Task<ElementVm> GetVmForEdittingElementAsync(int kitId, int itemId);
 }

@@ -15,7 +15,7 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
 
     public override Task<Item?> GetByIdAsync(int entityId)
     {
-        return _dbContext.Items
+        return DbContext.Items
             .AsNoTracking()
             .Include(it => it.Image)
             .FirstOrDefaultAsync(it => it.Id == entityId);
@@ -39,7 +39,7 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
 
     public Task<Item?> GetItemWithComponentsByIdAsync(int itemId)
     {
-        return _dbContext.Items
+        return DbContext.Items
             .AsNoTracking()
             .Include(x => x.Components)
             .Include(it => it.Image)
@@ -65,9 +65,9 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
     public override async Task<Item> UpdateAsync(Item entityToUpdate)
     {
         Item originalEntity = await GetItemWithComponentsByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Item));
-        if (_dbContext.Entry(originalEntity).State == EntityState.Detached)
+        if (DbContext.Entry(originalEntity).State == EntityState.Detached)
         {
-            _dbContext.Attach(originalEntity);
+            DbContext.Attach(originalEntity);
         }
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
@@ -79,14 +79,14 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         {
             originalEntity.Components = entityToUpdate.Components;
         }
-        _dbContext.Entry(originalEntity).State = EntityState.Modified;
-        await _dbContext.SaveChangesAsync();
+        DbContext.Entry(originalEntity).State = EntityState.Modified;
+        await DbContext.SaveChangesAsync();
         return originalEntity;
     }
 
     public Task<bool> IsItemAPartOfAnyKitAsync(int id)
     {
-        return _dbContext.SetElements
+        return DbContext.SetElements
             .AnyAsync(x => x.ItemId == id);
     }
 }

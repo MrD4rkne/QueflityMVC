@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Component;
 
 namespace QueflityMVC.Application.Validators;
 
-public class ComponentValidator : AbstractValidator<ComponentVM>
+public class ComponentValidator : AbstractValidator<ComponentVm>
 {
     public ComponentValidator()
     {

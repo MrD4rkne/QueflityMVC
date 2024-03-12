@@ -2,9 +2,9 @@
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public record ItemComponentsSelectionVM
+public record ItemComponentsSelectionVm
 {
-    public required ItemVM Item { get; set; }
+    public required ItemVm Item { get; set; }
 
     public required List<int> SelectedComponentsIds { get; set; }
 

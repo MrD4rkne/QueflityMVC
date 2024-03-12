@@ -1,5 +1,5 @@
 ﻿namespace QueflityMVC.Application.ViewModels.Purchasable;
-public record EditOrderVM
+public record EditOrderVm
 {
-    public required List<PurchasableVM> PurchasablesVMs { get; set; }
+    public required List<PurchasableVm> PurchasablesVMs { get; set; }
 }

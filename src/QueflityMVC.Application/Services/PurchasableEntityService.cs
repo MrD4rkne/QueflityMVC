@@ -18,7 +18,7 @@ public class PurchasableEntityService : IPurchasableEntityService
         _purchasableRepository = purchasableRepository;
     }
 
-    public async Task<EditOrderVM> GetEnitiesOrderVM()
+    public async Task<EditOrderVm> GetEnitiesOrderVm()
     {
         var purchasableTypes = Enum.GetValues<PurchasableType>();
         if (purchasableTypes.Length == 0)
@@ -27,21 +27,21 @@ public class PurchasableEntityService : IPurchasableEntityService
         }
 
         var models = await _purchasableRepository.GetVisibileEntities().OrderBy(x => x.OrderNo).ToListAsync();
-        var results = models.Select(x => _mapper.Map<PurchasableVM>(x)).ToList();
-        var editVM = new EditOrderVM
+        var results = models.Select(x => _mapper.Map<PurchasableVm>(x)).ToList();
+        var editVm = new EditOrderVm
         {
             PurchasablesVMs = results
         };
-        return editVM;
+        return editVm;
     }
 
-    public async Task<UpdateOrderResult> UpdateOrderAsync(EditOrderVM editOrderVM)
+    public async Task<UpdateOrderResult> UpdateOrderAsync(EditOrderVm editOrderVm)
     {
         try
         {
-            if (!IsProperOrder(editOrderVM.PurchasablesVMs))
+            if (!IsProperOrder(editOrderVm.PurchasablesVMs))
                 return UpdateOrderResultsFactory.NotValidOrder();
-            var purchasableModels = editOrderVM.PurchasablesVMs.Select(p => _mapper.Map<Domain.Common.BasePurchasableEntity>(p)).ToList();
+            var purchasableModels = editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<Domain.Common.BasePurchasableEntity>(p)).ToList();
             if (!await _purchasableRepository.AreTheseAllVisiblePurchasablesAsync(purchasableModels))
                 return UpdateOrderResultsFactory.MissingPurchasable();
             await _purchasableRepository.UpdatePurchasablesOrderAsync(purchasableModels);
@@ -53,7 +53,7 @@ public class PurchasableEntityService : IPurchasableEntityService
         }
     }
 
-    private bool IsProperOrder(List<PurchasableVM> purchasables)
+    private bool IsProperOrder(List<PurchasableVm> purchasables)
     {
         if (!purchasables.All(p => p.OrderNo >= 0))
         {

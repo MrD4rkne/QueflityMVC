@@ -20,19 +20,19 @@ public class DashboardController : Controller
     [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public async Task<IActionResult> Index()
     {
-        var orderEditVM = await _purchasableEntityService.GetEnitiesOrderVM();
-        return View(orderEditVM);
+        var orderEditVm = await _purchasableEntityService.GetEnitiesOrderVm();
+        return View(orderEditVm);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_ORDER)]
-    public async Task<IActionResult> Index(EditOrderVM editOrderVM)
+    public async Task<IActionResult> Index(EditOrderVm editOrderVm)
     {
-        if (editOrderVM is null || editOrderVM.PurchasablesVMs is null)
+        if (editOrderVm is null || editOrderVm.PurchasablesVMs is null)
         {
             return BadRequest();
         }
-        UpdateOrderResult result = await _purchasableEntityService.UpdateOrderAsync(editOrderVM);
+        UpdateOrderResult result = await _purchasableEntityService.UpdateOrderAsync(editOrderVm);
         switch (result.Status)
         {
             case UpdateOrderStatus.Success:
@@ -40,15 +40,23 @@ public class DashboardController : Controller
 
             case UpdateOrderStatus.NotValidOrder:
                 ModelState.AddModelError(string.Empty, "Order is not valid");
-                return View(editOrderVM);
+                return View(editOrderVm);
 
             case UpdateOrderStatus.MissingPurchasable:
-                return RedirectToAction("UpdateFailed", new UpdateOrderFailedVM() { Message = "Purchasable list was altered. Please try again." });
+                return RedirectToAction("UpdateFailed",
+                    new UpdateOrderFailedVm() { Message = "Purchasable list was altered. Please try again." });
 
             case UpdateOrderStatus.Exception:
                 throw result.Exception!;
             default:
                 throw new NotImplementedException();
         }
+    }
+    
+    [HttpGet]
+    [Authorize(Policy = Policies.ENTITIES_ORDER)]
+    public IActionResult UpdateFailed(UpdateOrderFailedVm updateFailedVm)
+    {
+        return View(updateFailedVm);
     }
 }

@@ -13,7 +13,7 @@ public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
 
     public async Task<bool> IsAnyItemWithCategory(int categoryId)
     {
-        return !(await _dbContext.Items.AnyAsync(x => x.CategoryId == categoryId));
+        return !(await DbContext.Items.AnyAsync(x => x.CategoryId == categoryId));
     }
 
     public IQueryable<Category> GetFiltered(string? nameFilter)

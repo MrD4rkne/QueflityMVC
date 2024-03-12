@@ -23,25 +23,25 @@ public class UserController : Controller
     [Authorize(Policy = Policies.USERS_LIST)]
     public async Task<IActionResult> Index()
     {
-        ListUsersVM listUserVM = new()
+        ListUsersVm listUserVm = new()
         {
-            Pagination = PaginationFactory.Default<UserForListVM>()
+            Pagination = PaginationFactory.Default<UserForListVm>()
         };
-        return await Index(listUserVM);
+        return await Index(listUserVm);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.USERS_LIST)]
-    public async Task<IActionResult> Index(ListUsersVM listUsersVM)
+    public async Task<IActionResult> Index(ListUsersVm listUsersVm)
     {
-        if (listUsersVM is null)
+        if (listUsersVm is null)
         {
             return BadRequest();
         }
-        listUsersVM.UserNameFilter ??= string.Empty;
+        listUsersVm.UserNameFilter ??= string.Empty;
 
-        ListUsersVM listVM = await _userService.GetFilteredListAsync(listUsersVM);
-        return View(listVM);
+        ListUsersVm listVm = await _userService.GetFilteredListAsync(listUsersVm);
+        return View(listVm);
     }
 
     [HttpGet]
@@ -75,25 +75,25 @@ public class UserController : Controller
     [Authorize(Policy = Policies.USER_ROLES_VIEW)]
     public async Task<IActionResult> ManageUserRoles(string userId)
     {
-        UserRolesVM userRolesVM = await _userService.GetUsersRolesVMAsync(userId);
-        userRolesVM.CanCallerManage = CanUserManageRoles(callerPrincipal: User, userToBeManagedId: userId);
-        return View(userRolesVM);
+        UserRolesVm userRolesVm = await _userService.GetUsersRolesVmAsync(userId);
+        userRolesVm.CanCallerManage = CanUserManageRoles(callerPrincipal: User, userToBeManagedId: userId);
+        return View(userRolesVm);
     }
 
     [HttpPost]
     [Route("ManageUserRoles")]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.USER_ROLES_MANAGE)]
-    public async Task<IActionResult> ManageUserRoles(UserRolesVM userRolesVM)
+    public async Task<IActionResult> ManageUserRoles(UserRolesVm userRolesVm)
     {
-        ArgumentNullException.ThrowIfNull(userRolesVM);
-        ArgumentNullException.ThrowIfNullOrEmpty(userRolesVM.UserId);
-        if (!CanUserManageRoles(callerPrincipal: User, userToBeManagedId: userRolesVM.UserId))
+        ArgumentNullException.ThrowIfNull(userRolesVm);
+        ArgumentNullException.ThrowIfNullOrEmpty(userRolesVm.UserId);
+        if (!CanUserManageRoles(callerPrincipal: User, userToBeManagedId: userRolesVm.UserId))
         {
             return Forbid();
         }
 
-        await _userService.UpdateUserRolesAsync(userRolesVM);
+        await _userService.UpdateUserRolesAsync(userRolesVm);
 
         return RedirectToAction("Index");
     }
@@ -103,26 +103,26 @@ public class UserController : Controller
     [Authorize(Policy = Policies.USER_CLAIMS_VIEW)]
     public async Task<IActionResult> ManageUserClaims(string userId)
     {
-        UserClaimsVM userClaimsVM = await _userService.GetUsersClaimsVMAsync(userId);
-        userClaimsVM.CanCallerManage = CanUserManageClaims(callerPrincipal: User, userToBeManagedId: userId);
+        UserClaimsVm userClaimsVm = await _userService.GetUsersClaimsVmAsync(userId);
+        userClaimsVm.CanCallerManage = CanUserManageClaims(callerPrincipal: User, userToBeManagedId: userId);
 
-        return View(userClaimsVM);
+        return View(userClaimsVm);
     }
 
     [HttpPost]
     [Route("ManageUserClaims")]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.USER_CLAIMS_MANAGE)]
-    public async Task<IActionResult> ManageUserClaims(UserClaimsVM userClaimsVM)
+    public async Task<IActionResult> ManageUserClaims(UserClaimsVm userClaimsVm)
     {
-        ArgumentNullException.ThrowIfNull(userClaimsVM);
-        ArgumentNullException.ThrowIfNullOrEmpty(userClaimsVM.UserId);
-        if (!CanUserManageClaims(callerPrincipal: User, userToBeManagedId: userClaimsVM.UserId))
+        ArgumentNullException.ThrowIfNull(userClaimsVm);
+        ArgumentNullException.ThrowIfNullOrEmpty(userClaimsVm.UserId);
+        if (!CanUserManageClaims(callerPrincipal: User, userToBeManagedId: userClaimsVm.UserId))
         {
             return Forbid();
         }
 
-        await _userService.UpdateUserClaimsAsync(userClaimsVM);
+        await _userService.UpdateUserClaimsAsync(userClaimsVm);
         return RedirectToAction("Index");
     }
 

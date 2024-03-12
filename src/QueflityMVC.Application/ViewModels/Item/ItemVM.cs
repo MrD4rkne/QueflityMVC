@@ -5,7 +5,7 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public record ItemVM : IMapFrom<Domain.Models.Item>
+public record ItemVm : IMapFrom<Domain.Models.Item>
 {
     public int Id { get; set; }
 
@@ -15,14 +15,14 @@ public record ItemVM : IMapFrom<Domain.Models.Item>
 
     public bool ShouldBeShown { get; set; }
 
-    public ImageVM Image { get; set; }
+    public ImageVm Image { get; set; }
 
     [DisplayName("Category")]
     public int CategoryId { get; set; }
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Item, ItemVM>()
+        profile.CreateMap<Domain.Models.Item, ItemVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
             .ForMember(vm => vm.CategoryId, opt => opt.MapFrom(ent => ent.CategoryId))
             .ReverseMap()

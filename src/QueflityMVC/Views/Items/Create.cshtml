@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
 @inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
+@model QueflityMVC.Application.ViewModels.Item.CrEdItemVm
 
 @{
     ViewData["Title"] = "Create";
@@ -22,15 +22,15 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="mb-3">
-                        <input class="form-control" asp-for="ItemVM.Image!.FormFile" type="file">
-                        <span asp-validation-for="ItemVM.Image.FormFile" class="text-danger"></span>
+                        <input class="form-control" asp-for="ItemVm.Image!.FormFile" type="file">
+                        <span asp-validation-for="ItemVm.Image.FormFile" class="text-danger"></span>
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="mb-3">
-                        <label asp-for="ItemVM.Image!.AltDescription" class="control-label">Alternative description</label>
-                        <input asp-for="ItemVM.Image!.AltDescription" class="form-control" />
-                        <span asp-validation-for="ItemVM.Image!.AltDescription" class="text-danger"></span>
+                        <label asp-for="ItemVm.Image!.AltDescription" class="control-label">Alternative description</label>
+                        <input asp-for="ItemVm.Image!.AltDescription" class="form-control" />
+                        <span asp-validation-for="ItemVm.Image!.AltDescription" class="text-danger"></span>
                     </div>
                 </li>
             </ul>
@@ -41,25 +41,25 @@
 
         <div class="row">
             <div class="col-md">
-                <label asp-for="ItemVM.Name" class="control-label"></label>
-                <input asp-for="ItemVM.Name" class="form-control" />
-                <span asp-validation-for="ItemVM.Name" class="text-danger"></span>
+                <label asp-for="ItemVm.Name" class="control-label"></label>
+                <input asp-for="ItemVm.Name" class="form-control" />
+                <span asp-validation-for="ItemVm.Name" class="text-danger"></span>
             </div>
             <div class="col-md-auto">
                 <label class="control-label">Price</label>
-                <input type="number" asp-for="ItemVM.Price" class="form-control" min="0" step="0.01" />
-                <span asp-validation-for="ItemVM.Price" class="text-danger"></span>
+                <input type="number" asp-for="ItemVm.Price" class="form-control" min="0" step="0.01" />
+                <span asp-validation-for="ItemVm.Price" class="text-danger"></span>
             </div>
             <div class="col-md-auto" style="max-width: 200px">
                 <label class="control-label">Category</label>
-                <select asp-for="ItemVM.CategoryId" class="form-control">
+                <select asp-for="ItemVm.CategoryId" class="form-control">
                     <option value="">Select a category</option>
                     @foreach (var category in Model.Categories)
                     {
                         <option value="@category.Id">@category.Name</option>
                     }
                 </select>
-                <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
+                <span asp-validation-for="ItemVm.CategoryId" class="text-danger"></span>
             </div>
         </div>
 

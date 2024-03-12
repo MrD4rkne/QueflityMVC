@@ -3,9 +3,9 @@ using QueflityMVC.Application.ViewModels.Pagination;
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public record ListItemsForComponentsVM
+public record ListItemsForComponentsVm
 {
-    public required PaginationVM<ItemForListVM> Pagination { get; set; }
+    public required PaginationVm<ItemForListVm> Pagination { get; set; }
 
     public int? CategoryId { get; set; }
 
@@ -13,7 +13,7 @@ public record ListItemsForComponentsVM
 
     public List<int>? KitComponentsIds { get; set; }
 
-    public required int kitId { get; set; }
+    public required int KitId { get; set; }
 
-    public KitDetailsVM? KitDetailsVM { get; set; }
+    public KitDetailsVm? KitDetailsVm { get; set; }
 }

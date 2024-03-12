@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
 @inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Item.CrEdItemVM
+@model QueflityMVC.Application.ViewModels.Item.CrEdItemVm
 
 @{
     ViewData["Title"] = "Edit";
@@ -14,8 +14,8 @@
 <hr />
 <div class="row">
     <form asp-action="Edit" enctype="multipart/form-data">
-        <input type="hidden" asp-for="ItemVM.Id" value="@Model.ItemVM.Id" />
-        <partial name="_ImageEditPartial" for="ItemVM.Image" />
+        <input type="hidden" asp-for="ItemVm.Id" value="@Model.ItemVm.Id" />
+        <partial name="_ImageEditPartial" for="ItemVm.Image" />
         <div class="container">
             <div class="row">
                 <div class="col-md-auto">
@@ -23,8 +23,8 @@
                 </div>
                 <div class="col-md-auto">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" asp-for="ItemVM.ShouldBeShown" type="checkbox" checked="@(Model.ItemVM.ShouldBeShown ? "checked":null)" onchange="VisibilityChanged()">
-                        @if (Model.ItemVM.ShouldBeShown)
+                        <input class="form-check-input" asp-for="ItemVm.ShouldBeShown" type="checkbox" checked="@(Model.ItemVm.ShouldBeShown ? "checked":null)" onchange="VisibilityChanged()">
+                        @if (Model.ItemVm.ShouldBeShown)
                         {
                             <label id="visibility-label" class="form-check-label">Visible</label>
                         }
@@ -37,18 +37,18 @@
             </div>
             <div class="row">
                 <div class="col-md">
-                    <label asp-for="ItemVM.Name" class="control-label"></label>
-                    <input asp-for="ItemVM.Name" class="form-control" value="@Model.ItemVM.Name" />
-                    <span asp-validation-for="ItemVM.Name" class="text-danger"></span>
+                    <label asp-for="ItemVm.Name" class="control-label"></label>
+                    <input asp-for="ItemVm.Name" class="form-control" value="@Model.ItemVm.Name" />
+                    <span asp-validation-for="ItemVm.Name" class="text-danger"></span>
                 </div>
                 <div class="col-md-auto">
                     <label class="control-label">Price</label>
-                    <input type="number" asp-for="ItemVM.Price" class="form-control" min="0" step="0.01" value="@Model.ItemVM.Price" />
-                    <span asp-validation-for="ItemVM.Price" class="text-danger"></span>
+                    <input type="number" asp-for="ItemVm.Price" class="form-control" min="0" step="0.01" value="@Model.ItemVm.Price" />
+                    <span asp-validation-for="ItemVm.Price" class="text-danger"></span>
                 </div>
                 <div class="col-md-auto" style="max-width: 200px">
                     <label class="control-label">Category</label>
-                    <select asp-for="ItemVM.CategoryId" class="form-control">
+                    <select asp-for="ItemVm.CategoryId" class="form-control">
                         <option value="">Select a category</option>
                         @for (int i = 0; i < Model.Categories.Count; i++)
                         {
@@ -56,7 +56,7 @@
                             <option value="@category.Id">@category.Name</option>
                         }
                     </select>
-                    <span asp-validation-for="ItemVM.CategoryId" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.CategoryId" class="text-danger"></span>
                     @for (int i = 0; i < Model.Categories.Count; i++)
                     {
                         @Html.HiddenFor(x => x.Categories[i].Id)

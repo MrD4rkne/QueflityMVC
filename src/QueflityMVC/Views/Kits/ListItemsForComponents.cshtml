@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants
-@model QueflityMVC.Application.ViewModels.Item.ListItemsForComponentsVM
+@model QueflityMVC.Application.ViewModels.Item.ListItemsForComponentsVm
 @inject IAuthorizationService AuthorizationService
 
 @{
@@ -9,9 +9,9 @@
     int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
 }
 
-@if (Model.KitDetailsVM is not null)
+@if (Model.KitDetailsVm is not null)
 {
-    <partial name="_KitDetailsPartial" model="@Model.KitDetailsVM" />
+    <partial name="_KitDetailsPartial" model="@Model.KitDetailsVm" />
 }
 
 <hr />
@@ -43,7 +43,7 @@
             </select>
         </li>
     </ul>
-    @Html.HiddenFor(x => x.kitId)
+    @Html.HiddenFor(x => x.KitId)
     <div class="row">
         <table class="table">
             <thead>
@@ -71,16 +71,16 @@
                         <td>
                             @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
                             {
-                                @Html.ActionLink("Edit membership", "EditMembership", new { kitId = Model.kitId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                @Html.ActionLink("Edit membership", "EditComponent", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
                                 ;
                                 @if (canCreateEntities)
                                 {
-                                    @Html.ActionLink("Delete", "DeleteComponent", new { itemId = item.Id, kitId = Model.kitId }, new { @class = "btn btn-outline-danger btn-sm" })
+                                    @Html.ActionLink("Delete", "DeleteComponent", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
                                 }
                             }
                             else
                             {
-                                @Html.ActionLink("Add to set", "AddComponent", new { kitId = Model.kitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
+                                @Html.ActionLink("Add to set", "AddComponent", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
                                 ;
                             }
                         </td>

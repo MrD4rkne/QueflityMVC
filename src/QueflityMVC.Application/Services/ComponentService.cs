@@ -19,9 +19,9 @@ public class ComponentService : IComponentService
         _mapper = mapper;
     }
 
-    public async Task<int> CreateComponentAsync(ComponentVM componentToCreateVM)
+    public async Task<int> CreateComponentAsync(ComponentVm componentToCreateVm)
     {
-        Component componentToCreate = _mapper.Map<Component>(componentToCreateVM);
+        Component componentToCreate = _mapper.Map<Component>(componentToCreateVm);
         await _componentRepository.AddAsync(componentToCreate);
         return componentToCreate.Id;
     }
@@ -31,22 +31,22 @@ public class ComponentService : IComponentService
         return _componentRepository.DeleteAsync(id);
     }
 
-    public async Task<ListComponentsVM> GetFilteredListAsync(ListComponentsVM listComponentsVM)
+    public async Task<ListComponentsVm> GetFilteredListAsync(ListComponentsVm listComponentsVm)
     {
-        IQueryable<Component> matchingComponents = _componentRepository.GetComponentsForPagination(listComponentsVM.ItemId, listComponentsVM.NameFilter);
-        listComponentsVM.Pagination = await matchingComponents.Paginate(listComponentsVM.Pagination, _mapper.ConfigurationProvider);
-        return listComponentsVM;
+        IQueryable<Component> matchingComponents = _componentRepository.GetComponentsForPagination(listComponentsVm.ItemId, listComponentsVm.NameFilter);
+        listComponentsVm.Pagination = await matchingComponents.Paginate(listComponentsVm.Pagination, _mapper.ConfigurationProvider);
+        return listComponentsVm;
     }
 
-    public async Task<ComponentVM?> GetComponentVMForEditAsync(int id)
+    public async Task<ComponentVm?> GetComponentVmForEditAsync(int id)
     {
         var componentEntity = await _componentRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
-        return _mapper.Map<ComponentVM>(componentEntity);
+        return _mapper.Map<ComponentVm>(componentEntity);
     }
 
-    public async Task UpdateComponentAsync(ComponentVM componentToEditVM)
+    public async Task UpdateComponentAsync(ComponentVm componentToEditVm)
     {
-        var category = _mapper.Map<Component>(componentToEditVM);
+        var category = _mapper.Map<Component>(componentToEditVm);
         _ = await _componentRepository.UpdateAsync(category);
     }
 }

@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using QueflityMVC.Application.Constants;
 @inject IAuthorizationService AuthorizationService
-@model ElementVM
+@model ElementVm
 
 @{
     ViewData["Title"] = "Add item to kit";
@@ -19,14 +19,14 @@
     <div class="row">
         <div class="col-md">
             <h4>Set</h4>
-            <partial name="~/Views/Kits/_KitDetailsPartial.cshtml" model="@Model.KitDetailsVM" />
-            @Html.HiddenFor(model => model.KitDetailsVM.Id)
-            @Html.HiddenFor(model => model.KitDetailsVM.Price)
-            @Html.HiddenFor(model => model.KitDetailsVM.ShouldBeShown)
-            @Html.HiddenFor(model => model.KitDetailsVM.Name)
-            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.Id)
-            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.AltDescription)
-            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.FileUrl)
+            <partial name="~/Views/Kits/_KitDetailsPartial.cshtml" model="@Model.KitDetailsVm" />
+            @Html.HiddenFor(model => model.KitDetailsVm.Id)
+            @Html.HiddenFor(model => model.KitDetailsVm.Price)
+            @Html.HiddenFor(model => model.KitDetailsVm.ShouldBeShown)
+            @Html.HiddenFor(model => model.KitDetailsVm.Name)
+            @Html.HiddenFor(model => model.KitDetailsVm!.Image!.Id)
+            @Html.HiddenFor(model => model.KitDetailsVm!.Image!.AltDescription)
+            @Html.HiddenFor(model => model.KitDetailsVm!.Image!.FileUrl)
         </div>
         <div class="col-md">
             <h4>Item</h4>

@@ -4,7 +4,7 @@ using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Application.ViewModels.User;
 
-public record UserForListVM : IMapFrom<ApplicationUser>
+public record UserForListVm : IMapFrom<ApplicationUser>
 {
     public required string Id { get; set; }
 
@@ -16,7 +16,7 @@ public record UserForListVM : IMapFrom<ApplicationUser>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<ApplicationUser, UserForListVM>()
+        profile.CreateMap<ApplicationUser, UserForListVm>()
             .ReverseMap();
     }
 }

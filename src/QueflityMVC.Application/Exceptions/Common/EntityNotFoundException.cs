@@ -6,9 +6,9 @@ namespace QueflityMVC.Application.Errors.Common;
 public class EntityNotFoundException : Exception
 {
     private const string ERROR_MESSAGE_SCHEME = "with this id could not be found.";
-    private static readonly string DEFAULT_ERROR_MESSAGE = $"Entity {ERROR_MESSAGE_SCHEME}";
+    private static readonly string DefaultErrorMessage = $"Entity {ERROR_MESSAGE_SCHEME}";
 
-    public EntityNotFoundException() : this(DEFAULT_ERROR_MESSAGE)
+    public EntityNotFoundException() : this(DefaultErrorMessage)
     {
     }
 
@@ -38,7 +38,7 @@ public class EntityNotFoundException : Exception
 
         if (string.IsNullOrEmpty(entityName))
         {
-            return DEFAULT_ERROR_MESSAGE;
+            return DefaultErrorMessage;
         }
         StringBuilder errorMessageBuilder = new();
         errorMessageBuilder.Append(entityName);

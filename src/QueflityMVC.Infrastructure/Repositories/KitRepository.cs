@@ -15,7 +15,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public override Task<Kit?> GetByIdAsync(int entityId)
     {
-        return _dbContext.Kits
+        return DbContext.Kits
             .AsNoTracking()
             .Include(kit => kit.Image)
             .FirstOrDefaultAsync(kit => kit.Id == entityId);
@@ -30,7 +30,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public IQueryable<Element> GetKitComponents(int kitId)
     {
-        return _dbContext.SetElements
+        return DbContext.SetElements
             .AsNoTracking()
             .Where(x => x.KitId == kitId);
     }
@@ -51,7 +51,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public Task<Kit?> GetFullKitWithMembershipsByIdAsync(int id)
     {
-        return _dbContext.Set<Kit>()
+        return DbContext.Set<Kit>()
             .Include(z => z.Image)
             .Include(x => x.Elements)
                 .ThenInclude(x => x.Item)
@@ -61,7 +61,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public IQueryable<decimal> GetPricesOfKitComponents(int kitId)
     {
-        return _dbContext.Set<Element>()
+        return DbContext.Set<Element>()
             .AsNoTracking()
             .Where(x => x.KitId == kitId)
             .Select(x => x.PricePerItem * x.ItemsAmmount);
@@ -71,8 +71,8 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     {
         componentToCreate.Kit = null;
         componentToCreate.Item = null;
-        _dbContext.Add(componentToCreate);
-        await _dbContext.SaveChangesAsync();
+        DbContext.Add(componentToCreate);
+        await DbContext.SaveChangesAsync();
         await UpdateKitPriceAsync(componentToCreate.KitId);
     }
 
@@ -87,7 +87,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public Task<Element?> GetElementAsync(int kitId, int itemId)
     {
-        return _dbContext.Set<Element>()
+        return DbContext.Set<Element>()
             .Include(elem => elem.Kit)
                 .ThenInclude(kit => kit!.Image)
             .Include(elem => elem.Item)
@@ -106,8 +106,8 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
         elementToEdit.ItemsAmmount = elementToEdit.ItemsAmmount;
-        _dbContext.Entry(elementToEdit).State = EntityState.Modified;
-        await _dbContext.SaveChangesAsync();
+        DbContext.Entry(elementToEdit).State = EntityState.Modified;
+        await DbContext.SaveChangesAsync();
         await UpdateKitPriceAsync(elementToEdit.KitId);
     }
 
@@ -119,9 +119,9 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
             throw new EntityNotFoundException(nameof(Element));
         }
 
-        _dbContext.Remove(elemToDelete);
+        DbContext.Remove(elemToDelete);
         await UpdateKitPriceAsync(elemToDelete.KitId);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
     }
 
     public override async Task<Kit> UpdateAsync(Kit entityToUpdate)
@@ -135,8 +135,8 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
 
-        _dbContext.Entry(originalEntity).State = EntityState.Modified;
-        await _dbContext.SaveChangesAsync();
+        DbContext.Entry(originalEntity).State = EntityState.Modified;
+        await DbContext.SaveChangesAsync();
         return originalEntity;
     }
 
@@ -146,10 +146,10 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         {
             throw new EntityNotFoundException(entityName: nameof(Kit));
         }
-        await _dbContext.SetElements.
+        await DbContext.SetElements.
             Where(x => x.KitId == entityToDelete.Id)
             .ExecuteDeleteAsync();
-        _dbContext.Kits.Remove(entityToDelete);
-        await _dbContext.SaveChangesAsync();
+        DbContext.Kits.Remove(entityToDelete);
+        await DbContext.SaveChangesAsync();
     }
 }

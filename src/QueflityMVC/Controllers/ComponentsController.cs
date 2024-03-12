@@ -13,9 +13,9 @@ namespace QueflityMVC.Web.Controllers;
 public class ComponentsController : Controller
 {
     private readonly IComponentService _componentService;
-    private readonly IValidator<ComponentVM> _categoryValidator;
+    private readonly IValidator<ComponentVm> _categoryValidator;
 
-    public ComponentsController(IComponentService componentService, IValidator<ComponentVM> categoryValidator)
+    public ComponentsController(IComponentService componentService, IValidator<ComponentVm> categoryValidator)
     {
         _componentService = componentService;
         _categoryValidator = categoryValidator;
@@ -25,16 +25,16 @@ public class ComponentsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index()
     {
-        ListComponentsVM listComponentsVM = new()
+        ListComponentsVm listComponentsVm = new()
         {
-            Pagination = PaginationFactory.Default<ComponentForListVM>()
+            Pagination = PaginationFactory.Default<ComponentForListVm>()
         };
-        return await Index(listComponentsVM);
+        return await Index(listComponentsVm);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Index(ListComponentsVM listComponents)
+    public async Task<IActionResult> Index(ListComponentsVm listComponents)
     {
         if (listComponents is null)
             return BadRequest();
@@ -56,16 +56,16 @@ public class ComponentsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Create(ComponentVM componentToAddVM)
+    public async Task<IActionResult> Create(ComponentVm componentToAddVm)
     {
-        var validationResult = _categoryValidator.Validate(componentToAddVM);
+        var validationResult = _categoryValidator.Validate(componentToAddVm);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(this.ModelState);
-            return View("Create", componentToAddVM);
+            return View("Create", componentToAddVm);
         }
 
-        await _componentService.CreateComponentAsync(componentToAddVM);
+        await _componentService.CreateComponentAsync(componentToAddVm);
         return RedirectToAction("Index");
     }
 
@@ -74,28 +74,28 @@ public class ComponentsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        var componentVM = await _componentService.GetComponentVMForEditAsync(id);
-        if (componentVM is null)
+        var componentVm = await _componentService.GetComponentVmForEditAsync(id);
+        if (componentVm is null)
         {
             return NotFound();
         }
-        return View(componentVM);
+        return View(componentVm);
     }
 
     [Route("Edit")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(ComponentVM componentToEditVM)
+    public async Task<IActionResult> Edit(ComponentVm componentToEditVm)
     {
-        var validationResult = await _categoryValidator.ValidateAsync(componentToEditVM);
+        var validationResult = await _categoryValidator.ValidateAsync(componentToEditVm);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(this.ModelState);
-            return View("Edit", componentToEditVM);
+            return View("Edit", componentToEditVm);
         }
 
-        await _componentService.UpdateComponentAsync(componentToEditVM);
+        await _componentService.UpdateComponentAsync(componentToEditVm);
         return RedirectToAction("Index");
     }
 

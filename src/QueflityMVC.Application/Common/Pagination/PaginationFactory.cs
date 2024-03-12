@@ -5,7 +5,7 @@ namespace QueflityMVC.Application.Common.Pagination;
 
 public static class PaginationFactory
 {
-    public static PaginationVM<T> CreatePagination<T>(int pageSize, int totalCount, int currPageNo, List<T> entities) where T : class
+    public static PaginationVm<T> CreatePagination<T>(int pageSize, int totalCount, int currPageNo, List<T> entities) where T : class
     {
         PaginationInfo paginationBase = new()
         {
@@ -16,16 +16,16 @@ public static class PaginationFactory
         paginationBase.FillInfoWhenNull();
         paginationBase.PagesCount = CalcPagesCount(pageSize, totalCount);
 
-        PaginationVM<T> paginationVM = new()
+        PaginationVm<T> paginationVm = new()
         {
             Info = paginationBase,
             Entities = entities,
         };
 
-        return paginationVM;
+        return paginationVm;
     }
 
-    public static PaginationVM<T> Default<T>(int currentPageNo = 1, int pageSize = 2) where T : class
+    public static PaginationVm<T> Default<T>(int currentPageNo = 1, int pageSize = 2) where T : class
     {
         PaginationInfo paginationBase = new()
         {
@@ -34,13 +34,13 @@ public static class PaginationFactory
             PagesCount = 1
         };
 
-        PaginationVM<T> paginationVM = new()
+        PaginationVm<T> paginationVm = new()
         {
             Info = paginationBase,
             Entities = Enumerable.Empty<T>().ToList()
         };
 
-        return paginationVM;
+        return paginationVm;
     }
 
     public static int CalcPagesCount(int pageSize, int totalCount)

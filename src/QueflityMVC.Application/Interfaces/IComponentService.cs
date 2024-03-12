@@ -4,13 +4,13 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IComponentService
 {
-    Task<ListComponentsVM> GetFilteredListAsync(ListComponentsVM listComponentsVM);
+    Task<ListComponentsVm> GetFilteredListAsync(ListComponentsVm listComponentsVm);
 
-    Task<int> CreateComponentAsync(ComponentVM componentToCreateVM);
+    Task<int> CreateComponentAsync(ComponentVm componentToCreateVm);
 
-    Task<ComponentVM?> GetComponentVMForEditAsync(int id);
+    Task<ComponentVm?> GetComponentVmForEditAsync(int id);
 
-    Task UpdateComponentAsync(ComponentVM componentToEditVM);
+    Task UpdateComponentAsync(ComponentVm componentToEditVm);
 
     Task DeleteComponentAsync(int id);
 }

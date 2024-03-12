@@ -4,7 +4,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image;
 
-public record ImageVM : IMapFrom<Domain.Models.Image>
+public record ImageVm : IMapFrom<Domain.Models.Image>
 {
     public int Id { get; set; }
 
@@ -16,12 +16,12 @@ public record ImageVM : IMapFrom<Domain.Models.Image>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Image, ImageVM>()
+        profile.CreateMap<Domain.Models.Image, ImageVm>()
             .ForMember(img => img.FormFile, opt => opt.Ignore())
             .ReverseMap();
     }
 
-    public ImageVM()
+    public ImageVm()
     {
         FileUrl = string.Empty;
     }

@@ -8,16 +8,16 @@ namespace QueflityMVC.Application.Services;
 public class FileService : IFileService
 {
     private const string RELATIVE_IMAGES_PATH = "Images";
-    private readonly string ROOT_DIRECTORY;
+    private readonly string _rootDirectory;
 
     public FileService(IWebHostEnvironment appEnvironment)
     {
-        ROOT_DIRECTORY = appEnvironment.ContentRootPath;
+        _rootDirectory = appEnvironment.ContentRootPath;
     }
 
     public async Task<string> UploadFileAsync(IFormFile file)
     {
-        string directory = GetImagesDirectory(ROOT_DIRECTORY);
+        string directory = GetImagesDirectory(_rootDirectory);
         if (!Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
@@ -43,7 +43,7 @@ public class FileService : IFileService
 
     public void DeleteImage(string relativeImagePath)
     {
-        string path = Path.Combine(GetRootDirectory(ROOT_DIRECTORY), NormaliseFilePath(relativeImagePath));
+        string path = Path.Combine(GetRootDirectory(_rootDirectory), NormaliseFilePath(relativeImagePath));
         try
         {
             File.Delete(path);

@@ -3,7 +3,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Component;
 
-public record ComponentVM : IMapFrom<Domain.Models.Component>
+public record ComponentVm : IMapFrom<Domain.Models.Component>
 {
     public required int Id { get; set; }
 
@@ -11,6 +11,6 @@ public record ComponentVM : IMapFrom<Domain.Models.Component>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Component, ComponentVM>().ReverseMap();
+        profile.CreateMap<Domain.Models.Component, ComponentVm>().ReverseMap();
     }
 }

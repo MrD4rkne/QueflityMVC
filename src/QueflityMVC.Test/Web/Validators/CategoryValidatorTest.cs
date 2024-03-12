@@ -8,31 +8,31 @@ namespace QueflityMVC.Test.Web.Validators;
 
 public class CategoryValidatorTest
 {
-    private static CategoryVM GetPerfectCategoryVM()
+    private static CategoryVm GetPerfectCategoryVm()
     {
-        CategoryVM categoryVM = new() { Id = 0, Name = "123456" };
-        return categoryVM;
+        CategoryVm categoryVm = new() { Id = 0, Name = "123456" };
+        return categoryVm;
     }
 
     [Fact]
     public void ValidationTest()
     {
-        CategoryVM nullName = GetPerfectCategoryVM();
+        CategoryVm nullName = GetPerfectCategoryVm();
         nullName.Name = null;
-        CategoryVM emptyName = GetPerfectCategoryVM();
+        CategoryVm emptyName = GetPerfectCategoryVm();
         emptyName.Name = string.Empty;
-        CategoryVM tooShort = GetPerfectCategoryVM();
+        CategoryVm tooShort = GetPerfectCategoryVm();
         tooShort.Name = "1";
-        CategoryVM minimumLength = GetPerfectCategoryVM();
+        CategoryVm minimumLength = GetPerfectCategoryVm();
         minimumLength.Name = "12";
-        CategoryVM validLength = GetPerfectCategoryVM();
+        CategoryVm validLength = GetPerfectCategoryVm();
         validLength.Name = "123456";
-        CategoryVM maximumLength = GetPerfectCategoryVM();
+        CategoryVm maximumLength = GetPerfectCategoryVm();
         maximumLength.Name = "12345678912345678912";
-        CategoryVM tooLong = GetPerfectCategoryVM();
+        CategoryVm tooLong = GetPerfectCategoryVm();
         tooLong.Name = "123456789123456789123456789";
 
-        IValidator<CategoryVM> validator = new CategoryValidator();
+        IValidator<CategoryVm> validator = new CategoryValidator();
 
         var nullResults = validator.Validate(nullName);
         var emptyResults = validator.Validate(emptyName);

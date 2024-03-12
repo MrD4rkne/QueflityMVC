@@ -19,9 +19,9 @@ public class CategoryService : ICategoryService
         _mapper = mapper;
     }
 
-    public async Task<int> CreateCategoryAsync(CategoryVM createcategoryVM)
+    public async Task<int> CreateCategoryAsync(CategoryVm createcategoryVm)
     {
-        var categoryToCreate = _mapper.Map<Category>(createcategoryVM);
+        var categoryToCreate = _mapper.Map<Category>(createcategoryVm);
         return await _categoriesRepository.AddAsync(categoryToCreate);
     }
 
@@ -32,23 +32,23 @@ public class CategoryService : ICategoryService
         await _categoriesRepository.DeleteAsync(id);
     }
 
-    public async Task<ListCategoriesVM> GetFilteredListAsync(ListCategoriesVM listCategoriesVM)
+    public async Task<ListCategoriesVm> GetFilteredListAsync(ListCategoriesVm listCategoriesVm)
     {
-        IQueryable<Category> matchingCategories = _categoriesRepository.GetFiltered(listCategoriesVM.NameFilter);
-        listCategoriesVM.Pagination = await matchingCategories.Paginate(listCategoriesVM.Pagination, _mapper.ConfigurationProvider);
-        return listCategoriesVM;
+        IQueryable<Category> matchingCategories = _categoriesRepository.GetFiltered(listCategoriesVm.NameFilter);
+        listCategoriesVm.Pagination = await matchingCategories.Paginate(listCategoriesVm.Pagination, _mapper.ConfigurationProvider);
+        return listCategoriesVm;
     }
 
-    public async Task<CategoryVM?> GetVMForEditAsync(int id)
+    public async Task<CategoryVm?> GetVmForEditAsync(int id)
     {
         var category = await _categoriesRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
-        return _mapper.Map<CategoryVM>(category);
+        return _mapper.Map<CategoryVm>(category);
     }
 
-    public async Task<CategoryVM> UpdateCategoryAsync(CategoryVM createcategoryVM)
+    public async Task<CategoryVm> UpdateCategoryAsync(CategoryVm createcategoryVm)
     {
-        var category = _mapper.Map<Category>(createcategoryVM);
+        var category = _mapper.Map<Category>(createcategoryVm);
         var updatedcategory = await _categoriesRepository.UpdateAsync(category);
-        return _mapper.Map<CategoryVM>(updatedcategory);
+        return _mapper.Map<CategoryVm>(updatedcategory);
     }
 }

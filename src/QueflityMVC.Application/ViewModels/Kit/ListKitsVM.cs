@@ -2,9 +2,9 @@
 
 namespace QueflityMVC.Application.ViewModels.Kit;
 
-public record ListKitsVM
+public record ListKitsVm
 {
-    public required PaginationVM<KitForListVM> Pagination { get; set; }
+    public required PaginationVm<KitForListVm> Pagination { get; set; }
 
     public int? ItemId { get; set; }
 

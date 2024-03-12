@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Element;
 
 namespace QueflityMVC.Application.Validators;
 
-public class ElementValidator : AbstractValidator<ElementVM>
+public class ElementValidator : AbstractValidator<ElementVm>
 {
     public ElementValidator()
     {

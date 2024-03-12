@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Application.ViewModels.User;
 
-public record UserRolesVM
+public record UserRolesVm
 {
     public required string UserId { get; set; }
 
@@ -10,7 +10,7 @@ public record UserRolesVM
 
     public required bool IsEnabled { get; set; }
 
-    public required List<RoleForSelectionVM> AllRoles { get; set; }
+    public required List<RoleForSelectionVm> AllRoles { get; set; }
 
     public required List<string> AssignedRolesNames { get; set; }
 

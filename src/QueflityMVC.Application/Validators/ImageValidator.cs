@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.Validators;
 
-public class ImageValidator : AbstractValidator<ImageVM?>
+public class ImageValidator : AbstractValidator<ImageVm?>
 {
     public ImageValidator()
     {

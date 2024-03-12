@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Kit;
 
 namespace QueflityMVC.Application.Validators;
 
-public class KitValidator : AbstractValidator<KitVM>
+public class KitValidator : AbstractValidator<KitVm>
 {
     public KitValidator()
     {

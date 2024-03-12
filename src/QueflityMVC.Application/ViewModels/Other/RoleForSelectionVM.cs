@@ -4,7 +4,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Other;
 
-public record RoleForSelectionVM : IMapFrom<IdentityRole>
+public record RoleForSelectionVm : IMapFrom<IdentityRole>
 {
     public required string Id { get; set; }
 
@@ -14,7 +14,7 @@ public record RoleForSelectionVM : IMapFrom<IdentityRole>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<IdentityRole, RoleForSelectionVM>()
+        profile.CreateMap<IdentityRole, RoleForSelectionVm>()
             .ReverseMap();
     }
 }

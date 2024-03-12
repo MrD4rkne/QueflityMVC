@@ -3,7 +3,7 @@ using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Category;
 
-public record CategoryForSelectVM : IMapFrom<Domain.Models.Category>
+public record CategoryForSelectVm : IMapFrom<Domain.Models.Category>
 {
     public required int Id { get; set; }
 
@@ -12,6 +12,6 @@ public record CategoryForSelectVM : IMapFrom<Domain.Models.Category>
     public void Mapping(Profile profile)
     {
         // properties' names match
-        profile.CreateMap<Domain.Models.Category, CategoryForSelectVM>();
+        profile.CreateMap<Domain.Models.Category, CategoryForSelectVm>();
     }
 }

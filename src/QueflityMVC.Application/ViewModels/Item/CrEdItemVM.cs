@@ -2,9 +2,9 @@
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public record CrEdItemVM
+public record CrEdItemVm
 {
-    public ItemVM ItemVM { get; set; }
+    public ItemVm ItemVm { get; set; }
 
-    public List<CategoryForSelectVM>? Categories { get; set; }
+    public List<CategoryForSelectVm>? Categories { get; set; }
 }

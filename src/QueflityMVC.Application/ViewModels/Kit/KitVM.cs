@@ -4,7 +4,7 @@ using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Kit;
 
-public record KitVM : IMapFrom<Domain.Models.Kit>
+public record KitVm : IMapFrom<Domain.Models.Kit>
 {
     public required int Id { get; set; }
 
@@ -16,11 +16,11 @@ public record KitVM : IMapFrom<Domain.Models.Kit>
 
     public decimal Price { get; set; }
 
-    public required ImageVM Image { get; set; }
+    public required ImageVm Image { get; set; }
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Kit, KitVM>()
+        profile.CreateMap<Domain.Models.Kit, KitVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
             .ReverseMap()
             .ForMember(ent => ent.ImageId, opt => opt.MapFrom(vm => vm.Image.Id));

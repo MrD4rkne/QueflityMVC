@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Category;
 
 namespace QueflityMVC.Application.Validators;
 
-public class CategoryValidator : AbstractValidator<CategoryVM>
+public class CategoryValidator : AbstractValidator<CategoryVm>
 {
     public CategoryValidator()
     {

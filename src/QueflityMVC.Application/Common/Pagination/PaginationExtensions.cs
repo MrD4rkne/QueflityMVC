@@ -8,8 +8,8 @@ namespace QueflityMVC.Application.Common.Pagination;
 
 public static class PaginationExtensions
 {
-    private static readonly int DEFAULT_PAGE_SIZE = 2;
-    private static readonly int DEFAULT_PAGE_NO = 1;
+    private static readonly int DefaultPageSize = 2;
+    private static readonly int DefaultPageNo = 1;
 
     /// <summary>
     /// Create viewmodel for easy-handling your pagination with automapping
@@ -21,7 +21,7 @@ public static class PaginationExtensions
     /// <param name="pageSize">Page size</param>
     /// <param name="configurationProvider">Automapper configuration provider</param>
     /// <returns></returns>
-    public static async Task<PaginationVM<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, int pageNo, int pageSize, IConfigurationProvider configurationProvider)
+    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, int pageNo, int pageSize, IConfigurationProvider configurationProvider)
         where T1 : class
         where T2 : class
     {
@@ -36,11 +36,11 @@ public static class PaginationExtensions
 
         List<T2> itemsList = await itemsForPage.ProjectTo<T2>(configurationProvider).ToListAsync();
 
-        PaginationVM<T2> paginationVM = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
-        return paginationVM;
+        PaginationVm<T2> paginationVm = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
+        return paginationVm;
     }
 
-    public static async Task<PaginationVM<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, PaginationVM<T2> pagination, IConfigurationProvider configurationProvider)
+    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, PaginationVm<T2> pagination, IConfigurationProvider configurationProvider)
         where T1 : class
         where T2 : class
     {
@@ -49,7 +49,7 @@ public static class PaginationExtensions
         return await entitiesSource.Paginate<T1, T2>(pagination.Info, configurationProvider);
     }
 
-    public static async Task<PaginationVM<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, PaginationInfo paginationInfo, IConfigurationProvider configurationProvider)
+    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, PaginationInfo paginationInfo, IConfigurationProvider configurationProvider)
         where T1 : class
         where T2 : class
     {
@@ -65,7 +65,7 @@ public static class PaginationExtensions
     /// <param name="pageNo">Demanded page's number</param>
     /// <param name="pageSize">Page size</param>
     /// <returns></returns>
-    public static async Task<PaginationVM<T>> Paginate<T>(this IQueryable<T> entitiesSource, int pageNo, int pageSize) where T : class
+    public static async Task<PaginationVm<T>> Paginate<T>(this IQueryable<T> entitiesSource, int pageNo, int pageSize) where T : class
     {
         pageNo.MustBe(ArgumentGuardType.OtherThan, 0);
         pageNo.MustBe(ArgumentGuardType.GreaterThan, 0);
@@ -79,25 +79,25 @@ public static class PaginationExtensions
         var itemsForPage = entitiesSource.Skip(itemsCountToSkip).Take(pageSize);
         List<T> itemsList = await itemsForPage.ToListAsync();
 
-        PaginationVM<T> paginationVM = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
-        return paginationVM;
+        PaginationVm<T> paginationVm = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
+        return paginationVm;
     }
 
-    public static void FillInfoWhenNull(this PaginationVM<object> paginationVM)
+    public static void FillInfoWhenNull(this PaginationVm<object> paginationVm)
     {
-        paginationVM.Info ??= new PaginationInfo();
-        paginationVM.Info.FillInfoWhenNull();
+        paginationVm.Info ??= new PaginationInfo();
+        paginationVm.Info.FillInfoWhenNull();
     }
 
     public static void FillInfoWhenNull(this PaginationInfo paginationInfo)
     {
         if (paginationInfo.CurrentPageNo <= 0)
         {
-            paginationInfo.CurrentPageNo = DEFAULT_PAGE_NO;
+            paginationInfo.CurrentPageNo = DefaultPageNo;
         }
         if (paginationInfo.PageSize <= 1)
         {
-            paginationInfo.PageSize = DEFAULT_PAGE_SIZE;
+            paginationInfo.PageSize = DefaultPageSize;
         }
     }
 }
