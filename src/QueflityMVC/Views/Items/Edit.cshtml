@@ -1,21 +1,21 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using QueflityMVC.Application.Constants;
-@inject IAuthorizationService AuthorizationService
+﻿@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
 @model QueflityMVC.Application.ViewModels.Item.CrEdItemVm
 
 @{
     ViewData["Title"] = "Edit";
-    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Edit item</h1>
 
 <h4>Below you can see & edit item's properties</h4>
-<hr />
+<hr/>
 <div class="row">
     <form asp-action="Edit" enctype="multipart/form-data">
-        <input type="hidden" asp-for="ItemVm.Id" value="@Model.ItemVm.Id" />
-        <partial name="_ImageEditPartial" for="ItemVm.Image" />
+        <input type="hidden" asp-for="ItemVm.Id" value="@Model.ItemVm.Id"/>
+        <partial name="_ImageEditPartial" for="ItemVm.Image"/>
         <div class="container">
             <div class="row">
                 <div class="col-md-auto">
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-auto">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" asp-for="ItemVm.ShouldBeShown" type="checkbox" checked="@(Model.ItemVm.ShouldBeShown ? "checked":null)" onchange="VisibilityChanged()">
+                        <input class="form-check-input" asp-for="ItemVm.ShouldBeShown" type="checkbox" checked="@(Model.ItemVm.ShouldBeShown ? "checked" : null)" onchange="VisibilityChanged()">
                         @if (Model.ItemVm.ShouldBeShown)
                         {
                             <label id="visibility-label" class="form-check-label">Visible</label>
@@ -38,26 +38,26 @@
             <div class="row">
                 <div class="col-md">
                     <label asp-for="ItemVm.Name" class="control-label"></label>
-                    <input asp-for="ItemVm.Name" class="form-control" value="@Model.ItemVm.Name" />
+                    <input asp-for="ItemVm.Name" class="form-control" value="@Model.ItemVm.Name"/>
                     <span asp-validation-for="ItemVm.Name" class="text-danger"></span>
                 </div>
                 <div class="col-md-auto">
                     <label class="control-label">Price</label>
-                    <input type="number" asp-for="ItemVm.Price" class="form-control" min="0" step="0.01" value="@Model.ItemVm.Price" />
+                    <input type="number" asp-for="ItemVm.Price" class="form-control" min="0" step="0.01" value="@Model.ItemVm.Price"/>
                     <span asp-validation-for="ItemVm.Price" class="text-danger"></span>
                 </div>
                 <div class="col-md-auto" style="max-width: 200px">
                     <label class="control-label">Category</label>
                     <select asp-for="ItemVm.CategoryId" class="form-control">
                         <option value="">Select a category</option>
-                        @for (int i = 0; i < Model.Categories.Count; i++)
+                        @for (var i = 0; i < Model.Categories.Count; i++)
                         {
                             var category = Model.Categories[i];
                             <option value="@category.Id">@category.Name</option>
                         }
                     </select>
                     <span asp-validation-for="ItemVm.CategoryId" class="text-danger"></span>
-                    @for (int i = 0; i < Model.Categories.Count; i++)
+                    @for (var i = 0; i < Model.Categories.Count; i++)
                     {
                         @Html.HiddenFor(x => x.Categories[i].Id)
                         @Html.HiddenFor(x => x.Categories[i].Name)
@@ -70,7 +70,7 @@
                 {
                     @if (ViewData["categoryId"] is int categoryId)
                     {
-                        @Html.ActionLink("Back to List", "Index", new { categoryId = categoryId }, new { @class = "btn btn-info" })
+                        @Html.ActionLink("Back to List", "Index", new { categoryId }, new { @class = "btn btn-info" })
                     }
                     else
                     {

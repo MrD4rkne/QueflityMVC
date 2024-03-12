@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
@@ -17,9 +16,9 @@ namespace QueflityMVC.Web.Controllers;
 [Route("Kits")]
 public class KitsController : Controller
 {
+    private readonly IValidator<ElementVm> _elemValidator;
     private readonly IKitService _kitService;
     private readonly IValidator<KitVm> _kitValidator;
-    private readonly IValidator<ElementVm> _elemValidator;
 
     public KitsController(IKitService kitService, IValidator<KitVm> kitValidator, IValidator<ElementVm> elemValidator)
     {
@@ -44,13 +43,10 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(ListKitsVm listKitsVm)
     {
-        if (listKitsVm is null)
-        {
-            return BadRequest();
-        }
+        if (listKitsVm is null) return BadRequest();
         listKitsVm.NameFilter ??= string.Empty;
 
-        ListKitsVm listVm = await _kitService.GetFilteredListAsync(listKitsVm);
+        var listVm = await _kitService.GetFilteredListAsync(listKitsVm);
         return View(listVm);
     }
 
@@ -67,16 +63,16 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(KitVm createKitVm, bool shouldRouteToDetails = false)
     {
-        ValidationResult validationResults = await _kitValidator.ValidateAsync(createKitVm);
+        var validationResults = await _kitValidator.ValidateAsync(createKitVm);
 
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
+            validationResults.AddToModelState(ModelState);
 
             return View("Create", createKitVm);
         }
 
-        int kitId = await _kitService.CreateKitAsync(createKitVm);
+        var kitId = await _kitService.CreateKitAsync(createKitVm);
 
         if (shouldRouteToDetails)
             return RedirectToAction("Details", new { id = kitId });
@@ -97,7 +93,7 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        KitVm kitToEditVm = await _kitService.GetKitVmForEditAsync(id);
+        var kitToEditVm = await _kitService.GetKitVmForEditAsync(id);
         return View(kitToEditVm);
     }
 
@@ -107,14 +103,14 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(KitVm editedKitVm)
     {
-        ValidationResult validationResults = await _kitValidator.ValidateAsync(editedKitVm);
+        var validationResults = await _kitValidator.ValidateAsync(editedKitVm);
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
+            validationResults.AddToModelState(ModelState);
             return View("Edit", editedKitVm);
         }
 
-        int kitId = await _kitService.EditKitAsync(editedKitVm);
+        var kitId = await _kitService.EditKitAsync(editedKitVm);
         return RedirectToAction("Details", new { id = kitId });
     }
 
@@ -173,10 +169,10 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> AddComponent(ElementVm elementVm)
     {
-        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementVm);
+        var validationResults = await _elemValidator.ValidateAsync(elementVm);
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
+            validationResults.AddToModelState(ModelState);
             return View("AddComponent", elementVm);
         }
 
@@ -199,10 +195,10 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> EditComponent(ElementVm elementVm)
     {
-        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementVm);
+        var validationResults = await _elemValidator.ValidateAsync(elementVm);
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
+            validationResults.AddToModelState(ModelState);
             return View("AddComponent", elementVm);
         }
 

@@ -38,14 +38,8 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     public IQueryable<Kit> GetFilteredKits(string? searchName = default, int? itemId = null)
     {
         var itemsSource = GetAll();
-        if (itemId.HasValue)
-        {
-            itemsSource = itemsSource.Where(x => x.Elements.Any(y => y.ItemId == itemId));
-        }
-        if (!string.IsNullOrEmpty(searchName))
-        {
-            itemsSource = itemsSource.Where(x => x.Name.StartsWith(searchName));
-        }
+        if (itemId.HasValue) itemsSource = itemsSource.Where(x => x.Elements.Any(y => y.ItemId == itemId));
+        if (!string.IsNullOrEmpty(searchName)) itemsSource = itemsSource.Where(x => x.Name.StartsWith(searchName));
         return itemsSource;
     }
 
@@ -54,17 +48,9 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         return DbContext.Set<Kit>()
             .Include(z => z.Image)
             .Include(x => x.Elements)
-                .ThenInclude(x => x.Item)
-                    .ThenInclude(item => item!.Image)
-             .FirstOrDefaultAsync(y => y.Id == id);
-    }
-
-    public IQueryable<decimal> GetPricesOfKitComponents(int kitId)
-    {
-        return DbContext.Set<Element>()
-            .AsNoTracking()
-            .Where(x => x.KitId == kitId)
-            .Select(x => x.PricePerItem * x.ItemsAmmount);
+            .ThenInclude(x => x.Item)
+            .ThenInclude(item => item!.Image)
+            .FirstOrDefaultAsync(y => y.Id == id);
     }
 
     public async Task AddComponentAsync(Element componentToCreate)
@@ -78,9 +64,9 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public async Task UpdateKitPriceAsync(int kitId)
     {
-        Kit? kit = await GetByIdAsync(kitId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
+        var kit = await GetByIdAsync(kitId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
         var componentsPrices = GetPricesOfKitComponents(kitId);
-        decimal sumOfComponentPrices = componentsPrices.Sum();
+        var sumOfComponentPrices = componentsPrices.Sum();
         kit.Price = sumOfComponentPrices;
         await UpdateAsync(kit);
     }
@@ -89,20 +75,17 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     {
         return DbContext.Set<Element>()
             .Include(elem => elem.Kit)
-                .ThenInclude(kit => kit!.Image)
+            .ThenInclude(kit => kit!.Image)
             .Include(elem => elem.Item)
-                .ThenInclude(item => item!.Image)
+            .ThenInclude(item => item!.Image)
             .Where(x => x.ItemId == itemId && x.KitId == kitId)
             .FirstOrDefaultAsync();
     }
 
     public async Task UpdateElementAsync(Element element)
     {
-        Element? elementToEdit = await GetElementAsync(element.KitId, element.ItemId);
-        if (elementToEdit is null)
-        {
-            throw new EntityNotFoundException(entityName: nameof(Element));
-        }
+        var elementToEdit = await GetElementAsync(element.KitId, element.ItemId);
+        if (elementToEdit is null) throw new EntityNotFoundException(entityName: nameof(Element));
 
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
         elementToEdit.ItemsAmmount = elementToEdit.ItemsAmmount;
@@ -113,11 +96,8 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public async Task DeleteElementAsync(int kitId, int itemId)
     {
-        Element? elemToDelete = await GetElementAsync(kitId, itemId);
-        if (elemToDelete is null)
-        {
-            throw new EntityNotFoundException(nameof(Element));
-        }
+        var elemToDelete = await GetElementAsync(kitId, itemId);
+        if (elemToDelete is null) throw new EntityNotFoundException(nameof(Element));
 
         DbContext.Remove(elemToDelete);
         await UpdateKitPriceAsync(elemToDelete.KitId);
@@ -126,7 +106,8 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public override async Task<Kit> UpdateAsync(Kit entityToUpdate)
     {
-        Kit originalEntity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
+        var originalEntity = await GetByIdAsync(entityToUpdate.Id) ??
+                             throw new EntityNotFoundException(entityName: nameof(Kit));
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
         originalEntity.Price = entityToUpdate.Price;
@@ -142,14 +123,18 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public override async Task DeleteAsync(Kit entityToDelete)
     {
-        if (!await ExistsAsync(entityToDelete))
-        {
-            throw new EntityNotFoundException(entityName: nameof(Kit));
-        }
-        await DbContext.SetElements.
-            Where(x => x.KitId == entityToDelete.Id)
+        if (!await ExistsAsync(entityToDelete)) throw new EntityNotFoundException(entityName: nameof(Kit));
+        await DbContext.SetElements.Where(x => x.KitId == entityToDelete.Id)
             .ExecuteDeleteAsync();
         DbContext.Kits.Remove(entityToDelete);
         await DbContext.SaveChangesAsync();
+    }
+
+    public IQueryable<decimal> GetPricesOfKitComponents(int kitId)
+    {
+        return DbContext.Set<Element>()
+            .AsNoTracking()
+            .Where(x => x.KitId == kitId)
+            .Select(x => x.PricePerItem * x.ItemsAmmount);
     }
 }

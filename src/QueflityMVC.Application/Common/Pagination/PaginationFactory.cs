@@ -5,7 +5,8 @@ namespace QueflityMVC.Application.Common.Pagination;
 
 public static class PaginationFactory
 {
-    public static PaginationVm<T> CreatePagination<T>(int pageSize, int totalCount, int currPageNo, List<T> entities) where T : class
+    public static PaginationVm<T> CreatePagination<T>(int pageSize, int totalCount, int currPageNo, List<T> entities)
+        where T : class
     {
         PaginationInfo paginationBase = new()
         {
@@ -19,7 +20,7 @@ public static class PaginationFactory
         PaginationVm<T> paginationVm = new()
         {
             Info = paginationBase,
-            Entities = entities,
+            Entities = entities
         };
 
         return paginationVm;
@@ -48,7 +49,7 @@ public static class PaginationFactory
         pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
         totalCount.MustBe(ArgumentGuardType.GreaterThanOrEquals, 0);
 
-        double pageRatio = (totalCount * 1.0) / pageSize;
+        var pageRatio = totalCount * 1.0 / pageSize;
         return (int)Math.Ceiling(pageRatio);
     }
 }

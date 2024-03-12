@@ -7,7 +7,8 @@ namespace QueflityMVC.Web.Setup.OAuth;
 
 public static class OAuthExtensions
 {
-    public static AuthenticationBuilder AddOAuths(this AuthenticationBuilder authenticationBuilder, IVariablesProvider variablesProvider)
+    public static AuthenticationBuilder AddOAuths(this AuthenticationBuilder authenticationBuilder,
+        IVariablesProvider variablesProvider)
     {
         authenticationBuilder.AddGoogle(options => options.Setup(variablesProvider));
 
@@ -17,8 +18,8 @@ public static class OAuthExtensions
     private static void Setup(this GoogleOptions googleOptions, IVariablesProvider credentialsProvider)
     {
         var googleOAuthSecrets = credentialsProvider.GetGoogleOAuthCredentials();
-        string? clientId = googleOAuthSecrets.Item1;
-        string? clientSecret = googleOAuthSecrets.Item2;
+        var clientId = googleOAuthSecrets.Item1;
+        var clientSecret = googleOAuthSecrets.Item2;
 
         if (AreGoogleSecretsValid(clientId, clientSecret))
         {

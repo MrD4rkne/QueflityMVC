@@ -1,11 +1,11 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using QueflityMVC.Application.Constants;
-@inject IAuthorizationService AuthorizationService
+﻿@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
 @model QueflityMVC.Application.ViewModels.Item.ItemComponentsSelectionVm
 
 @{
     ViewData["Title"] = "Components";
-    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
+    var canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 <form asp-action="Components" enctype="multipart/form-data">
     <h1>Item</h1>
@@ -17,45 +17,45 @@
 
             @if (canEditEntities)
             {
-                @Html.ActionLink("Edit item", "Edit", new { id = Model.Item.Id }, new { @class = "btn btn-primary"})
+                @Html.ActionLink("Edit item", "Edit", new { id = Model.Item.Id }, new { @class = "btn btn-primary" })
             }
         </div>
     </div>
-    
+
     <div class="row justify-content-start" style="margin-top:40px">
         <div class="col-auto">
             <h2>Components</h2>
         </div>
         <div class="col-auto">
-            <input type="submit" class="btn btn-primary btn-lg" value="Save components" />
+            <input type="submit" class="btn btn-primary btn-lg" value="Save components"/>
         </div>
     </div>
     <table class="table">
         <thead>
-            <tr>
-                <th scope="col">
-                    Does item contain
-                </th>
-                <th scope="col">
-                    Name
-                </th>
-            </tr>
+        <tr>
+            <th scope="col">
+                Does item contain
+            </th>
+            <th scope="col">
+                Name
+            </th>
+        </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < Model.AllComponents.Count; i++)
-            {
-                var item = Model.AllComponents[i];
-                <tr>
-                    <td scope="row" style="width: 50px">
-                        <input class="form-check-input" asp-for="AllComponents[i].IsSelected" type="checkbox" checked="@(Model.SelectedComponentsIds.Contains(item.Id)?"checked":null)">
-                        <input class="form-check-input" asp-for="AllComponents[i].Id" type="hidden" value="@item.Id">
-                        <input class="form-check-input" asp-for="AllComponents[i].Name" type="hidden" value="@item.Name">
-                    </td>
-                    <td class="w-auto">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                </tr>
-            }
+        @for (var i = 0; i < Model.AllComponents.Count; i++)
+        {
+            var item = Model.AllComponents[i];
+            <tr>
+                <td scope="row" style="width: 50px">
+                    <input class="form-check-input" asp-for="AllComponents[i].IsSelected" type="checkbox" checked="@(Model.SelectedComponentsIds.Contains(item.Id) ? "checked" : null)">
+                    <input class="form-check-input" asp-for="AllComponents[i].Id" type="hidden" value="@item.Id">
+                    <input class="form-check-input" asp-for="AllComponents[i].Name" type="hidden" value="@item.Name">
+                </td>
+                <td class="w-auto">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 

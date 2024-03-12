@@ -12,8 +12,8 @@ namespace QueflityMVC.Web.Controllers;
 [Route("Components")]
 public class ComponentsController : Controller
 {
-    private readonly IComponentService _componentService;
     private readonly IValidator<ComponentVm> _categoryValidator;
+    private readonly IComponentService _componentService;
 
     public ComponentsController(IComponentService componentService, IValidator<ComponentVm> categoryValidator)
     {
@@ -61,7 +61,7 @@ public class ComponentsController : Controller
         var validationResult = _categoryValidator.Validate(componentToAddVm);
         if (!validationResult.IsValid)
         {
-            validationResult.AddToModelState(this.ModelState);
+            validationResult.AddToModelState(ModelState);
             return View("Create", componentToAddVm);
         }
 
@@ -75,10 +75,7 @@ public class ComponentsController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var componentVm = await _componentService.GetComponentVmForEditAsync(id);
-        if (componentVm is null)
-        {
-            return NotFound();
-        }
+        if (componentVm is null) return NotFound();
         return View(componentVm);
     }
 
@@ -91,7 +88,7 @@ public class ComponentsController : Controller
         var validationResult = await _categoryValidator.ValidateAsync(componentToEditVm);
         if (!validationResult.IsValid)
         {
-            validationResult.AddToModelState(this.ModelState);
+            validationResult.AddToModelState(ModelState);
             return View("Edit", componentToEditVm);
         }
 

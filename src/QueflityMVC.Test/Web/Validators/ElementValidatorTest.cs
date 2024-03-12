@@ -24,12 +24,12 @@ public class ElementValidatorTest
     [Fact]
     public void PriceValidation()
     {
-        ElementVm tooLow = GetPerfectVm();
+        var tooLow = GetPerfectVm();
         tooLow.PricePerItem = (decimal)(0 - 0.01);
-        ElementVm minimum = GetPerfectVm();
-        minimum.PricePerItem = (decimal)(0);
-        ElementVm valid = GetPerfectVm();
-        valid.PricePerItem = (decimal)(5);
+        var minimum = GetPerfectVm();
+        minimum.PricePerItem = 0;
+        var valid = GetPerfectVm();
+        valid.PricePerItem = 5;
         IValidator<ElementVm> validator = new ElementValidator();
 
         var lowResults = validator.Validate(tooLow);

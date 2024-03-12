@@ -34,27 +34,11 @@ public class PurchasableVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Model
         profile.CreateMap<PurchasableVm, BasePurchasableEntity>()
             .ConstructUsing((vm, ctx) => vm.Type switch
             {
-                PurchasableType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(PurchasableVm), typeof(Domain.Models.Item)),
-                PurchasableType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(PurchasableVm), typeof(Domain.Models.Kit)),
+                PurchasableType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(PurchasableVm),
+                    typeof(Domain.Models.Item)),
+                PurchasableType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(PurchasableVm),
+                    typeof(Domain.Models.Kit)),
                 _ => throw new InvalidOperationException("Unknown purchasable type")
             });
-    }
-}
-
-public class PurchasableToTypeConvert : IValueConverter<BasePurchasableEntity, PurchasableType>
-{
-    public PurchasableType Convert(BasePurchasableEntity sourceMember, ResolutionContext context)
-    {
-        switch (sourceMember)
-        {
-            case Domain.Models.Item _:
-                return PurchasableType.Item;
-
-            case Domain.Models.Kit _:
-                return PurchasableType.Kit;
-
-            default:
-                throw new InvalidOperationException("Unknown purchasable type");
-        }
     }
 }

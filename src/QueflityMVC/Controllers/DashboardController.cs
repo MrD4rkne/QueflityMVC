@@ -28,11 +28,8 @@ public class DashboardController : Controller
     [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public async Task<IActionResult> Index(EditOrderVm editOrderVm)
     {
-        if (editOrderVm is null || editOrderVm.PurchasablesVMs is null)
-        {
-            return BadRequest();
-        }
-        UpdateOrderResult result = await _purchasableEntityService.UpdateOrderAsync(editOrderVm);
+        if (editOrderVm is null || editOrderVm.PurchasablesVMs is null) return BadRequest();
+        var result = await _purchasableEntityService.UpdateOrderAsync(editOrderVm);
         switch (result.Status)
         {
             case UpdateOrderStatus.Success:
@@ -44,7 +41,7 @@ public class DashboardController : Controller
 
             case UpdateOrderStatus.MissingPurchasable:
                 return RedirectToAction("UpdateFailed",
-                    new UpdateOrderFailedVm() { Message = "Purchasable list was altered. Please try again." });
+                    new UpdateOrderFailedVm { Message = "Purchasable list was altered. Please try again." });
 
             case UpdateOrderStatus.Exception:
                 throw result.Exception!;
@@ -52,7 +49,7 @@ public class DashboardController : Controller
                 throw new NotImplementedException();
         }
     }
-    
+
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public IActionResult UpdateFailed(UpdateOrderFailedVm updateFailedVm)

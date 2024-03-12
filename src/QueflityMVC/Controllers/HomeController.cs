@@ -7,8 +7,8 @@ namespace QueflityMVC.Web.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly IPurchasableEntityService _purchasableEntityService;
     private readonly ILogger<HomeController> _logger;
+    private readonly IPurchasableEntityService _purchasableEntityService;
 
     public HomeController(ILogger<HomeController> logger, IPurchasableEntityService purchasableEntityService)
     {
@@ -16,9 +16,10 @@ public class HomeController : Controller
         _purchasableEntityService = purchasableEntityService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var dashboardVm = await _purchasableEntityService.GetDashboardVmAsync();
+        return View(dashboardVm);
     }
 
     public IActionResult Privacy()

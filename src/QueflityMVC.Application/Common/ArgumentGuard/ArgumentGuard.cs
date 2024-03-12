@@ -5,23 +5,24 @@ namespace QueflityMVC.Application.Common.ArgumentGuard;
 public static class ArgumentGuard
 {
     public static void MustBe<T>(this T param, ArgumentGuardType argGuardType, T referencedValue) where T : struct,
-      IComparable,
-      IComparable<T>,
-      IConvertible,
-      IEquatable<T>,
-      IFormattable
+        IComparable,
+        IComparable<T>,
+        IConvertible,
+        IEquatable<T>,
+        IFormattable
     {
         ValidateArgument(param, referencedValue, argGuardType, null);
     }
 
-    public static void ValidateArgument<T>(T inputValue, T referencedValue, ArgumentGuardType argGuardType, string? paramName) where T : struct,
-      IComparable,
-      IComparable<T>,
-      IConvertible,
-      IEquatable<T>,
-      IFormattable
+    public static void ValidateArgument<T>(T inputValue, T referencedValue, ArgumentGuardType argGuardType,
+        string? paramName) where T : struct,
+        IComparable,
+        IComparable<T>,
+        IConvertible,
+        IEquatable<T>,
+        IFormattable
     {
-        int comparision = inputValue.CompareTo(referencedValue);
+        var comparision = inputValue.CompareTo(referencedValue);
 
         switch (argGuardType)
         {
@@ -62,37 +63,37 @@ public static class ArgumentGuard
 
     private static bool IsGreaterThanOrEquals(int comparision)
     {
-        bool isGreaterThanOrEquals = comparision >= 0;
+        var isGreaterThanOrEquals = comparision >= 0;
         return isGreaterThanOrEquals;
     }
 
     private static bool IsGreaterThan(int comparision)
     {
-        bool isGreaterThanOrEquals = comparision > 0;
+        var isGreaterThanOrEquals = comparision > 0;
         return isGreaterThanOrEquals;
     }
 
     private static bool IsLessThan(int comparision)
     {
-        bool isLessThan = comparision < 0;
+        var isLessThan = comparision < 0;
         return isLessThan;
     }
 
     private static bool IsLessThanOrEquals(int comparision)
     {
-        bool isLessThanOrEquals = comparision <= 0;
+        var isLessThanOrEquals = comparision <= 0;
         return isLessThanOrEquals;
     }
 
     private static bool IsEquals(int comparision)
     {
-        bool isEquals = comparision == 0;
+        var isEquals = comparision == 0;
         return isEquals;
     }
 
     private static bool OtherThan(int comparision)
     {
-        bool otherThan = comparision != 0;
+        var otherThan = comparision != 0;
         return otherThan;
     }
 }

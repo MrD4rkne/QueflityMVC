@@ -26,13 +26,8 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         var entitiesSource = GetAll();
 
         if (!string.IsNullOrEmpty(nameFilter))
-        {
             entitiesSource = entitiesSource.Where(x => x.Name.StartsWith(nameFilter));
-        }
-        if (categoryId.HasValue)
-        {
-            entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
-        }
+        if (categoryId.HasValue) entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
 
         return entitiesSource;
     }
@@ -49,36 +44,25 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
     public async Task UpdateComponentsAsync(int itemId, List<Component> components)
     {
         var item = await GetItemWithComponentsByIdAsync(itemId);
-        if (item is null)
-        {
-            throw new ResourceNotFoundException();
-        }
+        if (item is null) throw new ResourceNotFoundException();
 
-        if (components is not null)
-        {
-            item.Components = components;
-        }
+        if (components is not null) item.Components = components;
 
         await UpdateAsync(item);
     }
 
     public override async Task<Item> UpdateAsync(Item entityToUpdate)
     {
-        Item originalEntity = await GetItemWithComponentsByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(Item));
-        if (DbContext.Entry(originalEntity).State == EntityState.Detached)
-        {
-            DbContext.Attach(originalEntity);
-        }
+        var originalEntity = await GetItemWithComponentsByIdAsync(entityToUpdate.Id) ??
+                             throw new EntityNotFoundException(entityName: nameof(Item));
+        if (DbContext.Entry(originalEntity).State == EntityState.Detached) DbContext.Attach(originalEntity);
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
         originalEntity.Price = entityToUpdate.Price;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-        if (entityToUpdate.Components is not null)
-        {
-            originalEntity.Components = entityToUpdate.Components;
-        }
+        if (entityToUpdate.Components is not null) originalEntity.Components = entityToUpdate.Components;
         DbContext.Entry(originalEntity).State = EntityState.Modified;
         await DbContext.SaveChangesAsync();
         return originalEntity;

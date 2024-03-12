@@ -6,6 +6,11 @@ namespace QueflityMVC.Application.ViewModels.Image;
 
 public record ImageVm : IMapFrom<Domain.Models.Image>
 {
+    public ImageVm()
+    {
+        FileUrl = string.Empty;
+    }
+
     public int Id { get; set; }
 
     public string FileUrl { get; set; }
@@ -19,10 +24,5 @@ public record ImageVm : IMapFrom<Domain.Models.Image>
         profile.CreateMap<Domain.Models.Image, ImageVm>()
             .ForMember(img => img.FormFile, opt => opt.Ignore())
             .ReverseMap();
-    }
-
-    public ImageVm()
-    {
-        FileUrl = string.Empty;
     }
 }

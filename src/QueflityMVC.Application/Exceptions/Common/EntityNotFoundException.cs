@@ -12,7 +12,8 @@ public class EntityNotFoundException : Exception
     {
     }
 
-    public EntityNotFoundException(string? entityName = "", string? message = "") : base(GetMessageWithEntityName(entityName, message))
+    public EntityNotFoundException(string? entityName = "", string? message = "") : base(
+        GetMessageWithEntityName(entityName, message))
     {
     }
 
@@ -36,23 +37,16 @@ public class EntityNotFoundException : Exception
         message = message ?? string.Empty;
         message!.Trim();
 
-        if (string.IsNullOrEmpty(entityName))
-        {
-            return DefaultErrorMessage;
-        }
+        if (string.IsNullOrEmpty(entityName)) return DefaultErrorMessage;
         StringBuilder errorMessageBuilder = new();
         errorMessageBuilder.Append(entityName);
 
         if (string.IsNullOrEmpty(message))
-        {
             errorMessageBuilder.Append(ERROR_MESSAGE_SCHEME);
-        }
         else
-        {
             errorMessageBuilder.Append(message);
-        }
 
-        string errorMessage = errorMessageBuilder.ToString();
+        var errorMessage = errorMessageBuilder.ToString();
         return errorMessage;
     }
 }

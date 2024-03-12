@@ -12,7 +12,7 @@ public static class PaginationExtensions
     private static readonly int DefaultPageNo = 1;
 
     /// <summary>
-    /// Create viewmodel for easy-handling your pagination with automapping
+    ///     Create viewmodel for easy-handling your pagination with automapping
     /// </summary>
     /// <typeparam name="T1">Original entity type</typeparam>
     /// <typeparam name="T2">Mapped entity type</typeparam>
@@ -21,26 +21,28 @@ public static class PaginationExtensions
     /// <param name="pageSize">Page size</param>
     /// <param name="configurationProvider">Automapper configuration provider</param>
     /// <returns></returns>
-    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, int pageNo, int pageSize, IConfigurationProvider configurationProvider)
+    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, int pageNo,
+        int pageSize, IConfigurationProvider configurationProvider)
         where T1 : class
         where T2 : class
     {
         pageNo.MustBe(ArgumentGuardType.GreaterThan, 0);
         pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
 
-        int totalCount = await entitiesSource.CountAsync();
-        int pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
+        var totalCount = await entitiesSource.CountAsync();
+        var pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
         pageNo = Math.Max(Math.Min(pageNo, pagesCount), 1);
-        int itemsCountToSkip = (pageNo - 1) * pageSize;
+        var itemsCountToSkip = (pageNo - 1) * pageSize;
         var itemsForPage = entitiesSource.Skip(itemsCountToSkip).Take(pageSize);
 
-        List<T2> itemsList = await itemsForPage.ProjectTo<T2>(configurationProvider).ToListAsync();
+        var itemsList = await itemsForPage.ProjectTo<T2>(configurationProvider).ToListAsync();
 
-        PaginationVm<T2> paginationVm = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
+        var paginationVm = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
         return paginationVm;
     }
 
-    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, PaginationVm<T2> pagination, IConfigurationProvider configurationProvider)
+    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource,
+        PaginationVm<T2> pagination, IConfigurationProvider configurationProvider)
         where T1 : class
         where T2 : class
     {
@@ -49,37 +51,40 @@ public static class PaginationExtensions
         return await entitiesSource.Paginate<T1, T2>(pagination.Info, configurationProvider);
     }
 
-    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource, PaginationInfo paginationInfo, IConfigurationProvider configurationProvider)
+    public static async Task<PaginationVm<T2>> Paginate<T1, T2>(this IQueryable<T1> entitiesSource,
+        PaginationInfo paginationInfo, IConfigurationProvider configurationProvider)
         where T1 : class
         where T2 : class
     {
         ArgumentNullException.ThrowIfNull(paginationInfo);
-        return await entitiesSource.Paginate<T1, T2>(paginationInfo.CurrentPageNo, paginationInfo.PageSize, configurationProvider);
+        return await entitiesSource.Paginate<T1, T2>(paginationInfo.CurrentPageNo, paginationInfo.PageSize,
+            configurationProvider);
     }
 
     /// <summary>
-    /// Create viewmodel for easy-handling your pagination
+    ///     Create viewmodel for easy-handling your pagination
     /// </summary>
     /// <typeparam name="T">Entity type</typeparam>
     /// <param name="entitiesSource">Querable with original entities</param>
     /// <param name="pageNo">Demanded page's number</param>
     /// <param name="pageSize">Page size</param>
     /// <returns></returns>
-    public static async Task<PaginationVm<T>> Paginate<T>(this IQueryable<T> entitiesSource, int pageNo, int pageSize) where T : class
+    public static async Task<PaginationVm<T>> Paginate<T>(this IQueryable<T> entitiesSource, int pageNo, int pageSize)
+        where T : class
     {
         pageNo.MustBe(ArgumentGuardType.OtherThan, 0);
         pageNo.MustBe(ArgumentGuardType.GreaterThan, 0);
         pageSize.MustBe(ArgumentGuardType.OtherThan, 0);
         pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
 
-        int totalCount = await entitiesSource.CountAsync();
-        int pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
+        var totalCount = await entitiesSource.CountAsync();
+        var pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
         pageNo = Math.Max(Math.Min(pageNo, pagesCount), 1);
-        int itemsCountToSkip = (pageNo - 1) * pageSize;
+        var itemsCountToSkip = (pageNo - 1) * pageSize;
         var itemsForPage = entitiesSource.Skip(itemsCountToSkip).Take(pageSize);
-        List<T> itemsList = await itemsForPage.ToListAsync();
+        var itemsList = await itemsForPage.ToListAsync();
 
-        PaginationVm<T> paginationVm = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
+        var paginationVm = PaginationFactory.CreatePagination(pageSize, totalCount, pageNo, itemsList);
         return paginationVm;
     }
 
@@ -91,13 +96,7 @@ public static class PaginationExtensions
 
     public static void FillInfoWhenNull(this PaginationInfo paginationInfo)
     {
-        if (paginationInfo.CurrentPageNo <= 0)
-        {
-            paginationInfo.CurrentPageNo = DefaultPageNo;
-        }
-        if (paginationInfo.PageSize <= 1)
-        {
-            paginationInfo.PageSize = DefaultPageSize;
-        }
+        if (paginationInfo.CurrentPageNo <= 0) paginationInfo.CurrentPageNo = DefaultPageNo;
+        if (paginationInfo.PageSize <= 1) paginationInfo.PageSize = DefaultPageSize;
     }
 }

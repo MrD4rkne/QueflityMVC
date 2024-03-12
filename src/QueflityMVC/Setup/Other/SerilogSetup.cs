@@ -10,9 +10,9 @@ public static class SerilogSetup
     {
         using var log = new LoggerConfiguration()
             .MinimumLevel.Debug()
-.WriteTo.Console()
-.WriteTo.File(LOG_FILE, rollingInterval: RollingInterval.Day)
-.CreateLogger();
+            .WriteTo.Console()
+            .WriteTo.File(LOG_FILE, rollingInterval: RollingInterval.Day)
+            .CreateLogger();
 
         Log.Logger = log;
         Log.Information("Logger has been configured.");

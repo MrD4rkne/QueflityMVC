@@ -17,19 +17,19 @@ public class CategoryValidatorTest
     [Fact]
     public void ValidationTest()
     {
-        CategoryVm nullName = GetPerfectCategoryVm();
+        var nullName = GetPerfectCategoryVm();
         nullName.Name = null;
-        CategoryVm emptyName = GetPerfectCategoryVm();
+        var emptyName = GetPerfectCategoryVm();
         emptyName.Name = string.Empty;
-        CategoryVm tooShort = GetPerfectCategoryVm();
+        var tooShort = GetPerfectCategoryVm();
         tooShort.Name = "1";
-        CategoryVm minimumLength = GetPerfectCategoryVm();
+        var minimumLength = GetPerfectCategoryVm();
         minimumLength.Name = "12";
-        CategoryVm validLength = GetPerfectCategoryVm();
+        var validLength = GetPerfectCategoryVm();
         validLength.Name = "123456";
-        CategoryVm maximumLength = GetPerfectCategoryVm();
+        var maximumLength = GetPerfectCategoryVm();
         maximumLength.Name = "12345678912345678912";
-        CategoryVm tooLong = GetPerfectCategoryVm();
+        var tooLong = GetPerfectCategoryVm();
         tooLong.Name = "123456789123456789123456789";
 
         IValidator<CategoryVm> validator = new CategoryValidator();

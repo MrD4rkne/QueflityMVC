@@ -17,14 +17,16 @@ namespace QueflityMVC.Application.Services;
 
 public class ItemService : IItemService
 {
-    private readonly IItemRepository _itemRepository;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IComponentRepository _componentRepository;
-    private readonly IPurchasableRepository _purchasableRepository;
-    private readonly IMapper _mapper;
     private readonly IFileService _fileService;
+    private readonly IItemRepository _itemRepository;
+    private readonly IMapper _mapper;
+    private readonly IPurchasableRepository _purchasableRepository;
 
-    public ItemService(IItemRepository itemRepository, IMapper mapper, ICategoryRepository categoryRepository, IComponentRepository componentRepository, IFileService fileService, IPurchasableRepository purchasableRepository)
+    public ItemService(IItemRepository itemRepository, IMapper mapper, ICategoryRepository categoryRepository,
+        IComponentRepository componentRepository, IFileService fileService,
+        IPurchasableRepository purchasableRepository)
     {
         _itemRepository = itemRepository;
         _mapper = mapper;
@@ -44,24 +46,16 @@ public class ItemService : IItemService
 
     public async Task<DeleteItemResult> DeleteItemAsync(int id)
     {
-        Item? itemToDelete = await _itemRepository.GetByIdAsync(id);
-        if (itemToDelete is null)
-        {
-            return DeleteItemResultsFactory.NotExist();
-        }
-        if (await _itemRepository.IsItemAPartOfAnyKitAsync(id))
-        {
-            return DeleteItemResultsFactory.ItemIsPartOfKit();
-        }
+        var itemToDelete = await _itemRepository.GetByIdAsync(id);
+        if (itemToDelete is null) return DeleteItemResultsFactory.NotExist();
+        if (await _itemRepository.IsItemAPartOfAnyKitAsync(id)) return DeleteItemResultsFactory.ItemIsPartOfKit();
 
         try
         {
             await _itemRepository.DeleteAsync(id);
             _fileService.DeleteImage(itemToDelete.Image.FileUrl);
             if (itemToDelete.ShouldBeShown)
-            {
                 await _purchasableRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
-            }
         }
         catch (ResourceNotFoundException)
         {
@@ -72,17 +66,14 @@ public class ItemService : IItemService
             return DeleteItemResultsFactory.Exception(ex);
         }
 
-        if (itemToDelete.Image is not null)
-        {
-            _fileService.DeleteImage(itemToDelete.Image!.FileUrl);
-        }
+        if (itemToDelete.Image is not null) _fileService.DeleteImage(itemToDelete.Image!.FileUrl);
         return DeleteItemResultsFactory.Success();
     }
 
     public async Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm)
     {
-        IQueryable<Item> matchingItems = _itemRepository.GetFilteredItems(listItemsVm.NameFilter, listItemsVm.CategoryId);
-        listItemsVm.Pagination = await matchingItems.Paginate<Item, ItemForListVm>(listItemsVm.Pagination, _mapper.ConfigurationProvider);
+        var matchingItems = _itemRepository.GetFilteredItems(listItemsVm.NameFilter, listItemsVm.CategoryId);
+        listItemsVm.Pagination = await matchingItems.Paginate(listItemsVm.Pagination, _mapper.ConfigurationProvider);
         return listItemsVm;
     }
 
@@ -93,7 +84,8 @@ public class ItemService : IItemService
         CrEdItemVm crEdObjItemVm = new()
         {
             ItemVm = _mapper.Map<ItemVm>(item),
-            Categories = await _categoryRepository.GetAll().ProjectTo<CategoryForSelectVm>(_mapper.ConfigurationProvider).ToListAsync()
+            Categories = await _categoryRepository.GetAll()
+                .ProjectTo<CategoryForSelectVm>(_mapper.ConfigurationProvider).ToListAsync()
         };
         return crEdObjItemVm;
     }
@@ -103,10 +95,7 @@ public class ItemService : IItemService
         var item = _mapper.Map<Item>(updateItemVm);
         if (ShouldSwitchImages(updateItemVm))
         {
-            if (item.Image != null)
-            {
-                _fileService.DeleteImage(item.Image.FileUrl);
-            }
+            if (item.Image != null) _fileService.DeleteImage(item.Image.FileUrl);
             item.Image!.FileUrl = await _fileService.UploadFileAsync(updateItemVm.Image!.FormFile!);
         }
 
@@ -115,31 +104,25 @@ public class ItemService : IItemService
             item.OrderNo = null;
             await _purchasableRepository.BulkUpdateOrderAsync(item.OrderNo.Value);
         }
+
         if (item.ShouldBeShown && item.OrderNo is null)
-        {
             item.OrderNo = await _purchasableRepository.GetNextOrderNumberAsync();
-        }
         _ = await _itemRepository.UpdateAsync(item);
     }
 
     public async Task<CrEdItemVm> GetItemVmForAddingAsync(int? categoryId)
     {
-        CrEdItemVm crEdObjItem = new CrEdItemVm()
+        var crEdObjItem = new CrEdItemVm
         {
             Categories = await GetCategoriesForSelectVmAsync()
         };
-        if (crEdObjItem.Categories.Count == 0)
-        {
-            throw new NoCategoriesException();
-        }
+        if (crEdObjItem.Categories.Count == 0) throw new NoCategoriesException();
 
         if (categoryId.HasValue)
-        {
-            crEdObjItem.ItemVm = new()
+            crEdObjItem.ItemVm = new ItemVm
             {
                 CategoryId = categoryId.Value
             };
-        }
         return crEdObjItem;
     }
 
@@ -150,22 +133,17 @@ public class ItemService : IItemService
             .ToListAsync();
     }
 
-    private bool ShouldSwitchImages(ItemVm updatedItem)
-    {
-        return updatedItem != null && updatedItem.Image != null && updatedItem.Image.FormFile != null;
-    }
-
     public async Task<ItemComponentsSelectionVm?> GetComponentsForSelectionVmAsync(int id)
     {
         var item = await _itemRepository.GetItemWithComponentsByIdAsync(id) ?? throw new EntityNotFoundException();
 
         var allComponents = _componentRepository.GetAll();
-        List<ComponentForSelection> allComponentsVMs = await allComponents.ProjectTo<ComponentForSelection>(_mapper.ConfigurationProvider)
+        var allComponentsVMs = await allComponents.ProjectTo<ComponentForSelection>(_mapper.ConfigurationProvider)
             .ToListAsync();
-        List<int> selectedComponentsIds = item.Components!
+        var selectedComponentsIds = item.Components!
             .Select(x => x.Id)
             .ToList();
-        ItemComponentsSelectionVm selectionVm = new ItemComponentsSelectionVm()
+        var selectionVm = new ItemComponentsSelectionVm
         {
             Item = _mapper.Map<ItemVm>(item),
             AllComponents = allComponentsVMs,
@@ -176,7 +154,13 @@ public class ItemService : IItemService
 
     public Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)
     {
-        var selectedComponents = _mapper.Map<IEnumerable<Component>>(selectionVm.AllComponents.Where(x => x.IsSelected)).ToList();
+        var selectedComponents = _mapper.Map<IEnumerable<Component>>(selectionVm.AllComponents.Where(x => x.IsSelected))
+            .ToList();
         return _itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
+    }
+
+    private bool ShouldSwitchImages(ItemVm updatedItem)
+    {
+        return updatedItem != null && updatedItem.Image != null && updatedItem.Image.FormFile != null;
     }
 }

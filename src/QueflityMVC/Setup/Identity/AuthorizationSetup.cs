@@ -11,7 +11,7 @@ public static class AuthorizationSetup
             policy.RequireClaim(Claims.USER_CLAIMS_VIEW));
         options.AddPolicy(Policies.USER_CLAIMS_MANAGE, policy =>
             policy.RequireClaim(Claims.USER_CLAIMS_MANAGE)
-            .RequireClaim(Claims.USER_CLAIMS_VIEW));
+                .RequireClaim(Claims.USER_CLAIMS_VIEW));
 
         options.AddPolicy(Policies.USERS_LIST, policy =>
             policy.RequireClaim(Claims.USERS_LIST));
@@ -25,19 +25,19 @@ public static class AuthorizationSetup
             policy.RequireClaim(Claims.USER_ROLES_LIST));
         options.AddPolicy(Policies.USER_ROLES_MANAGE, policy =>
             policy.RequireClaim(Claims.USER_ROLES_MANAGE)
-            .RequireClaim(Claims.USER_ROLES_LIST));
+                .RequireClaim(Claims.USER_ROLES_LIST));
 
         options.AddPolicy(Policies.ENTITIES_LIST, policy =>
             policy.RequireClaim(Claims.ENTITIES_LIST));
         options.AddPolicy(Policies.ENTITIES_EDIT, policy =>
             policy.RequireClaim(Claims.ENTITIES_EDIT)
-            .RequireClaim(Claims.ENTITIES_LIST));
+                .RequireClaim(Claims.ENTITIES_LIST));
         options.AddPolicy(Policies.ENTITIES_CREATE, policy =>
             policy.RequireClaim(Claims.ENTITIES_CREATE)
-            .RequireClaim(Claims.ENTITIES_LIST));
+                .RequireClaim(Claims.ENTITIES_LIST));
         options.AddPolicy(Policies.ENTITIES_ORDER, policy =>
-                   policy.RequireClaim(Claims.ENTITIES_ORDER)
-                              .RequireClaim(Claims.ENTITIES_LIST));
+            policy.RequireClaim(Claims.ENTITIES_ORDER)
+                .RequireClaim(Claims.ENTITIES_LIST));
 
         return options;
     }

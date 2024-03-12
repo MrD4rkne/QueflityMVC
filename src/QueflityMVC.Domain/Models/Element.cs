@@ -7,8 +7,7 @@ public class Element : BaseEntity
 {
     public uint ItemsAmmount { get; set; }
 
-    [Precision(14, 2)]
-    public decimal PricePerItem { get; set; }
+    [Precision(14, 2)] public decimal PricePerItem { get; set; }
 
     public int ItemId { get; set; }
 

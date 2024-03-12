@@ -34,8 +34,9 @@ public class CategoryService : ICategoryService
 
     public async Task<ListCategoriesVm> GetFilteredListAsync(ListCategoriesVm listCategoriesVm)
     {
-        IQueryable<Category> matchingCategories = _categoriesRepository.GetFiltered(listCategoriesVm.NameFilter);
-        listCategoriesVm.Pagination = await matchingCategories.Paginate(listCategoriesVm.Pagination, _mapper.ConfigurationProvider);
+        var matchingCategories = _categoriesRepository.GetFiltered(listCategoriesVm.NameFilter);
+        listCategoriesVm.Pagination =
+            await matchingCategories.Paginate(listCategoriesVm.Pagination, _mapper.ConfigurationProvider);
         return listCategoriesVm;
     }
 

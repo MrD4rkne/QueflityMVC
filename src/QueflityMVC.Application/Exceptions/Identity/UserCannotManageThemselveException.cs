@@ -14,7 +14,8 @@ public class UserCannotManageThemselveException : Exception
     {
     }
 
-    public UserCannotManageThemselveException(string? message, Exception? innerException) : base(message, innerException)
+    public UserCannotManageThemselveException(string? message, Exception? innerException) : base(message,
+        innerException)
     {
     }
 

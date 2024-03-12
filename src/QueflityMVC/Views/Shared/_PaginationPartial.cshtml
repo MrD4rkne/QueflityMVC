@@ -1,38 +1,51 @@
-﻿@using QueflityMVC.Application.ViewModels.Pagination
-@model PaginationInfo
+﻿@model QueflityMVC.Application.ViewModels.Pagination.PaginationInfo
 <nav id="pagination">
     <ul class="pagination justify-content-center">
         @if (Model.CurrentPageNo <= 1)
         {
-            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
         }
         else
         {
-            <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.CurrentPageNo-1)">Previous</a></li>
+            <li class="page-item">
+                <a class="page-link" href="javascript:PagerClick(@Model.CurrentPageNo-1)">Previous</a>
+            </li>
         }
-        @for (int i = 1; i <= Model.PagesCount; i++)
+        @for (var i = 1; i <= Model.PagesCount; i++)
         {
             @if (i != Model.CurrentPageNo)
             {
-                <li class="page-item"><a class="page-link" href="javascript:PagerClick(@i)">@i</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="javascript:PagerClick(@i)">@i</a>
+                </li>
             }
             else
             {
-                <li class="page-item disabled"><span class="page-link"><b>@i</b></span></li>
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <b>@i</b>
+                    </span>
+                </li>
             }
         }
         @if (Model.CurrentPageNo >= Model.PagesCount)
         {
-            <li class="page-item disabled"><span class="page-link">Next</span></li>
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
         }
         else
         {
-            <li class="page-item"><a class="page-link" href="javascript:PagerClick(@Model.CurrentPageNo+1)">Next</a></li>
+            <li class="page-item">
+                <a class="page-link" href="javascript:PagerClick(@Model.CurrentPageNo+1)">Next</a>
+            </li>
         }
     </ul>
 </nav>
 
-<input type="hidden" asp-for="CurrentPageNo" />
+<input type="hidden" asp-for="CurrentPageNo"/>
 
 <script type="text/javascript">
     function PagerClick(pageIndex) {
@@ -46,4 +59,3 @@
         form.submit();
     }
 </script>
-

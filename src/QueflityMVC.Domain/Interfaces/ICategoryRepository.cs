@@ -5,7 +5,7 @@ namespace QueflityMVC.Domain.Interfaces;
 public interface ICategoryRepository : IBaseRepository<Category>
 {
     /// <summary>
-    /// Returns True if no Item has CategoryId equal to 'id'
+    ///     Returns True if no Item has CategoryId equal to 'id'
     /// </summary>
     /// <param name="categoryId">Category's id</param>
     /// <returns></returns>

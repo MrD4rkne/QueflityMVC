@@ -1,5 +1,5 @@
 ﻿@using QueflityMVC.Application.ViewModels.Purchasable
-@model EditOrderVm
+@model QueflityMVC.Application.ViewModels.Purchasable.EditOrderVm
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -39,54 +39,55 @@
         }
     </style>
 }
+
 <form asp-action="Index" asp-controller="Dashboard">
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
+        <input type="submit" value="Save" class="btn btn-primary"/>
     </div>
     <div class="table-responsive">
         <table class="table" id="table-1" cellspacing="0" cellpadding="0">
             <thead>
-                <tr>
-                    <th></th>
-                    <th>ON</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Type</th>
-                </tr>
+            <tr>
+                <th></th>
+                <th>ON</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Type</th>
+            </tr>
             </thead>
             <tbody style="cursor:pointer;">
-                @for (int i = 1; i <= Model.PurchasablesVMs.Count; i++)
-                {
-                    var currentEntity = Model.PurchasablesVMs[i - 1];
-                    <tr id="@i">
-                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Id)
-                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Type)
-                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].OrderNo)
-                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.FileUrl)
-                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.AltDescription)
-                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Price)
-                        @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Name)
-                        <td>
-                            <img src="@currentEntity.Image.FileUrl" alt="@currentEntity.Image.AltDescription" style="height:30px" />
-                        </td>
-                        <td>@currentEntity.OrderNo</td>
-                        <td>@currentEntity.Name</td>
-                        <td>@currentEntity.Price</td>
-                        <td>
-                            @switch (currentEntity.Type)
-                            {
-                                case PurchasableType.Item:
-                                    <span class="badge bg-primary">Item</span>
-                                    break;
-                                case PurchasableType.Kit:
-                                    <span class="badge bg-secondary">Kit</span>
-                                    break;
-                                default:
-                                    throw new NotImplementedException();
-                            }
-                        </td>
-                    </tr>
-                }
+            @for (var i = 1; i <= Model.PurchasablesVMs.Count; i++)
+            {
+                var currentEntity = Model.PurchasablesVMs[i - 1];
+                <tr id="@i">
+                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Id)
+                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Type)
+                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].OrderNo)
+                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.FileUrl)
+                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.AltDescription)
+                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Price)
+                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Name)
+                    <td>
+                        <img src="@currentEntity.Image.FileUrl" alt="@currentEntity.Image.AltDescription" style="height:30px"/>
+                    </td>
+                    <td>@currentEntity.OrderNo</td>
+                    <td>@currentEntity.Name</td>
+                    <td>@currentEntity.Price</td>
+                    <td>
+                        @switch (currentEntity.Type)
+                        {
+                            case PurchasableType.Item:
+                                <span class="badge bg-primary">Item</span>
+                                break;
+                            case PurchasableType.Kit:
+                                <span class="badge bg-secondary">Kit</span>
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>

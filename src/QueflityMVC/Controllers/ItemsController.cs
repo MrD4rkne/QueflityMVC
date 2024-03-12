@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results.Item;
 using QueflityMVC.Application.ViewModels.Item;
 
 namespace QueflityMVC.Web.Controllers;
@@ -40,13 +40,10 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(ListItemsVm listItemsVm)
     {
-        if (listItemsVm is null)
-        {
-            return BadRequest();
-        }
+        if (listItemsVm is null) return BadRequest();
         listItemsVm.NameFilter ??= string.Empty;
 
-        ListItemsVm listVm = await _itemService.GetFilteredListAsync(listItemsVm);
+        var listVm = await _itemService.GetFilteredListAsync(listItemsVm);
         return View(listVm);
     }
 
@@ -72,11 +69,11 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(CrEdItemVm crEdObjItem)
     {
-        ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVm);
+        var result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVm);
 
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
+            result.AddToModelState(ModelState);
             crEdObjItem.Categories ??= await _itemService.GetCategoriesForSelectVmAsync();
             return View("Create", crEdObjItem);
         }
@@ -100,10 +97,10 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(CrEdItemVm editItemVm)
     {
-        ValidationResult result = await _itemValidator.ValidateAsync(editItemVm.ItemVm);
+        var result = await _itemValidator.ValidateAsync(editItemVm.ItemVm);
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
+            result.AddToModelState(ModelState);
             return View("Edit", editItemVm);
         }
 
@@ -119,20 +116,20 @@ public class ItemsController : Controller
         var results = await _itemService.DeleteItemAsync(id);
         switch (results.Status)
         {
-            case Application.Results.Item.DeleteItemStatus.Success:
+            case DeleteItemStatus.Success:
                 return RedirectToAction("Index");
 
-            case Application.Results.Item.DeleteItemStatus.NotExist:
+            case DeleteItemStatus.NotExist:
                 return NotFound();
 
-            case Application.Results.Item.DeleteItemStatus.ItemIsPartOfKit:
-                return View(new DeleteFailedItemVm()
+            case DeleteItemStatus.ItemIsPartOfKit:
+                return View(new DeleteFailedItemVm
                 {
                     ItemId = id,
                     Message = "Item is part of a kit and cannot be deleted."
                 });
 
-            case Application.Results.Item.DeleteItemStatus.Exception:
+            case DeleteItemStatus.Exception:
                 throw results.Exception!;
             default:
                 throw new NotImplementedException();
@@ -145,14 +142,8 @@ public class ItemsController : Controller
     public async Task<IActionResult> Components(int id)
     {
         var componentsViewModel = await _itemService.GetComponentsForSelectionVmAsync(id);
-        if (componentsViewModel is null)
-        {
-            return NotFound();
-        }
-        if (componentsViewModel.AllComponents.Count == 0)
-        {
-            return RedirectToAction("NoComponents");
-        }
+        if (componentsViewModel is null) return NotFound();
+        if (componentsViewModel.AllComponents.Count == 0) return RedirectToAction("NoComponents");
 
         return View(componentsViewModel);
     }

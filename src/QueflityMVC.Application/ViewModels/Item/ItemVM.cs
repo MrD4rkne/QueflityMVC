@@ -17,8 +17,7 @@ public record ItemVm : IMapFrom<Domain.Models.Item>
 
     public ImageVm Image { get; set; }
 
-    [DisplayName("Category")]
-    public int CategoryId { get; set; }
+    [DisplayName("Category")] public int CategoryId { get; set; }
 
     public void Mapping(Profile profile)
     {

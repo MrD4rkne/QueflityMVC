@@ -17,33 +17,21 @@ public class FileService : IFileService
 
     public async Task<string> UploadFileAsync(IFormFile file)
     {
-        string directory = GetImagesDirectory(_rootDirectory);
-        if (!Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
+        var directory = GetImagesDirectory(_rootDirectory);
+        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
-        string path = GetFileName(directory, Path.GetExtension(file.FileName));
+        var path = GetFileName(directory, Path.GetExtension(file.FileName));
         using (var stream = new FileStream(path, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }
-        return Path.Combine("/" + RELATIVE_IMAGES_PATH, Path.GetFileName(path));
-    }
 
-    private string GetFileName(string directory, string extension)
-    {
-        string path;
-        do
-        {
-            path = Path.Combine(directory, Path.GetRandomFileName() + extension);
-        } while (File.Exists(path));
-        return path;
+        return Path.Combine("/" + RELATIVE_IMAGES_PATH, Path.GetFileName(path));
     }
 
     public void DeleteImage(string relativeImagePath)
     {
-        string path = Path.Combine(GetRootDirectory(_rootDirectory), NormaliseFilePath(relativeImagePath));
+        var path = Path.Combine(GetRootDirectory(_rootDirectory), NormaliseFilePath(relativeImagePath));
         try
         {
             File.Delete(path);
@@ -54,17 +42,22 @@ public class FileService : IFileService
         }
     }
 
+    private string GetFileName(string directory, string extension)
+    {
+        string path;
+        do
+        {
+            path = Path.Combine(directory, Path.GetRandomFileName() + extension);
+        } while (File.Exists(path));
+
+        return path;
+    }
+
     private string NormaliseFilePath(string path)
     {
-        if (string.IsNullOrEmpty(path))
-        {
-            return string.Empty;
-        }
+        if (string.IsNullOrEmpty(path)) return string.Empty;
 
-        if (path.First() == '/')
-        {
-            path = path.Substring(1);
-        }
+        if (path.First() == '/') path = path.Substring(1);
         return path.Replace('/', '\\');
     }
 
@@ -75,6 +68,7 @@ public class FileService : IFileService
 
     private string GetImagesDirectory(string root)
     {
-        return Path.Combine(GetRootDirectory(root), RELATIVE_IMAGES_PATH); ;
+        return Path.Combine(GetRootDirectory(root), RELATIVE_IMAGES_PATH);
+        ;
     }
 }

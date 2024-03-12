@@ -24,16 +24,14 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
 
     public virtual async Task DeleteAsync(int entityToDeleteId)
     {
-        var entityToDelete = (await GetByIdAsync(entityToDeleteId)) ?? throw new EntityNotFoundException(entityName: nameof(T));
+        var entityToDelete = await GetByIdAsync(entityToDeleteId) ??
+                             throw new EntityNotFoundException(entityName: nameof(T));
         await DeleteAsync(entityToDelete);
     }
 
     public virtual async Task DeleteAsync(T entityToDelete)
     {
-        if (!await ExistsAsync(entityToDelete))
-        {
-            throw new EntityNotFoundException(entityName: nameof(T));
-        }
+        if (!await ExistsAsync(entityToDelete)) throw new EntityNotFoundException(entityName: nameof(T));
 
         DbContext.Set<T>().Remove(entityToDelete);
         await DbContext.SaveChangesAsync();
@@ -42,10 +40,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
     public virtual async Task<T> UpdateAsync(T entityToUpdate)
     {
         var entity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(T));
-        if (DbContext.Entry(entity).State == EntityState.Detached)
-        {
-            DbContext.Set<T>().Attach(entity);
-        }
+        if (DbContext.Entry(entity).State == EntityState.Detached) DbContext.Set<T>().Attach(entity);
         DbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
         await DbContext.SaveChangesAsync();
         return await GetByIdAsync(entityToUpdate.Id);
@@ -61,7 +56,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
 
     public virtual async Task<bool> ExistsAsync(int entityId)
     {
-        return (await GetByIdAsync(entityId)) != null;
+        return await GetByIdAsync(entityId) != null;
     }
 
     public virtual Task<T?> GetByIdAsync(int entityId)

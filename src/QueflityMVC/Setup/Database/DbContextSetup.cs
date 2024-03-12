@@ -15,17 +15,18 @@ public static class DbContextSetup
             return false;
         }
 
-        SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
+        var connectionStringBuilder = new SqlConnectionStringBuilder();
         connectionStringBuilder.ConnectionString = connectionString;
         formatedConnectionString = connectionStringBuilder.ToString();
         return true;
     }
 
-    public static IServiceCollection ConfigureDbContext<TContext>(this IServiceCollection services, IVariablesProvider variablesProvider) where TContext : DbContext
+    public static IServiceCollection ConfigureDbContext<TContext>(this IServiceCollection services,
+        IVariablesProvider variablesProvider) where TContext : DbContext
     {
         ArgumentNullException.ThrowIfNull(variablesProvider);
 
-        string builtConnectionString = PrepareConnectionString(variablesProvider);
+        var builtConnectionString = PrepareConnectionString(variablesProvider);
         services.ConfigureConnection<TContext>(builtConnectionString);
 
         return services;
@@ -44,38 +45,38 @@ public static class DbContextSetup
         ArgumentNullException.ThrowIfNull(variablesProvider);
         try
         {
-            string builtConnectionString = string.Empty;
+            var builtConnectionString = string.Empty;
             if (!TryBuildConnectionString(variablesProvider.GetConnectionString(), out builtConnectionString))
-            {
-                throw new ConfigurationException("Connection string is invalid. Please fix this and provide valid one.");
-            }
+                throw new ConfigurationException(
+                    "Connection string is invalid. Please fix this and provide valid one.");
             return builtConnectionString;
         }
         catch (Exception ex)
         {
-            throw new DbSetupException("Connection string exception occured. See inner exception for more details.", ex);
+            throw new DbSetupException("Connection string exception occured. See inner exception for more details.",
+                ex);
         }
     }
 
-    private static IServiceCollection ConfigureConnection<TContext>(this IServiceCollection services, string connectionString) where TContext : DbContext
+    private static IServiceCollection ConfigureConnection<TContext>(this IServiceCollection services,
+        string connectionString) where TContext : DbContext
     {
         try
         {
             services.AddDbContext<TContext>(options =>
                 options.UseSqlServer(connectionString,
-                provider => provider.EnableRetryOnFailure()
-            ));
+                    provider => provider.EnableRetryOnFailure()
+                ));
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-            {
                 services.AddDatabaseDeveloperPageExceptionFilter();
-            }
 
             return services;
         }
         catch (Exception ex)
         {
-            throw new DbSetupException("Exception occured while configuring database connection. See inner exception for more details.", ex);
+            throw new DbSetupException(
+                "Exception occured while configuring database connection. See inner exception for more details.", ex);
         }
     }
 }

@@ -8,6 +8,10 @@ namespace QueflityMVC.Infrastructure;
 
 public class Context : IdentityDbContext<ApplicationUser>
 {
+    public Context(DbContextOptions options) : base(options)
+    {
+    }
+
     public DbSet<Component> Components { get; set; }
 
     public DbSet<Item> Items { get; set; }
@@ -19,10 +23,6 @@ public class Context : IdentityDbContext<ApplicationUser>
     public DbSet<Image> Images { get; set; }
 
     public DbSet<Element> SetElements { get; set; }
-
-    public Context(DbContextOptions options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

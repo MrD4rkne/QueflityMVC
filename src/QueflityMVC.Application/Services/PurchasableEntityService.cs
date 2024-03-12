@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Purchasable;
 using QueflityMVC.Application.ViewModels.Purchasable;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.Services;
@@ -20,12 +21,6 @@ public class PurchasableEntityService : IPurchasableEntityService
 
     public async Task<EditOrderVm> GetEnitiesOrderVm()
     {
-        var purchasableTypes = Enum.GetValues<PurchasableType>();
-        if (purchasableTypes.Length == 0)
-        {
-            throw new InvalidOperationException("No purchasable types found");
-        }
-
         var models = await _purchasableRepository.GetVisibileEntities().OrderBy(x => x.OrderNo).ToListAsync();
         var results = models.Select(x => _mapper.Map<PurchasableVm>(x)).ToList();
         var editVm = new EditOrderVm
@@ -41,7 +36,8 @@ public class PurchasableEntityService : IPurchasableEntityService
         {
             if (!IsProperOrder(editOrderVm.PurchasablesVMs))
                 return UpdateOrderResultsFactory.NotValidOrder();
-            var purchasableModels = editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<Domain.Common.BasePurchasableEntity>(p)).ToList();
+            var purchasableModels =
+                editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<BasePurchasableEntity>(p)).ToList();
             if (!await _purchasableRepository.AreTheseAllVisiblePurchasablesAsync(purchasableModels))
                 return UpdateOrderResultsFactory.MissingPurchasable();
             await _purchasableRepository.UpdatePurchasablesOrderAsync(purchasableModels);
@@ -53,21 +49,24 @@ public class PurchasableEntityService : IPurchasableEntityService
         }
     }
 
+    public async Task<DashboardVm> GetDashboardVmAsync()
+    {
+        var purchasables = _purchasableRepository.GetVisiblePurchasablesForDashboard();
+        DashboardVm dashboard = new()
+        {
+            Purchasables = await purchasables.Select(x => _mapper.Map<PurchasableForDashboardVm>(x)).ToListAsync()
+        };
+        return dashboard;
+    }
+
     private bool IsProperOrder(List<PurchasableVm> purchasables)
     {
-        if (!purchasables.All(p => p.OrderNo >= 0))
-        {
-            return false;
-        }
+        if (!purchasables.All(p => p.OrderNo >= 0)) return false;
         var orders = purchasables.Select(purchasables => purchasables.OrderNo).ToList();
         orders.Sort();
-        for (int i = 0; i < orders.Count; i++)
-        {
+        for (var i = 0; i < orders.Count; i++)
             if (orders[i] != i)
-            {
                 return false;
-            }
-        }
         return true;
     }
 }

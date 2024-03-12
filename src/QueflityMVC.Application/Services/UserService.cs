@@ -1,7 +1,7 @@
-﻿using System.Data;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using QueflityMVC.Application.Common.Pagination;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Errors.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Other;
@@ -13,8 +13,8 @@ namespace QueflityMVC.Application.Services;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
 
     public UserService(IUserRepository userRepository, IMapper mapper)
     {
@@ -24,30 +24,24 @@ public class UserService : IUserService
 
     public async Task DisableUserAsync(string userToDisableId)
     {
-        bool doesUserExists = await _userRepository.DoesUserExistAsync(userToDisableId);
-        if (!doesUserExists)
-        {
-            throw new EntityNotFoundException(entityName: nameof(ApplicationUser));
-        }
+        var doesUserExists = await _userRepository.DoesUserExistAsync(userToDisableId);
+        if (!doesUserExists) throw new EntityNotFoundException(entityName: nameof(ApplicationUser));
 
         await _userRepository.DisableUserAsync(userToDisableId);
     }
 
     public async Task EnableUserAsync(string userToEnableId)
     {
-        bool doesUserExists = await _userRepository.DoesUserExistAsync(userToEnableId);
-        if (!doesUserExists)
-        {
-            throw new EntityNotFoundException(entityName: nameof(ApplicationUser));
-        }
+        var doesUserExists = await _userRepository.DoesUserExistAsync(userToEnableId);
+        if (!doesUserExists) throw new EntityNotFoundException(entityName: nameof(ApplicationUser));
 
         await _userRepository.EnableUserAsync(userToEnableId);
     }
 
     public async Task<ListUsersVm> GetFilteredListAsync(ListUsersVm listUsersVm)
     {
-        IQueryable<ApplicationUser> matchingUsers = _userRepository.GetFilteredUsers(listUsersVm.UserNameFilter);
-        listUsersVm.Pagination = await matchingUsers.Paginate<ApplicationUser, UserForListVm>(listUsersVm.Pagination, _mapper.ConfigurationProvider);
+        var matchingUsers = _userRepository.GetFilteredUsers(listUsersVm.UserNameFilter);
+        listUsersVm.Pagination = await matchingUsers.Paginate(listUsersVm.Pagination, _mapper.ConfigurationProvider);
 
         return listUsersVm;
     }
@@ -55,12 +49,9 @@ public class UserService : IUserService
     public async Task<UserClaimsVm> GetUsersClaimsVmAsync(string userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
-        if (user is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        if (user is null) throw new EntityNotFoundException();
 
-        var allClaims = Constants.Claims.GetAll()
+        var allClaims = Claims.GetAll()
             .Select(str => new ClaimForSelectionVm(str));
         var assignedClaimsIds = await _userRepository.GetAssignedClaimsIdsAsync(userId);
 
@@ -78,10 +69,7 @@ public class UserService : IUserService
     public async Task<UserRolesVm> GetUsersRolesVmAsync(string userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
-        if (user is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        if (user is null) throw new EntityNotFoundException();
 
         var allRoles = _userRepository.GetAllRoles()
             .ProjectTo<RoleForSelectionVm>(_mapper.ConfigurationProvider);
@@ -101,11 +89,11 @@ public class UserService : IUserService
 
     public async Task UpdateUserClaimsAsync(UserClaimsVm userClaimsVm)
     {
-        string[] claimsToGive = userClaimsVm.AllClaims
+        var claimsToGive = userClaimsVm.AllClaims
             .Where(x => x.IsSelected)
             .Select(x => x.Id)
             .ToArray();
-        string[] claimsToRemove = userClaimsVm.AllClaims
+        var claimsToRemove = userClaimsVm.AllClaims
             .Where(x => x.IsSelected == false)
             .Select(x => x.Id)
             .ToArray();
@@ -126,12 +114,7 @@ public class UserService : IUserService
             return Task.CompletedTask;
 
         if (role.IsSelected)
-        {
             return _userRepository.AddToRoleAsync(userId, role.Id);
-        }
-        else
-        {
-            return _userRepository.RemoveFromRoleAsync(userId, role.Id);
-        }
+        return _userRepository.RemoveFromRoleAsync(userId, role.Id);
     }
 }

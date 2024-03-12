@@ -23,9 +23,9 @@ public static class DependencyInjection
 
     public static async Task SeedIdentity(this IServiceProvider serviceProvider)
     {
-        using IServiceScope scope = serviceProvider.CreateScope();
-        UserManager<ApplicationUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        using var scope = serviceProvider.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         await IdentitySeed.SeedIdentity(userManager, roleManager);
     }
 }

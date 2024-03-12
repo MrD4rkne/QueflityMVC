@@ -9,8 +9,7 @@ public class BasePurchasableEntity : BaseEntity
 
     public bool ShouldBeShown { get; set; }
 
-    [Precision(14, 2)]
-    public decimal Price { get; set; }
+    [Precision(14, 2)] public decimal Price { get; set; }
 
     public int? ImageId { get; set; }
 

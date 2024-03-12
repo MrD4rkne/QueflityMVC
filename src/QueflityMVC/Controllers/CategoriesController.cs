@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
@@ -36,10 +35,7 @@ public class CategoriesController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(ListCategoriesVm listCategoriesVm)
     {
-        if (listCategoriesVm is null)
-        {
-            return BadRequest();
-        }
+        if (listCategoriesVm is null) return BadRequest();
         listCategoriesVm.NameFilter ??= string.Empty;
 
         var listVm = await _categoryService.GetFilteredListAsync(listCategoriesVm);
@@ -60,11 +56,11 @@ public class CategoriesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CategoryVm createCategoryVm)
     {
-        ValidationResult result = await _categoryValidator.ValidateAsync(createCategoryVm);
+        var result = await _categoryValidator.ValidateAsync(createCategoryVm);
 
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
+            result.AddToModelState(ModelState);
             return View("Create", createCategoryVm);
         }
 
@@ -88,11 +84,11 @@ public class CategoriesController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(CategoryVm createCategoryVm)
     {
-        ValidationResult result = await _categoryValidator.ValidateAsync(createCategoryVm);
+        var result = await _categoryValidator.ValidateAsync(createCategoryVm);
 
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
+            result.AddToModelState(ModelState);
             return View("Edit", createCategoryVm);
         }
 
@@ -118,6 +114,7 @@ public class CategoriesController : Controller
 
             return View(deleteFailedVm);
         }
+
         return RedirectToAction("Index");
     }
 

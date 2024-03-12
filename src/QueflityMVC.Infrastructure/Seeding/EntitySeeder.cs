@@ -13,7 +13,19 @@ public class EntitySeeder
     private const int IMAGES_COUNT = ITEMS_COUNT + KITS_COUNT;
     private const int ELEMENTS_COUNT = 15;
     private const int VISIBLE_PURCHASABLE = 10;
-    private int _visiblePurchasable = 0;
+
+    private readonly HashSet<uint> _orderNumbers = new();
+    private int _visiblePurchasable;
+
+    public EntitySeeder()
+    {
+        Categories = GenerateCategories();
+        Components = GenerateComponents();
+        Images = GenerateImages();
+        Items = GenerateItems();
+        Elements = GenerateElements();
+        Kits = GenerateKits();
+    }
 
     public IReadOnlyCollection<Category> Categories { get; init; }
 
@@ -26,18 +38,6 @@ public class EntitySeeder
     public IReadOnlyCollection<Image> Images { get; init; }
 
     public IReadOnlyCollection<Element> Elements { get; init; }
-
-    private readonly HashSet<uint> _orderNumbers = new();
-
-    public EntitySeeder()
-    {
-        Categories = GenerateCategories();
-        Components = GenerateComponents();
-        Images = GenerateImages();
-        Items = GenerateItems();
-        Elements = GenerateElements();
-        Kits = GenerateKits();
-    }
 
     private IReadOnlyCollection<Category> GenerateCategories()
     {
@@ -56,7 +56,7 @@ public class EntitySeeder
     }
 
     /// <summary>
-    /// generate categories, components and images before items
+    ///     generate categories, components and images before items
     /// </summary>
     /// <returns></returns>
     private IReadOnlyCollection<Item> GenerateItems()
@@ -69,10 +69,7 @@ public class EntitySeeder
             .RuleFor(it => it.ShouldBeShown, f => GetVisibility())
             .RuleFor(it => it.CategoryId, f => f.Random.Number(1, CATEGORIES_COUNT));
         var items = itemFaker.Generate(ITEMS_COUNT);
-        foreach (var item in items)
-        {
-            item.OrderNo = GetRandomOrderNumber(item.ShouldBeShown);
-        }
+        foreach (var item in items) item.OrderNo = GetRandomOrderNumber(item.ShouldBeShown);
         return items;
     }
 
@@ -90,6 +87,7 @@ public class EntitySeeder
             kit.Price = Elements.Where(elem => elem.KitId == kit.Id).Sum(elem => elem.ItemsAmmount * elem.PricePerItem);
             kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
         }
+
         return kits;
     }
 
@@ -97,22 +95,21 @@ public class EntitySeeder
     {
         var elementFaker = new Faker<Element>(FAKER_LOCALE)
             .RuleFor(elem => elem.Id, f => f.GetPositiveIndexFaker())
-            .RuleFor(elem => elem.PricePerItem, f => Math.Round(f.Random.Decimal(0.01m, 10) * f.Random.Number(1, 20), 2))
+            .RuleFor(elem => elem.PricePerItem,
+                f => Math.Round(f.Random.Decimal(0.01m, 10) * f.Random.Number(1, 20), 2))
             .RuleFor(elem => elem.ItemsAmmount, f => (uint)f.Random.Number(1, ITEMS_COUNT))
             .RuleFor(elem => elem.KitId, f => ITEMS_COUNT + f.Random.Number(1, KITS_COUNT))
             .RuleFor(elem => elem.ItemId, f => f.Random.Number(1, ITEMS_COUNT));
         List<Element> elements = new(ELEMENTS_COUNT);
-        int elementsCreatedCount = 0;
+        var elementsCreatedCount = 0;
         while (elementsCreatedCount < ELEMENTS_COUNT)
         {
             var element = elementFaker.Generate();
-            if (elements.Any(e => e.ItemId == element.ItemId && e.KitId == element.KitId))
-            {
-                continue;
-            }
+            if (elements.Any(e => e.ItemId == element.ItemId && e.KitId == element.KitId)) continue;
             elements.Add(element);
             elementsCreatedCount++;
         }
+
         return elements;
     }
 
@@ -127,30 +124,22 @@ public class EntitySeeder
 
     private uint? GetRandomOrderNumber(bool isVisible)
     {
-        if (!isVisible)
-        {
-            return null;
-        }
+        if (!isVisible) return null;
         uint orderNumber;
         do
         {
             orderNumber = (uint)Random.Shared.Next(0, VISIBLE_PURCHASABLE);
         } while (_orderNumbers.Contains(orderNumber));
+
         _orderNumbers.Add(orderNumber);
         return orderNumber;
     }
 
     private bool GetVisibility()
     {
-        if (_visiblePurchasable >= VISIBLE_PURCHASABLE)
-        {
-            return false;
-        }
-        bool shouldBeVisible = Random.Shared.Next(0, 2) == 0 ? true : false;
-        if (shouldBeVisible)
-        {
-            _visiblePurchasable++;
-        }
+        if (_visiblePurchasable >= VISIBLE_PURCHASABLE) return false;
+        var shouldBeVisible = Random.Shared.Next(0, 2) == 0 ? true : false;
+        if (shouldBeVisible) _visiblePurchasable++;
         return shouldBeVisible;
     }
 }

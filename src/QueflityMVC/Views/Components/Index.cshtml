@@ -1,13 +1,13 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using QueflityMVC.Application.Constants;
-@inject IAuthorizationService AuthorizationService
+﻿@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
 @model QueflityMVC.Application.ViewModels.Component.ListComponentsVm
 
 @{
     ViewData["Title"] = "List components";
-    int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
-    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
-    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
+    int[] options = { 2, 5, 10, 25, 50, 100 };
+    var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    var canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 
 <h1>Components</h1>
@@ -22,14 +22,14 @@
 <form asp-action="Index" asp-controller="Components" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" />
+            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter"/>
         </li>
         <li class="nav-item">
             <button type="submit" class="btn btn-secondary">Search</button>
         </li>
         <li class="nav-item">
             <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (int i in options)
+                @foreach (var i in options)
                 {
                     @if (i == Model.Pagination.Info.PageSize)
                     {
@@ -46,43 +46,43 @@
     <div class="row">
         <table class="table">
             <thead>
-                <tr>
-                    <th>
-                        Id
-                    </th>
-                    <th>
-                        Name
-                    </th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Pagination.Entities)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @if (canEditEntities)
-                            {
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                            }
-                            @if (canCreateEntities)
-                            {
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                            }
-                        </td>
-                    </tr>
-                }
+            @foreach (var item in Model.Pagination.Entities)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @if (canEditEntities)
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                        }
+                        @if (canCreateEntities)
+                        {
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                        }
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>
     <div class="row">
-        <partial name="_PaginationPartial" for="Pagination.Info" />
+        <partial name="_PaginationPartial" for="Pagination.Info"/>
     </div>
 </form>
 

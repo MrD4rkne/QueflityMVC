@@ -21,7 +21,7 @@ public class ComponentService : IComponentService
 
     public async Task<int> CreateComponentAsync(ComponentVm componentToCreateVm)
     {
-        Component componentToCreate = _mapper.Map<Component>(componentToCreateVm);
+        var componentToCreate = _mapper.Map<Component>(componentToCreateVm);
         await _componentRepository.AddAsync(componentToCreate);
         return componentToCreate.Id;
     }
@@ -33,8 +33,10 @@ public class ComponentService : IComponentService
 
     public async Task<ListComponentsVm> GetFilteredListAsync(ListComponentsVm listComponentsVm)
     {
-        IQueryable<Component> matchingComponents = _componentRepository.GetComponentsForPagination(listComponentsVm.ItemId, listComponentsVm.NameFilter);
-        listComponentsVm.Pagination = await matchingComponents.Paginate(listComponentsVm.Pagination, _mapper.ConfigurationProvider);
+        var matchingComponents =
+            _componentRepository.GetComponentsForPagination(listComponentsVm.ItemId, listComponentsVm.NameFilter);
+        listComponentsVm.Pagination =
+            await matchingComponents.Paginate(listComponentsVm.Pagination, _mapper.ConfigurationProvider);
         return listComponentsVm;
     }
 

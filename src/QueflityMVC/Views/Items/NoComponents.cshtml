@@ -3,7 +3,7 @@
 @inject IAuthorizationService AuthorizationService
 @{
     ViewData["Title"] = "No components";
-    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
 }
 
 <h1 class="text-danger">No components!</h1>
@@ -12,5 +12,5 @@
 
 @if (canCreateEntities)
 {
-    @Html.ActionLink("Create first component", "Create", "Components", new{}, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Create first component", "Create", "Components", new { }, new { @class = "btn btn-primary" })
 }

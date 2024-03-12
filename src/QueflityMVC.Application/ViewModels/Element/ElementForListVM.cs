@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Mapping;
+using QueflityMVC.Application.ViewModels.Item;
 
 namespace QueflityMVC.Application.ViewModels.Element;
 
@@ -7,7 +8,7 @@ public record ElementForListVm : IMapFrom<Domain.Models.Element>
 {
     public required int Id { get; set; }
 
-    public required Item.ItemVm Item { get; set; }
+    public required ItemVm Item { get; set; }
 
     public required uint ItemsAmmount { get; set; }
 
