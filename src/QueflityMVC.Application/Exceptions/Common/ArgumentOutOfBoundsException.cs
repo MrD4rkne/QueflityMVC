@@ -24,7 +24,7 @@ public class ArgumentOutOfBoundsException<T> : ArgumentOutOfRangeException where
             ArgumentGuardType.LessThan => $"Argument must be less than {referencedValue}",
             ArgumentGuardType.LessThanOrEquals => $"Argument must be less than or equal to {referencedValue}",
             ArgumentGuardType.OtherThan => $"Argument must not equal to {referencedValue}",
-            _ => throw new NotImplementedException()
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
 }

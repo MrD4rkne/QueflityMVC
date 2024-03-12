@@ -1,10 +1,41 @@
-﻿@model QueflityMVC.Application.ViewModels.Purchasable.DashboardVm
+﻿@using QueflityMVC.Application.ViewModels.Purchasable
+@model QueflityMVC.Application.ViewModels.Purchasable.DashboardVm
 @{
     ViewData["Title"] = "Home Page";
+    const int ENTITIES_PER_ROW = 4;
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Here there will be dashboard with all visible purchasable items and kits.</p>
-    <p>...but you need to wait a little bit longer for that.</p>
+    <h1 class="display-4">Welcome traveler!</h1>
+</div>
+
+@* https://startbootstrap.com/template/shop-homepage *@
+
+<div class="container px-4 px-lg-5 mt-5">
+    @for (int row = 0; row < Model.Purchasables.Count / ENTITIES_PER_ROW; row++)
+    {
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @for (int column = 0; column < ENTITIES_PER_ROW; column++)
+            {
+                int itemNo = row * ENTITIES_PER_ROW + column;
+                if (itemNo >= Model.Purchasables.Count)
+                {
+                    break;
+                }
+
+                var currentPurchasable = Model.Purchasables[itemNo];
+                switch (currentPurchasable)
+                {
+                    case ItemForDashboardVm itemForDashboardVm:
+                        <partial name="_ItemDashboardPartial" model="itemForDashboardVm"/>
+                        break;
+                    case KitForDashboardVm kitForDashboardVm:
+                        <partial name="_KitDashboardPartial" model="kitForDashboardVm"/>
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(paramName:$"Purchasables[{itemNo}]",$"Partial dashboard view is not provided for type: {currentPurchasable.GetType()}");
+                }
+            }
+        </div>
+    }
 </div>
