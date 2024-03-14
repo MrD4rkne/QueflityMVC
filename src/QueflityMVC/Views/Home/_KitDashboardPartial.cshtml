@@ -1,22 +1,44 @@
 ﻿@model QueflityMVC.Application.ViewModels.Purchasable.KitForDashboardVm
 
-<div class="col mb-5">
-    <div class="card h-100">
-        <!-- Product image-->
-        <img class="card-img-top" src="@Model.Image.FileUrl" alt="@Model.Image.AltDescription">
-        <!-- Product details-->
-        <div class="card-body p-4">
-            <div class="text-center">
-                <!-- Product name-->
-                <h5 class="fw-bolder">@Model.Name</h5>
-                <!-- Product price-->
-                @Html.LabelFor(it=>it.Price)
-            </div>
+<div class="card h-100 w-100">
+    <!-- Product image-->
+    <img class="card-img-top" src="@Model.Image.FileUrl" alt="@Model.Image.AltDescription">
+    <!-- Product details-->
+    <div class="card-body p-4">
+        <div class="text-center">
+            <!-- Product name-->
+            <h5 class="fw-bolder">@Model.Name</h5>
+            <!-- Product price-->
+            <p class="text-success font-italic color">@Model.Price</p>
         </div>
-        <!-- Product actions-->
-        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center">
-                <a class="btn btn-outline-dark mt-auto" href="#">View options</a>
+    </div>
+    <!-- Product actions-->
+    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+        <div class="text-center">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="@($"#kitItems{Model.Id}")">
+                View items
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="@($"kitItems{Model.Id}")" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalLabel">Items of @Model.Name</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var element in Model.Elements)
+                    {
+                        <p class="text-primary">@element.Item.Name</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    @Html.ActionLink("Details","Details","Home", new{id=Model.Id}, new{@class="btn btn-primary"})
+                </div>
             </div>
         </div>
     </div>

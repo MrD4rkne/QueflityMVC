@@ -22,6 +22,13 @@ public class HomeController : Controller
         return View(dashboardVm);
     }
 
+    [HttpGet]
+    [Route("Details")]
+    public Task<IActionResult> Details(int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public IActionResult Privacy()
     {
         return View();

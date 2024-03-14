@@ -62,7 +62,8 @@ public class PurchasableRepository : IPurchasableRepository
             .Include(x => x.Image)
             .Include(x => (x as Item).Category)
             .Include(x => (x as Item).Components)
-            .Include(x => (x as Kit).Elements);
+            .Include(x => (x as Kit).Elements)
+            .ThenInclude(cp => cp.Item);
     }
 
     public async Task BulkUpdateOrderAsync(uint pivot)
