@@ -19,7 +19,7 @@ public class PurchasableVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Model
 
     public PurchasableType Type { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Item, PurchasableVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))

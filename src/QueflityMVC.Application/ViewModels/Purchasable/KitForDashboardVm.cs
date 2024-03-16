@@ -11,7 +11,7 @@ public record KitForDashboardVm : PurchasableForDashboardVm, IMapFrom<Domain.Mod
 
     public required List<ElementForListVm> Elements { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Kit, KitForDashboardVm>()
             .IncludeBase<BasePurchasableEntity, PurchasableForDashboardVm>()

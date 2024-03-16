@@ -19,7 +19,7 @@ public record ImageVm : IMapFrom<Domain.Models.Image>
 
     public IFormFile? FormFile { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Image, ImageVm>()
             .ForMember(img => img.FormFile, opt => opt.Ignore())

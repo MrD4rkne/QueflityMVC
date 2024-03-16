@@ -11,7 +11,7 @@ public record ComponentForSelection : IMapFrom<Domain.Models.Component>
 
     public bool IsSelected { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Component, ComponentForSelection>()
             .ReverseMap();

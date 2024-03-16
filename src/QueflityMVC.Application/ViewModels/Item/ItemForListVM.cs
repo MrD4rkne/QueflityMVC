@@ -14,7 +14,7 @@ public record ItemForListVm : IMapFrom<Domain.Models.Item>
 
     public ImageForListVm? Image { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Item, ItemForListVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image));

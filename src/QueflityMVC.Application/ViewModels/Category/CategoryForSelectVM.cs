@@ -9,7 +9,7 @@ public record CategoryForSelectVm : IMapFrom<Domain.Models.Category>
 
     public required string Name { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         // properties' names match
         profile.CreateMap<Domain.Models.Category, CategoryForSelectVm>();

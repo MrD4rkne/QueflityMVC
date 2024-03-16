@@ -12,7 +12,7 @@ public record ItemForDashboardVm : PurchasableForDashboardVm, IMapFrom<Domain.Mo
 
     public required List<ComponentForListVm> Components { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Item, ItemForDashboardVm>()
             .IncludeBase<BasePurchasableEntity, PurchasableForDashboardVm>()

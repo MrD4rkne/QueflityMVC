@@ -9,7 +9,7 @@ public record CategoryForListVm : IMapFrom<Domain.Models.Category>
 
     public required string Name { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Category, CategoryForListVm>();
     }

@@ -17,7 +17,7 @@ public record ElementVm : IMapFrom<Domain.Models.Element>
 
     public required decimal PricePerItem { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Element, ElementVm>()
             .ForMember(vm => vm.Item, opt => opt.MapFrom(sm => sm.Item))

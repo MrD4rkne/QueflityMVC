@@ -16,7 +16,7 @@ public record ElementForListVm : IMapFrom<Domain.Models.Element>
 
     public required int KitId { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Element, ElementForListVm>()
             .ForMember(vm => vm.Item, opt => opt.MapFrom(sm => sm.Item))

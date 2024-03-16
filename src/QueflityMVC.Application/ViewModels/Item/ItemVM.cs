@@ -19,7 +19,7 @@ public record ItemVm : IMapFrom<Domain.Models.Item>
 
     [DisplayName("Category")] public int? CategoryId { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Item, ItemVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))

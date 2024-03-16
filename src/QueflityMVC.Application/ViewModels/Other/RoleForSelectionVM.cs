@@ -12,7 +12,7 @@ public record RoleForSelectionVm : IMapFrom<IdentityRole>
 
     public bool IsSelected { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<IdentityRole, RoleForSelectionVm>()
             .ReverseMap();

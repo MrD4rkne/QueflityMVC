@@ -18,7 +18,7 @@ public record KitVm : IMapFrom<Domain.Models.Kit>
 
     public required ImageVm Image { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Kit, KitVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))

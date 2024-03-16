@@ -9,7 +9,7 @@ public record ComponentVm : IMapFrom<Domain.Models.Component>
 
     public required string Name { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Component, ComponentVm>().ReverseMap();
     }

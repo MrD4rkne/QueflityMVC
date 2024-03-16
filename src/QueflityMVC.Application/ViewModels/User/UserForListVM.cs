@@ -14,7 +14,7 @@ public record UserForListVm : IMapFrom<ApplicationUser>
 
     public required bool IsEnabled { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<ApplicationUser, UserForListVm>()
             .ReverseMap();

@@ -9,7 +9,7 @@ public record ImageForListVm : IMapFrom<Domain.Models.Image>
 
     public string? AltDescription { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Image, ImageForListVm>()
             .ReverseMap();

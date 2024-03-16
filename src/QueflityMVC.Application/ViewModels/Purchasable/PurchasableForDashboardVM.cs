@@ -17,7 +17,7 @@ public record PurchasableForDashboardVm : IMapFrom<BasePurchasableEntity>
 
     public required ImageForListVm Image { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<BasePurchasableEntity, PurchasableForDashboardVm>()
             .Include<Domain.Models.Kit, KitForDashboardVm>()
