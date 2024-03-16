@@ -10,14 +10,20 @@
             <h5 class="fw-bolder">@Model.Name</h5>
             <!-- Product price-->
             <p class="text-success font-italic color">@Model.Price</p>
+            <p class="text-info-emphasis text-wrap">@Model.Description</p>
         </div>
     </div>
     <!-- Product actions-->
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-        <div class="text-center">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="@($"#kitItems{Model.Id}")">
-                View items
-            </button>
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal" data-bs-target="@($"#kitItems{Model.Id}")">
+                    View items
+                </button>
+            </div>
+            <div class="col">
+            @Html.ActionLink("Contact about", "Contact", "Home", new { purchasableId = Model.Id }, new { @class = "btn btn-primary" })
+            </div>
         </div>
     </div>
 

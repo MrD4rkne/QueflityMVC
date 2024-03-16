@@ -10,13 +10,15 @@
             <h5 class="fw-bolder">@Model.Name</h5>
             <!-- Product price-->
             <p class="text-success font-italic color">@Model.Price</p>
+            <!-- Product category-->
             <p class="fst-italic">@Model.Category.Name</p>
         </div>
     </div>
     <!-- Product actions-->
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-        <div class="text-center">
-            <a class="btn btn-outline-dark mt-auto" href="#">View options</a>
+        <div class="col"></div>
+        <div class="col">
+            @Html.ActionLink("Contact about", "Contact", "Home", new { purchasableId = Model.Id }, new { @class = "btn btn-primary" })
         </div>
     </div>
 </div>

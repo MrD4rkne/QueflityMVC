@@ -6,11 +6,7 @@
     int rowsCount = Model.Purchasables.Count / itemsPerRow;
 }
 
-<div class="nav-fill">
-    <h2 class="text-xl-center">Hi!</h2>
-</div>
-
-<div class="section itemsLayout">
+<div class="section itemsLayout m-2">
     @for (int row = 0; row < rowsCount; row++)
     {
         <div class="row gx-sm-1">
@@ -31,7 +27,8 @@
                             <partial name="_KitDashboardPartial" model="kitForDashboardVm"/>
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(paramName: $"Purchasables[{itemNo}]", $"Partial dashboard view is not provided for type: {currentPurchasable.GetType()}");
+                            throw new ArgumentOutOfRangeException(paramName: $"Purchasables[{itemNo}]",
+                                $"Partial dashboard view is not provided for type: {currentPurchasable.GetType()}");
                     }
                 </div>
             }
