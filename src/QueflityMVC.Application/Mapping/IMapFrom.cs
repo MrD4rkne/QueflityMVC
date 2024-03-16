@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-
-namespace QueflityMVC.Application.Mapping;
+﻿namespace QueflityMVC.Application.Mapping;
 
 public interface IMapFrom<T>
 {
-    void Mapping(Profile profile)
+    void Mapping(MappingProfile profile)
     {
         profile.CreateMap(typeof(T), GetType());
     }

@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.User;
@@ -108,13 +108,12 @@ public class UserService : IUserService
             async (role, cs) => { await UpdateRoleMembership(role, userRolesVm.UserId); });
     }
 
-    private Task UpdateRoleMembership(RoleForSelectionVm role, string userId)
+    private Task UpdateRoleMembership(RoleForSelectionVm? role, string userId)
     {
         if (role is null)
             return Task.CompletedTask;
-
-        if (role.IsSelected)
-            return _userRepository.AddToRoleAsync(userId, role.Id);
-        return _userRepository.RemoveFromRoleAsync(userId, role.Id);
+        return role.IsSelected
+            ? _userRepository.AddToRoleAsync(userId, role.Id)
+            : _userRepository.RemoveFromRoleAsync(userId, role.Id);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace QueflityMVC.Application.Errors.UseCases;
+﻿namespace QueflityMVC.Application.Exceptions.UseCases;
 
 public class ItemIsPartOfKitException : Exception
 {

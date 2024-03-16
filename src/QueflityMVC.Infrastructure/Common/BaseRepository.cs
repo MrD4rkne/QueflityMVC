@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 
@@ -37,7 +37,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
         await DbContext.SaveChangesAsync();
     }
 
-    public virtual async Task<T> UpdateAsync(T entityToUpdate)
+    public virtual async Task<T?> UpdateAsync(T entityToUpdate)
     {
         var entity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(T));
         if (DbContext.Entry(entity).State == EntityState.Detached) DbContext.Set<T>().Attach(entity);

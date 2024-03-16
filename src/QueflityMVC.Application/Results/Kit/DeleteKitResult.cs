@@ -1,8 +1,8 @@
 ﻿namespace QueflityMVC.Application.Results.Kit;
 
-public record class DeleteKitResult
+public record DeleteKitResult
 {
-    public Exception? Exception { get; init; }
+    public Exception? Exception { get; set; }
 
-    public required DeleteKitStatus Status { get; init; }
+    public required DeleteKitStatus Status { get; set; }
 }

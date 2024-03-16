@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;

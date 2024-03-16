@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Text;
 
-namespace QueflityMVC.Application.Errors.Common;
+namespace QueflityMVC.Application.Exceptions.Common;
 
 public class EntityNotFoundException : Exception
 {
@@ -25,6 +25,7 @@ public class EntityNotFoundException : Exception
     {
     }
 
+    [Obsolete("Obsolete")]
     protected EntityNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }

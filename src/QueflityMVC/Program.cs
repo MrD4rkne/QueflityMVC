@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);
 
 // provider for secrets, connection string etc.
-IVariablesProvider variablesProvider = new EnviromentCredentialsProvider();
+IVariablesProvider variablesProvider = new EnvironmentCredentialsProvider();
 
 // Add logging
 SerilogSetup.SetupLogger();

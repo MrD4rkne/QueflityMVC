@@ -31,7 +31,7 @@ public interface IBaseRepository<T> where T : BaseEntity
     /// <param name="entityToUpdate">Entity to be updated</param>
     /// <returns>Updated entity</returns>
     /// <exception cref="ArgumentException">Entity does not exist</exception>
-    Task<T> UpdateAsync(T entityToUpdate);
+    Task<T?> UpdateAsync(T entityToUpdate);
 
     /// <summary>
     ///     Whether Entity exists

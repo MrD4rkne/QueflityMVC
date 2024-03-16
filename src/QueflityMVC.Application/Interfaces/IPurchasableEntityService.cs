@@ -5,7 +5,7 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IPurchasableEntityService
 {
-    Task<EditOrderVm> GetEnitiesOrderVm();
+    Task<EditOrderVm> GetEntitiesOrderVm();
 
     Task<UpdateOrderResult> UpdateOrderAsync(EditOrderVm editOrderVm);
 

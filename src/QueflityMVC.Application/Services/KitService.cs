@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Kit;
 using QueflityMVC.Application.ViewModels.Element;
@@ -148,7 +148,7 @@ public class KitService : IKitService
         return _kitRepository.UpdateElementAsync(componentToEdit);
     }
 
-    public async Task<ElementVm> GetVmForEdittingElementAsync(int kitId, int itemId)
+    public async Task<ElementVm> GetVmForEditingElementAsync(int kitId, int itemId)
     {
         var element = await _kitRepository.GetElementAsync(kitId, itemId) ??
                       throw new EntityNotFoundException(entityName: nameof(Element));

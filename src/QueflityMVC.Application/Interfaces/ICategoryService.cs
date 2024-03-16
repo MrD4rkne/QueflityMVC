@@ -4,7 +4,7 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface ICategoryService
 {
-    Task<int> CreateCategoryAsync(CategoryVm createcategoryVm);
+    Task<int> CreateCategoryAsync(CategoryVm createCategoryVm);
 
     Task DeleteCategoryAsync(int id);
 
@@ -12,5 +12,5 @@ public interface ICategoryService
 
     Task<CategoryVm?> GetVmForEditAsync(int id);
 
-    Task<CategoryVm> UpdateCategoryAsync(CategoryVm createcategoryVm);
+    Task<CategoryVm> UpdateCategoryAsync(CategoryVm createCategoryVm);
 }

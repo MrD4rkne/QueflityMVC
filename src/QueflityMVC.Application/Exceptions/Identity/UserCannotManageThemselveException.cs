@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace QueflityMVC.Application.Errors.Identity;
+namespace QueflityMVC.Application.Exceptions.Identity;
 
 public class UserCannotManageThemselveException : Exception
 {
@@ -19,6 +19,7 @@ public class UserCannotManageThemselveException : Exception
     {
     }
 
+    [Obsolete("Obsolete")]
     protected UserCannotManageThemselveException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }

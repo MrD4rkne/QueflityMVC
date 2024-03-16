@@ -27,17 +27,17 @@ public class EntitySeeder
         Kits = GenerateKits();
     }
 
-    public IReadOnlyCollection<Category> Categories { get; init; }
+    public IReadOnlyCollection<Category> Categories { get; set; }
 
-    public IReadOnlyCollection<Item> Items { get; init; }
+    public IReadOnlyCollection<Item> Items { get; set; }
 
-    public IReadOnlyCollection<Component> Components { get; init; }
+    public IReadOnlyCollection<Component> Components { get; set; }
 
-    public IReadOnlyCollection<Kit> Kits { get; init; }
+    public IReadOnlyCollection<Kit> Kits { get; set; }
 
-    public IReadOnlyCollection<Image> Images { get; init; }
+    public IReadOnlyCollection<Image> Images { get; set; }
 
-    public IReadOnlyCollection<Element> Elements { get; init; }
+    public IReadOnlyCollection<Element> Elements { get; set; }
 
     private IReadOnlyCollection<Category> GenerateCategories()
     {

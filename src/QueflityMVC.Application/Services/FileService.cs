@@ -21,7 +21,7 @@ public class FileService : IFileService
         if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
         var path = GetFileName(directory, Path.GetExtension(file.FileName));
-        using (var stream = new FileStream(path, FileMode.Create))
+        await using (var stream = new FileStream(path, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }
@@ -69,6 +69,5 @@ public class FileService : IFileService
     private string GetImagesDirectory(string root)
     {
         return Path.Combine(GetRootDirectory(root), RELATIVE_IMAGES_PATH);
-        ;
     }
 }

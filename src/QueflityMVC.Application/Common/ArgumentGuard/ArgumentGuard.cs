@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.Errors.Common;
+﻿using QueflityMVC.Application.Exceptions.Common;
 
 namespace QueflityMVC.Application.Common.ArgumentGuard;
 
@@ -14,7 +14,7 @@ public static class ArgumentGuard
         ValidateArgument(param, referencedValue, argGuardType, null);
     }
 
-    public static void ValidateArgument<T>(T inputValue, T referencedValue, ArgumentGuardType argGuardType,
+    private static void ValidateArgument<T>(T inputValue, T referencedValue, ArgumentGuardType argGuardType,
         string? paramName) where T : struct,
         IComparable,
         IComparable<T>,

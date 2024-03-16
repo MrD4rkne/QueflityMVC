@@ -1,8 +1,8 @@
 ﻿namespace QueflityMVC.Application.Results.Purchasable;
 
-public class UpdateOrderResult
+public record UpdateOrderResult
 {
-    public Exception? Exception { get; init; }
+    public Exception? Exception { get; set; }
 
-    public UpdateOrderStatus Status { get; init; }
+    public UpdateOrderStatus Status { get; set; }
 }

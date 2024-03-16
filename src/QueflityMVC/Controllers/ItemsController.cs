@@ -15,9 +15,9 @@ namespace QueflityMVC.Web.Controllers;
 public class ItemsController : Controller
 {
     private readonly IItemService _itemService;
-    private readonly IValidator<ItemVm> _itemValidator;
+    private readonly IValidator<ItemVm?> _itemValidator;
 
-    public ItemsController(IItemService itemService, IValidator<ItemVm> itemValidator)
+    public ItemsController(IItemService itemService, IValidator<ItemVm?> itemValidator)
     {
         _itemService = itemService;
         _itemValidator = itemValidator;

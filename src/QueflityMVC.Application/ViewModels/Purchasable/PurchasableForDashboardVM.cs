@@ -7,15 +7,15 @@ namespace QueflityMVC.Application.ViewModels.Purchasable;
 
 public record PurchasableForDashboardVm : IMapFrom<BasePurchasableEntity>
 {
-    public required int Id { get; init; }
+    public required int Id { get; set; }
 
-    public required string Name { get; init; }
+    public required string Name { get; set; }
 
-    public required decimal Price { get; init; }
+    public required decimal Price { get; set; }
 
-    public required uint? OrderNo { get; init; }
+    public required uint? OrderNo { get; set; }
 
-    public required ImageForListVm Image { get; init; }
+    public required ImageForListVm Image { get; set; }
 
     public void Mapping(Profile profile)
     {

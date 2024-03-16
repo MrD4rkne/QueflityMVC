@@ -8,15 +8,15 @@ namespace QueflityMVC.Application.Common.Pagination;
 
 public static class PaginationExtensions
 {
-    private static readonly int DefaultPageSize = 2;
-    private static readonly int DefaultPageNo = 1;
+    private const int DEFAULT_PAGE_SIZE = 2;
+    private const int DEFAULT_PAGE_NO = 1;
 
     /// <summary>
     ///     Create viewmodel for easy-handling your pagination with automapping
     /// </summary>
     /// <typeparam name="T1">Original entity type</typeparam>
     /// <typeparam name="T2">Mapped entity type</typeparam>
-    /// <param name="entitiesSource">Querable with original entities</param>
+    /// <param name="entitiesSource">Queryable with original entities</param>
     /// <param name="pageNo">Demanded page's number</param>
     /// <param name="pageSize">Page size</param>
     /// <param name="configurationProvider">Automapper configuration provider</param>
@@ -65,7 +65,7 @@ public static class PaginationExtensions
     ///     Create viewmodel for easy-handling your pagination
     /// </summary>
     /// <typeparam name="T">Entity type</typeparam>
-    /// <param name="entitiesSource">Querable with original entities</param>
+    /// <param name="entitiesSource">Queryable with original entities</param>
     /// <param name="pageNo">Demanded page's number</param>
     /// <param name="pageSize">Page size</param>
     /// <returns></returns>
@@ -96,7 +96,7 @@ public static class PaginationExtensions
 
     public static void FillInfoWhenNull(this PaginationInfo paginationInfo)
     {
-        if (paginationInfo.CurrentPageNo <= 0) paginationInfo.CurrentPageNo = DefaultPageNo;
-        if (paginationInfo.PageSize <= 1) paginationInfo.PageSize = DefaultPageSize;
+        if (paginationInfo.CurrentPageNo <= 0) paginationInfo.CurrentPageNo = DEFAULT_PAGE_NO;
+        if (paginationInfo.PageSize <= 1) paginationInfo.PageSize = DEFAULT_PAGE_SIZE;
     }
 }

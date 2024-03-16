@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Item;
@@ -36,7 +36,7 @@ public class ItemService : IItemService
         _purchasableRepository = purchasableRepository;
     }
 
-    public async Task<int> CreateItemAsync(ItemVm createItemVm)
+    public async Task<int> CreateItemAsync(ItemVm? createItemVm)
     {
         createItemVm.Image!.FileUrl = await _fileService.UploadFileAsync(createItemVm.Image.FormFile);
         var itemToCreate = _mapper.Map<Item>(createItemVm);
@@ -90,7 +90,7 @@ public class ItemService : IItemService
         return crEdObjItemVm;
     }
 
-    public async Task UpdateItemAsync(ItemVm updateItemVm)
+    public async Task UpdateItemAsync(ItemVm? updateItemVm)
     {
         var item = _mapper.Map<Item>(updateItemVm);
         if (ShouldSwitchImages(updateItemVm))
@@ -114,15 +114,13 @@ public class ItemService : IItemService
     {
         var crEdObjItem = new CrEdItemVm
         {
-            Categories = await GetCategoriesForSelectVmAsync()
+            Categories = await GetCategoriesForSelectVmAsync(),
+            ItemVm = new ItemVm
+            {
+                CategoryId = categoryId
+            }
         };
         if (crEdObjItem.Categories.Count == 0) throw new NoCategoriesException();
-
-        if (categoryId.HasValue)
-            crEdObjItem.ItemVm = new ItemVm
-            {
-                CategoryId = categoryId.Value
-            };
         return crEdObjItem;
     }
 
@@ -159,8 +157,8 @@ public class ItemService : IItemService
         return _itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
     }
 
-    private bool ShouldSwitchImages(ItemVm updatedItem)
+    private bool ShouldSwitchImages(ItemVm? updatedItem)
     {
-        return updatedItem != null && updatedItem.Image != null && updatedItem.Image.FormFile != null;
+        return updatedItem is not null && updatedItem.Image is not null && updatedItem.Image.FormFile != null;
     }
 }

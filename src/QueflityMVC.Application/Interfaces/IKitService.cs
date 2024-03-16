@@ -31,5 +31,5 @@ public interface IKitService
 
     Task<ElementVm> GetVmForAddingElementAsync(int kitId, int itemId);
 
-    Task<ElementVm> GetVmForEdittingElementAsync(int kitId, int itemId);
+    Task<ElementVm> GetVmForEditingElementAsync(int kitId, int itemId);
 }

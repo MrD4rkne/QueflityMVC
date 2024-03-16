@@ -2,5 +2,5 @@
 
 public record DashboardVm
 {
-    public required List<PurchasableForDashboardVm> Purchasables { get; init; }
+    public required List<PurchasableForDashboardVm> Purchasables { get; set; }
 }

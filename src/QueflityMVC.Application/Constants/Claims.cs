@@ -14,10 +14,10 @@ public static class Claims
     public const string ENTITIES_CREATE = "CreateEntities";
     public const string ENTITIES_ORDER = "OrderEntities";
 
-    public static List<string> GetAll()
+    public static IEnumerable<string> GetAll()
     {
-        return new List<string>
-        {
+        return
+        [
             USER_CLAIMS_MANAGE,
             USER_CLAIMS_VIEW,
             USERS_LIST,
@@ -29,6 +29,6 @@ public static class Claims
             ENTITIES_CREATE,
             ENTITIES_LIST,
             ENTITIES_ORDER
-        };
+        ];
     }
 }

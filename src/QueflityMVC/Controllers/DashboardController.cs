@@ -20,7 +20,7 @@ public class DashboardController : Controller
     [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public async Task<IActionResult> Index()
     {
-        var orderEditVm = await _purchasableEntityService.GetEnitiesOrderVm();
+        var orderEditVm = await _purchasableEntityService.GetEntitiesOrderVm();
         return View(orderEditVm);
     }
 

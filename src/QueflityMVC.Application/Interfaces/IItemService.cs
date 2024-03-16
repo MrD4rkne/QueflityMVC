@@ -6,7 +6,7 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IItemService
 {
-    Task<int> CreateItemAsync(ItemVm createItemVm);
+    Task<int> CreateItemAsync(ItemVm? createItemVm);
 
     Task<DeleteItemResult> DeleteItemAsync(int id);
 
@@ -16,7 +16,7 @@ public interface IItemService
 
     Task<CrEdItemVm> GetItemVmForAddingAsync(int? categoryId);
 
-    Task UpdateItemAsync(ItemVm createItemVm);
+    Task UpdateItemAsync(ItemVm? createItemVm);
 
     Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync();
 

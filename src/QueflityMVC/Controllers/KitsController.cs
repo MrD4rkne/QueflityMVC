@@ -185,7 +185,7 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> EditComponent(int kitId, int itemId)
     {
-        var addingComponentVm = await _kitService.GetVmForEdittingElementAsync(kitId, itemId);
+        var addingComponentVm = await _kitService.GetVmForEditingElementAsync(kitId, itemId);
         return View(addingComponentVm);
     }
 

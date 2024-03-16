@@ -7,9 +7,9 @@ namespace QueflityMVC.Application.ViewModels.Purchasable;
 
 public record KitForDashboardVm : PurchasableForDashboardVm, IMapFrom<Domain.Models.Kit>
 {
-    public string? Description { get; init; }
+    public string? Description { get; set; }
 
-    public required List<ElementForListVm> Elements { get; init; }
+    public required List<ElementForListVm> Elements { get; set; }
 
     public void Mapping(Profile profile)
     {

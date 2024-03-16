@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Domain.Interfaces;
@@ -19,9 +19,9 @@ public class CategoryService : ICategoryService
         _mapper = mapper;
     }
 
-    public async Task<int> CreateCategoryAsync(CategoryVm createcategoryVm)
+    public async Task<int> CreateCategoryAsync(CategoryVm createCategoryVm)
     {
-        var categoryToCreate = _mapper.Map<Category>(createcategoryVm);
+        var categoryToCreate = _mapper.Map<Category>(createCategoryVm);
         return await _categoriesRepository.AddAsync(categoryToCreate);
     }
 
@@ -46,9 +46,9 @@ public class CategoryService : ICategoryService
         return _mapper.Map<CategoryVm>(category);
     }
 
-    public async Task<CategoryVm> UpdateCategoryAsync(CategoryVm createcategoryVm)
+    public async Task<CategoryVm> UpdateCategoryAsync(CategoryVm createCategoryVm)
     {
-        var category = _mapper.Map<Category>(createcategoryVm);
+        var category = _mapper.Map<Category>(createCategoryVm);
         var updatedcategory = await _categoriesRepository.UpdateAsync(category);
         return _mapper.Map<CategoryVm>(updatedcategory);
     }

@@ -19,7 +19,7 @@ public class PurchasableEntityService : IPurchasableEntityService
         _purchasableRepository = purchasableRepository;
     }
 
-    public async Task<EditOrderVm> GetEnitiesOrderVm()
+    public async Task<EditOrderVm> GetEntitiesOrderVm()
     {
         var models = await _purchasableRepository.GetVisibileEntities().OrderBy(x => x.OrderNo).ToListAsync();
         var results = models.Select(x => _mapper.Map<PurchasableVm>(x)).ToList();
