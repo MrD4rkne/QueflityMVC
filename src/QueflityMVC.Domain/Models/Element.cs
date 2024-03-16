@@ -5,7 +5,7 @@ namespace QueflityMVC.Domain.Models;
 
 public class Element : BaseEntity
 {
-    public uint ItemsAmmount { get; set; }
+    public uint ItemsAmount { get; set; }
 
     [Precision(14, 2)] public decimal PricePerItem { get; set; }
 

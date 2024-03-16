@@ -331,7 +331,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<long>("ItemsAmmount")
+                    b.Property<long>("ItemsAmount")
                         .HasColumnType("bigint");
 
                     b.Property<int>("KitId")

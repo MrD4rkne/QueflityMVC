@@ -138,7 +138,7 @@ public partial class SeedData : Migration
 
         migrationBuilder.InsertData(
             "SetElements",
-            new[] { "Id", "ItemId", "ItemsAmmount", "KitId", "PricePerItem" },
+            new[] { "Id", "ItemId", "ItemsAmount", "KitId", "PricePerItem" },
             new object[,]
             {
                 { 1, 8, 8L, 16, 46.90m },

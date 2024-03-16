@@ -47,9 +47,9 @@
             <div class="row">
                 <div class="col-md">
                     <div class="form-floating">
-                        <input asp-for="ItemsAmmount" class="form-control" oninput="CalculateTotal()" type="number" min="0"/>
-                        <label asp-for="ItemsAmmount">Quantity</label>
-                        <span asp-validation-for="ItemsAmmount" class="text-danger"></span>
+                        <input asp-for="ItemsAmount" class="form-control" oninput="CalculateTotal()" type="number" min="0"/>
+                        <label asp-for="ItemsAmount">Quantity</label>
+                        <span asp-validation-for="ItemsAmount" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md">
@@ -85,7 +85,7 @@
     <script type="text/javascript">
         function CalculateTotal() {
             var pricePerItem = document.getElementById("@Html.IdFor(x => x.PricePerItem)").value;
-            var quantity = document.getElementById("@Html.IdFor(x => x.ItemsAmmount)").value;
+            var quantity = document.getElementById("@Html.IdFor(x => x.ItemsAmount)").value;
             var total = 0;
 
             if (pricePerItem >= 0 && quantity >= 0) {

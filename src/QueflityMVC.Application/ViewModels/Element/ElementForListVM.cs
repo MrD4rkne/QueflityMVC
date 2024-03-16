@@ -10,7 +10,7 @@ public record ElementForListVm : IMapFrom<Domain.Models.Element>
 
     public required ItemVm Item { get; set; }
 
-    public required uint ItemsAmmount { get; set; }
+    public required uint ItemsAmount { get; set; }
 
     public required decimal PricePerItem { get; set; }
 

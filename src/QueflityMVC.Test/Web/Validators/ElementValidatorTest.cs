@@ -13,7 +13,7 @@ public class ElementValidatorTest
         ElementVm elementVm = new()
         {
             Id = 0,
-            ItemsAmmount = 2,
+            ItemsAmount = 2,
             PricePerItem = 3,
             Item = null,
             KitDetailsVm = null

@@ -13,7 +13,7 @@ public record ElementVm : IMapFrom<Domain.Models.Element>
 
     public required KitDetailsVm KitDetailsVm { get; set; }
 
-    public required uint ItemsAmmount { get; set; }
+    public required uint ItemsAmount { get; set; }
 
     public required decimal PricePerItem { get; set; }
 

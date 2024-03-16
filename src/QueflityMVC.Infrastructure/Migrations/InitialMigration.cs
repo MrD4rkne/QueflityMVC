@@ -248,7 +248,7 @@ public partial class InitialMigration : Migration
             {
                 Id = table.Column<int>("int", nullable: false)
                     .Annotation("SqlServer:Identity", "1, 1"),
-                ItemsAmmount = table.Column<long>("bigint", nullable: false),
+                ItemsAmount = table.Column<long>("bigint", nullable: false),
                 PricePerItem = table.Column<decimal>("decimal(14,2)", precision: 14, scale: 2, nullable: false),
                 ItemId = table.Column<int>("int", nullable: false),
                 KitId = table.Column<int>("int", nullable: false)

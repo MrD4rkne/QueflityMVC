@@ -88,7 +88,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         if (elementToEdit is null) throw new EntityNotFoundException(entityName: nameof(Element));
 
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
-        elementToEdit.ItemsAmmount = elementToEdit.ItemsAmmount;
+        elementToEdit.ItemsAmount = elementToEdit.ItemsAmount;
         DbContext.Entry(elementToEdit).State = EntityState.Modified;
         await DbContext.SaveChangesAsync();
         await UpdateKitPriceAsync(elementToEdit.KitId);
@@ -135,6 +135,6 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
         return DbContext.Set<Element>()
             .AsNoTracking()
             .Where(x => x.KitId == kitId)
-            .Select(x => x.PricePerItem * x.ItemsAmmount);
+            .Select(x => x.PricePerItem * x.ItemsAmount);
     }
 }

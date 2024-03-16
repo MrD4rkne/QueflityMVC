@@ -43,7 +43,7 @@
             Name
         </th>
         <th>
-            Ammount
+            Amount
         </th>
         <th>
             Price per item
@@ -69,13 +69,13 @@
                 @Html.DisplayFor(modelItem => itemMembership.Item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => itemMembership.ItemsAmmount)
+                @Html.DisplayFor(modelItem => itemMembership.ItemsAmount)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => itemMembership.PricePerItem)
             </td>
             <td>
-                <p>@(itemMembership.PricePerItem * itemMembership.ItemsAmmount)</p>
+                <p>@(itemMembership.PricePerItem * itemMembership.ItemsAmount)</p>
             </td>
             <td>
                 @if (canEditEntities)

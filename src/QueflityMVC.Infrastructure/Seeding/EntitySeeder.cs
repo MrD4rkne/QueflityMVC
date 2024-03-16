@@ -84,7 +84,7 @@ public class EntitySeeder
         var kits = kitFaker.Generate(KITS_COUNT);
         foreach (var kit in kits)
         {
-            kit.Price = Elements.Where(elem => elem.KitId == kit.Id).Sum(elem => elem.ItemsAmmount * elem.PricePerItem);
+            kit.Price = Elements.Where(elem => elem.KitId == kit.Id).Sum(elem => elem.ItemsAmount * elem.PricePerItem);
             kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
         }
 
@@ -97,7 +97,7 @@ public class EntitySeeder
             .RuleFor(elem => elem.Id, f => f.GetPositiveIndexFaker())
             .RuleFor(elem => elem.PricePerItem,
                 f => Math.Round(f.Random.Decimal(0.01m, 10) * f.Random.Number(1, 20), 2))
-            .RuleFor(elem => elem.ItemsAmmount, f => (uint)f.Random.Number(1, ITEMS_COUNT))
+            .RuleFor(elem => elem.ItemsAmount, f => (uint)f.Random.Number(1, ITEMS_COUNT))
             .RuleFor(elem => elem.KitId, f => ITEMS_COUNT + f.Random.Number(1, KITS_COUNT))
             .RuleFor(elem => elem.ItemId, f => f.Random.Number(1, ITEMS_COUNT));
         List<Element> elements = new(ELEMENTS_COUNT);

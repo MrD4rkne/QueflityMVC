@@ -457,7 +457,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<long>("ItemsAmmount")
+                    b.Property<long>("ItemsAmount")
                         .HasColumnType("bigint");
 
                     b.Property<int>("KitId")
@@ -480,7 +480,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 1,
                             ItemId = 8,
-                            ItemsAmmount = 8L,
+                            ItemsAmount = 8L,
                             KitId = 16,
                             PricePerItem = 46.90m
                         },
@@ -488,7 +488,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 2,
                             ItemId = 10,
-                            ItemsAmmount = 4L,
+                            ItemsAmount = 4L,
                             KitId = 13,
                             PricePerItem = 21.43m
                         },
@@ -496,7 +496,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 3,
                             ItemId = 4,
-                            ItemsAmmount = 8L,
+                            ItemsAmount = 8L,
                             KitId = 18,
                             PricePerItem = 57.40m
                         },
@@ -504,7 +504,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 4,
                             ItemId = 8,
-                            ItemsAmmount = 5L,
+                            ItemsAmount = 5L,
                             KitId = 11,
                             PricePerItem = 47.50m
                         },
@@ -512,7 +512,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 5,
                             ItemId = 8,
-                            ItemsAmmount = 4L,
+                            ItemsAmount = 4L,
                             KitId = 13,
                             PricePerItem = 53.41m
                         },
@@ -520,7 +520,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 6,
                             ItemId = 6,
-                            ItemsAmmount = 8L,
+                            ItemsAmount = 8L,
                             KitId = 13,
                             PricePerItem = 85.38m
                         },
@@ -528,7 +528,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 7,
                             ItemId = 10,
-                            ItemsAmmount = 2L,
+                            ItemsAmount = 2L,
                             KitId = 16,
                             PricePerItem = 127.19m
                         },
@@ -536,7 +536,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 8,
                             ItemId = 1,
-                            ItemsAmmount = 8L,
+                            ItemsAmount = 8L,
                             KitId = 17,
                             PricePerItem = 72.87m
                         },
@@ -544,7 +544,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 9,
                             ItemId = 3,
-                            ItemsAmmount = 10L,
+                            ItemsAmount = 10L,
                             KitId = 15,
                             PricePerItem = 45.98m
                         },
@@ -552,7 +552,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 10,
                             ItemId = 4,
-                            ItemsAmmount = 7L,
+                            ItemsAmount = 7L,
                             KitId = 19,
                             PricePerItem = 20.53m
                         },
@@ -560,7 +560,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 11,
                             ItemId = 10,
-                            ItemsAmmount = 8L,
+                            ItemsAmount = 8L,
                             KitId = 12,
                             PricePerItem = 8.99m
                         },
@@ -568,7 +568,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 12,
                             ItemId = 9,
-                            ItemsAmmount = 1L,
+                            ItemsAmount = 1L,
                             KitId = 19,
                             PricePerItem = 90.48m
                         },
@@ -576,7 +576,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 13,
                             ItemId = 6,
-                            ItemsAmmount = 4L,
+                            ItemsAmount = 4L,
                             KitId = 16,
                             PricePerItem = 34.90m
                         },
@@ -584,7 +584,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 14,
                             ItemId = 2,
-                            ItemsAmmount = 9L,
+                            ItemsAmount = 9L,
                             KitId = 19,
                             PricePerItem = 143.38m
                         },
@@ -592,7 +592,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 15,
                             ItemId = 4,
-                            ItemsAmmount = 10L,
+                            ItemsAmount = 10L,
                             KitId = 17,
                             PricePerItem = 19.94m
                         });

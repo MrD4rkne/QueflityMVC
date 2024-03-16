@@ -9,7 +9,7 @@ public class ElementValidator : AbstractValidator<ElementVm>
     {
         RuleFor(elem => elem.PricePerItem)
             .GreaterThanOrEqualTo(0);
-        RuleFor(elem => elem.ItemsAmmount)
+        RuleFor(elem => elem.ItemsAmount)
             .Must(quantity => quantity > 0);
     }
 }
