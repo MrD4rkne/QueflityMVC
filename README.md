@@ -19,7 +19,7 @@ Queflity is an application designed for crafting and showcasing your list of ser
 
 
 ## Installation
-### Installation by Visual Studio
+### Installation via Visual Studio
 - clone repo onto your desktop
 - open solution
 - install Docker
@@ -46,7 +46,7 @@ Queflity is an application designed for crafting and showcasing your list of ser
 
 ## Acknowledgements
  - App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
- - Thanks to everyone who gave me great advice from [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
+ - Thanks to everyone, who gave me great advice [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
 
 
 ## License
