@@ -10,4 +10,6 @@ public interface IPurchasableEntityService
     Task<UpdateOrderResult> UpdateOrderAsync(EditOrderVm editOrderVm);
 
     Task<DashboardVm> GetDashboardVmAsync();
+    
+    Task<ContactVm> GetContactVmAsync(int id);
 }

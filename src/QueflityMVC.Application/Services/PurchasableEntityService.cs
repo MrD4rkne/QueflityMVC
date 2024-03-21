@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Purchasable;
 using QueflityMVC.Application.ViewModels.Purchasable;
@@ -34,7 +35,7 @@ public class PurchasableEntityService : IPurchasableEntityService
     {
         try
         {
-            if (!IsProperOrder(editOrderVm.PurchasablesVMs))
+            if (!IsOrderValidate(editOrderVm.PurchasablesVMs))
                 return UpdateOrderResultsFactory.NotValidOrder();
             var purchasableModels =
                 editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<BasePurchasableEntity>(p)).ToList();
@@ -59,14 +60,31 @@ public class PurchasableEntityService : IPurchasableEntityService
         return dashboard;
     }
 
-    private bool IsProperOrder(List<PurchasableVm> purchasables)
+    public async Task<ContactVm> GetContactVmAsync(int id)
+    {
+        var purchasable = await _purchasableRepository.GetByIdAsync(id);
+        if (purchasable is null)
+        {
+            throw new EntityNotFoundException();
+        }
+
+        ContactVm contactVm = new()
+        {
+            Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable)
+        };
+        return contactVm;
+    }
+
+    private static bool IsOrderValidate(List<PurchasableVm> purchasables)
     {
         if (!purchasables.All(p => p.OrderNo >= 0)) return false;
-        var orders = purchasables.Select(purchasables => purchasables.OrderNo).ToList();
-        orders.Sort();
-        for (var i = 0; i < orders.Count; i++)
-            if (orders[i] != i)
-                return false;
-        return true;
+        var orders = purchasables.Select(purchasable => purchasable.OrderNo).ToList();
+        return IsOrderFull(orders);
+    }
+
+    private static bool IsOrderFull(List<uint?> ids)
+    {
+        ids.Sort();
+        return !ids.Where((t, i) => t != i).Any();
     }
 }

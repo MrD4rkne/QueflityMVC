@@ -1,0 +1,56 @@
+﻿@model QueflityMVC.Application.ViewModels.Purchasable.ContactVm
+
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<form asp-action="Contact" asp-controller="Home">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+    <div class="card mb-3">
+        <div class="row g-0">
+            @Html.HiddenFor(model => model.Purchasable.Id)
+            <div class="col-md-auto">
+                <img class="img-fluid rounded-start" src="@Model.Purchasable.Image.FileUrl" alt="@Model.Purchasable.Image.AltDescription" style="max-height: 200px"/>
+                @Html.HiddenFor(model => model.Purchasable.Image.FileUrl)
+                @Html.HiddenFor(model => model.Purchasable.Image.AltDescription)
+            </div>
+            <div class="col-md">
+                <div class="card-body">
+                    <div class="row">
+                        <h4 class="card-title">@Html.DisplayFor(model => model.Purchasable.Name)</h4>
+                        @Html.HiddenFor(model => model.Purchasable.Name)
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <dl style="width:fit-content;">
+                                <dt class="col-sm">
+                                    Price
+                                </dt>
+                                <dd class="col-sm">
+                                    @Html.DisplayFor(model => model.Purchasable.Price)
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h3>Contact us!</h3>
+    
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" type="email"/>
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+            <label asp-for="Message" class="control-label"></label>
+            <input type="text" asp-for="Message" class="form-control"/>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+    <div class="form-group" style="margin: 5px">
+        <input type="submit" value="Save" class="btn btn-primary"/>
+    </div>
+</form>

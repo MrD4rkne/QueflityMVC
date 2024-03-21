@@ -22,7 +22,7 @@
                 </button>
             </div>
             <div class="col-auto">
-                @Html.ActionLink("Contact about", "Contact", "Home", new { purchasableId = Model.Id }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-primary" })
             </div>
         </div>
     </div>
@@ -84,7 +84,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    @Html.ActionLink("Details", "Details", "Home", new { id = Model.Id }, new { @class = "btn btn-primary" })
                 </div>
             </div>
         </div>

@@ -23,10 +23,11 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    [Route("Details")]
-    public Task<IActionResult> Details(int id)
+    [Route("Contact")]
+    public async Task<IActionResult> Contact(int id)
     {
-        throw new NotImplementedException();
+        var contactAboutPurchasableVm = await _purchasableEntityService.GetContactVmAsync(id);
+        return View(contactAboutPurchasableVm);
     }
 
     public IActionResult Privacy()

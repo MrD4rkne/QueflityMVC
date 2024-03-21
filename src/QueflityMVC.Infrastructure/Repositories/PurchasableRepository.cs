@@ -67,6 +67,14 @@ public class PurchasableRepository : IPurchasableRepository
             .ThenInclude(el => el.Image);
     }
 
+    public Task<BasePurchasableEntity?> GetByIdAsync(int id)
+    {
+        return _dbContext.Set<BasePurchasableEntity>()
+            .AsNoTracking()
+            .Include(x => x.Image)
+            .FirstOrDefaultAsync(purchasable => purchasable.Id == id);
+    }
+
     public async Task BulkUpdateOrderAsync(uint pivot)
     {
         await _dbContext.Set<BasePurchasableEntity>()
