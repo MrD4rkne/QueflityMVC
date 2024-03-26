@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Web.Models;
 
 namespace QueflityMVC.Web.Controllers;
@@ -24,10 +27,19 @@ public class HomeController : Controller
 
     [HttpGet]
     [Route("Contact")]
+    [Authorize]
     public async Task<IActionResult> Contact(int id)
     {
         var contactAboutPurchasableVm = await _purchasableEntityService.GetContactVmAsync(id);
         return View(contactAboutPurchasableVm);
+    }
+    
+    [HttpPost]
+    [Route("Contact")]
+    [Authorize]
+    public async Task<IActionResult> Contact(MessageVm messageVm)
+    {
+        throw new NotImplementedException();
     }
 
     public IActionResult Privacy()

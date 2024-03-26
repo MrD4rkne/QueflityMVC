@@ -1,4 +1,5 @@
 ﻿using QueflityMVC.Application.Results.Purchasable;
+using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Purchasable;
 
 namespace QueflityMVC.Application.Interfaces;
@@ -11,5 +12,5 @@ public interface IPurchasableEntityService
 
     Task<DashboardVm> GetDashboardVmAsync();
     
-    Task<ContactVm> GetContactVmAsync(int id);
+    Task<MessageVm> GetContactVmAsync(int id);
 }

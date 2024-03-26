@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results.Purchasable;
+using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Purchasable;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
@@ -60,7 +61,7 @@ public class PurchasableEntityService : IPurchasableEntityService
         return dashboard;
     }
 
-    public async Task<ContactVm> GetContactVmAsync(int id)
+    public async Task<MessageVm> GetContactVmAsync(int id)
     {
         var purchasable = await _purchasableRepository.GetByIdAsync(id);
         if (purchasable is null)
@@ -68,11 +69,11 @@ public class PurchasableEntityService : IPurchasableEntityService
             throw new EntityNotFoundException();
         }
 
-        ContactVm contactVm = new()
+        MessageVm messageVm = new()
         {
             Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable)
         };
-        return contactVm;
+        return messageVm;
     }
 
     private static bool IsOrderValidate(List<PurchasableVm> purchasables)

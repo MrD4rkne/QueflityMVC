@@ -23,7 +23,8 @@ builder.Services.ConfigureIdentity();
 
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
 
 builder.Services.AddAuthentication()
     .AddOAuths(variablesProvider);

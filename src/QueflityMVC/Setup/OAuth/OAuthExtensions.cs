@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.Options;
 using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Setup.Secrets;
 
@@ -7,29 +8,33 @@ namespace QueflityMVC.Web.Setup.OAuth;
 
 public static class OAuthExtensions
 {
+    private const string OAUTH_GOOGLE="Google OAuth 2.0";
+    
     public static AuthenticationBuilder AddOAuths(this AuthenticationBuilder authenticationBuilder,
         IVariablesProvider variablesProvider)
     {
-        authenticationBuilder.AddGoogle(options => options.Setup(variablesProvider));
+        authenticationBuilder.SetupGoogleOAuth(variablesProvider);
 
         return authenticationBuilder;
     }
 
-    private static void Setup(this GoogleOptions googleOptions, IVariablesProvider credentialsProvider)
+    private static void SetupGoogleOAuth(this AuthenticationBuilder authenticationBuilder, IVariablesProvider credentialsProvider)
     {
-        var googleOAuthSecrets = credentialsProvider.GetGoogleOAuthCredentials();
-        var clientId = googleOAuthSecrets.Item1;
-        var clientSecret = googleOAuthSecrets.Item2;
+        var (clientId, clientSecret) = credentialsProvider.GetGoogleOAuthCredentials();
+        if (!AreGoogleSecretsValid(clientId, clientSecret))
+        {
+            Serilog.Log.Error("Could not configure: {service}. Please check credentials.",OAUTH_GOOGLE);
+            return;
+        }
+        
+        authenticationBuilder.AddGoogle(opt => opt.ConfigureGoogleOptions(clientId!, clientSecret!));
+        Serilog.Log.Information("Configured service {service} successfully", OAUTH_GOOGLE);
+    }
 
-        if (AreGoogleSecretsValid(clientId, clientSecret))
-        {
-            googleOptions.ClientId = clientId!;
-            googleOptions.ClientSecret = clientSecret!;
-        }
-        else
-        {
-            throw new ConfigurationException("Could not found Google OAuth credentials.");
-        }
+    private static void ConfigureGoogleOptions(this GoogleOptions options, string clientId, string clientSecret)
+    {
+        options.ClientId = clientId;
+        options.ClientSecret = clientSecret;
     }
 
     private static bool AreGoogleSecretsValid(string? clientId, string? clientSecret)
