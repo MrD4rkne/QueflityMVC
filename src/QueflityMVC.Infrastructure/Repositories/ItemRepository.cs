@@ -56,15 +56,19 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         var originalEntity = await GetItemWithComponentsByIdAsync(entityToUpdate.Id) ??
                              throw new EntityNotFoundException(entityName: nameof(Item));
         if (DbContext.Entry(originalEntity).State == EntityState.Detached) DbContext.Attach(originalEntity);
+        
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
         originalEntity.Price = entityToUpdate.Price;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
+        
         if (entityToUpdate.Components is not null) originalEntity.Components = entityToUpdate.Components;
+        
         DbContext.Entry(originalEntity).State = EntityState.Modified;
         await DbContext.SaveChangesAsync();
+        
         return originalEntity;
     }
 

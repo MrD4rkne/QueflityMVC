@@ -7,6 +7,7 @@ namespace QueflityMVC.Application.Validators;
 public class MessageValidator : AbstractValidator<ContactVm>
 {
     private const int MESSAGE_MIN_LENGTH = 40;
+    
     public MessageValidator()
     {
         RuleFor(x => x.Email)
