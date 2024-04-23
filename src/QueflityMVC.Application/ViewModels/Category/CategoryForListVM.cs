@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Category;
 

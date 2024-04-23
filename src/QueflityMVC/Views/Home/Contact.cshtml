@@ -6,7 +6,7 @@
 
 <form asp-action="Contact" asp-controller="Home">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    
+
     <div class="card mb-3">
         <div class="row g-0">
             @Html.HiddenFor(model => model.Purchasable.Id)
@@ -37,14 +37,14 @@
             </div>
         </div>
     </div>
-    
+
     <h3>Contact us!</h3>
-    
+
     <div class="form-group">
-            <label asp-for="Message" class="control-label"></label>
-            <textarea class="form-control" asp-for="Message"></textarea>
-            <span asp-validation-for="Message" class="text-danger"></span>
-        </div>
+        <label asp-for="Message" class="control-label"></label>
+        <textarea class="form-control" asp-for="Message"></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
     <div class="form-group" style="margin: 5px">
         <input type="submit" value="Save" class="btn btn-primary"/>
     </div>

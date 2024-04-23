@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using AutoMapper;
 using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
 

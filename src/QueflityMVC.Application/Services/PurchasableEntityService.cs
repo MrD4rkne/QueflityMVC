@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Purchasable;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Purchasable;
 using QueflityMVC.Domain.Common;
@@ -32,23 +32,16 @@ public class PurchasableEntityService : IPurchasableEntityService
         return editVm;
     }
 
-    public async Task<UpdateOrderResult> UpdateOrderAsync(EditOrderVm editOrderVm)
+    public async Task<Result> UpdateOrderAsync(EditOrderVm editOrderVm)
     {
-        try
-        {
-            if (!IsOrderValidate(editOrderVm.PurchasablesVMs))
-                return UpdateOrderResultsFactory.NotValidOrder();
-            var purchasableModels =
-                editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<BasePurchasableEntity>(p)).ToList();
-            if (!await _purchasableRepository.AreTheseAllVisiblePurchasablesAsync(purchasableModels))
-                return UpdateOrderResultsFactory.MissingPurchasable();
-            await _purchasableRepository.UpdatePurchasablesOrderAsync(purchasableModels);
-            return UpdateOrderResultsFactory.Success();
-        }
-        catch (Exception ex)
-        {
-            return UpdateOrderResultsFactory.Exception(ex);
-        }
+        if (!IsOrderValid(editOrderVm.PurchasablesVMs))
+            return Result.Failure(Errors.Purchasable.InvalidOrder);
+        var purchasableModels =
+            editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<BasePurchasableEntity>(p)).ToList();
+        if (!await _purchasableRepository.AreTheseAllVisiblePurchasablesAsync(purchasableModels))
+            return Result.Failure(Errors.Purchasable.PurchasableMissingInOrder);
+        await _purchasableRepository.UpdatePurchasablesOrderAsync(purchasableModels);
+        return Result.Success();
     }
 
     public async Task<DashboardVm> GetDashboardVmAsync()
@@ -64,10 +57,7 @@ public class PurchasableEntityService : IPurchasableEntityService
     public async Task<MessageVm> GetContactVmAsync(int id)
     {
         var purchasable = await _purchasableRepository.GetByIdAsync(id);
-        if (purchasable is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        if (purchasable is null) throw new EntityNotFoundException();
 
         MessageVm messageVm = new()
         {
@@ -76,7 +66,7 @@ public class PurchasableEntityService : IPurchasableEntityService
         return messageVm;
     }
 
-    private static bool IsOrderValidate(List<PurchasableVm> purchasables)
+    private static bool IsOrderValid(List<PurchasableVm> purchasables)
     {
         if (!purchasables.All(p => p.OrderNo >= 0)) return false;
         var orders = purchasables.Select(purchasable => purchasable.OrderNo).ToList();

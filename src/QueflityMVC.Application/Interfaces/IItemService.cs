@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.Results.Item;
+﻿using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Item;
 
@@ -8,13 +8,13 @@ public interface IItemService
 {
     Task<int> CreateItemAsync(ItemVm? createItemVm);
 
-    Task<DeleteItemResult> DeleteItemAsync(int id);
+    Task<Result> DeleteItemAsync(int id);
 
     Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm);
 
     Task<CrEdItemVm?> GetForEditAsync(int id);
 
-    Task<CrEdItemVm> GetItemVmForAddingAsync(int? categoryId);
+    Task<Result<CrEdItemVm>> GetItemVmForAddingAsync(int? categoryId);
 
     Task UpdateItemAsync(ItemVm? createItemVm);
 

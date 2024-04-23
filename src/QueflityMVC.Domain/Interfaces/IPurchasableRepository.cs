@@ -17,6 +17,6 @@ public interface IPurchasableRepository
     Task UpdatePurchasablesOrderAsync(List<BasePurchasableEntity> purchasableModels);
 
     IQueryable<BasePurchasableEntity> GetVisiblePurchasablesForDashboard();
-    
+
     Task<BasePurchasableEntity?> GetByIdAsync(int id);
 }

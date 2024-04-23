@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.Results.Purchasable;
+﻿using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Purchasable;
 
@@ -8,9 +8,9 @@ public interface IPurchasableEntityService
 {
     Task<EditOrderVm> GetEntitiesOrderVm();
 
-    Task<UpdateOrderResult> UpdateOrderAsync(EditOrderVm editOrderVm);
+    Task<Result> UpdateOrderAsync(EditOrderVm editOrderVm);
 
     Task<DashboardVm> GetDashboardVmAsync();
-    
+
     Task<MessageVm> GetContactVmAsync(int id);
 }

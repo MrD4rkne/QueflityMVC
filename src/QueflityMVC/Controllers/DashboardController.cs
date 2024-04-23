@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Purchasable;
 using QueflityMVC.Application.ViewModels.Purchasable;
 
 namespace QueflityMVC.Web.Controllers;

@@ -6,7 +6,7 @@ namespace QueflityMVC.Application.Validators;
 public class ComponentValidator : AbstractValidator<ComponentVm>
 {
     private const string REGEX_ONLY_LETTERS = "[A-Za-z- ]*";
-    
+
     public ComponentValidator()
     {
         RuleFor(x => x.Name)

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image;

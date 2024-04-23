@@ -6,7 +6,7 @@ namespace QueflityMVC.Application.Validators;
 public class ImageValidator : AbstractValidator<ImageVm?>
 {
     private const string REGEX_ONLY_LETTERS = "[A-Za-z- ]*";
-    
+
     public ImageValidator()
     {
         RuleFor(x => x).NotNull();

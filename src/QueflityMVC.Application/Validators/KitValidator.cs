@@ -6,7 +6,7 @@ namespace QueflityMVC.Application.Validators;
 public class KitValidator : AbstractValidator<KitVm>
 {
     private const string REGEX_ONLY_LETTERS = "[A-Za-z- ]*";
-    
+
     public KitValidator()
     {
         RuleFor(x => x.Name)

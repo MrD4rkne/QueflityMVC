@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Image;
 

@@ -3,9 +3,8 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Exceptions.Common;
-using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Item;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Component;
 using QueflityMVC.Application.ViewModels.Item;
@@ -44,11 +43,11 @@ public class ItemService : IItemService
         return await _itemRepository.AddAsync(itemToCreate);
     }
 
-    public async Task<DeleteItemResult> DeleteItemAsync(int id)
+    public async Task<Result> DeleteItemAsync(int id)
     {
         var itemToDelete = await _itemRepository.GetByIdAsync(id);
-        if (itemToDelete is null) return DeleteItemResultsFactory.NotExist();
-        if (await _itemRepository.IsItemAPartOfAnyKitAsync(id)) return DeleteItemResultsFactory.ItemIsPartOfKit();
+        if (itemToDelete is null) return Result.Failure(Errors.Items.DoesNotExit);
+        if (await _itemRepository.IsItemAPartOfAnyKitAsync(id)) return Result.Failure(Errors.Items.IsPartOfKit);
 
         try
         {
@@ -59,15 +58,11 @@ public class ItemService : IItemService
         }
         catch (ResourceNotFoundException)
         {
-            return DeleteItemResultsFactory.NotExist();
-        }
-        catch (Exception ex)
-        {
-            return DeleteItemResultsFactory.Exception(ex);
+            return Result.Failure(Errors.Items.DoesNotExit);
         }
 
         if (itemToDelete.Image is not null) _fileService.DeleteImage(itemToDelete.Image!.FileUrl);
-        return DeleteItemResultsFactory.Success();
+        return Result.Success();
     }
 
     public async Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm)
@@ -110,7 +105,7 @@ public class ItemService : IItemService
         _ = await _itemRepository.UpdateAsync(item);
     }
 
-    public async Task<CrEdItemVm> GetItemVmForAddingAsync(int? categoryId)
+    public async Task<Result<CrEdItemVm>> GetItemVmForAddingAsync(int? categoryId)
     {
         var crEdObjItem = new CrEdItemVm
         {
@@ -120,8 +115,9 @@ public class ItemService : IItemService
                 CategoryId = categoryId
             }
         };
-        if (crEdObjItem.Categories.Count == 0) throw new NoCategoriesException();
-        return crEdObjItem;
+
+        if (crEdObjItem.Categories.Count == 0) return Result<CrEdItemVm>.Failure(Errors.Items.NoCategories);
+        return Result<CrEdItemVm>.Success(crEdObjItem);
     }
 
     public Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync()

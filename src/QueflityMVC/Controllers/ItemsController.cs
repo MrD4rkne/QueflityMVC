@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
-using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Item;
 using QueflityMVC.Application.ViewModels.Item;
 
 namespace QueflityMVC.Web.Controllers;

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Kit;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;

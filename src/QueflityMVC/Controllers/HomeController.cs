@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Web.Models;
@@ -33,7 +32,7 @@ public class HomeController : Controller
         var contactAboutPurchasableVm = await _purchasableEntityService.GetContactVmAsync(id);
         return View(contactAboutPurchasableVm);
     }
-    
+
     [HttpPost]
     [Route("Contact")]
     [Authorize]
