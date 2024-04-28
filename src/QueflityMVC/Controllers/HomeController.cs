@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
+using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Models;
 
 namespace QueflityMVC.Web.Controllers;
@@ -29,8 +32,17 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Contact(int id)
     {
-        var contactAboutPurchasableVm = await _purchasableEntityService.GetContactVmAsync(id);
-        return View(contactAboutPurchasableVm);
+        var contactVmResult = await _purchasableEntityService.GetContactVmAsync(id, User.GetLoggedInUserId());
+        if (contactVmResult.IsSuccess)
+        {
+            return View(contactVmResult.Value);
+        }
+
+        return contactVmResult.Error.Code switch
+        {
+            ErrorCodes.User.EMAIL_NOT_VERIFIED => RedirectToPage("RegisterConfirmation", new { email = User.FindFirstValue(ClaimTypes.Email)}),
+            ErrorCodes.Purchasable.DOES_NOT_EXIST => RedirectToAction("PurchasableNotFound", "Home")
+        };
     }
 
 
@@ -51,5 +63,10 @@ public class HomeController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+    
+    public IActionResult PurchasableNotFound()
+    {
+        return View();
     }
 }

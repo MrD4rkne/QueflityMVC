@@ -12,5 +12,5 @@ public interface IPurchasableEntityService
 
     Task<DashboardVm> GetDashboardVmAsync();
 
-    Task<MessageVm> GetContactVmAsync(int id);
+    Task<Result<MessageVm>> GetContactVmAsync(int id, string email);
 }

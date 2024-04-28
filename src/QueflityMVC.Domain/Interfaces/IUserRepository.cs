@@ -28,4 +28,8 @@ public interface IUserRepository
     Task GiveClaimsAsync(string userId, string[] claimsIds);
 
     Task RemoveClaimsAsync(string userId, string[] claimsIds);
+    
+    Task<bool> HasVerifiedEmail(string userId);
+    
+    Task<string?> GetEmailForUserAsync(string userId);
 }

@@ -122,6 +122,17 @@ public class UserRepository : IUserRepository
         await _userManager.UpdateSecurityStampAsync(user);
     }
 
+    public async Task<bool> HasVerifiedEmail(string userId)
+    {
+        return await _userManager.IsEmailConfirmedAsync(await GetUserByIdAsync(userId));
+    }
+
+    public async Task<string?> GetEmailForUserAsync(string userId)
+    {
+        var user = await _userManager.Users.FirstAsync(user=>user.Id==userId) ?? throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+        return user.Email;
+    }
+
     private Task<IdentityRole?> GetRoleByIdAsync(string roleId)
     {
         return DbContext.Roles

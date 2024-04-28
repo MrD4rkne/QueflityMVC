@@ -14,11 +14,13 @@ public class PurchasableEntityService : IPurchasableEntityService
 {
     private readonly IMapper _mapper;
     private readonly IPurchasableRepository _purchasableRepository;
+    private readonly IUserRepository _userRepository;
 
-    public PurchasableEntityService(IMapper mapper, IPurchasableRepository purchasableRepository)
+    public PurchasableEntityService(IMapper mapper, IPurchasableRepository purchasableRepository, IUserRepository userRepository)
     {
         _mapper = mapper;
         _purchasableRepository = purchasableRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<EditOrderVm> GetEntitiesOrderVm()
@@ -54,16 +56,22 @@ public class PurchasableEntityService : IPurchasableEntityService
         return dashboard;
     }
 
-    public async Task<MessageVm> GetContactVmAsync(int id)
+    public async Task<Result<MessageVm>> GetContactVmAsync(int id, string userId)
     {
+        if (!await _userRepository.HasVerifiedEmail(userId))
+        {
+            return Result<MessageVm>.Failure(Errors.User.EmailNotVerified);
+        }
+
         var purchasable = await _purchasableRepository.GetByIdAsync(id);
-        if (purchasable is null) throw new EntityNotFoundException();
+        if (purchasable is null) return Result<MessageVm>.Failure(Errors.Purchasable.DoesNotExist);
 
         MessageVm messageVm = new()
         {
-            Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable)
+            Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable),
+            Email = await _userRepository.GetEmailForUserAsync(userId)
         };
-        return messageVm;
+        return Result<MessageVm>.Success(messageVm);
     }
 
     private static bool IsOrderValid(List<PurchasableVm> purchasables)

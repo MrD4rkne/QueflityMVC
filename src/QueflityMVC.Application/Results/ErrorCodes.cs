@@ -16,7 +16,13 @@ public static class ErrorCodes
 
     public static class Purchasable
     {
+        public const string DOES_NOT_EXIST = "Purchasable.DoesNotExist";
         public const string INVALID_ORDER = "Purchasable.NotValidOrder";
         public const string PURCHASABLE_MISSING_IN_ORDER = "Purchasable.PurchasableMissingInOrder";
+    }
+
+    public static class User
+    {
+        public const string EMAIL_NOT_VERIFIED = "User.EmailNotVerified";
     }
 }

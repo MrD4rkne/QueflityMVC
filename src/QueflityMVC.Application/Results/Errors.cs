@@ -27,5 +27,14 @@ public static class Errors
 
         public static readonly Error PurchasableMissingInOrder = new(
             ErrorCodes.Purchasable.PURCHASABLE_MISSING_IN_ORDER, "Not every visible purchasable is in order");
+
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Purchasable.DOES_NOT_EXIST, "Not every visible purchasable is in order");
+    }
+
+    public static class User
+    {
+        public static readonly Error EmailNotVerified = new(
+            ErrorCodes.User.EMAIL_NOT_VERIFIED, "Email is not verified");
     }
 }

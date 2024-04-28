@@ -1,0 +1,12 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "Purchasable not found";
+}
+
+<h1>Purchasable was not found</h1>
+
+<div>
+    @Html.ActionLink("Retry", "Contact", "Home", new {id=Model}) |
+    <a asp-action="Index">Back to Home</a>
+</div>
