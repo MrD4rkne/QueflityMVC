@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Item;
+using QueflityMVC.Web.Exceptions;
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -50,15 +52,14 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(int? categoryId)
     {
-        try
+        var addingVm = await _itemService.GetItemVmForAddingAsync(categoryId);
+        if (addingVm.IsSuccess) return View(addingVm.Value);
+
+        return addingVm.Error.Code switch
         {
-            var addingVm = await _itemService.GetItemVmForAddingAsync(categoryId);
-            return View(addingVm);
-        }
-        catch (NoCategoriesException)
-        {
-            return RedirectToAction("NoCategories", "Items");
-        }
+            ErrorCodes.Items.NO_CATEGORIES => RedirectToAction("NoCategories"),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("Create")]
@@ -112,26 +113,17 @@ public class ItemsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var results = await _itemService.DeleteItemAsync(id);
-        switch (results.Status)
+        if (results.IsSuccess) return RedirectToAction("Index");
+
+        return results.Error.Code switch
         {
-            case DeleteItemStatus.Success:
-                return RedirectToAction("Index");
-
-            case DeleteItemStatus.NotExist:
-                return NotFound();
-
-            case DeleteItemStatus.ItemIsPartOfKit:
-                return View(new DeleteFailedItemVm
-                {
-                    ItemId = id,
-                    Message = "Item is part of a kit and cannot be deleted."
-                });
-
-            case DeleteItemStatus.Exception:
-                throw results.Exception!;
-            default:
-                throw new NotImplementedException();
-        }
+            ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
+            ErrorCodes.Items.IS_PART_OF_KIT => View(new DeleteFailedItemVm
+            {
+                ItemId = id, Message = "Item is part of a kit and cannot be deleted."
+            }),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("Components")]

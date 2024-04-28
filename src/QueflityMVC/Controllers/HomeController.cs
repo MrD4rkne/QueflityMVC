@@ -33,6 +33,7 @@ public class HomeController : Controller
         return View(contactAboutPurchasableVm);
     }
 
+
     [HttpPost]
     [Route("Contact")]
     [Authorize]

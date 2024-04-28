@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
-using QueflityMVC.Web.Models;
+using QueflityMVC.Web.Exceptions;
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -83,8 +84,14 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Details(int id)
     {
-        var kitDetailsVm = await _kitService.GetDetailsVmAsync(id);
-        return View(kitDetailsVm);
+        var kitDetailsResult = await _kitService.GetDetailsVmAsync(id);
+        if (kitDetailsResult.IsSuccess) return View(kitDetailsResult.Value);
+
+        return kitDetailsResult.Error.Code switch
+        {
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("Edit")]
@@ -92,8 +99,13 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        var kitToEditVm = await _kitService.GetKitVmForEditAsync(id);
-        return View(kitToEditVm);
+        var kitToEditResult = await _kitService.GetKitVmForEditAsync(id);
+        if (kitToEditResult.IsSuccess) return View(kitToEditResult.Value);
+        return kitToEditResult.Error.Code switch
+        {
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("Edit")]
@@ -119,20 +131,12 @@ public class KitsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var results = await _kitService.DeleteKitAsync(id);
-        switch (results.Status)
+        if (results.IsSuccess) return RedirectToAction("Index");
+        return results.Error.Code switch
         {
-            case DeleteKitStatus.Success:
-                return RedirectToAction("Index");
-
-            case DeleteKitStatus.NotExist:
-                return NotFound();
-
-            case DeleteKitStatus.Exception:
-                return RedirectToAction("Error", "Home", new ErrorViewModel());
-
-            default:
-                throw new NotImplementedException();
-        }
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("ListItemsForComponent")]
@@ -140,8 +144,10 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> ListItemsForComponents(int kitId)
     {
-        var itemsForComponentsListVm = await _kitService.GetFilteredListForComponentsAsync(kitId);
-        return View(itemsForComponentsListVm);
+        var getFilteredComponentsResult = await _kitService.GetFilteredListForComponentsAsync(kitId);
+        if (getFilteredComponentsResult.IsSuccess) return View(getFilteredComponentsResult.Value);
+
+        throw new UnexpectedApplicationException();
     }
 
     [Route("ListItemsForComponent")]
@@ -149,8 +155,13 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> ListItemsForComponents(ListItemsForComponentsVm listItemsForComponentsVm)
     {
-        var itemsForComponentsListVm = await _kitService.GetFilteredListForComponentsAsync(listItemsForComponentsVm);
-        return View(itemsForComponentsListVm);
+        var filterComponentsResult = await _kitService.GetFilteredListForComponentsAsync(listItemsForComponentsVm);
+        if (filterComponentsResult.IsSuccess) return View(filterComponentsResult.Value);
+        return filterComponentsResult.Error.Code switch
+        {
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("AddComponent")]

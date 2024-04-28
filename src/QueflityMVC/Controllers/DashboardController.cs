@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Purchasable;
+using QueflityMVC.Web.Exceptions;
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -27,25 +29,20 @@ public class DashboardController : Controller
     [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public async Task<IActionResult> Index(EditOrderVm editOrderVm)
     {
-        if (editOrderVm is null || editOrderVm.PurchasablesVMs is null) return BadRequest();
+        if (editOrderVm?.PurchasablesVMs is null) return BadRequest();
         var result = await _purchasableEntityService.UpdateOrderAsync(editOrderVm);
-        switch (result.Status)
+        if (result.IsSuccess) return RedirectToAction(nameof(Index), "Home");
+        switch (result.Error.Code)
         {
-            case UpdateOrderStatus.Success:
-                return RedirectToAction(nameof(Index), "Home");
-
-            case UpdateOrderStatus.NotValidOrder:
+            case ErrorCodes.Purchasable.INVALID_ORDER:
                 ModelState.AddModelError(string.Empty, "Order is not valid");
                 return View(editOrderVm);
 
-            case UpdateOrderStatus.MissingPurchasable:
+            case ErrorCodes.Purchasable.PURCHASABLE_MISSING_IN_ORDER:
                 return RedirectToAction("UpdateFailed",
                     new UpdateOrderFailedVm { Message = "Purchasable list was altered. Please try again." });
-
-            case UpdateOrderStatus.Exception:
-                throw result.Exception!;
             default:
-                throw new NotImplementedException();
+                throw new UnexpectedApplicationException();
         }
     }
 
