@@ -19,8 +19,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.3"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -40,6 +39,7 @@
     <ItemGroup>
         <ProjectReference Include="..\QueflityMVC.Application\QueflityMVC.Application.csproj"/>
         <ProjectReference Include="..\QueflityMVC.Infrastructure\QueflityMVC.Infrastructure.csproj"/>
+        <ProjectReference Include="..\QueflityMVC.Persistence\QueflityMVC.Persistence.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

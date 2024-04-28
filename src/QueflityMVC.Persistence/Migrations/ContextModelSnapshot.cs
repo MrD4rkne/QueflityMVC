@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using QueflityMVC.Infrastructure;
+using QueflityMVC.Persistence;
 
 #nullable disable
 
 namespace QueflityMVC.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240229214504_Seed-Data")]
-    partial class SeedData
+    partial class ContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,27 +303,27 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Jewelery"
+                            Name = "Electronics"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Movies"
+                            Name = "Grocery"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Beauty"
+                            Name = "Movies"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Computers"
+                            Name = "Kids"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Toys"
+                            Name = "Jewelery"
                         });
                 });
 
@@ -350,67 +347,67 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Granite"
+                            Name = "Cotton"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Frozen"
+                            Name = "Fresh"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Plastic"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Concrete"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Plastic"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Frozen"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Plastic"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Granite"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Rubber"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Steel"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Concrete"
-                        },
-                        new
-                        {
-                            Id = 12,
                             Name = "Soft"
                         },
                         new
                         {
+                            Id = 4,
+                            Name = "Cotton"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Wooden"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Cotton"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Wooden"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Frozen"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Steel"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Plastic"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "Soft"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Frozen"
+                        },
+                        new
+                        {
                             Id = 13,
-                            Name = "Concrete"
+                            Name = "Cotton"
                         },
                         new
                         {
@@ -420,27 +417,27 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 15,
-                            Name = "Metal"
+                            Name = "Concrete"
                         },
                         new
                         {
                             Id = 16,
-                            Name = "Plastic"
+                            Name = "Rubber"
                         },
                         new
                         {
                             Id = 17,
-                            Name = "Metal"
+                            Name = "Rubber"
                         },
                         new
                         {
                             Id = 18,
-                            Name = "Metal"
+                            Name = "Steel"
                         },
                         new
                         {
                             Id = 19,
-                            Name = "Fresh"
+                            Name = "Granite"
                         },
                         new
                         {
@@ -482,122 +479,122 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            ItemId = 8,
-                            ItemsAmount = 8L,
-                            KitId = 16,
-                            PricePerItem = 46.90m
+                            ItemId = 10,
+                            ItemsAmount = 3L,
+                            KitId = 17,
+                            PricePerItem = 8.28m
                         },
                         new
                         {
                             Id = 2,
-                            ItemId = 10,
-                            ItemsAmount = 4L,
-                            KitId = 13,
-                            PricePerItem = 21.43m
+                            ItemId = 6,
+                            ItemsAmount = 9L,
+                            KitId = 17,
+                            PricePerItem = 57.61m
                         },
                         new
                         {
                             Id = 3,
-                            ItemId = 4,
-                            ItemsAmount = 8L,
-                            KitId = 18,
-                            PricePerItem = 57.40m
+                            ItemId = 7,
+                            ItemsAmount = 2L,
+                            KitId = 19,
+                            PricePerItem = 175.23m
                         },
                         new
                         {
                             Id = 4,
-                            ItemId = 8,
-                            ItemsAmount = 5L,
-                            KitId = 11,
-                            PricePerItem = 47.50m
+                            ItemId = 2,
+                            ItemsAmount = 9L,
+                            KitId = 19,
+                            PricePerItem = 0.81m
                         },
                         new
                         {
                             Id = 5,
-                            ItemId = 8,
-                            ItemsAmount = 4L,
-                            KitId = 13,
-                            PricePerItem = 53.41m
+                            ItemId = 1,
+                            ItemsAmount = 9L,
+                            KitId = 18,
+                            PricePerItem = 23.26m
                         },
                         new
                         {
                             Id = 6,
-                            ItemId = 6,
-                            ItemsAmount = 8L,
-                            KitId = 13,
-                            PricePerItem = 85.38m
+                            ItemId = 3,
+                            ItemsAmount = 10L,
+                            KitId = 18,
+                            PricePerItem = 4.85m
                         },
                         new
                         {
                             Id = 7,
-                            ItemId = 10,
-                            ItemsAmount = 2L,
-                            KitId = 16,
-                            PricePerItem = 127.19m
+                            ItemId = 7,
+                            ItemsAmount = 3L,
+                            KitId = 11,
+                            PricePerItem = 146.03m
                         },
                         new
                         {
                             Id = 8,
-                            ItemId = 1,
-                            ItemsAmount = 8L,
+                            ItemId = 4,
+                            ItemsAmount = 5L,
                             KitId = 17,
-                            PricePerItem = 72.87m
+                            PricePerItem = 5.36m
                         },
                         new
                         {
                             Id = 9,
-                            ItemId = 3,
-                            ItemsAmount = 10L,
-                            KitId = 15,
-                            PricePerItem = 45.98m
+                            ItemId = 4,
+                            ItemsAmount = 1L,
+                            KitId = 12,
+                            PricePerItem = 29.33m
                         },
                         new
                         {
                             Id = 10,
-                            ItemId = 4,
-                            ItemsAmount = 7L,
-                            KitId = 19,
-                            PricePerItem = 20.53m
+                            ItemId = 5,
+                            ItemsAmount = 10L,
+                            KitId = 12,
+                            PricePerItem = 14.82m
                         },
                         new
                         {
                             Id = 11,
-                            ItemId = 10,
+                            ItemId = 4,
                             ItemsAmount = 8L,
-                            KitId = 12,
-                            PricePerItem = 8.99m
+                            KitId = 13,
+                            PricePerItem = 84.11m
                         },
                         new
                         {
                             Id = 12,
-                            ItemId = 9,
+                            ItemId = 1,
                             ItemsAmount = 1L,
                             KitId = 19,
-                            PricePerItem = 90.48m
+                            PricePerItem = 116.63m
                         },
                         new
                         {
                             Id = 13,
-                            ItemId = 6,
-                            ItemsAmount = 4L,
-                            KitId = 16,
-                            PricePerItem = 34.90m
+                            ItemId = 3,
+                            ItemsAmount = 8L,
+                            KitId = 19,
+                            PricePerItem = 51.50m
                         },
                         new
                         {
                             Id = 14,
-                            ItemId = 2,
-                            ItemsAmount = 9L,
-                            KitId = 19,
-                            PricePerItem = 143.38m
+                            ItemId = 10,
+                            ItemsAmount = 2L,
+                            KitId = 14,
+                            PricePerItem = 26.45m
                         },
                         new
                         {
                             Id = 15,
-                            ItemId = 4,
-                            ItemsAmount = 10L,
-                            KitId = 17,
-                            PricePerItem = 19.94m
+                            ItemId = 6,
+                            ItemsAmount = 8L,
+                            KitId = 14,
+                            PricePerItem = 22.19m
                         });
                 });
 
@@ -625,122 +622,122 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            AltDescription = "repellendus",
-                            FileUrl = "https://picsum.photos/640/480/?image=630"
+                            AltDescription = "occaecati",
+                            FileUrl = "https://picsum.photos/640/480/?image=797"
                         },
                         new
                         {
                             Id = 2,
-                            AltDescription = "voluptatum",
-                            FileUrl = "https://picsum.photos/640/480/?image=421"
+                            AltDescription = "enim",
+                            FileUrl = "https://picsum.photos/640/480/?image=1045"
                         },
                         new
                         {
                             Id = 3,
-                            AltDescription = "et",
-                            FileUrl = "https://picsum.photos/640/480/?image=619"
+                            AltDescription = "aut",
+                            FileUrl = "https://picsum.photos/640/480/?image=860"
                         },
                         new
                         {
                             Id = 4,
-                            AltDescription = "accusantium",
-                            FileUrl = "https://picsum.photos/640/480/?image=74"
+                            AltDescription = "voluptas",
+                            FileUrl = "https://picsum.photos/640/480/?image=493"
                         },
                         new
                         {
                             Id = 5,
-                            AltDescription = "sed",
-                            FileUrl = "https://picsum.photos/640/480/?image=721"
+                            AltDescription = "deleniti",
+                            FileUrl = "https://picsum.photos/640/480/?image=862"
                         },
                         new
                         {
                             Id = 6,
-                            AltDescription = "doloribus",
-                            FileUrl = "https://picsum.photos/640/480/?image=571"
+                            AltDescription = "a",
+                            FileUrl = "https://picsum.photos/640/480/?image=510"
                         },
                         new
                         {
                             Id = 7,
-                            AltDescription = "aliquid",
-                            FileUrl = "https://picsum.photos/640/480/?image=160"
+                            AltDescription = "sit",
+                            FileUrl = "https://picsum.photos/640/480/?image=559"
                         },
                         new
                         {
                             Id = 8,
-                            AltDescription = "quis",
-                            FileUrl = "https://picsum.photos/640/480/?image=506"
+                            AltDescription = "non",
+                            FileUrl = "https://picsum.photos/640/480/?image=67"
                         },
                         new
                         {
                             Id = 9,
-                            AltDescription = "necessitatibus",
-                            FileUrl = "https://picsum.photos/640/480/?image=590"
+                            AltDescription = "suscipit",
+                            FileUrl = "https://picsum.photos/640/480/?image=632"
                         },
                         new
                         {
                             Id = 10,
-                            AltDescription = "amet",
-                            FileUrl = "https://picsum.photos/640/480/?image=62"
+                            AltDescription = "sit",
+                            FileUrl = "https://picsum.photos/640/480/?image=671"
                         },
                         new
                         {
                             Id = 11,
-                            AltDescription = "mollitia",
-                            FileUrl = "https://picsum.photos/640/480/?image=86"
+                            AltDescription = "occaecati",
+                            FileUrl = "https://picsum.photos/640/480/?image=433"
                         },
                         new
                         {
                             Id = 12,
-                            AltDescription = "similique",
-                            FileUrl = "https://picsum.photos/640/480/?image=633"
+                            AltDescription = "enim",
+                            FileUrl = "https://picsum.photos/640/480/?image=81"
                         },
                         new
                         {
                             Id = 13,
-                            AltDescription = "voluptates",
-                            FileUrl = "https://picsum.photos/640/480/?image=315"
+                            AltDescription = "et",
+                            FileUrl = "https://picsum.photos/640/480/?image=698"
                         },
                         new
                         {
                             Id = 14,
-                            AltDescription = "dolore",
-                            FileUrl = "https://picsum.photos/640/480/?image=567"
+                            AltDescription = "soluta",
+                            FileUrl = "https://picsum.photos/640/480/?image=896"
                         },
                         new
                         {
                             Id = 15,
-                            AltDescription = "ullam",
-                            FileUrl = "https://picsum.photos/640/480/?image=611"
+                            AltDescription = "ratione",
+                            FileUrl = "https://picsum.photos/640/480/?image=818"
                         },
                         new
                         {
                             Id = 16,
-                            AltDescription = "quasi",
-                            FileUrl = "https://picsum.photos/640/480/?image=14"
+                            AltDescription = "molestias",
+                            FileUrl = "https://picsum.photos/640/480/?image=445"
                         },
                         new
                         {
                             Id = 17,
-                            AltDescription = "dolor",
-                            FileUrl = "https://picsum.photos/640/480/?image=116"
+                            AltDescription = "quia",
+                            FileUrl = "https://picsum.photos/640/480/?image=688"
                         },
                         new
                         {
                             Id = 18,
-                            AltDescription = "facere",
-                            FileUrl = "https://picsum.photos/640/480/?image=492"
+                            AltDescription = "velit",
+                            FileUrl = "https://picsum.photos/640/480/?image=515"
                         },
                         new
                         {
                             Id = 19,
-                            AltDescription = "quae",
-                            FileUrl = "https://picsum.photos/640/480/?image=866"
+                            AltDescription = "omnis",
+                            FileUrl = "https://picsum.photos/640/480/?image=368"
                         },
                         new
                         {
                             Id = 20,
-                            AltDescription = "accusamus",
-                            FileUrl = "https://picsum.photos/640/480/?image=948"
+                            AltDescription = "distinctio",
+                            FileUrl = "https://picsum.photos/640/480/?image=525"
                         });
                 });
 
@@ -760,19 +757,18 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 1,
                             ImageId = 1,
-                            Name = "Tasty Wooden Chips",
-                            OrderNo = 4L,
-                            Price = 143.18m,
-                            ShouldBeShown = true,
-                            CategoryId = 3
+                            Name = "Generic Wooden Cheese",
+                            Price = 63.66m,
+                            ShouldBeShown = false,
+                            CategoryId = 5
                         },
                         new
                         {
                             Id = 2,
                             ImageId = 2,
-                            Name = "Incredible Wooden Cheese",
-                            OrderNo = 8L,
-                            Price = 1.68m,
+                            Name = "Handmade Granite Car",
+                            OrderNo = 4L,
+                            Price = 23.89m,
                             ShouldBeShown = true,
                             CategoryId = 2
                         },
@@ -780,77 +776,77 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 3,
                             ImageId = 3,
-                            Name = "Tasty Concrete Bike",
-                            OrderNo = 9L,
-                            Price = 3.06m,
+                            Name = "Handmade Wooden Chair",
+                            OrderNo = 8L,
+                            Price = 62.77m,
                             ShouldBeShown = true,
-                            CategoryId = 4
+                            CategoryId = 2
                         },
                         new
                         {
                             Id = 4,
                             ImageId = 4,
-                            Name = "Ergonomic Steel Table",
-                            Price = 25.90m,
+                            Name = "Intelligent Metal Pants",
+                            Price = 44.04m,
                             ShouldBeShown = false,
-                            CategoryId = 3
+                            CategoryId = 5
                         },
                         new
                         {
                             Id = 5,
                             ImageId = 5,
-                            Name = "Practical Plastic Chair",
-                            OrderNo = 7L,
-                            Price = 17.79m,
-                            ShouldBeShown = true,
-                            CategoryId = 3
+                            Name = "Ergonomic Plastic Bacon",
+                            Price = 7.21m,
+                            ShouldBeShown = false,
+                            CategoryId = 4
                         },
                         new
                         {
                             Id = 6,
                             ImageId = 6,
-                            Name = "Handmade Steel Tuna",
-                            Price = 32.53m,
+                            Name = "Licensed Wooden Chair",
+                            Price = 25.03m,
                             ShouldBeShown = false,
-                            CategoryId = 5
+                            CategoryId = 3
                         },
                         new
                         {
                             Id = 7,
                             ImageId = 7,
-                            Name = "Licensed Fresh Mouse",
+                            Name = "Incredible Fresh Mouse",
                             OrderNo = 1L,
-                            Price = 29.96m,
+                            Price = 86.35m,
                             ShouldBeShown = true,
-                            CategoryId = 5
+                            CategoryId = 1
                         },
                         new
                         {
                             Id = 8,
                             ImageId = 8,
-                            Name = "Fantastic Concrete Shirt",
-                            Price = 52.06m,
-                            ShouldBeShown = false,
-                            CategoryId = 1
+                            Name = "Licensed Plastic Gloves",
+                            OrderNo = 2L,
+                            Price = 66.67m,
+                            ShouldBeShown = true,
+                            CategoryId = 3
                         },
                         new
                         {
                             Id = 9,
                             ImageId = 9,
-                            Name = "Rustic Rubber Sausages",
-                            Price = 42.29m,
+                            Name = "Generic Concrete Salad",
+                            Price = 94.91m,
                             ShouldBeShown = false,
-                            CategoryId = 5
+                            CategoryId = 2
                         },
                         new
                         {
                             Id = 10,
                             ImageId = 10,
-                            Name = "Awesome Frozen Hat",
-                            OrderNo = 3L,
-                            Price = 65.26m,
+                            Name = "Ergonomic Metal Shirt",
+                            OrderNo = 9L,
+                            Price = 4.81m,
                             ShouldBeShown = true,
-                            CategoryId = 1
+                            CategoryId = 3
                         });
                 });
 
@@ -873,95 +869,96 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 11,
                             ImageId = 11,
-                            Name = "Awesome Soft Bacon",
-                            Price = 237.50m,
-                            ShouldBeShown = false,
-                            Description = "Corrupti impedit fuga velit harum iure ullam culpa."
+                            Name = "Awesome Granite Towels",
+                            OrderNo = 5L,
+                            Price = 438.09m,
+                            ShouldBeShown = true,
+                            Description = "Consectetur vitae omnis enim rem."
                         },
                         new
                         {
                             Id = 12,
                             ImageId = 12,
-                            Name = "Handmade Metal Hat",
-                            OrderNo = 5L,
-                            Price = 71.92m,
+                            Name = "Practical Rubber Sausages",
+                            OrderNo = 0L,
+                            Price = 177.53m,
                             ShouldBeShown = true,
-                            Description = "Quibusdam corrupti optio."
+                            Description = "Eius accusamus dignissimos perspiciatis impedit."
                         },
                         new
                         {
                             Id = 13,
                             ImageId = 13,
-                            Name = "Small Wooden Table",
-                            Price = 982.40m,
+                            Name = "Fantastic Concrete Shirt",
+                            Price = 672.88m,
                             ShouldBeShown = false,
-                            Description = "Enim maxime tenetur perspiciatis temporibus cupiditate ut quas."
+                            Description = "Voluptatem qui est sint aut dolores ut error id sint."
                         },
                         new
                         {
                             Id = 14,
                             ImageId = 14,
-                            Name = "Practical Frozen Pizza",
-                            Price = 0m,
-                            ShouldBeShown = false,
-                            Description = "Odio sunt id possimus voluptate."
+                            Name = "Rustic Cotton Chair",
+                            OrderNo = 7L,
+                            Price = 230.42m,
+                            ShouldBeShown = true,
+                            Description = "Doloribus non perspiciatis."
                         },
                         new
                         {
                             Id = 15,
                             ImageId = 15,
-                            Name = "Awesome Cotton Car",
-                            OrderNo = 2L,
-                            Price = 459.80m,
-                            ShouldBeShown = true,
-                            Description = "Voluptatem autem consequatur id ipsam."
+                            Name = "Incredible Wooden Car",
+                            Price = 0m,
+                            ShouldBeShown = false,
+                            Description = "Possimus eligendi et et error."
                         },
                         new
                         {
                             Id = 16,
                             ImageId = 16,
-                            Name = "Intelligent Cotton Pants",
-                            Price = 769.18m,
+                            Name = "Fantastic Cotton Chair",
+                            Price = 0m,
                             ShouldBeShown = false,
-                            Description = "Possimus magnam at quibusdam in voluptas saepe eos."
+                            Description = "Totam optio quia reiciendis nam."
                         },
                         new
                         {
                             Id = 17,
                             ImageId = 17,
-                            Name = "Small Fresh Keyboard",
-                            OrderNo = 0L,
-                            Price = 782.36m,
-                            ShouldBeShown = true,
-                            Description = "Et et illum sunt."
+                            Name = "Sleek Wooden Keyboard",
+                            Price = 570.13m,
+                            ShouldBeShown = false,
+                            Description = "Blanditiis dolorem at ut."
                         },
                         new
                         {
                             Id = 18,
                             ImageId = 18,
-                            Name = "Incredible Soft Shirt",
-                            OrderNo = 6L,
-                            Price = 459.20m,
-                            ShouldBeShown = true,
-                            Description = "Omnis consequatur porro corporis sed dolor."
+                            Name = "Ergonomic Frozen Gloves",
+                            Price = 257.84m,
+                            ShouldBeShown = false,
+                            Description = "Debitis et eius dolores eaque sint cum sint."
                         },
                         new
                         {
                             Id = 19,
                             ImageId = 19,
-                            Name = "Handmade Concrete Chicken",
-                            Price = 1524.61m,
-                            ShouldBeShown = false,
-                            Description = "Asperiores odit velit aut quo neque."
+                            Name = "Awesome Rubber Chair",
+                            OrderNo = 6L,
+                            Price = 886.38m,
+                            ShouldBeShown = true,
+                            Description = "Nobis adipisci perspiciatis aut enim."
                         },
                         new
                         {
                             Id = 20,
                             ImageId = 20,
-                            Name = "Incredible Plastic Sausages",
+                            Name = "Ergonomic Concrete Mouse",
+                            OrderNo = 3L,
                             Price = 0m,
-                            ShouldBeShown = false,
-                            Description = "Provident voluptas earum voluptatem cum ad est eum."
+                            ShouldBeShown = true,
+                            Description = "Nulla aut debitis quo qui harum doloribus."
                         });
                 });
 

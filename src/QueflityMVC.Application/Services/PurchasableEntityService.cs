@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
@@ -16,7 +15,8 @@ public class PurchasableEntityService : IPurchasableEntityService
     private readonly IPurchasableRepository _purchasableRepository;
     private readonly IUserRepository _userRepository;
 
-    public PurchasableEntityService(IMapper mapper, IPurchasableRepository purchasableRepository, IUserRepository userRepository)
+    public PurchasableEntityService(IMapper mapper, IPurchasableRepository purchasableRepository,
+        IUserRepository userRepository)
     {
         _mapper = mapper;
         _purchasableRepository = purchasableRepository;
@@ -59,9 +59,7 @@ public class PurchasableEntityService : IPurchasableEntityService
     public async Task<Result<MessageVm>> GetContactVmAsync(int id, string userId)
     {
         if (!await _userRepository.HasVerifiedEmail(userId))
-        {
             return Result<MessageVm>.Failure(Errors.User.EmailNotVerified);
-        }
 
         var purchasable = await _purchasableRepository.GetByIdAsync(id);
         if (purchasable is null) return Result<MessageVm>.Failure(Errors.Purchasable.DoesNotExist);

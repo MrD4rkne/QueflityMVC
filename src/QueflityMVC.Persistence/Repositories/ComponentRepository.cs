@@ -1,15 +1,11 @@
 ﻿using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Common;
+using QueflityMVC.Persistence.Common;
 
-namespace QueflityMVC.Infrastructure.Repositories;
+namespace QueflityMVC.Persistence.Repositories;
 
-public class ComponentRepository : BaseRepository<Component>, IComponentRepository
+public class ComponentRepository(Context dbContext) : BaseRepository<Component>(dbContext), IComponentRepository
 {
-    public ComponentRepository(Context dbContext) : base(dbContext)
-    {
-    }
-
     public IQueryable<Component> GetComponentsForItem(int itemId)
     {
         return GetAll().Where(x => x.Items!.Any(x => x.Id == itemId));

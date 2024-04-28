@@ -1,18 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Common;
+using QueflityMVC.Persistence.Common;
 
-namespace QueflityMVC.Infrastructure.Repositories;
+namespace QueflityMVC.Persistence.Repositories;
 
-public class ItemRepository : BaseRepository<Item>, IItemRepository
+public class ItemRepository(Context dbContext) : BaseRepository<Item>(dbContext), IItemRepository
 {
-    public ItemRepository(Context dbContext) : base(dbContext)
-    {
-    }
-
     public override Task<Item?> GetByIdAsync(int entityId)
     {
         return DbContext.Items
@@ -54,7 +49,7 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
     public override async Task<Item> UpdateAsync(Item entityToUpdate)
     {
         var originalEntity = await GetItemWithComponentsByIdAsync(entityToUpdate.Id) ??
-                             throw new EntityNotFoundException(entityName: nameof(Item));
+                             throw new ResourceNotFoundException(entityName: nameof(Item));
         if (DbContext.Entry(originalEntity).State == EntityState.Detached) DbContext.Attach(originalEntity);
 
         originalEntity.Name = entityToUpdate.Name;

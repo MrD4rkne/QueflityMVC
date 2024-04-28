@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Moq;
-using QueflityMVC.Application.Exceptions.Common;
+using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Services;
 using QueflityMVC.Domain.Interfaces;

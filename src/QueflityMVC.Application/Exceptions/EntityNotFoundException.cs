@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Text;
 
-namespace QueflityMVC.Application.Exceptions.Common;
+namespace QueflityMVC.Application.Exceptions;
 
 public class EntityNotFoundException : Exception
 {

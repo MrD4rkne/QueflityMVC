@@ -1,18 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Common;
+using QueflityMVC.Persistence.Common;
 
-namespace QueflityMVC.Infrastructure.Repositories;
+namespace QueflityMVC.Persistence.Repositories;
 
-public class KitRepository : BaseRepository<Kit>, IKitRepository
+public class KitRepository(Context dbContext) : BaseRepository<Kit>(dbContext), IKitRepository
 {
-    public KitRepository(Context dbContext) : base(dbContext)
-    {
-    }
-
     public override Task<Kit?> GetByIdAsync(int entityId)
     {
         return DbContext.Kits
@@ -64,7 +59,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public async Task UpdateKitPriceAsync(int kitId)
     {
-        var kit = await GetByIdAsync(kitId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
+        var kit = await GetByIdAsync(kitId) ?? throw new ResourceNotFoundException(entityName: nameof(Kit));
         var componentsPrices = GetPricesOfKitComponents(kitId);
         var sumOfComponentPrices = componentsPrices.Sum();
         kit.Price = sumOfComponentPrices;
@@ -85,7 +80,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     public async Task UpdateElementAsync(Element element)
     {
         var elementToEdit = await GetElementAsync(element.KitId, element.ItemId);
-        if (elementToEdit is null) throw new EntityNotFoundException(entityName: nameof(Element));
+        if (elementToEdit is null) throw new ResourceNotFoundException(entityName: nameof(Element));
 
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
         elementToEdit.ItemsAmount = elementToEdit.ItemsAmount;
@@ -97,7 +92,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     public async Task DeleteElementAsync(int kitId, int itemId)
     {
         var elemToDelete = await GetElementAsync(kitId, itemId);
-        if (elemToDelete is null) throw new EntityNotFoundException(nameof(Element));
+        if (elemToDelete is null) throw new ResourceNotFoundException(nameof(Element));
 
         DbContext.Remove(elemToDelete);
         await UpdateKitPriceAsync(elemToDelete.KitId);
@@ -107,7 +102,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
     public override async Task<Kit> UpdateAsync(Kit entityToUpdate)
     {
         var originalEntity = await GetByIdAsync(entityToUpdate.Id) ??
-                             throw new EntityNotFoundException(entityName: nameof(Kit));
+                             throw new ResourceNotFoundException(entityName: nameof(Kit));
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
         originalEntity.Price = entityToUpdate.Price;
@@ -123,7 +118,7 @@ public class KitRepository : BaseRepository<Kit>, IKitRepository
 
     public override async Task DeleteAsync(Kit entityToDelete)
     {
-        if (!await ExistsAsync(entityToDelete)) throw new EntityNotFoundException(entityName: nameof(Kit));
+        if (!await ExistsAsync(entityToDelete)) throw new ResourceNotFoundException(entityName: nameof(Kit));
         await DbContext.SetElements.Where(x => x.KitId == entityToDelete.Id)
             .ExecuteDeleteAsync();
         DbContext.Kits.Remove(entityToDelete);

@@ -1,5 +1,5 @@
 using QueflityMVC.Application;
-using QueflityMVC.Infrastructure;
+using QueflityMVC.Persistence;
 using QueflityMVC.Web.Setup.Database;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.OAuth;
@@ -21,7 +21,7 @@ builder.Host.UseSerilog(Log.Logger);
 builder.Services.ConfigureDbContext<Context>(variablesProvider);
 builder.Services.ConfigureIdentity();
 
-builder.Services.AddInfrastructure();
+builder.Services.AddPersistence();
 builder.Services.AddApplication();
 builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();

@@ -7,6 +7,6 @@ public record MessageVm
     public required PurchasableForDashboardVm Purchasable { get; init; }
 
     public string? Message { get; init; }
-    
+
     public string? Email { get; init; }
 }

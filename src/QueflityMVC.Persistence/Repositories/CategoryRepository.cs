@@ -1,16 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Common;
+using QueflityMVC.Persistence.Common;
 
-namespace QueflityMVC.Infrastructure.Repositories;
+namespace QueflityMVC.Persistence.Repositories;
 
-public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
+public class CategoryRepository(Context dbContext) : BaseRepository<Category>(dbContext), ICategoryRepository
 {
-    public CategoryRepository(Context dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<bool> IsAnyItemWithCategory(int categoryId)
     {
         return !await DbContext.Items.AnyAsync(x => x.CategoryId == categoryId);

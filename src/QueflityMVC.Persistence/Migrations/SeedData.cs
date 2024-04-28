@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace QueflityMVC.Infrastructure.Migrations;
+namespace QueflityMVC.Persistence.Migrations;
 
 /// <inheritdoc />
 public partial class SeedData : Migration

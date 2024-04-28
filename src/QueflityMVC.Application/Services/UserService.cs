@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
-using QueflityMVC.Application.Exceptions.Common;
+using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.User;

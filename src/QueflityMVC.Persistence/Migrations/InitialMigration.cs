@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace QueflityMVC.Infrastructure.Migrations;
+namespace QueflityMVC.Persistence.Migrations;
 
 /// <inheritdoc />
 public partial class InitialMigration : Migration

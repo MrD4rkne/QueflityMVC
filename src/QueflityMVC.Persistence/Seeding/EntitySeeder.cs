@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using QueflityMVC.Domain.Models;
 
-namespace QueflityMVC.Infrastructure.Seeding;
+namespace QueflityMVC.Persistence.Seeding;
 
 public class EntitySeeder
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure;
+using QueflityMVC.Persistence;
 using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Setup.Identity;

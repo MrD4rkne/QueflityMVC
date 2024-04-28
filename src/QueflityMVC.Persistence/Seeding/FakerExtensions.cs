@@ -1,6 +1,6 @@
 ﻿using Bogus;
 
-namespace QueflityMVC.Infrastructure.Seeding;
+namespace QueflityMVC.Persistence.Seeding;
 
 internal static class FakerExtensions
 {

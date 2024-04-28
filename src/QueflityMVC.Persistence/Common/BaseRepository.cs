@@ -1,18 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Application.Exceptions.Common;
 using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 
-namespace QueflityMVC.Infrastructure.Common;
+namespace QueflityMVC.Persistence.Common;
 
-public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
+    where T : BaseEntity
 {
-    protected Context DbContext;
-
-    public BaseRepository(Context dbContext)
-    {
-        DbContext = dbContext;
-    }
+    protected Context DbContext = dbContext;
 
     public virtual async Task<int> AddAsync(T entityToAdd)
     {
@@ -25,13 +21,13 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
     public virtual async Task DeleteAsync(int entityToDeleteId)
     {
         var entityToDelete = await GetByIdAsync(entityToDeleteId) ??
-                             throw new EntityNotFoundException(entityName: nameof(T));
+                             throw new ResourceNotFoundException(entityName: nameof(T));
         await DeleteAsync(entityToDelete);
     }
 
     public virtual async Task DeleteAsync(T entityToDelete)
     {
-        if (!await ExistsAsync(entityToDelete)) throw new EntityNotFoundException(entityName: nameof(T));
+        if (!await ExistsAsync(entityToDelete)) throw new ResourceNotFoundException(entityName: nameof(T));
 
         DbContext.Set<T>().Remove(entityToDelete);
         await DbContext.SaveChangesAsync();
@@ -39,7 +35,8 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntit
 
     public virtual async Task<T?> UpdateAsync(T entityToUpdate)
     {
-        var entity = await GetByIdAsync(entityToUpdate.Id) ?? throw new EntityNotFoundException(entityName: nameof(T));
+        var entity = await GetByIdAsync(entityToUpdate.Id) ??
+                     throw new ResourceNotFoundException(entityName: nameof(T));
         if (DbContext.Entry(entity).State == EntityState.Detached) DbContext.Set<T>().Attach(entity);
         DbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
         await DbContext.SaveChangesAsync();

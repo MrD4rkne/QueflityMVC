@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.Exceptions.Common;
+﻿using QueflityMVC.Application.Exceptions;
 
 namespace QueflityMVC.Application.Common.ArgumentGuard;
 

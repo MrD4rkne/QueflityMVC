@@ -2,16 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Seeding;
+using QueflityMVC.Persistence.Seeding;
 
-namespace QueflityMVC.Infrastructure;
+namespace QueflityMVC.Persistence;
 
-public class Context : IdentityDbContext<ApplicationUser>
+public class Context(DbContextOptions options) : IdentityDbContext<ApplicationUser>(options)
 {
-    public Context(DbContextOptions options) : base(options)
-    {
-    }
-
     public DbSet<Component> Components { get; set; }
 
     public DbSet<Item> Items { get; set; }

@@ -1,10 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using QueflityMVC.Application.Constants;
 using QueflityMVC.Domain.Models;
 using Serilog;
 
-namespace QueflityMVC.Infrastructure.Seeding;
+namespace QueflityMVC.Persistence.Seeding;
 
 public class IdentitySeed
 {
@@ -18,7 +17,6 @@ public class IdentitySeed
         ArgumentNullException.ThrowIfNull(roleManager, nameof(roleManager));
         await SeedRoles(roleManager);
         await SeedAdmin(userManager);
-        await SeedRolesClaims(roleManager);
     }
 
     private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -30,14 +28,8 @@ public class IdentitySeed
         }
     }
 
-    private static async Task SeedRolesClaims(RoleManager<IdentityRole> roleManager)
+    public static async Task SeedRolesClaims(RoleManager<IdentityRole> roleManager, string[] claims)
     {
-        string[] claims =
-        {
-            Claims.ENTITIES_LIST, Claims.ENTITIES_EDIT, Claims.ENTITIES_CREATE, Claims.USERS_LIST,
-            Claims.USER_CLAIMS_MANAGE, Claims.USER_CLAIMS_VIEW, Claims.USER_DISABLE, Claims.USER_ENABLE,
-            Claims.USER_ROLES_LIST, Claims.USER_ROLES_MANAGE, Claims.ENTITIES_ORDER
-        };
         var adminRole = await roleManager.FindByNameAsync("Admin") ?? throw new Exception("Admin role not found");
         foreach (var claim in claims) await roleManager.AddClaimAsync(adminRole, new Claim(claim, claim));
     }

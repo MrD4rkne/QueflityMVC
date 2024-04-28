@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace QueflityMVC.Application.Exceptions.Identity;
+namespace QueflityMVC.Application.Exceptions;
 
 public class UserCannotManageThemselveException : Exception
 {

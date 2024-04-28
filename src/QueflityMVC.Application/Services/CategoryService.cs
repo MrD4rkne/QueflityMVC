@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Exceptions.Common;
+using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Domain.Interfaces;

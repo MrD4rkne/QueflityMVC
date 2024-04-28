@@ -2,14 +2,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Repositories;
-using QueflityMVC.Infrastructure.Seeding;
+using QueflityMVC.Persistence.Repositories;
+using QueflityMVC.Persistence.Seeding;
 
-namespace QueflityMVC.Infrastructure;
+namespace QueflityMVC.Persistence;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddPersistence(this IServiceCollection services)
     {
         services.AddTransient<IComponentRepository, ComponentRepository>();
         services.AddTransient<ICategoryRepository, CategoryRepository>();

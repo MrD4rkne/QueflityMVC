@@ -33,14 +33,12 @@ public class HomeController : Controller
     public async Task<IActionResult> Contact(int id)
     {
         var contactVmResult = await _purchasableEntityService.GetContactVmAsync(id, User.GetLoggedInUserId());
-        if (contactVmResult.IsSuccess)
-        {
-            return View(contactVmResult.Value);
-        }
+        if (contactVmResult.IsSuccess) return View(contactVmResult.Value);
 
         return contactVmResult.Error.Code switch
         {
-            ErrorCodes.User.EMAIL_NOT_VERIFIED => RedirectToPage("RegisterConfirmation", new { email = User.FindFirstValue(ClaimTypes.Email)}),
+            ErrorCodes.User.EMAIL_NOT_VERIFIED => RedirectToPage("RegisterConfirmation",
+                new { email = User.FindFirstValue(ClaimTypes.Email) }),
             ErrorCodes.Purchasable.DOES_NOT_EXIST => RedirectToAction("PurchasableNotFound", "Home")
         };
     }
@@ -64,7 +62,7 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-    
+
     public IActionResult PurchasableNotFound()
     {
         return View();
