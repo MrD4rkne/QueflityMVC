@@ -25,10 +25,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\QueflityMVC.Domain\QueflityMVC.Domain.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Exceptions\Identity\"/>
+        <ProjectReference Include="..\QueflityMVC.Infrastructure.Abstraction\QueflityMVC.Infrastructure.Abstraction.csproj"/>
     </ItemGroup>
 
 </Project>

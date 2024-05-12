@@ -58,7 +58,7 @@ public class ComponentsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(ComponentVm componentToAddVm)
     {
-        var validationResult = _categoryValidator.Validate(componentToAddVm);
+        var validationResult = await _categoryValidator.ValidateAsync(componentToAddVm);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);

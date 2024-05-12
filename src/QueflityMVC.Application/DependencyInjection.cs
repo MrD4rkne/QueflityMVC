@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddTransient<IFileService, FileService>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IPurchasableEntityService, PurchasableEntityService>();
+        services.AddTransient<IMessageService, MessageService>();
 
         return services;
     }

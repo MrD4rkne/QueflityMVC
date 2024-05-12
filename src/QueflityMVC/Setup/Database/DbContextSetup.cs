@@ -37,7 +37,6 @@ public static class DbContextSetup
         using var scope = appBuilder.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         context.Database.EnsureCreated();
-        scope.Dispose();
     }
 
     private static string PrepareConnectionString(IVariablesProvider variablesProvider)
@@ -45,8 +44,7 @@ public static class DbContextSetup
         ArgumentNullException.ThrowIfNull(variablesProvider);
         try
         {
-            var builtConnectionString = string.Empty;
-            if (!TryBuildConnectionString(variablesProvider.GetConnectionString(), out builtConnectionString))
+            if (!TryBuildConnectionString(variablesProvider.GetConnectionString(), out var builtConnectionString))
                 throw new ConfigurationException(
                     "Connection string is invalid. Please fix this and provide valid one.");
             return builtConnectionString;

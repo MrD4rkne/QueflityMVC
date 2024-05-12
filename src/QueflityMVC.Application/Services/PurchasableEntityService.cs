@@ -2,25 +2,27 @@
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
-using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Purchasable;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
+using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 
 namespace QueflityMVC.Application.Services;
 
 public class PurchasableEntityService : IPurchasableEntityService
 {
+    private readonly IEmailDispatcher _emailDispatcher;
     private readonly IMapper _mapper;
     private readonly IPurchasableRepository _purchasableRepository;
     private readonly IUserRepository _userRepository;
 
     public PurchasableEntityService(IMapper mapper, IPurchasableRepository purchasableRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository, IEmailDispatcher emailDispatcher)
     {
         _mapper = mapper;
         _purchasableRepository = purchasableRepository;
         _userRepository = userRepository;
+        _emailDispatcher = emailDispatcher;
     }
 
     public async Task<EditOrderVm> GetEntitiesOrderVm()
@@ -54,22 +56,6 @@ public class PurchasableEntityService : IPurchasableEntityService
             Purchasables = await purchasables.Select(x => _mapper.Map<PurchasableForDashboardVm>(x)).ToListAsync()
         };
         return dashboard;
-    }
-
-    public async Task<Result<MessageVm>> GetContactVmAsync(int id, string userId)
-    {
-        if (!await _userRepository.HasVerifiedEmail(userId))
-            return Result<MessageVm>.Failure(Errors.User.EmailNotVerified);
-
-        var purchasable = await _purchasableRepository.GetByIdAsync(id);
-        if (purchasable is null) return Result<MessageVm>.Failure(Errors.Purchasable.DoesNotExist);
-
-        MessageVm messageVm = new()
-        {
-            Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable),
-            Email = await _userRepository.GetEmailForUserAsync(userId)
-        };
-        return Result<MessageVm>.Success(messageVm);
     }
 
     private static bool IsOrderValid(List<PurchasableVm> purchasables)
