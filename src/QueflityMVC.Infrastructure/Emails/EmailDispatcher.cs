@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using QueflityMVC.Domain.Models;
+using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 
 namespace QueflityMVC.Infrastructure.Purchasables;
@@ -17,15 +19,15 @@ public class EmailDispatcher : IEmailDispatcher
         ConfigureSmtpClient(_smtpConfig);
     }
 
-    public Task SendEmailAsync(string recipient, string subject, string body)
+    public Task SendEmailAsync(Mail mail)
     {
         var mailMessage = new MailMessage();
         mailMessage.From = new MailAddress(_smtpConfig.Username);
-        mailMessage.To.Add(recipient);
-        mailMessage.Subject = subject;
-        mailMessage.Body = body;
+        mailMessage.To.Add(mail.Recipient);
+        mailMessage.Subject = mail.Subject;
+        mailMessage.Body = mail.Body;
         mailMessage.IsBodyHtml = true;
-        return new SmtpClient().SendMailAsync(mailMessage);
+        return _smtpClient.SendMailAsync(mailMessage);
     }
 
     private void ConfigureSmtpClient(SmtpConfig smtpConfig)

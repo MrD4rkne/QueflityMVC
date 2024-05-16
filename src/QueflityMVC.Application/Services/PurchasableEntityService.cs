@@ -5,6 +5,7 @@ using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Purchasable;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
+using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 
 namespace QueflityMVC.Application.Services;

@@ -1,5 +1,7 @@
 ﻿using Quartz;
+using Quartz.Job;
 using QueflityMVC.Domain.Models;
+using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 using QueflityMVC.Infrastructure.Jobs;
 
@@ -16,23 +18,13 @@ public class BackgroundJobScheduler : IBackgroundJobScheduler
         _schedulerFactory = schedulerFactory;
     }
 
-    public async Task ScheduleEmailJob(Message message)
+    public async Task ScheduleSendMessageJob(Mail mail)
     {
-        var jobData = new JobDataMap();
-        jobData["Recipient"] = message.Recipient;
-        jobData["Subject"] = message.Subject;
-        jobData["Body"] = message.Body;
+        JobDataMap jobData = new();
+        jobData.Put("Mail", mail);
+        
         var scheduler = await _schedulerFactory.GetScheduler();
+        await scheduler.TriggerJob(SendEmailJob.Key, jobData);
 
-        var job = JobBuilder.Create<SendEmailJob>()
-            .WithIdentity(SendEmailJob.Key)
-            .UsingJobData(jobData)
-            .Build();
-
-        var trigger = TriggerBuilder.Create()
-            .WithIdentity("emailTrigger", "group1")
-            .StartNow()
-            .Build();
-        await scheduler.ScheduleJob(job, trigger);
     }
 }

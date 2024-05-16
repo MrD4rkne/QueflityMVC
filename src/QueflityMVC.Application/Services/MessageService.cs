@@ -51,22 +51,24 @@ public class MessageService : IMessageService
         if (purchasable is null) return Result<MessageVm>.Failure(Errors.Purchasable.DoesNotExist);
 
         messageVm = messageVm with { Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable) };
+        
         var email = await _userRepository.GetEmailForUserAsync(userId);
+        if(string.IsNullOrWhiteSpace(email))
+            return Result.Failure(Errors.User.EmailNotVerified);
+        
         var message = BuildEmailBody(messageVm);
         var subject = $"COPY: Your message about {messageVm.Purchasable.Name} on {DateTime.Now}";
-        await _backgroundJobScheduler.ScheduleEmailJob(new Message
+        await _backgroundJobScheduler.ScheduleSendMessageJob(new Mail
         {
             Body = message,
             Recipient = email,
-            Subject = subject,
-            SentAt = DateTime.Now,
-            PurchasableId = purchasable.Id
+            Subject = subject
         });
         return Result.Success();
     }
 
 
-    private string BuildEmailBody(MessageVm messageVm)
+    private static string BuildEmailBody(MessageVm messageVm)
     {
         StringBuilder sb = new();
         sb.AppendLine($"This is a copy of the message you sent about {messageVm.Purchasable.Name} on {DateTime.Now}");

@@ -1,6 +1,8 @@
-﻿namespace QueflityMVC.Infrastructure.Abstraction.Purchasables;
+﻿using QueflityMVC.Domain.Models;
+
+namespace QueflityMVC.Infrastructure.Abstraction.Interfaces;
 
 public interface IEmailDispatcher
 {
-    public Task SendEmailAsync(string recipient, string subject, string body);
+    public Task SendEmailAsync(Mail mail);
 }

@@ -1,6 +1,6 @@
 ﻿namespace QueflityMVC.Domain.Models;
 
-public class Message
+public class Mail
 {
     public int Id { get; set; }
 
@@ -11,6 +11,4 @@ public class Message
     public string Recipient { get; set; }
 
     public DateTime SentAt { get; set; }
-
-    public int PurchasableId { get; set; }
 }

@@ -29,4 +29,8 @@
         <ProjectReference Include="..\QueflityMVC.Infrastructure.Abstraction\QueflityMVC.Infrastructure.Abstraction.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Purchasables\" />
+    </ItemGroup>
+
 </Project>

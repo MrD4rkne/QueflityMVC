@@ -4,5 +4,5 @@ namespace QueflityMVC.Infrastructure.Abstraction.Purchasables;
 
 public interface IBackgroundJobScheduler
 {
-    public Task ScheduleEmailJob(Message message);
+    public Task ScheduleSendMessageJob(Mail mail);
 }

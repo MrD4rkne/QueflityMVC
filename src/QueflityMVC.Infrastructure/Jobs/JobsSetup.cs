@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.AspNetCore;
+using Quartz.Simpl;
 using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 using QueflityMVC.Infrastructure.Purchasables;
 
@@ -11,9 +12,18 @@ internal static class JobsSetup
     internal static IServiceCollection AddBackgroundJobs(this IServiceCollection services, string connectionString)
     {
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
-        services.AddQuartz();
+        services.AddQuartz(q =>
+        {
+            q.UseInMemoryStore();
+            q.UseDefaultThreadPool(tp =>
+            {
+                tp.MaxConcurrency = 10;
+            });
 
-        services.AddQuartzServer(options => { options.WaitForJobsToComplete = true; });
+            q.AddJob<SendEmailJob>(opts => opts.WithIdentity(SendEmailJob.Key).StoreDurably());
+        });
+
+       services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         return services;
     }
 }
