@@ -1,6 +1,4 @@
-﻿using QueflityMVC.Application.Exceptions;
-
-namespace QueflityMVC.Application.Common.ArgumentGuard;
+﻿namespace QueflityMVC.Application.Common.ArgumentGuard;
 
 public static class ArgumentGuard
 {

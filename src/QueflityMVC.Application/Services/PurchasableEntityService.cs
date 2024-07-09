@@ -6,7 +6,6 @@ using QueflityMVC.Application.ViewModels.Purchasable;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
-using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 
 namespace QueflityMVC.Application.Services;
 
@@ -28,7 +27,7 @@ public class PurchasableEntityService : IPurchasableEntityService
 
     public async Task<EditOrderVm> GetEntitiesOrderVm()
     {
-        var models = await _purchasableRepository.GetVisibileEntities().OrderBy(x => x.OrderNo).ToListAsync();
+        var models = await _purchasableRepository.GetVisibleEntities().OrderBy(x => x.OrderNo).ToListAsync();
         var results = models.Select(x => _mapper.Map<PurchasableVm>(x)).ToList();
         var editVm = new EditOrderVm
         {

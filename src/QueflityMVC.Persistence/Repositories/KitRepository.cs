@@ -79,12 +79,10 @@ public class KitRepository(Context dbContext) : BaseRepository<Kit>(dbContext), 
 
     public async Task UpdateElementAsync(Element element)
     {
-        var elementToEdit = await GetElementAsync(element.KitId, element.ItemId);
-        if (elementToEdit is null) throw new ResourceNotFoundException(entityName: nameof(Element));
-
+        var elementToEdit = await DbContext.SetElements.FindAsync() ?? throw new ResourceNotFoundException(entityName: nameof(Element));
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
         elementToEdit.ItemsAmount = elementToEdit.ItemsAmount;
-        DbContext.Entry(elementToEdit).State = EntityState.Modified;
+        
         await DbContext.SaveChangesAsync();
         await UpdateKitPriceAsync(elementToEdit.KitId);
     }
@@ -101,7 +99,9 @@ public class KitRepository(Context dbContext) : BaseRepository<Kit>(dbContext), 
 
     public override async Task<Kit> UpdateAsync(Kit entityToUpdate)
     {
-        var originalEntity = await GetByIdAsync(entityToUpdate.Id) ??
+        var originalEntity = await DbContext.Kits
+                                 .Include(Kit=>Kit.Image)
+                                 .FirstOrDefaultAsync(kit=> kit.Id==entityToUpdate.Id) ??
                              throw new ResourceNotFoundException(entityName: nameof(Kit));
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
@@ -110,8 +110,7 @@ public class KitRepository(Context dbContext) : BaseRepository<Kit>(dbContext), 
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-
-        DbContext.Entry(originalEntity).State = EntityState.Modified;
+        
         await DbContext.SaveChangesAsync();
         return originalEntity;
     }

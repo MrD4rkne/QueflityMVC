@@ -45,9 +45,7 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
 
     public virtual Task<bool> ExistsAsync(T entityToCheck)
     {
-        if (entityToCheck is null)
-            throw new ArgumentNullException("Entity cannot be null");
-
+        ArgumentNullException.ThrowIfNull(entityToCheck);
         return ExistsAsync(entityToCheck.Id);
     }
 

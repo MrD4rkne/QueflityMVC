@@ -10,7 +10,7 @@ public interface IPurchasableRepository
 
     Task<uint> GetNextOrderNumberAsync();
 
-    IQueryable<BasePurchasableEntity> GetVisibileEntities();
+    IQueryable<BasePurchasableEntity> GetVisibleEntities();
 
     Task UpdateOrderNoAsync(BasePurchasableEntity purchasableEntity);
 

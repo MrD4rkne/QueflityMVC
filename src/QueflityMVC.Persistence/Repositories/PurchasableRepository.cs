@@ -15,6 +15,13 @@ public class PurchasableRepository(Context dbContext) : IPurchasableRepository
         return !isAnyNotInList;
     }
 
+    public Task BulkUpdateOrderAsync(uint pivot)
+    {
+        return dbContext.Set<BasePurchasableEntity>()
+            .Where(x => x.OrderNo >= pivot)
+            .ForEachAsync(x => x.OrderNo--);
+    }
+
     public async Task<uint> GetNextOrderNumberAsync()
     {
         var lastOrderNo = await dbContext.Set<BasePurchasableEntity>().MaxAsync(x => x.OrderNo);
@@ -22,7 +29,7 @@ public class PurchasableRepository(Context dbContext) : IPurchasableRepository
         return lastOrderNo.Value + 1;
     }
 
-    public IQueryable<BasePurchasableEntity> GetVisibileEntities()
+    public IQueryable<BasePurchasableEntity> GetVisibleEntities()
     {
         return dbContext.Set<BasePurchasableEntity>()
             .AsNoTracking()
@@ -66,12 +73,5 @@ public class PurchasableRepository(Context dbContext) : IPurchasableRepository
             .AsNoTracking()
             .Include(x => x.Image)
             .FirstOrDefaultAsync(purchasable => purchasable.Id == id);
-    }
-
-    public async Task BulkUpdateOrderAsync(uint pivot)
-    {
-        await dbContext.Set<BasePurchasableEntity>()
-            .Where(x => x.OrderNo >= pivot)
-            .ForEachAsync(x => x.OrderNo--);
     }
 }

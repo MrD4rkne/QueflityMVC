@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -6,7 +7,7 @@ using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;
 
-public class ItemRepository(Context dbContext) : BaseRepository<Item>(dbContext), IItemRepository
+public class ItemRepository(Context dbContext, PurchasableRepository purchasableRepository) : BaseRepository<Item>(dbContext), IItemRepository
 {
     public override Task<Item?> GetByIdAsync(int entityId)
     {
@@ -46,24 +47,42 @@ public class ItemRepository(Context dbContext) : BaseRepository<Item>(dbContext)
         await UpdateAsync(item);
     }
 
+    public Task<uint?> GetOrderNoByIdAsync(int itemId)
+    {
+        return DbContext.Items
+            .AsNoTracking()
+            .Where(x => x.Id == itemId)
+            .Select(x => x.OrderNo)
+            .FirstOrDefaultAsync();
+    }
+
     public override async Task<Item> UpdateAsync(Item entityToUpdate)
     {
-        var originalEntity = await GetItemWithComponentsByIdAsync(entityToUpdate.Id) ??
-                             throw new ResourceNotFoundException(entityName: nameof(Item));
-        if (DbContext.Entry(originalEntity).State == EntityState.Detached) DbContext.Attach(originalEntity);
-
+        var originalEntity = await dbContext.Items
+                                 .Include(Item => Item.Image)
+                                 .Include(Item=> Item.Components)
+                                 .FirstOrDefaultAsync(Item => Item.Id == entityToUpdate.Id) 
+                             ?? throw new ResourceNotFoundException(entityName: nameof(Item));
+        
+        uint? oldOrderNo = originalEntity.OrderNo;
+        
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
         originalEntity.Price = entityToUpdate.Price;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-
         if (entityToUpdate.Components is not null) originalEntity.Components = entityToUpdate.Components;
 
-        DbContext.Entry(originalEntity).State = EntityState.Modified;
-        await DbContext.SaveChangesAsync();
-
+        var strategy = DbContext.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            if (oldOrderNo.HasValue)
+            {
+                await purchasableRepository.BulkUpdateOrderAsync(oldOrderNo.Value);
+            }
+            await DbContext.SaveChangesAsync();
+        });
         return originalEntity;
     }
 

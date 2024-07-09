@@ -11,4 +11,6 @@ public interface IItemRepository : IBaseRepository<Item>
     Task<bool> IsItemAPartOfAnyKitAsync(int id);
 
     Task UpdateComponentsAsync(int itemId, List<Component> components);
+
+    Task<uint?> GetOrderNoByIdAsync(int itemId);
 }
