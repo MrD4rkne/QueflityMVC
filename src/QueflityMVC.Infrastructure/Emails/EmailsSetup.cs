@@ -10,8 +10,8 @@ internal static class EmailsSetup
     {
         SmtpConfig smtpConfig = new();
         configureOptions(smtpConfig);
-        services.AddSingleton<SmtpConfig>(smtpConfig);
-        
+        services.AddSingleton(smtpConfig);
+
         services.AddTransient<IEmailDispatcher, EmailDispatcher>();
         return services;
     }

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MailKit" Version="4.7.0"/>
         <PackageReference Include="Mailtrap" Version="1.1.0"/>
         <PackageReference Include="Quartz" Version="3.9.0"/>
         <PackageReference Include="Quartz.AspNetCore" Version="3.9.0"/>
@@ -30,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Purchasables\" />
+        <Folder Include="Purchasables\"/>
     </ItemGroup>
 
 </Project>

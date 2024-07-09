@@ -12,10 +12,10 @@ namespace QueflityMVC.Application.Services;
 
 public class MessageService : IMessageService
 {
+    private readonly IBackgroundJobScheduler _backgroundJobScheduler;
     private readonly IMapper _mapper;
     private readonly IPurchasableRepository _purchasableRepository;
     private readonly IUserRepository _userRepository;
-    private readonly IBackgroundJobScheduler _backgroundJobScheduler;
 
     public MessageService(IPurchasableRepository purchasableRepository, IUserRepository userRepository,
         IBackgroundJobScheduler backgroundJobScheduler, IMapper mapper)
@@ -51,11 +51,11 @@ public class MessageService : IMessageService
         if (purchasable is null) return Result<MessageVm>.Failure(Errors.Purchasable.DoesNotExist);
 
         messageVm = messageVm with { Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable) };
-        
+
         var email = await _userRepository.GetEmailForUserAsync(userId);
-        if(string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(email))
             return Result.Failure(Errors.User.EmailNotVerified);
-        
+
         var message = BuildEmailBody(messageVm);
         var subject = $"COPY: Your message about {messageVm.Purchasable.Name} on {DateTime.Now}";
         await _backgroundJobScheduler.ScheduleSendMessageJob(new Mail

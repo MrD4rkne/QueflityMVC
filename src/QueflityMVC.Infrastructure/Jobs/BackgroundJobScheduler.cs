@@ -1,5 +1,4 @@
 ﻿using Quartz;
-using Quartz.Job;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Abstraction.Purchasables;
@@ -22,9 +21,8 @@ public class BackgroundJobScheduler : IBackgroundJobScheduler
     {
         JobDataMap jobData = new();
         jobData.Put("Mail", mail);
-        
+
         var scheduler = await _schedulerFactory.GetScheduler();
         await scheduler.TriggerJob(SendEmailJob.Key, jobData);
-
     }
 }

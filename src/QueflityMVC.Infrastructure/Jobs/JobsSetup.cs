@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Quartz;
-using Quartz.AspNetCore;
-using Quartz.Simpl;
 using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 using QueflityMVC.Infrastructure.Purchasables;
 
@@ -15,15 +13,12 @@ internal static class JobsSetup
         services.AddQuartz(q =>
         {
             q.UseInMemoryStore();
-            q.UseDefaultThreadPool(tp =>
-            {
-                tp.MaxConcurrency = 10;
-            });
+            q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 10; });
 
             q.AddJob<SendEmailJob>(opts => opts.WithIdentity(SendEmailJob.Key).StoreDurably());
         });
 
-       services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         return services;
     }
 }
