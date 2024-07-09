@@ -21,11 +21,12 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task SeedIdentity(this IServiceProvider serviceProvider)
+    public static async Task SeedIdentity(this IServiceProvider serviceProvider, string[] claims = null)
     {
         using var scope = serviceProvider.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         await IdentitySeed.SeedIdentity(userManager, roleManager);
+        if (claims is not null) await roleManager.SeedRolesClaims(claims);
     }
 }

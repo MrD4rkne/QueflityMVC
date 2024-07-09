@@ -7,20 +7,6 @@ namespace QueflityMVC.Web.Setup.Database;
 
 public static class DbContextSetup
 {
-    public static bool TryBuildConnectionString(string? connectionString, out string formatedConnectionString)
-    {
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            formatedConnectionString = string.Empty;
-            return false;
-        }
-
-        var connectionStringBuilder = new SqlConnectionStringBuilder();
-        connectionStringBuilder.ConnectionString = connectionString;
-        formatedConnectionString = connectionStringBuilder.ToString();
-        return true;
-    }
-
     public static IServiceCollection ConfigureDbContext<TContext>(this IServiceCollection services,
         IVariablesProvider variablesProvider) where TContext : DbContext
     {
@@ -38,6 +24,22 @@ public static class DbContextSetup
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         context.Database.EnsureCreated();
     }
+    
+    private static bool TryBuildConnectionString(string? connectionString, out string formatedConnectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            formatedConnectionString = string.Empty;
+            return false;
+        }
+
+        var connectionStringBuilder = new SqlConnectionStringBuilder
+        {
+            ConnectionString = connectionString
+        };
+        formatedConnectionString = connectionStringBuilder.ToString();
+        return true;
+    }
 
     private static string PrepareConnectionString(IVariablesProvider variablesProvider)
     {
@@ -46,7 +48,7 @@ public static class DbContextSetup
         {
             if (!TryBuildConnectionString(variablesProvider.GetConnectionString(), out var builtConnectionString))
                 throw new ConfigurationException(
-                    "Connection string is invalid. Please fix this and provide valid one.");
+                    "Connection string is invalid. Please fix this and provide a valid one.");
             return builtConnectionString;
         }
         catch (Exception ex)

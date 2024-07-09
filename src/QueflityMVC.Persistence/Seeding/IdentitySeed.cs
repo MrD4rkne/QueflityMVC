@@ -5,7 +5,7 @@ using Serilog;
 
 namespace QueflityMVC.Persistence.Seeding;
 
-public class IdentitySeed
+public static class IdentitySeed
 {
     private const string ADMIN_EMAIL = "admin@queflity.mvc";
     private const string ADMIN_DEFAULT_PASSWORD = "Password1#";
@@ -28,7 +28,7 @@ public class IdentitySeed
         }
     }
 
-    public static async Task SeedRolesClaims(RoleManager<IdentityRole> roleManager, string[] claims)
+    public static async Task SeedRolesClaims(this RoleManager<IdentityRole> roleManager, string[] claims)
     {
         var adminRole = await roleManager.FindByNameAsync("Admin") ?? throw new Exception("Admin role not found");
         foreach (var claim in claims) await roleManager.AddClaimAsync(adminRole, new Claim(claim, claim));
@@ -37,7 +37,7 @@ public class IdentitySeed
     private static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
     {
         var adminUser = await userManager.FindByEmailAsync(ADMIN_EMAIL);
-        if (adminUser is null)
+        if (adminUser is null) 
         {
             adminUser = new ApplicationUser
             {

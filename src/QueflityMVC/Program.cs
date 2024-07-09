@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using QueflityMVC.Application;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Infrastructure;
 using QueflityMVC.Persistence;
 using QueflityMVC.Web.Setup.Database;
@@ -15,8 +16,8 @@ builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTota
 
 builder.Configuration
     .SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddJsonFile("appsettings.json", false, true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
     .AddEnvironmentVariables();
 var config = builder.Configuration;
 
@@ -35,14 +36,16 @@ builder.Services.AddSingleton<IValidateOptions<SmtpOptions>, SmtpOptionsValidato
 builder.Services.ConfigureDbContext<Context>(variablesProvider);
 builder.Services.ConfigureIdentity();
 
-builder.Services.AddInfrastructure((smtpConfig) =>{
-    SmtpOptions smtpOptions = builder.Services.BuildServiceProvider()
+builder.Services.AddInfrastructure(smtpConfig =>
+{
+    var smtpOptions = builder.Services.BuildServiceProvider()
         .GetRequiredService<IOptions<SmtpOptions>>().Value;
     smtpConfig.Host = smtpOptions.Host;
     smtpConfig.Port = smtpOptions.Port;
     smtpConfig.Username = smtpOptions.Username;
     smtpConfig.Password = smtpOptions.Password;
 }, variablesProvider.GetConnectionString());
+
 builder.Services.AddPersistence();
 builder.Services.AddApplication();
 builder.Services.AddControllersWithViews()
@@ -80,6 +83,6 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.ApplyPendingMigrations<Context>();
-await app.Services.SeedIdentity();
+await app.Services.SeedIdentity(Claims.GetAll().ToArray());
 
 app.Run();
