@@ -5,6 +5,7 @@
 
 # Development settings
 appsettings.Development.json
+docker-compose.debug.yml
 
 # User-specific files
 *.rsuser
