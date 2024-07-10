@@ -17,7 +17,7 @@ public class EmailDispatcher(SmtpConfig config) : IEmailDispatcher
 
     public async Task SendEmailAsync(Mail mail)
     {
-        await _smtpClient.ConnectAsync(config.Host, config.Port, SecureSocketOptions.SslOnConnect);
+        await _smtpClient.ConnectAsync(config.Host, config.Port, SecureSocketOptions.StartTls);
         await _smtpClient.AuthenticateAsync(config.Username, config.Password);
 
         await _smtpClient.SendAsync(CreateEmailMessage(mail));
