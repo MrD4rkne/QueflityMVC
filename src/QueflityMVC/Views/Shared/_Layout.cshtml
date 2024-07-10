@@ -3,8 +3,9 @@
 @using QueflityMVC.Application.Constants
 @inject IAuthorizationService AuthorizationService
 @{
-    var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
-    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    bool canReorderPurchasables = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -55,6 +56,12 @@
                                 <a class="dropdown-item" asp-area="" asp-controller="Components" asp-action="Index">Components</a>
                                 <a class="dropdown-item" asp-area="" asp-controller="Kits" asp-action="Index">Kits</a>
                             </ul>
+                        </li>
+                    }
+                    @if (canReorderPurchasables)
+                    {
+                        <li class="nav-item" s>
+                            <a class="nav-link active" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
                         </li>
                     }
                     <li class="nav-item">
