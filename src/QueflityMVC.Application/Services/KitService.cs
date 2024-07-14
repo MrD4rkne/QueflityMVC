@@ -36,7 +36,6 @@ public class KitService : IKitService
     {
         kitVm.Image!.FileUrl = await _fileService.UploadFileAsync(kitVm.Image.FormFile);
         var kitToCreate = _mapper.Map<Kit>(kitVm);
-        kitToCreate.Price = 0;
         return await _kitRepository.AddAsync(kitToCreate);
     }
 
@@ -52,7 +51,6 @@ public class KitService : IKitService
         if (!kit.ShouldBeShown)
         {
             kit.OrderNo = null;
-            await _purchasableRepository.BulkUpdateOrderAsync(kit.OrderNo.Value);
         }
 
         if (kit.ShouldBeShown && kit.OrderNo is null)
@@ -75,12 +73,7 @@ public class KitService : IKitService
         var matchingSets = _kitRepository.GetFilteredKits(listKitsVm.NameFilter, listKitsVm.ItemId);
         var pagination = await matchingSets.Paginate(listKitsVm.Pagination, _mapper.ConfigurationProvider);
 
-        ListKitsVm listItemVm = new()
-        {
-            Pagination = pagination,
-            ItemId = listKitsVm.ItemId,
-            NameFilter = listKitsVm.NameFilter
-        };
+        ListKitsVm listItemVm = listKitsVm with { Pagination = pagination };
         return listItemVm;
     }
 
@@ -112,7 +105,7 @@ public class KitService : IKitService
             return Result<ListItemsForComponentsVm>.Failure(Errors.Kits.DoesNotExit);
 
         itemsForComponentsVm.KitComponentsIds =
-            await (await _kitRepository.GetComponenetsIdsForSet(itemsForComponentsVm.KitId)).ToListAsync();
+            await (await _kitRepository.GetComponentsIdsForSet(itemsForComponentsVm.KitId)).ToListAsync();
         var kitDetailsResult = await GetDetailsVmAsync(itemsForComponentsVm.KitId);
         if (kitDetailsResult.IsFailure) return Result<ListItemsForComponentsVm>.Failure(kitDetailsResult.Error);
 
@@ -143,7 +136,6 @@ public class KitService : IKitService
     {
         var componentToCreate = _mapper.Map<Element>(elementToCreate);
         await _kitRepository.AddComponentAsync(componentToCreate);
-        await _kitRepository.UpdateKitPriceAsync(componentToCreate.KitId);
     }
 
     public Task EditElementAsync(ElementVm elementToEdit)
@@ -160,9 +152,14 @@ public class KitService : IKitService
         return elementToEdit;
     }
 
-    public Task DeleteElementAsync(int kitId, int itemId)
+    public Task<int> GetElementCount(int id)
     {
-        return _kitRepository.DeleteElementAsync(kitId, itemId);
+        return _kitRepository.GetElementCount(id);
+    }
+
+    public async Task DeleteElementAsync(int kitId, int itemId)
+    {
+        await _kitRepository.DeleteElementAsync(kitId, itemId);
     }
 
     public async Task<Result> DeleteKitAsync(int id)
@@ -174,7 +171,10 @@ public class KitService : IKitService
         {
             await _kitRepository.DeleteAsync(id);
             _fileService.DeleteImage(kitToDelete.Image.FileUrl);
-            if (kitToDelete.ShouldBeShown) await _purchasableRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
+            if (kitToDelete.ShouldBeShown)
+            {
+                await _kitRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
+            }
         }
         catch (ResourceNotFoundException)
         {

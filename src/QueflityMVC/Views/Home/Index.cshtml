@@ -4,35 +4,42 @@
 @{
     ViewData["Title"] = "Home Page";
     const int itemsPerRow = 4;
-    var rowsCount = Model.Purchasables.Count / itemsPerRow;
+    var rowsCount = (int)Math.Ceiling((double)Model.Purchasables.Count / itemsPerRow);
 }
 
 <div class="section itemsLayout m-2">
-    @for (var row = 0; row < rowsCount; row++)
+    @if (Model.Purchasables is { Count: > 0 })
     {
-        <div class="row gx-sm-1">
-            @for (var column = 0; column < itemsPerRow; column++)
-            {
-                var itemNo = row * itemsPerRow + column;
-                if (itemNo >= Model.Purchasables.Count)
-                    break;
+        @for (var row = 0; row < rowsCount; row++)
+        {
+            <div class="row gx-sm-1">
+                @for (var column = 0; column < itemsPerRow; column++)
+                {
+                    var itemNo = row * itemsPerRow + column;
+                    if (itemNo >= Model.Purchasables.Count)
+                        break;
 
-                var currentPurchasable = Model.Purchasables[itemNo];
-                <div class="col">
-                    @switch (currentPurchasable)
-                    {
-                        case ItemForDashboardVm itemForDashboardVm:
-                            <partial name="_ItemDashboardPartial" model="itemForDashboardVm"/>
-                            break;
-                        case KitForDashboardVm kitForDashboardVm:
-                            <partial name="_KitDashboardPartial" model="kitForDashboardVm"/>
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException($"Purchasables[{itemNo}]",
-                                $"Partial dashboard view is not provided for type: {currentPurchasable.GetType()}");
-                    }
-                </div>
-            }
-        </div>
+                    var currentPurchasable = Model.Purchasables[itemNo];
+                    <div class="col">
+                        @switch (currentPurchasable)
+                        {
+                            case ItemForDashboardVm itemForDashboardVm:
+                                <partial name="_ItemDashboardPartial" model="itemForDashboardVm"/>
+                                break;
+                            case KitForDashboardVm kitForDashboardVm:
+                                <partial name="_KitDashboardPartial" model="kitForDashboardVm"/>
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException($"Purchasables[{itemNo}]",
+                                    $"Partial dashboard view is not provided for type: {currentPurchasable.GetType()}");
+                        }
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="centered-box-with-text">No products to show.</div>
     }
 </div>

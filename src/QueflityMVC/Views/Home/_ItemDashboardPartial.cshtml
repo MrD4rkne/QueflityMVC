@@ -1,4 +1,22 @@
-﻿@model QueflityMVC.Application.ViewModels.Purchasable.ItemForDashboardVm
+﻿@using QueflityMVC.Web.Common
+@model QueflityMVC.Application.ViewModels.Purchasable.ItemForDashboardVm
+
+<style>
+    .rectangle {
+        padding: 20px;
+        color: white;
+        text-align: center;
+        margin: 5px;
+        border-radius: 5px;
+    }
+    .nothing-here {
+        display: block;
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        font-size: 1.5em;
+    }
+</style>
 
 <div class="card h-100 w-100">
     <!-- Product image-->
@@ -16,8 +34,64 @@
     </div>
     <!-- Product actions-->
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-        <div class="col-auto">
-            @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal" data-bs-target="@($"#itemComponents{Model.Id}")">
+                    Components
+                </button>
+            </div>
+            <div class="col-auto">
+                @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="@($"itemComponents{Model.Id}")" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalLabel">Components of @Model.Name</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (Model.Components is { Count: > 0 })
+                    {
+                        <div class="container mt-3">
+                            <div class="d-flex flex-wrap">
+                                @foreach (var component in Model.Components)
+                                {
+                                    <div class="rectangle">@component.Name</div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="centered-box-with-text">No components found</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Function to generate a random color
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Apply random colors to each rectangle
+    document.querySelectorAll('.rectangle').forEach(rectangle => {
+        rectangle.style.backgroundColor = getRandomColor();
+    });
+</script>

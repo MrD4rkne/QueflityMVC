@@ -47,4 +47,8 @@
         <Folder Include="wwwroot\"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="wwwroot\css\helpers.css" />
+    </ItemGroup>
+
 </Project>
