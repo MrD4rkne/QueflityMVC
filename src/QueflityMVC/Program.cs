@@ -82,7 +82,11 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-app.ApplyPendingMigrations<Context>();
+if (app.Environment.IsDevelopment())
+{
+    app.ApplyPendingMigrations<Context>();
+}
+
 await app.Services.SeedIdentity(Claims.GetAll().ToArray());
 
 app.Run();
