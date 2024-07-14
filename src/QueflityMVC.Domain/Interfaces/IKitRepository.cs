@@ -19,6 +19,6 @@ public interface IKitRepository : IBasePurchasableRepository<Kit>
     Task UpdateElementAsync(Element componentToEdit);
 
     Task DeleteElementAsync(int kitId, int itemId);
-    
+
     Task<int> GetElementCount(int kitId);
 }

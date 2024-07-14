@@ -16,14 +16,14 @@ public record KitVm : IMapFrom<Domain.Models.Kit>
     public decimal Price { get; set; }
 
     public required ImageVm Image { get; set; }
-    
+
     public int ElementCount { get; set; }
 
     public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Kit, KitVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
-            .ForMember(vm=>vm.ElementCount, opt => opt.MapFrom(ent=>ent.Elements.Count))
+            .ForMember(vm => vm.ElementCount, opt => opt.MapFrom(ent => ent.Elements.Count))
             .ReverseMap()
             .ForMember(ent => ent.ImageId, opt => opt.MapFrom(vm => vm.Image.Id));
     }

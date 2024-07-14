@@ -24,7 +24,7 @@ public static class DbContextSetup
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         context.Database.EnsureCreated();
     }
-    
+
     private static bool TryBuildConnectionString(string? connectionString, out string formatedConnectionString)
     {
         if (string.IsNullOrEmpty(connectionString))

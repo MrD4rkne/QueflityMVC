@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Seeding;
@@ -26,12 +25,12 @@ public class Context(DbContextOptions options) : IdentityDbContext<ApplicationUs
         base.OnModelCreating(builder);
 
         builder.Entity<Product>()
-            .Ignore(product=>product.Price)
+            .Ignore(product => product.Price)
             .HasOne(it => it.Image);
 
         builder.Entity<Item>()
             .Property(it => it.Price);
-        
+
         builder.Entity<Item>()
             .HasMany(it => it.Components)
             .WithMany(ing => ing.Items);
@@ -46,7 +45,7 @@ public class Context(DbContextOptions options) : IdentityDbContext<ApplicationUs
             .WithMany(kit => kit.Elements)
             .HasForeignKey(se => se.KitId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.Entity<Element>()
             .HasOne(se => se.Kit)
             .WithMany(kit => kit.Elements)

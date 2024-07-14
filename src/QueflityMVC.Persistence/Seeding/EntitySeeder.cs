@@ -82,10 +82,7 @@ public class EntitySeeder
             .RuleFor(it => it.ShouldBeShown, f => GetVisibility())
             .RuleFor(kit => kit.Description, f => f.Lorem.Sentence());
         var kits = kitFaker.Generate(KITS_COUNT);
-        foreach (var kit in kits)
-        {
-            kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
-        }
+        foreach (var kit in kits) kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
 
         return kits;
     }

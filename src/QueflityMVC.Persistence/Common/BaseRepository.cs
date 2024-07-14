@@ -38,7 +38,7 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
         var entity = await GetByIdAsync(entityToUpdate.Id) ??
                      throw new ResourceNotFoundException(entityName: nameof(T));
         if (_dbContext.Entry(entity).State == EntityState.Detached) _dbContext.Set<T>().Attach(entity);
-        
+
         _dbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
         await _dbContext.SaveChangesAsync();
         return await GetByIdAsync(entityToUpdate.Id);

@@ -36,53 +36,54 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    @if (Model.Elements is { Count: > 0 }){
-                    <table class="table">
-                        
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Amount
-                            </th>
-                            <th>
-                                Price per item
-                            </th>
-                            <th>
-                                Overall price
-                            </th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var element in Model.Elements)
-                        {
+                    @if (Model.Elements is { Count: > 0 })
+                    {
+                        <table class="table">
+
+                            <thead>
                             <tr>
-                                <td>
-                                    @{
-                                        var thumbnail = element.Item.Image;
-                                        <img src="@thumbnail.FileUrl" alt="@thumbnail.AltDescription" style="height:30px"/>
-                                    }
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => element.Item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => element.ItemsAmount)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => element.PricePerItem)
-                                </td>
-                                <td>
-                                    <p>@(element.PricePerItem * element.ItemsAmount)</p>
-                                </td>
+                                <th></th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Amount
+                                </th>
+                                <th>
+                                    Price per item
+                                </th>
+                                <th>
+                                    Overall price
+                                </th>
+                                <th></th>
                             </tr>
-                        }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            @foreach (var element in Model.Elements)
+                            {
+                                <tr>
+                                    <td>
+                                        @{
+                                            var thumbnail = element.Item.Image;
+                                            <img src="@thumbnail.FileUrl" alt="@thumbnail.AltDescription" style="height:30px"/>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => element.Item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => element.ItemsAmount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => element.PricePerItem)
+                                    </td>
+                                    <td>
+                                        <p>@(element.PricePerItem * element.ItemsAmount)</p>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
                     }
                     else
                     {

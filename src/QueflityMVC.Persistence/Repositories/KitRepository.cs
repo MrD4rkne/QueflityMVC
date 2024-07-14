@@ -2,7 +2,6 @@
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;
 
@@ -69,10 +68,11 @@ public class KitRepository(Context dbContext) : BasePurchasableRepository<Kit>(d
 
     public async Task UpdateElementAsync(Element element)
     {
-        var elementToEdit = await _dbContext.SetElements.FindAsync() ?? throw new ResourceNotFoundException(entityName: nameof(Element));
+        var elementToEdit = await _dbContext.SetElements.FindAsync() ??
+                            throw new ResourceNotFoundException(entityName: nameof(Element));
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
         elementToEdit.ItemsAmount = elementToEdit.ItemsAmount;
-        
+
         await _dbContext.SaveChangesAsync();
     }
 
@@ -80,7 +80,8 @@ public class KitRepository(Context dbContext) : BasePurchasableRepository<Kit>(d
     {
         var elemToDelete = await GetElementAsync(kitId, itemId);
         if (elemToDelete is null) throw new ResourceNotFoundException(nameof(Element));
-        Kit kit = await GetFullKitWithMembershipsByIdAsync(kitId) ?? throw new ResourceNotFoundException(entityName: nameof(Kit));
+        var kit = await GetFullKitWithMembershipsByIdAsync(kitId) ??
+                  throw new ResourceNotFoundException(entityName: nameof(Kit));
 
         _dbContext.Remove(elemToDelete);
         await _dbContext.SaveChangesAsync();
@@ -96,24 +97,21 @@ public class KitRepository(Context dbContext) : BasePurchasableRepository<Kit>(d
     public override async Task<Kit> UpdateAsync(Kit entityToUpdate)
     {
         var originalEntity = await _dbContext.Kits
-                                 .Include(Kit=>Kit.Image)
-                                 .FirstOrDefaultAsync(kit=> kit.Id==entityToUpdate.Id) ??
+                                 .Include(Kit => Kit.Image)
+                                 .FirstOrDefaultAsync(kit => kit.Id == entityToUpdate.Id) ??
                              throw new ResourceNotFoundException(entityName: nameof(Kit));
-        uint? oldOrderNo = originalEntity.OrderNo;
-        
+        var oldOrderNo = originalEntity.OrderNo;
+
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-        
+
         var strategy = _dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
-            if (oldOrderNo.HasValue)
-            {
-                await BulkUpdateOrderAsync(oldOrderNo.Value);
-            }
+            if (oldOrderNo.HasValue) await BulkUpdateOrderAsync(oldOrderNo.Value);
             await _dbContext.SaveChangesAsync();
         });
         return originalEntity;

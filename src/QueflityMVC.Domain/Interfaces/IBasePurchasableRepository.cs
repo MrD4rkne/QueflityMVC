@@ -1,7 +1,4 @@
-﻿using System.Runtime;
-using QueflityMVC.Domain.Common;
-
-namespace QueflityMVC.Domain.Interfaces;
+﻿namespace QueflityMVC.Domain.Interfaces;
 
 public interface IBasePurchasableRepository<T> : IBaseRepository<T> where T : Product
 {

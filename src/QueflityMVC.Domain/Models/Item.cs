@@ -1,5 +1,4 @@
-﻿using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Interfaces;
+﻿using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Domain.Models;
 
@@ -10,7 +9,7 @@ public class Item : Product
     public Category? Category { get; set; }
 
     public ICollection<Element>? SetElements { get; set; }
-    
+
 
     public ICollection<Kit>? Kits { get; set; }
 
@@ -18,6 +17,6 @@ public class Item : Product
 
     public void SetPrice(decimal price)
     {
-        this.Price = price;
+        Price = price;
     }
 }

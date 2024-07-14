@@ -21,6 +21,6 @@ public class KitValidator : AbstractValidator<KitVm>
         RuleFor(x => x.Description)
             .Matches(REGEX_LETTERS_AND_BASIC_SYNTAX).WithMessage("Description can only contain letters");
         RuleFor(x => x.ShouldBeShown)
-            .Must(x=>!x).When(kit=>kit.ElementCount==0).WithMessage("Kit should be hidden if empty");
+            .Must(x => !x).When(kit => kit.ElementCount == 0).WithMessage("Kit should be hidden if empty");
     }
 }

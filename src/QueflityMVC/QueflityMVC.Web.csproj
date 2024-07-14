@@ -48,7 +48,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="wwwroot\css\helpers.css" />
+        <None Include="wwwroot\css\helpers.css"/>
     </ItemGroup>
 
 </Project>

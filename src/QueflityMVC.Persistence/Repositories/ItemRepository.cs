@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;
 
@@ -60,12 +58,12 @@ public class ItemRepository(Context dbContext) : BasePurchasableRepository<Item>
     {
         var originalEntity = await dbContext.Items
                                  .Include(Item => Item.Image)
-                                 .Include(Item=> Item.Components)
-                                 .FirstOrDefaultAsync(Item => Item.Id == entityToUpdate.Id) 
+                                 .Include(Item => Item.Components)
+                                 .FirstOrDefaultAsync(Item => Item.Id == entityToUpdate.Id)
                              ?? throw new ResourceNotFoundException(entityName: nameof(Item));
-        
-        uint? oldOrderNo = originalEntity.OrderNo;
-        
+
+        var oldOrderNo = originalEntity.OrderNo;
+
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
         originalEntity.SetPrice(entityToUpdate.Price);

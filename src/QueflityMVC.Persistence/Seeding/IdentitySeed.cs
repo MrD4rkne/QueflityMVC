@@ -37,7 +37,7 @@ public static class IdentitySeed
     private static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
     {
         var adminUser = await userManager.FindByEmailAsync(ADMIN_EMAIL);
-        if (adminUser is null) 
+        if (adminUser is null)
         {
             adminUser = new ApplicationUser
             {

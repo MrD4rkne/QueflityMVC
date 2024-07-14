@@ -3,9 +3,9 @@
 @using QueflityMVC.Application.Constants
 @inject IAuthorizationService AuthorizationService
 @{
-    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
-    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
-    bool canReorderPurchasables = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
+    var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    var canReorderPurchasables = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
 }
 <!DOCTYPE html>
 <html lang="en">

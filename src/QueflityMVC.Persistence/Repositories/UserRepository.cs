@@ -14,6 +14,7 @@ public class UserRepository(
     : IUserRepository
 {
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+
     protected Context DbContext = dbContext;
 
     public IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter)

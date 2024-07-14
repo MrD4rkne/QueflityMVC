@@ -48,10 +48,7 @@ public class KitService : IKitService
         }
 
         var kit = _mapper.Map<Kit>(editKitVm);
-        if (!kit.ShouldBeShown)
-        {
-            kit.OrderNo = null;
-        }
+        if (!kit.ShouldBeShown) kit.OrderNo = null;
 
         if (kit.ShouldBeShown && kit.OrderNo is null)
             kit.OrderNo = await _purchasableRepository.GetNextOrderNumberAsync();
@@ -73,7 +70,7 @@ public class KitService : IKitService
         var matchingSets = _kitRepository.GetFilteredKits(listKitsVm.NameFilter, listKitsVm.ItemId);
         var pagination = await matchingSets.Paginate(listKitsVm.Pagination, _mapper.ConfigurationProvider);
 
-        ListKitsVm listItemVm = listKitsVm with { Pagination = pagination };
+        var listItemVm = listKitsVm with { Pagination = pagination };
         return listItemVm;
     }
 
@@ -171,10 +168,7 @@ public class KitService : IKitService
         {
             await _kitRepository.DeleteAsync(id);
             _fileService.DeleteImage(kitToDelete.Image.FileUrl);
-            if (kitToDelete.ShouldBeShown)
-            {
-                await _kitRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
-            }
+            if (kitToDelete.ShouldBeShown) await _kitRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
         }
         catch (ResourceNotFoundException)
         {
