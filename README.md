@@ -14,7 +14,8 @@ module for seamless access control.
   enhancing transparency and clarity.
 - **Admin Panel**: Access a comprehensive administrative interface to efficiently manage user roles and their
   permissions, ensuring smooth operation and security. There also a enabling/disabling users feature.
-- **OAuth** - users can login via Google OAuth 2.0
+- **OAuth** - users can login via Google OAuth 2.0.
+- **Dashboard** - main view with details for products.
 
 ## Tech Stack
 
@@ -33,6 +34,7 @@ module for seamless access control.
 - **Custom pagination**: A custom, reusable pagination module has been developed, featuring a factory and partial view
   for enhanced usability and flexibility. This module streamlines pagination implementation across various sections of
   the application, offering a seamless user experience and reducing development overhead.
+- **Emails**: sending emails via SMTP using MailKit and Quartz for one-off jobs
 
 ## Installation
 ### Installation by Visual Studio
