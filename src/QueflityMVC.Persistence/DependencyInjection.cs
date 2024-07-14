@@ -13,10 +13,10 @@ public static class DependencyInjection
     {
         services.AddTransient<IComponentRepository, ComponentRepository>();
         services.AddTransient<ICategoryRepository, CategoryRepository>();
+        services.AddTransient<IPurchasableRepository, PurchasableRepository>();
         services.AddTransient<IItemRepository, ItemRepository>();
         services.AddTransient<IKitRepository, KitRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<IPurchasableRepository, PurchasableRepository>();
 
         return services;
     }

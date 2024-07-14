@@ -7,55 +7,49 @@ namespace QueflityMVC.Persistence.Repositories;
 
 public class PurchasableRepository(Context dbContext) : IPurchasableRepository
 {
-    public async Task<bool> AreTheseAllVisiblePurchasablesAsync(List<BasePurchasableEntity> purchasableModels)
+    public async Task<bool> AreTheseAllVisiblePurchasablesAsync(List<Product> purchasableModels)
     {
-        var isAnyNotInList = await dbContext.Set<BasePurchasableEntity>()
+        var isAnyNotInList = await dbContext.Set<Product>()
             .Where(x => !purchasableModels.Contains(x))
             .AnyAsync(x => x.ShouldBeShown);
         return !isAnyNotInList;
     }
 
-    public Task BulkUpdateOrderAsync(uint pivot)
-    {
-        return dbContext.Set<BasePurchasableEntity>()
-            .Where(x => x.OrderNo >= pivot)
-            .ForEachAsync(x => x.OrderNo--);
-    }
-
     public async Task<uint> GetNextOrderNumberAsync()
     {
-        var lastOrderNo = await dbContext.Set<BasePurchasableEntity>().MaxAsync(x => x.OrderNo);
+        var lastOrderNo = await dbContext.Set<Product>().MaxAsync(x => x.OrderNo);
         if (lastOrderNo is null) return 0;
         return lastOrderNo.Value + 1;
     }
 
-    public IQueryable<BasePurchasableEntity> GetVisibleEntities()
+    public IQueryable<Product> GetVisibleEntities()
     {
-        return dbContext.Set<BasePurchasableEntity>()
+        return dbContext.Set<Product>()
             .AsNoTracking()
             .Where(x => x.ShouldBeShown)
             .OrderBy(x => x.OrderNo)
-            .Include(x => x.Image);
+            .Include(x => x.Image)
+            .Include(x => (x as Kit).Elements);
     }
 
-    public async Task UpdateOrderNoAsync(BasePurchasableEntity basePurchasableEntity)
+    public async Task UpdateOrderNoAsync(Product purchasable)
     {
         var orderNo = await GetNextOrderNumberAsync();
-        basePurchasableEntity.OrderNo = orderNo;
-        dbContext.Update(basePurchasableEntity);
+        purchasable.OrderNo = orderNo;
+        dbContext.Update(purchasable);
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdatePurchasablesOrderAsync(List<BasePurchasableEntity> purchasableModels)
+    public async Task UpdatePurchasablesOrderAsync(List<Product> purchasableModels)
     {
-        var entities = dbContext.Set<BasePurchasableEntity>().Where(x => purchasableModels.Contains(x));
+        var entities = dbContext.Set<Product>().Where(x => purchasableModels.Contains(x));
         await entities.ForEachAsync(x => x.OrderNo = purchasableModels.First(p => p.Id == x.Id).OrderNo);
         await dbContext.SaveChangesAsync();
     }
 
-    public IQueryable<BasePurchasableEntity> GetVisiblePurchasablesForDashboard()
+    public IQueryable<Product> GetVisiblePurchasablesForDashboard()
     {
-        return dbContext.Set<BasePurchasableEntity>()
+        return dbContext.Set<Product>()
             .AsNoTracking()
             .Where(x => x.ShouldBeShown)
             .OrderBy(x => x.OrderNo)
@@ -67,9 +61,9 @@ public class PurchasableRepository(Context dbContext) : IPurchasableRepository
             .ThenInclude(el => el.Image);
     }
 
-    public Task<BasePurchasableEntity?> GetByIdAsync(int id)
+    public Task<Product?> GetByIdAsync(int id)
     {
-        return dbContext.Set<BasePurchasableEntity>()
+        return dbContext.Set<Product>()
             .AsNoTracking()
             .Include(x => x.Image)
             .FirstOrDefaultAsync(purchasable => purchasable.Id == id);

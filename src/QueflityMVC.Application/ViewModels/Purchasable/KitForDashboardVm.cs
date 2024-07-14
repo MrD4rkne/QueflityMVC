@@ -1,6 +1,7 @@
 ﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
 
@@ -13,7 +14,7 @@ public record KitForDashboardVm : PurchasableForDashboardVm, IMapFrom<Domain.Mod
     public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Kit, KitForDashboardVm>()
-            .IncludeBase<BasePurchasableEntity, PurchasableForDashboardVm>()
+            .IncludeBase<Product, PurchasableForDashboardVm>()
             .ForMember(vm => vm.Elements, opt => opt.MapFrom(kit => kit.Elements));
     }
 }

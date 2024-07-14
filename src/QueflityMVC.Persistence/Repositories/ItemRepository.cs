@@ -7,11 +7,11 @@ using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;
 
-public class ItemRepository(Context dbContext, PurchasableRepository purchasableRepository) : BaseRepository<Item>(dbContext), IItemRepository
+public class ItemRepository(Context dbContext) : BasePurchasableRepository<Item>(dbContext), IItemRepository
 {
     public override Task<Item?> GetByIdAsync(int entityId)
     {
-        return DbContext.Items
+        return _dbContext.Items
             .AsNoTracking()
             .Include(it => it.Image)
             .FirstOrDefaultAsync(it => it.Id == entityId);
@@ -30,7 +30,7 @@ public class ItemRepository(Context dbContext, PurchasableRepository purchasable
 
     public Task<Item?> GetItemWithComponentsByIdAsync(int itemId)
     {
-        return DbContext.Items
+        return _dbContext.Items
             .AsNoTracking()
             .Include(x => x.Components)
             .Include(it => it.Image)
@@ -49,7 +49,7 @@ public class ItemRepository(Context dbContext, PurchasableRepository purchasable
 
     public Task<uint?> GetOrderNoByIdAsync(int itemId)
     {
-        return DbContext.Items
+        return _dbContext.Items
             .AsNoTracking()
             .Where(x => x.Id == itemId)
             .Select(x => x.OrderNo)
@@ -68,27 +68,19 @@ public class ItemRepository(Context dbContext, PurchasableRepository purchasable
         
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
-        originalEntity.Price = entityToUpdate.Price;
+        originalEntity.SetPrice(entityToUpdate.Price);
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
         if (entityToUpdate.Components is not null) originalEntity.Components = entityToUpdate.Components;
 
-        var strategy = DbContext.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(async () =>
-        {
-            if (oldOrderNo.HasValue)
-            {
-                await purchasableRepository.BulkUpdateOrderAsync(oldOrderNo.Value);
-            }
-            await DbContext.SaveChangesAsync();
-        });
+        await _dbContext.SaveChangesAsync();
         return originalEntity;
     }
 
     public Task<bool> IsItemAPartOfAnyKitAsync(int id)
     {
-        return DbContext.SetElements
+        return _dbContext.SetElements
             .AnyAsync(x => x.ItemId == id);
     }
 }

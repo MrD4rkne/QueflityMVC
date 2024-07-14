@@ -84,7 +84,6 @@ public class EntitySeeder
         var kits = kitFaker.Generate(KITS_COUNT);
         foreach (var kit in kits)
         {
-            kit.Price = Elements.Where(elem => elem.KitId == kit.Id).Sum(elem => elem.ItemsAmount * elem.PricePerItem);
             kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
         }
 

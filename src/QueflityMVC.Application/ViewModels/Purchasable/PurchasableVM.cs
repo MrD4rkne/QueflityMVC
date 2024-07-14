@@ -1,6 +1,7 @@
 ﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
 
@@ -30,7 +31,7 @@ public class PurchasableVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Model
             .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => PurchasableType.Kit))
             .ReverseMap();
 
-        profile.CreateMap<PurchasableVm, BasePurchasableEntity>()
+        profile.CreateMap<PurchasableVm, Product>()
             .ConstructUsing((vm, ctx) => vm.Type switch
             {
                 PurchasableType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(PurchasableVm),

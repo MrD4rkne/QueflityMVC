@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
@@ -114,6 +115,9 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(KitVm editedKitVm)
     {
+        if (editedKitVm is null) return BadRequest();
+        
+        editedKitVm.ElementCount = await _kitService.GetElementCount(editedKitVm.Id);
         var validationResults = await _kitValidator.ValidateAsync(editedKitVm);
         if (!validationResults.IsValid)
         {

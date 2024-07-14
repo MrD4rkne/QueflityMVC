@@ -27,8 +27,11 @@ public class PurchasableEntityService : IPurchasableEntityService
 
     public async Task<EditOrderVm> GetEntitiesOrderVm()
     {
-        var models = await _purchasableRepository.GetVisibleEntities().OrderBy(x => x.OrderNo).ToListAsync();
-        var results = models.Select(x => _mapper.Map<PurchasableVm>(x)).ToList();
+        var models = await _purchasableRepository.GetVisibleEntities()
+            .OrderBy(x => x.OrderNo)
+            .ToListAsync();
+        var results = models.Select(x => _mapper.Map<PurchasableVm>(x))
+            .ToList();
         var editVm = new EditOrderVm
         {
             PurchasablesVMs = results
@@ -41,7 +44,7 @@ public class PurchasableEntityService : IPurchasableEntityService
         if (!IsOrderValid(editOrderVm.PurchasablesVMs))
             return Result.Failure(Errors.Purchasable.InvalidOrder);
         var purchasableModels =
-            editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<BasePurchasableEntity>(p)).ToList();
+            editOrderVm.PurchasablesVMs.Select(p => _mapper.Map<Product>(p)).ToList();
         if (!await _purchasableRepository.AreTheseAllVisiblePurchasablesAsync(purchasableModels))
             return Result.Failure(Errors.Purchasable.PurchasableMissingInOrder);
         await _purchasableRepository.UpdatePurchasablesOrderAsync(purchasableModels);

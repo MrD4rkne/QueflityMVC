@@ -40,9 +40,10 @@ public class ItemService(
         try
         {
             await itemRepository.DeleteAsync(id);
-            fileService.DeleteImage(itemToDelete.Image.FileUrl);
             if (itemToDelete.ShouldBeShown)
-                await purchasableRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
+            {
+                await itemRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
+            }
         }
         catch (ResourceNotFoundException)
         {

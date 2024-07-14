@@ -1,10 +1,11 @@
 ﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
 
-public record PurchasableForDashboardVm : IMapFrom<BasePurchasableEntity>
+public record PurchasableForDashboardVm : IMapFrom<Product>
 {
     public required int Id { get; set; }
 
@@ -18,7 +19,7 @@ public record PurchasableForDashboardVm : IMapFrom<BasePurchasableEntity>
 
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<BasePurchasableEntity, PurchasableForDashboardVm>()
+        profile.CreateMap<Product, PurchasableForDashboardVm>()
             .Include<Domain.Models.Kit, KitForDashboardVm>()
             .Include<Domain.Models.Item, ItemForDashboardVm>();
     }

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
 
-public class PurchasableToTypeConvert : IValueConverter<BasePurchasableEntity, PurchasableType>
+public class PurchasableToTypeConvert : IValueConverter<Product, PurchasableType>
 {
-    public PurchasableType Convert(BasePurchasableEntity sourceMember, ResolutionContext context)
+    public PurchasableType Convert(Product sourceMember, ResolutionContext context)
     {
         switch (sourceMember)
         {

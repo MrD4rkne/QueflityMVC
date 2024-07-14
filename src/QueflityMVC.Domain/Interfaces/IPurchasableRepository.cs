@@ -4,19 +4,17 @@ namespace QueflityMVC.Domain.Interfaces;
 
 public interface IPurchasableRepository
 {
-    Task<bool> AreTheseAllVisiblePurchasablesAsync(List<BasePurchasableEntity> purchasableModels);
-
-    Task BulkUpdateOrderAsync(uint pivot);
+    Task<bool> AreTheseAllVisiblePurchasablesAsync(List<Product> purchasableModels);
 
     Task<uint> GetNextOrderNumberAsync();
 
-    IQueryable<BasePurchasableEntity> GetVisibleEntities();
+    IQueryable<Product> GetVisibleEntities();
 
-    Task UpdateOrderNoAsync(BasePurchasableEntity purchasableEntity);
+    Task UpdateOrderNoAsync(Product purchasable);
 
-    Task UpdatePurchasablesOrderAsync(List<BasePurchasableEntity> purchasableModels);
+    Task UpdatePurchasablesOrderAsync(List<Product> purchasableModels);
 
-    IQueryable<BasePurchasableEntity> GetVisiblePurchasablesForDashboard();
+    IQueryable<Product> GetVisiblePurchasablesForDashboard();
 
-    Task<BasePurchasableEntity?> GetByIdAsync(int id);
+    Task<Product?> GetByIdAsync(int id);
 }
