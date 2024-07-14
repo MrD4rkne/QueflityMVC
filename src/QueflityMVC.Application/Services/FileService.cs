@@ -8,27 +8,38 @@ namespace QueflityMVC.Application.Services;
 public class FileService : IFileService
 {
     private const string RELATIVE_IMAGES_PATH = "Images";
-    private readonly string ROOT_DIRECTORY;
+    private readonly string _rootDirectory;
 
     public FileService(IWebHostEnvironment appEnvironment)
     {
-        ROOT_DIRECTORY = appEnvironment.ContentRootPath;
+        _rootDirectory = appEnvironment.ContentRootPath;
     }
 
     public async Task<string> UploadFileAsync(IFormFile file)
     {
-        string directory = GetImagesDirectory(ROOT_DIRECTORY);
-        if (!Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
+        var directory = GetImagesDirectory(_rootDirectory);
+        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
-        string path = GetFileName(directory, Path.GetExtension(file.FileName));
-        using (var stream = new FileStream(path, FileMode.Create))
+        var path = GetFileName(directory, Path.GetExtension(file.FileName));
+        await using (var stream = new FileStream(path, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }
+
         return Path.Combine("/" + RELATIVE_IMAGES_PATH, Path.GetFileName(path));
+    }
+
+    public void DeleteImage(string relativeImagePath)
+    {
+        var path = Path.Combine(GetRootDirectory(_rootDirectory), NormaliseFilePath(relativeImagePath));
+        try
+        {
+            File.Delete(path);
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Error while deleting file {path}", e);
+        }
     }
 
     private string GetFileName(string directory, string extension)
@@ -38,32 +49,15 @@ public class FileService : IFileService
         {
             path = Path.Combine(directory, Path.GetRandomFileName() + extension);
         } while (File.Exists(path));
-        return path;
-    }
 
-    public void DeleteImage(string relativeImagePath)
-    {
-        string path = Path.Combine(GetRootDirectory(ROOT_DIRECTORY), NormaliseFilePath(relativeImagePath));
-        try
-        {
-            File.Delete(path);
-        }catch(Exception e)
-        {
-            Log.Error($"Error while deleting file {path}", e);
-        }
+        return path;
     }
 
     private string NormaliseFilePath(string path)
     {
-        if (string.IsNullOrEmpty(path))
-        {
-            return string.Empty;
-        }
+        if (string.IsNullOrEmpty(path)) return string.Empty;
 
-        if (path.First() == '/')
-        {
-            path = path.Substring(1);
-        }
+        if (path.First() == '/') path = path.Substring(1);
         return path.Replace('/', '\\');
     }
 
@@ -74,6 +68,6 @@ public class FileService : IFileService
 
     private string GetImagesDirectory(string root)
     {
-        return Path.Combine(GetRootDirectory(root), RELATIVE_IMAGES_PATH); ;
+        return Path.Combine(GetRootDirectory(root), RELATIVE_IMAGES_PATH);
     }
 }

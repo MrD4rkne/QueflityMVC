@@ -2,9 +2,9 @@
 
 namespace QueflityMVC.Application.ViewModels.Category;
 
-public record ListCategoriesVM
+public record ListCategoriesVm
 {
-    public required PaginationVM<CategoryForListVM> Pagination { get; set; }
+    public required PaginationVm<CategoryForListVm> Pagination { get; set; }
 
     public string? NameFilter { get; set; }
 }

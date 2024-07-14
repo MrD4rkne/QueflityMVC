@@ -1,13 +1,12 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using QueflityMVC.Application.Constants;
-@inject IAuthorizationService AuthorizationService
-@using QueflityMVC.Application.ViewModels.Item;
-@model ItemVM
+﻿@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@model QueflityMVC.Application.ViewModels.Item.ItemVm
 
 <div class="card mb-3">
     <div class="row g-0">
         <div class="col-md-4">
-            <img class="img-fluid rounded-start" src="@Model.Image?.FileUrl" alt="@Model.Image?.AltDescription" style="max-height: 400px;height:100%" />
+            <img class="img-fluid rounded-start" src="@Model.Image?.FileUrl" alt="@Model.Image?.AltDescription" style="max-height: 400px;height:100%"/>
         </div>
         <div class="col-md-8">
             <div class="card-body">
@@ -31,8 +30,8 @@
                                 Visibility
                             </dt>
                             <dt class="col-sm">
-                                <input class="form-check-input" type="checkbox" checked="@(Model.ShouldBeShown? "checked":null)" disabled>
-                                @if (@Model.ShouldBeShown)
+                                <input class="form-check-input" type="checkbox" checked="@(Model.ShouldBeShown ? "checked" : null)" disabled>
+                                @if (Model.ShouldBeShown)
                                 {
                                     <label class="form-check-label">Visible</label>
                                 }
@@ -46,7 +45,7 @@
                 </div>
                 @if ((await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded)
                 {
-                    @Html.ActionLink("Edit", "Edit","Kits", new { id = Model.Id }, new { @class = "btn btn-primary"})
+                    @Html.ActionLink("Edit", "Edit", "Kits", new { id = Model.Id }, new { @class = "btn btn-primary" })
                 }
             </div>
         </div>

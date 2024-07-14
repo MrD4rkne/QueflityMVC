@@ -25,6 +25,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueflityMVC.Domain", "Quefl
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{BC397177-F9FB-4FA6-B05D-018320DD753D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{80B36239-1D71-4862-BE3A-EC7E10322756}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueflityMVC.Persistence", "QueflityMVC.Persistence\QueflityMVC.Persistence.csproj", "{69887FCF-1796-424C-9D22-D4B92E013D98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueflityMVC.Infrastructure.Abstraction", "QueflityMVC.Infrastructure.Abstraction\QueflityMVC.Infrastructure.Abstraction.csproj", "{5DCFA9C2-DE1B-47D5-8F17-BE41CFB30D7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +61,14 @@ Global
 		{BC397177-F9FB-4FA6-B05D-018320DD753D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC397177-F9FB-4FA6-B05D-018320DD753D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC397177-F9FB-4FA6-B05D-018320DD753D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69887FCF-1796-424C-9D22-D4B92E013D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69887FCF-1796-424C-9D22-D4B92E013D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69887FCF-1796-424C-9D22-D4B92E013D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69887FCF-1796-424C-9D22-D4B92E013D98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DCFA9C2-DE1B-47D5-8F17-BE41CFB30D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DCFA9C2-DE1B-47D5-8F17-BE41CFB30D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DCFA9C2-DE1B-47D5-8F17-BE41CFB30D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DCFA9C2-DE1B-47D5-8F17-BE41CFB30D7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +79,8 @@ Global
 		{DC394DBF-5F7D-4483-9A8F-0C324356F153} = {EB28B8EE-E36F-47D4-9CFD-D42489CC3772}
 		{822267E1-A656-4F70-A074-FFF34A12640C} = {C829B147-1F34-4ACA-9074-19B5F0EDA272}
 		{944C768F-B32A-4F12-ACB7-D82D59CF500D} = {542B0760-1357-4130-A263-35CC01791B56}
+		{69887FCF-1796-424C-9D22-D4B92E013D98} = {80B36239-1D71-4862-BE3A-EC7E10322756}
+		{5DCFA9C2-DE1B-47D5-8F17-BE41CFB30D7D} = {EB28B8EE-E36F-47D4-9CFD-D42489CC3772}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {360BFA1F-316E-4E53-9AC0-ABDD5523914E}

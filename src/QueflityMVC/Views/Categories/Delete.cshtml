@@ -1,4 +1,5 @@
-﻿@model QueflityMVC.Application.ViewModels.Category.DeleteFailedCategoryVM
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model QueflityMVC.Application.ViewModels.Category.DeleteFailedCategoryVm
 
 @{
     ViewData["Title"] = "Deletion failed";
@@ -8,7 +9,7 @@
 
 <div>
     <h4>@Model.Message</h4>
-    <hr />
+    <hr/>
 </div>
 <div>
     @Html.ActionLink("View items with this category", "ViewItems", new { id = Model.CategoryId }) |

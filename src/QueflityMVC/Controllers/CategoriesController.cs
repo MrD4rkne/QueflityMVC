@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
@@ -14,9 +13,9 @@ namespace QueflityMVC.Web.Controllers;
 public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;
-    private readonly IValidator<CategoryVM> _categoryValidator;
+    private readonly IValidator<CategoryVm> _categoryValidator;
 
-    public CategoriesController(ICategoryService categoryService, IValidator<CategoryVM> categoryValidator)
+    public CategoriesController(ICategoryService categoryService, IValidator<CategoryVm> categoryValidator)
     {
         _categoryService = categoryService;
         _categoryValidator = categoryValidator;
@@ -25,24 +24,21 @@ public class CategoriesController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index()
     {
-        ListCategoriesVM listCategoriesVM = new()
+        ListCategoriesVm listCategoriesVm = new()
         {
-            Pagination = PaginationFactory.Default<CategoryForListVM>()
+            Pagination = PaginationFactory.Default<CategoryForListVm>()
         };
-        return await Index(listCategoriesVM);
+        return await Index(listCategoriesVm);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Index(ListCategoriesVM listCategoriesVM)
+    public async Task<IActionResult> Index(ListCategoriesVm listCategoriesVm)
     {
-        if (listCategoriesVM is null)
-        {
-            return BadRequest();
-        }
-        listCategoriesVM.NameFilter ??= string.Empty;
+        if (listCategoriesVm is null) return BadRequest();
+        listCategoriesVm.NameFilter ??= string.Empty;
 
-        var listVm = await _categoryService.GetFilteredListAsync(listCategoriesVM);
+        var listVm = await _categoryService.GetFilteredListAsync(listCategoriesVm);
         return View(listVm);
     }
 
@@ -58,17 +54,17 @@ public class CategoriesController : Controller
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CategoryVM createCategoryVM)
+    public async Task<IActionResult> Create(CategoryVm createCategoryVm)
     {
-        ValidationResult result = await _categoryValidator.ValidateAsync(createCategoryVM);
+        var result = await _categoryValidator.ValidateAsync(createCategoryVm);
 
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
-            return View("Create", createCategoryVM);
+            result.AddToModelState(ModelState);
+            return View("Create", createCategoryVm);
         }
 
-        _ = await _categoryService.CreateCategoryAsync(createCategoryVM);
+        _ = await _categoryService.CreateCategoryAsync(createCategoryVm);
 
         return RedirectToAction("Index");
     }
@@ -78,7 +74,7 @@ public class CategoriesController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        var vmForEdit = await _categoryService.GetVMForEditAsync(id);
+        var vmForEdit = await _categoryService.GetVmForEditAsync(id);
         return View(vmForEdit);
     }
 
@@ -86,17 +82,17 @@ public class CategoriesController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(CategoryVM createCategoryVM)
+    public async Task<IActionResult> Edit(CategoryVm createCategoryVm)
     {
-        ValidationResult result = await _categoryValidator.ValidateAsync(createCategoryVM);
+        var result = await _categoryValidator.ValidateAsync(createCategoryVm);
 
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
-            return View("Edit", createCategoryVM);
+            result.AddToModelState(ModelState);
+            return View("Edit", createCategoryVm);
         }
 
-        _ =await _categoryService.UpdateCategoryAsync(createCategoryVM);
+        _ = await _categoryService.UpdateCategoryAsync(createCategoryVm);
         return RedirectToAction("Index");
     }
 
@@ -110,14 +106,15 @@ public class CategoriesController : Controller
         }
         catch (InvalidOperationException invOpEx)
         {
-            DeleteFailedCategoryVM deleteFailedVM = new()
+            DeleteFailedCategoryVm deleteFailedVm = new()
             {
                 CategoryId = id,
                 Message = invOpEx.Message
             };
 
-            return View(deleteFailedVM);
+            return View(deleteFailedVm);
         }
+
         return RedirectToAction("Index");
     }
 

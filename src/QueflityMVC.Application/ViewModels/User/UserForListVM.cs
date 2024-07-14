@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Application.ViewModels.User;
 
-public record UserForListVM : IMapFrom<ApplicationUser>
+public record UserForListVm : IMapFrom<ApplicationUser>
 {
     public required string Id { get; set; }
 
@@ -14,9 +13,9 @@ public record UserForListVM : IMapFrom<ApplicationUser>
 
     public required bool IsEnabled { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<ApplicationUser, UserForListVM>()
+        profile.CreateMap<ApplicationUser, UserForListVm>()
             .ReverseMap();
     }
 }

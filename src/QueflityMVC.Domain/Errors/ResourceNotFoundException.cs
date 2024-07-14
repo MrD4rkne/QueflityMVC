@@ -6,13 +6,14 @@ namespace QueflityMVC.Domain.Errors;
 public class ResourceNotFoundException : Exception
 {
     private const string ERROR_MESSAGE_SCHEME = "with this id could not be found.";
-    private static readonly string DEFAULT_ERROR_MESSAGE = $"Entity {ERROR_MESSAGE_SCHEME}";
+    private static readonly string DefaultErrorMessage = $"Entity {ERROR_MESSAGE_SCHEME}";
 
-    public ResourceNotFoundException() : this(DEFAULT_ERROR_MESSAGE)
+    public ResourceNotFoundException() : this(DefaultErrorMessage)
     {
     }
 
-    public ResourceNotFoundException(string? entityName = "", string? message = "") : base(GetMessageWithEntityName(entityName, message))
+    public ResourceNotFoundException(string? entityName = "", string? message = "") : base(
+        GetMessageWithEntityName(entityName, message))
     {
     }
 
@@ -36,23 +37,16 @@ public class ResourceNotFoundException : Exception
         message = message ?? string.Empty;
         message!.Trim();
 
-        if (string.IsNullOrEmpty(entityName))
-        {
-            return DEFAULT_ERROR_MESSAGE;
-        }
+        if (string.IsNullOrEmpty(entityName)) return DefaultErrorMessage;
         StringBuilder errorMessageBuilder = new();
         errorMessageBuilder.Append(entityName);
 
         if (string.IsNullOrEmpty(message))
-        {
             errorMessageBuilder.Append(ERROR_MESSAGE_SCHEME);
-        }
         else
-        {
             errorMessageBuilder.Append(message);
-        }
 
-        string errorMessage = errorMessageBuilder.ToString();
+        var errorMessage = errorMessageBuilder.ToString();
         return errorMessage;
     }
 }

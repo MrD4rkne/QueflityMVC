@@ -1,22 +1,23 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using QueflityMVC.Application.Constants;
-@inject IAuthorizationService AuthorizationService
-@model QueflityMVC.Application.ViewModels.Kit.KitVM
+﻿@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QueflityMVC.Application.Constants
+@model QueflityMVC.Application.ViewModels.Kit.KitVm
 
 @{
     ViewData["Title"] = "Edit";
-    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h2>Edit</h2>
 
 <h4>Change your awesome kit!</h4>
-<hr />
+<hr/>
 <div class="row">
     <form asp-action="Edit" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger" />
-        <input type="hidden" asp-for="Id" value="@Model.Id" />
-        <partial name="_ImageEditPartial" for="Image" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"/>
+        <input type="hidden" asp-for="Id" value="@Model.Id"/>
+        <partial name="_ImageEditPartial" for="Image"/>
 
         <div class="container">
             <div class="row">
@@ -24,28 +25,31 @@
                     <h5>Set</h5>
                 </div>
                 <div class="col-md-auto">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" asp-for="ShouldBeShown" type="checkbox" checked="@(Model.ShouldBeShown ? "checked":null)" onchange="VisibilityChanged()">
-                    @if (Model.ShouldBeShown)
-                    {
-                        <label id="visibility-label" class="form-check-label">Visible</label>
-                    }
-                    else
-                    {
-                        <label id="visibility-label" class="form-check-label">Hidden</label>
-                    }
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" asp-for="ShouldBeShown" type="checkbox" checked="@(Model.ShouldBeShown ? "checked" : null)" onchange="VisibilityChanged()">
+                        @if (Model.ShouldBeShown)
+                        {
+                            <label id="visibility-label" class="form-check-label">Visible</label>
+                        }
+                        else
+                        {
+                            <label id="visibility-label" class="form-check-label">Hidden</label>
+                        }
+                    </div>
                 </div>
+                <div class="col-md-auto">
+                    <span asp-validation-for="ShouldBeShown" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md">
                     <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" value="@Model.Name" />
+                    <input asp-for="Name" class="form-control" value="@Model.Name"/>
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="col-md-auto">
                     <label class="control-label">Price</label>
-                    <input type="number" readonly class="form-control" value="@Model.Price" />
+                    <input type="number" readonly class="form-control" value="@Model.Price"/>
                 </div>
             </div>
             <div class="row">
@@ -80,5 +84,3 @@
         }
     </script>
 }
-
-

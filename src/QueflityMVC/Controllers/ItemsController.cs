@@ -1,15 +1,13 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
-using QueflityMVC.Application.Exceptions.UseCases;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Item;
-using QueflityMVC.Web.Models;
+using QueflityMVC.Web.Exceptions;
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -17,9 +15,9 @@ namespace QueflityMVC.Web.Controllers;
 public class ItemsController : Controller
 {
     private readonly IItemService _itemService;
-    private readonly IValidator<ItemVM> _itemValidator;
+    private readonly IValidator<ItemVm?> _itemValidator;
 
-    public ItemsController(IItemService itemService, IValidator<ItemVM> itemValidator)
+    public ItemsController(IItemService itemService, IValidator<ItemVm?> itemValidator)
     {
         _itemService = itemService;
         _itemValidator = itemValidator;
@@ -29,27 +27,24 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(int? categoryId)
     {
-        ListItemsVM listItemsVM = new()
+        ListItemsVm listItemsVm = new()
         {
-            Pagination = PaginationFactory.Default<ItemForListVM>(),
+            Pagination = PaginationFactory.Default<ItemForListVm>(),
             CategoryId = categoryId,
             NameFilter = string.Empty
         };
-        return await Index(listItemsVM);
+        return await Index(listItemsVm);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Index(ListItemsVM listItemsVM)
+    public async Task<IActionResult> Index(ListItemsVm listItemsVm)
     {
-        if (listItemsVM is null)
-        {
-            return BadRequest();
-        }
-        listItemsVM.NameFilter ??= string.Empty;
+        if (listItemsVm is null) return BadRequest();
+        listItemsVm.NameFilter ??= string.Empty;
 
-        ListItemsVM listVM = await _itemService.GetFilteredListAsync(listItemsVM);
-        return View(listVM);
+        var listVm = await _itemService.GetFilteredListAsync(listItemsVm);
+        return View(listVm);
     }
 
     [Route("Create")]
@@ -57,33 +52,32 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(int? categoryId)
     {
-        try
+        var addingVm = await _itemService.GetItemVmForAddingAsync(categoryId);
+        if (addingVm.IsSuccess) return View(addingVm.Value);
+
+        return addingVm.Error.Code switch
         {
-            var addingVm = await _itemService.GetItemVMForAddingAsync(categoryId);
-            return View(addingVm);
-        }
-        catch (NoCategoriesException)
-        {
-            return RedirectToAction("NoCategories", "Items");
-        }
+            ErrorCodes.Items.NO_CATEGORIES => RedirectToAction("NoCategories"),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("Create")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Create(CrEdItemVM crEdObjItem)
+    public async Task<IActionResult> Create(CrEdItemVm crEdObjItem)
     {
-        ValidationResult result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVM);
+        var result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVm);
 
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
-            crEdObjItem.Categories ??= await _itemService.GetCategoriesForSelectVMAsync();
+            result.AddToModelState(ModelState);
+            crEdObjItem.Categories ??= await _itemService.GetCategoriesForSelectVmAsync();
             return View("Create", crEdObjItem);
         }
 
-        _ = await _itemService.CreateItemAsync(crEdObjItem.ItemVM);
+        _ = await _itemService.CreateItemAsync(crEdObjItem.ItemVm);
         return RedirectToAction("Index");
     }
 
@@ -100,16 +94,16 @@ public class ItemsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(CrEdItemVM editItemVM)
+    public async Task<IActionResult> Edit(CrEdItemVm editItemVm)
     {
-        ValidationResult result = await _itemValidator.ValidateAsync(editItemVM.ItemVM);
+        var result = await _itemValidator.ValidateAsync(editItemVm.ItemVm);
         if (!result.IsValid)
         {
-            result.AddToModelState(this.ModelState);
-            return View("Edit", editItemVM);
+            result.AddToModelState(ModelState);
+            return View("Edit", editItemVm);
         }
 
-        await _itemService.UpdateItemAsync(editItemVM.ItemVM);
+        await _itemService.UpdateItemAsync(editItemVm.ItemVm);
         return RedirectToAction("Index");
     }
 
@@ -119,45 +113,34 @@ public class ItemsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var results = await _itemService.DeleteItemAsync(id);
-        switch (results.Status)
+        if (results.IsSuccess) return RedirectToAction("Index");
+
+        return results.Error.Code switch
         {
-            case Application.Results.Item.DeleteItemStatus.Success:
-                return RedirectToAction("Index");
-            case Application.Results.Item.DeleteItemStatus.NotExist:
-                return NotFound();
-            case Application.Results.Item.DeleteItemStatus.ItemIsPartOfKit:
-                return View(new DeleteFailedItemVM() { 
-                    ItemId = id,
-                    Message = "Item is part of a kit and cannot be deleted."
-                });
-            case Application.Results.Item.DeleteItemStatus.Exception:
-                return RedirectToAction("Error", "Home", new ErrorViewModel());
-            default:
-                throw new NotImplementedException();
-        }
+            ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
+            ErrorCodes.Items.IS_PART_OF_KIT => View(new DeleteFailedItemVm
+            {
+                ItemId = id, Message = "Item is part of a kit and cannot be deleted."
+            }),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
-    [Route("Ingredients")]
+    [Route("Components")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Ingredients(int id)
+    public async Task<IActionResult> Components(int id)
     {
-        var ingredientsViewModel = await _itemService.GetIngredientsForSelectionVMAsync(id);
-        if (ingredientsViewModel is null)
-        {
-            return NotFound();
-        }
-        if (ingredientsViewModel.AllIngredients.Count == 0)
-        {
-            return RedirectToAction("NoIngredients");
-        }
+        var componentsViewModel = await _itemService.GetComponentsForSelectionVmAsync(id);
+        if (componentsViewModel is null) return NotFound();
+        if (componentsViewModel.AllComponents.Count == 0) return RedirectToAction("NoComponents");
 
-        return View(ingredientsViewModel);
+        return View(componentsViewModel);
     }
 
-    [Route("NoIngredients")]
+    [Route("NoComponents")]
     [HttpGet]
-    public IActionResult NoIngredients()
+    public IActionResult NoComponents()
     {
         return View();
     }
@@ -169,13 +152,13 @@ public class ItemsController : Controller
         return View();
     }
 
-    [Route("Ingredients")]
+    [Route("Components")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Ingredients(ItemIngredientsSelectionVM selectionVM)
+    public async Task<IActionResult> Components(ItemComponentsSelectionVm selectionVm)
     {
-        await _itemService.UpdateItemIngredientsAsync(selectionVM);
+        await _itemService.UpdateItemComponentsAsync(selectionVm);
         return RedirectToAction("Index");
     }
 }

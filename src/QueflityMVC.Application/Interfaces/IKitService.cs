@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.Results.Kit;
+﻿using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
@@ -7,29 +7,32 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IKitService
 {
-    Task AddElementAsync(ElementVM elementVM);
+    Task AddElementAsync(ElementVm elementVm);
 
-    Task<int> CreateKitAsync(KitVM KitVM);
+    Task<int> CreateKitAsync(KitVm kitVm);
 
     Task DeleteElementAsync(int kitId, int itemId);
 
-    Task<DeleteKitResult> DeleteKitAsync(int id);
+    Task<Result> DeleteKitAsync(int id);
 
-    Task EditElementAsync(ElementVM elementVM);
+    Task EditElementAsync(ElementVm elementVm);
 
-    Task<int> EditKitAsync(KitVM editKitVM);
+    Task<int> EditKitAsync(KitVm editKitVm);
 
-    Task<KitDetailsVM> GetDetailsVMAsync(int id);
+    Task<Result<KitDetailsVm>> GetDetailsVmAsync(int id);
 
-    Task<ListKitsVM> GetFilteredListAsync(ListKitsVM listKitsVM);
+    Task<ListKitsVm> GetFilteredListAsync(ListKitsVm listKitsVm);
 
-    Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(int id);
+    Task<Result<ListItemsForComponentsVm>> GetFilteredListForComponentsAsync(int kitId);
 
-    Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(ListItemsForComponentsVM listItemsForComponentsVM);
+    Task<Result<ListItemsForComponentsVm>> GetFilteredListForComponentsAsync(
+        ListItemsForComponentsVm itemsForComponentsVm);
 
-    Task<KitVM> GetKitVMForEditAsync(int id);
+    Task<Result<KitVm>> GetKitVmForEditAsync(int id);
 
-    Task<ElementVM> GetVMForAddingElementAsync(int kitId, int itemId);
+    Task<ElementVm> GetVmForAddingElementAsync(int kitId, int itemId);
 
-    Task<ElementVM> GetVMForEdittingElementAsync(int kitId, int itemId);
+    Task<ElementVm> GetVmForEditingElementAsync(int kitId, int itemId);
+
+    Task<int> GetElementCount(int id);
 }

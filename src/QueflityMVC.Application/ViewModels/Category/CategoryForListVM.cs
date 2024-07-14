@@ -1,17 +1,15 @@
-﻿using AutoMapper;
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Category;
 
-public record CategoryForListVM : IMapFrom<Domain.Models.Category>
+public record CategoryForListVm : IMapFrom<Domain.Models.Category>
 {
     public required int Id { get; set; }
 
     public required string Name { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
-        // properties' names match
-        profile.CreateMap<Domain.Models.Category, CategoryForListVM>();
+        profile.CreateMap<Domain.Models.Category, CategoryForListVm>();
     }
 }

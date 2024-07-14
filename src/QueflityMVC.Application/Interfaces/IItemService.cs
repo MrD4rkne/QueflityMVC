@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Application.Results.Item;
+﻿using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Item;
 
@@ -6,21 +6,21 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IItemService
 {
-    Task<int> CreateItemAsync(ItemVM createItemVM);
+    Task<int> CreateItemAsync(ItemVm? createItemVm);
 
-    Task<DeleteItemResult> DeleteItemAsync(int id);
+    Task<Result> DeleteItemAsync(int id);
 
-    Task<ListItemsVM> GetFilteredListAsync(ListItemsVM listItemsVM);
+    Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm);
 
-    Task<CrEdItemVM?> GetForEditAsync(int id);
+    Task<CrEdItemVm?> GetForEditAsync(int id);
 
-    Task<CrEdItemVM> GetItemVMForAddingAsync(int? categoryId);
+    Task<Result<CrEdItemVm>> GetItemVmForAddingAsync(int? categoryId);
 
-    Task UpdateItemAsync(ItemVM createItemVM);
+    Task UpdateItemAsync(ItemVm? createItemVm);
 
-    Task<List<CategoryForSelectVM>> GetCategoriesForSelectVMAsync();
+    Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync();
 
-    Task<ItemIngredientsSelectionVM?> GetIngredientsForSelectionVMAsync(int id);
+    Task<ItemComponentsSelectionVm?> GetComponentsForSelectionVmAsync(int id);
 
-    Task UpdateItemIngredientsAsync(ItemIngredientsSelectionVM selectionVM);
+    Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm);
 }

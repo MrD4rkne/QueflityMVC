@@ -1,38 +1,12 @@
-﻿@using QueflityMVC.Application.ViewModels.Image
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model QueflityMVC.Application.ViewModels.Image.ImageVm
 
-@model ImageVM
-
-@* <div class="mb-3">
-    <div class="row">
-        <div class="col-md-4">
-            <img class="img-fluid rounded-start" alt="@Model.AltDescription" src="@Model.FileUrl" />
-        </div>
-        <div class="col-md-8">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <h5>Image</h5>
-                    <div class="mb-3">
-                        <input class="form-control" asp-for="FormFile" type="file">
-                        <span asp-validation-for="FormFile" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="AltDescription" class="control-label">Alternative description</label>
-                        <input asp-for="AltDescription" class="form-control" value="@Model.AltDescription" />
-                        <span asp-validation-for="AltDescription" class="text-danger"></span>
-                    </div>
-                    @Html.HiddenFor(m => m.Id)
-                    <input type="hidden" asp-for="FileUrl" value="@Model.FileUrl" />
-                </li>
-            </ul>
-        </div>
-    </div>
-    </div> *@
 @Html.HiddenFor(m => m.Id)
 @Html.HiddenFor(m => m.FileUrl)
 <div class="card mb-3">
     <div class="row g-0">
         <div class="col-md-4">
-            <img class="img-fluid rounded-start" alt="@Model.AltDescription" src="@Model.FileUrl" style="max-height: 200px" />
+            <img class="img-fluid rounded-start" alt="@Model.AltDescription" src="@Model.FileUrl" style="max-height: 200px"/>
         </div>
         <div class="col-md-8" style="padding: 10px">
             <h5>Image</h5>
@@ -42,10 +16,9 @@
             </div>
             <div class="mb-3">
                 <label asp-for="AltDescription" class="control-label">Alternative description</label>
-                <input asp-for="AltDescription" class="form-control" value="@Model.AltDescription" />
+                <input asp-for="AltDescription" class="form-control" value="@Model.AltDescription"/>
                 <span asp-validation-for="AltDescription" class="text-danger"></span>
             </div>
         </div>
     </div>
 </div>
-    </div>

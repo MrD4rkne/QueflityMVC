@@ -1,27 +1,26 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Kit;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
-using QueflityMVC.Web.Models;
+using QueflityMVC.Web.Exceptions;
 
 namespace QueflityMVC.Web.Controllers;
 
 [Route("Kits")]
 public class KitsController : Controller
 {
+    private readonly IValidator<ElementVm> _elemValidator;
     private readonly IKitService _kitService;
-    private readonly IValidator<KitVM> _kitValidator;
-    private readonly IValidator<ElementVM> _elemValidator;
+    private readonly IValidator<KitVm> _kitValidator;
 
-    public KitsController(IKitService kitService, IValidator<KitVM> kitValidator, IValidator<ElementVM> elemValidator)
+    public KitsController(IKitService kitService, IValidator<KitVm> kitValidator, IValidator<ElementVm> elemValidator)
     {
         _kitService = kitService;
         _kitValidator = kitValidator;
@@ -32,26 +31,23 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(int? itemId)
     {
-        ListKitsVM listKitsVM = new()
+        ListKitsVm listKitsVm = new()
         {
-            ItemId= itemId,
-            Pagination = PaginationFactory.Default<KitForListVM>()
+            ItemId = itemId,
+            Pagination = PaginationFactory.Default<KitForListVm>()
         };
-        return await Index(listKitsVM);
+        return await Index(listKitsVm);
     }
 
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> Index(ListKitsVM listKitsVM)
+    public async Task<IActionResult> Index(ListKitsVm listKitsVm)
     {
-        if (listKitsVM is null)
-        {
-            return BadRequest();
-        }
-        listKitsVM.NameFilter ??= string.Empty;
+        if (listKitsVm is null) return BadRequest();
+        listKitsVm.NameFilter ??= string.Empty;
 
-        ListKitsVM listVM = await _kitService.GetFilteredListAsync(listKitsVM);
-        return View(listVM);
+        var listVm = await _kitService.GetFilteredListAsync(listKitsVm);
+        return View(listVm);
     }
 
     [Route("Create")]
@@ -65,18 +61,18 @@ public class KitsController : Controller
     [Route("Create")]
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Create(KitVM createKitVM, bool shouldRouteToDetails = false)
+    public async Task<IActionResult> Create(KitVm createKitVm, bool shouldRouteToDetails = false)
     {
-        ValidationResult validationResults = await _kitValidator.ValidateAsync(createKitVM);
+        var validationResults = await _kitValidator.ValidateAsync(createKitVm);
 
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
+            validationResults.AddToModelState(ModelState);
 
-            return View("Create", createKitVM);
+            return View("Create", createKitVm);
         }
 
-        int kitId = await _kitService.CreateKitAsync(createKitVM);
+        var kitId = await _kitService.CreateKitAsync(createKitVm);
 
         if (shouldRouteToDetails)
             return RedirectToAction("Details", new { id = kitId });
@@ -88,8 +84,14 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Details(int id)
     {
-        var kitDetailsVM = await _kitService.GetDetailsVMAsync(id);
-        return View(kitDetailsVM);
+        var kitDetailsResult = await _kitService.GetDetailsVmAsync(id);
+        if (kitDetailsResult.IsSuccess) return View(kitDetailsResult.Value);
+
+        return kitDetailsResult.Error.Code switch
+        {
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("Edit")]
@@ -97,24 +99,32 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        KitVM kitToEditVM = await _kitService.GetKitVMForEditAsync(id);
-        return View(kitToEditVM);
+        var kitToEditResult = await _kitService.GetKitVmForEditAsync(id);
+        if (kitToEditResult.IsSuccess) return View(kitToEditResult.Value);
+        return kitToEditResult.Error.Code switch
+        {
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("Edit")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(KitVM editedKitVM)
+    public async Task<IActionResult> Edit(KitVm editedKitVm)
     {
-        ValidationResult validationResults = await _kitValidator.ValidateAsync(editedKitVM);
+        if (editedKitVm is null) return BadRequest();
+
+        editedKitVm.ElementCount = await _kitService.GetElementCount(editedKitVm.Id);
+        var validationResults = await _kitValidator.ValidateAsync(editedKitVm);
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
-            return View("Edit", editedKitVM);
+            validationResults.AddToModelState(ModelState);
+            return View("Edit", editedKitVm);
         }
 
-        int kitId = await _kitService.EditKitAsync(editedKitVM);
+        var kitId = await _kitService.EditKitAsync(editedKitVm);
         return RedirectToAction("Details", new { id = kitId });
     }
 
@@ -124,17 +134,12 @@ public class KitsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var results = await _kitService.DeleteKitAsync(id);
-        switch (results.Status)
+        if (results.IsSuccess) return RedirectToAction("Index");
+        return results.Error.Code switch
         {
-            case DeleteKitStatus.Success:
-                return RedirectToAction("Index");
-            case DeleteKitStatus.NotExist:
-                return NotFound();
-            case DeleteKitStatus.Exception:
-                return RedirectToAction("Error", "Home", new ErrorViewModel());
-            default:
-                throw new NotImplementedException();
-        }
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("ListItemsForComponent")]
@@ -142,17 +147,24 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> ListItemsForComponents(int kitId)
     {
-        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponentsAsync(kitId);
-        return View(itemsForComponentsListVM);
+        var getFilteredComponentsResult = await _kitService.GetFilteredListForComponentsAsync(kitId);
+        if (getFilteredComponentsResult.IsSuccess) return View(getFilteredComponentsResult.Value);
+
+        throw new UnexpectedApplicationException();
     }
 
     [Route("ListItemsForComponent")]
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> ListItemsForComponents(ListItemsForComponentsVM listItemsForComponentsVM)
+    public async Task<IActionResult> ListItemsForComponents(ListItemsForComponentsVm listItemsForComponentsVm)
     {
-        var itemsForComponentsListVM = await _kitService.GetFilteredListForComponentsAsync(listItemsForComponentsVM);
-        return View(itemsForComponentsListVM);
+        var filterComponentsResult = await _kitService.GetFilteredListForComponentsAsync(listItemsForComponentsVm);
+        if (filterComponentsResult.IsSuccess) return View(filterComponentsResult.Value);
+        return filterComponentsResult.Error.Code switch
+        {
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("AddComponent")]
@@ -160,25 +172,25 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> AddComponent(int kitId, int itemId)
     {
-        var addingComponentVM = await _kitService.GetVMForAddingElementAsync(kitId, itemId);
-        return View(addingComponentVM);
+        var addingComponentVm = await _kitService.GetVmForAddingElementAsync(kitId, itemId);
+        return View(addingComponentVm);
     }
 
     [Route("AddComponent")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
-    public async Task<IActionResult> AddComponent(ElementVM elementVM)
+    public async Task<IActionResult> AddComponent(ElementVm elementVm)
     {
-        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementVM);
+        var validationResults = await _elemValidator.ValidateAsync(elementVm);
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
-            return View("AddComponent", elementVM);
+            validationResults.AddToModelState(ModelState);
+            return View("AddComponent", elementVm);
         }
 
-        await _kitService.AddElementAsync(elementVM);
-        return RedirectToAction("Details", new { id = elementVM.KitDetailsVM.Id });
+        await _kitService.AddElementAsync(elementVm);
+        return RedirectToAction("Details", new { id = elementVm.KitDetailsVm.Id });
     }
 
     [Route("EditComponent")]
@@ -186,25 +198,25 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> EditComponent(int kitId, int itemId)
     {
-        var addingComponentVM = await _kitService.GetVMForEdittingElementAsync(kitId, itemId);
-        return View(addingComponentVM);
+        var addingComponentVm = await _kitService.GetVmForEditingElementAsync(kitId, itemId);
+        return View(addingComponentVm);
     }
 
     [Route("EditComponent")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> EditComponent(ElementVM elementVM)
+    public async Task<IActionResult> EditComponent(ElementVm elementVm)
     {
-        ValidationResult validationResults = await _elemValidator.ValidateAsync(elementVM);
+        var validationResults = await _elemValidator.ValidateAsync(elementVm);
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(this.ModelState);
-            return View("AddComponent", elementVM);
+            validationResults.AddToModelState(ModelState);
+            return View("AddComponent", elementVm);
         }
 
-        await _kitService.EditElementAsync(elementVM);
-        return RedirectToAction("Details", new { id = elementVM.KitDetailsVM.Id });
+        await _kitService.EditElementAsync(elementVm);
+        return RedirectToAction("Details", new { id = elementVm.KitDetailsVm.Id });
     }
 
     [Route("DeleteComponent")]

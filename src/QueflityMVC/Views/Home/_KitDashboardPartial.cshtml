@@ -1,0 +1,99 @@
+﻿@model QueflityMVC.Application.ViewModels.Purchasable.KitForDashboardVm
+
+<div class="card h-100 w-100">
+    <!-- Product image-->
+    <img class="card-img-top" src="@Model.Image.FileUrl" alt="@Model.Image.AltDescription">
+    <!-- Product details-->
+    <div class="card-body p-4">
+        <div class="text-center">
+            <!-- Product name-->
+            <h5 class="fw-bolder">@Model.Name</h5>
+            <!-- Product price-->
+            <p class="text-success font-italic color">@Model.Price</p>
+            <p class="text-info-emphasis text-wrap">@Model.Description</p>
+        </div>
+    </div>
+    <!-- Product actions-->
+    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal" data-bs-target="@($"#kitItems{Model.Id}")">
+                    View items
+                </button>
+            </div>
+            <div class="col-auto">
+                @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="@($"kitItems{Model.Id}")" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalLabel">Items of @Model.Name</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (Model.Elements is { Count: > 0 })
+                    {
+                        <table class="table">
+
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Amount
+                                </th>
+                                <th>
+                                    Price per item
+                                </th>
+                                <th>
+                                    Overall price
+                                </th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var element in Model.Elements)
+                            {
+                                <tr>
+                                    <td>
+                                        @{
+                                            var thumbnail = element.Item.Image;
+                                            <img src="@thumbnail.FileUrl" alt="@thumbnail.AltDescription" style="height:30px"/>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => element.Item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => element.ItemsAmount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => element.PricePerItem)
+                                    </td>
+                                    <td>
+                                        <p>@(element.PricePerItem * element.ItemsAmount)</p>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="centered-box-with-text">No items found</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

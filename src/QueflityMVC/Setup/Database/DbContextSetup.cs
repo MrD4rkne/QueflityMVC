@@ -7,25 +7,12 @@ namespace QueflityMVC.Web.Setup.Database;
 
 public static class DbContextSetup
 {
-    public static bool TryBuildConnectionString(string? connectionString, out string formatedConnectionString)
-    {
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            formatedConnectionString = string.Empty;
-            return false;
-        }
-
-        SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
-        connectionStringBuilder.ConnectionString = connectionString;
-        formatedConnectionString = connectionStringBuilder.ToString();
-        return true;
-    }
-
-    public static IServiceCollection ConfigureDbContext<TContext>(this IServiceCollection services, IVariablesProvider variablesProvider) where TContext : DbContext
+    public static IServiceCollection ConfigureDbContext<TContext>(this IServiceCollection services,
+        IVariablesProvider variablesProvider) where TContext : DbContext
     {
         ArgumentNullException.ThrowIfNull(variablesProvider);
 
-        string builtConnectionString = PrepareConnectionString(variablesProvider);
+        var builtConnectionString = PrepareConnectionString(variablesProvider);
         services.ConfigureConnection<TContext>(builtConnectionString);
 
         return services;
@@ -33,50 +20,63 @@ public static class DbContextSetup
 
     public static void ApplyPendingMigrations<TContext>(this WebApplication appBuilder) where TContext : DbContext
     {
-        using (var scope = appBuilder.Services.CreateScope())
+        using var scope = appBuilder.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        context.Database.EnsureCreated();
+    }
+
+    private static bool TryBuildConnectionString(string? connectionString, out string formatedConnectionString)
+    {
+        if (string.IsNullOrEmpty(connectionString))
         {
-            var context = scope.ServiceProvider.GetRequiredService<TContext>();
-            context.Database.EnsureCreated();
-            if (context.Database.GetPendingMigrations().Any())
-            {
-                context.Database.Migrate();
-            }
+            formatedConnectionString = string.Empty;
+            return false;
         }
+
+        var connectionStringBuilder = new SqlConnectionStringBuilder
+        {
+            ConnectionString = connectionString
+        };
+        formatedConnectionString = connectionStringBuilder.ToString();
+        return true;
     }
 
     private static string PrepareConnectionString(IVariablesProvider variablesProvider)
     {
         ArgumentNullException.ThrowIfNull(variablesProvider);
-        string builtConnectionString = string.Empty;
         try
         {
-            if (!TryBuildConnectionString(variablesProvider.GetConnectionString(), out builtConnectionString))
-            {
-                throw new ConfigurationException("Connection string is invalid. Please fix this and provide valid one.");
-            }
+            if (!TryBuildConnectionString(variablesProvider.GetConnectionString(), out var builtConnectionString))
+                throw new ConfigurationException(
+                    "Connection string is invalid. Please fix this and provide a valid one.");
+            return builtConnectionString;
         }
         catch (Exception ex)
         {
-            throw new DbSetupException("Connection string exception occured. See inner exception for more details.", ex);
+            throw new DbSetupException("Connection string exception occured. See inner exception for more details.",
+                ex);
         }
-        return builtConnectionString;
     }
 
-    private static IServiceCollection ConfigureConnection<TContext>(this IServiceCollection services, string connectionString) where TContext : DbContext
+    private static IServiceCollection ConfigureConnection<TContext>(this IServiceCollection services,
+        string connectionString) where TContext : DbContext
     {
         try
         {
             services.AddDbContext<TContext>(options =>
                 options.UseSqlServer(connectionString,
-                provider => provider.EnableRetryOnFailure()
-            ));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+                    provider => provider.EnableRetryOnFailure()
+                ));
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+                services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;
         }
         catch (Exception ex)
         {
-            throw new DbSetupException("Exception occured while configuring database connection. See inner exception for more details.", ex);
+            throw new DbSetupException(
+                "Exception occured while configuring database connection. See inner exception for more details.", ex);
         }
     }
 }

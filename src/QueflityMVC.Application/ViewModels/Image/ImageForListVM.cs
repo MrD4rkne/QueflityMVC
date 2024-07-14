@@ -1,17 +1,16 @@
-﻿using AutoMapper;
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
 
 namespace QueflityMVC.Application.ViewModels.Image;
 
-public record ImageForListVM : IMapFrom<Domain.Models.Image>
+public record ImageForListVm : IMapFrom<Domain.Models.Image>
 {
     public string? FileUrl { get; set; }
 
     public string? AltDescription { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Domain.Models.Image, ImageForListVM>()
+        profile.CreateMap<Domain.Models.Image, ImageForListVm>()
             .ReverseMap();
     }
 }

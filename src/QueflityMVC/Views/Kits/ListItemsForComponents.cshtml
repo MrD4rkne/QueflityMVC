@@ -1,20 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
-@model QueflityMVC.Application.ViewModels.Item.ListItemsForComponentsVM
+@model QueflityMVC.Application.ViewModels.Item.ListItemsForComponentsVm
 @inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "List";
-    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
-    int[] options = new int[] { 2, 5, 10, 25, 50, 100 };
+    var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    int[] options = { 2, 5, 10, 25, 50, 100 };
 }
 
-@if (Model.KitDetailsVM is not null)
+@if (Model.KitDetailsVm is not null)
 {
-    <partial name="_KitDetailsPartial" model="@Model.KitDetailsVM" />
+    <partial name="_KitDetailsPartial" model="@Model.KitDetailsVm"/>
 }
 
-<hr />
+<hr/>
 
 <h4>Items</h4>
 <h7>Below you can see all available items</h7>
@@ -22,14 +23,14 @@
 <form asp-action="ListItemsForComponents" asp-controller="Kits" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter" />
+            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter"/>
         </li>
         <li class="nav-item">
             <button type="submit" class="btn btn-secondary">Search</button>
         </li>
         <li class="nav-item">
             <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (int i in options)
+                @foreach (var i in options)
                 {
                     @if (i == Model.Pagination.Info.PageSize)
                     {
@@ -43,55 +44,55 @@
             </select>
         </li>
     </ul>
-    @Html.HiddenFor(x => x.kitId)
+    @Html.HiddenFor(x => x.KitId)
     <div class="row">
         <table class="table">
             <thead>
-                <tr>
-                    <th></th>
-                    <th>
-                        Name
-                    </th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th></th>
+                <th>
+                    Name
+                </th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Pagination.Entities)
-                {
-                    <tr>
-                        <td>
-                            @if (item.Image != null)
+            @foreach (var item in Model.Pagination.Entities)
+            {
+                <tr>
+                    <td>
+                        @if (item.Image != null)
+                        {
+                            <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
+                        {
+                            @Html.ActionLink("Edit membership", "EditComponent", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                            ;
+                            @if (canCreateEntities)
                             {
-                                <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px" />
+                                @Html.ActionLink("Delete", "DeleteComponent", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
                             }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
-                            {
-                                @Html.ActionLink("Edit membership", "EditMembership", new { kitId = Model.kitId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                                ;
-                                @if (canCreateEntities)
-                                {
-                                    @Html.ActionLink("Delete", "DeleteComponent", new { itemId = item.Id, kitId = Model.kitId }, new { @class = "btn btn-outline-danger btn-sm" })
-                                }
-                            }
-                            else
-                            {
-                                @Html.ActionLink("Add to set", "AddComponent", new { kitId = Model.kitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
-                                ;
-                            }
-                        </td>
-                    </tr>
-                }
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Add to set", "AddComponent", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
+                            ;
+                        }
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
 
     </div>
     <div class="row">
-        <partial name="_PaginationPartial" for="Pagination.Info" />
+        <partial name="_PaginationPartial" for="Pagination.Info"/>
     </div>
 </form>
 

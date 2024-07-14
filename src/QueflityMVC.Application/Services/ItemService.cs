@@ -2,12 +2,11 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Errors.Common;
-using QueflityMVC.Application.Exceptions.UseCases;
+using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Item;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
-using QueflityMVC.Application.ViewModels.Ingredient;
+using QueflityMVC.Application.ViewModels.Component;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
@@ -15,152 +14,129 @@ using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Application.Services;
 
-public class ItemService : IItemService
+public class ItemService(
+    IItemRepository itemRepository,
+    IMapper mapper,
+    ICategoryRepository categoryRepository,
+    IComponentRepository componentRepository,
+    IFileService fileService,
+    IPurchasableRepository purchasableRepository)
+    : IItemService
 {
-    private readonly IItemRepository _itemRepository;
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IIngredientRepository _ingredientRepository;
-    private readonly IMapper _mapper;
-    private readonly IFileService _fileService;
-
-    public ItemService(IItemRepository itemRepository, IMapper mapper, ICategoryRepository categoryRepository, IIngredientRepository ingredientRepository, IFileService fileService)
+    public async Task<int> CreateItemAsync(ItemVm? createItemVm)
     {
-        _itemRepository = itemRepository;
-        _mapper = mapper;
-        _categoryRepository = categoryRepository;
-        _ingredientRepository = ingredientRepository;
-        _fileService = fileService;
+        createItemVm.Image!.FileUrl = await fileService.UploadFileAsync(createItemVm.Image.FormFile);
+        var itemToCreate = mapper.Map<Item>(createItemVm);
+        itemToCreate.OrderNo = await purchasableRepository.GetNextOrderNumberAsync();
+        return await itemRepository.AddAsync(itemToCreate);
     }
 
-    public async Task<int> CreateItemAsync(ItemVM createItemVM)
+    public async Task<Result> DeleteItemAsync(int id)
     {
-        createItemVM.Image!.FileUrl = await _fileService.UploadFileAsync(createItemVM.Image.FormFile);
-        var itemToCreate = _mapper.Map<Item>(createItemVM);
-        return await _itemRepository.AddAsync(itemToCreate);
-    }
-
-    public async Task<DeleteItemResult> DeleteItemAsync(int id)
-    {
-        Item? itemToDelete = await _itemRepository.GetByIdAsync(id);
-        if(itemToDelete is null)
-        {
-            return DeleteItemResultsFactory.NotExist();
-        }
-        if(await _itemRepository.IsItemAPartOfAnyKitAsync(id))
-        {
-            return DeleteItemResultsFactory.ItemIsPartOfKit();
-        }
+        var itemToDelete = await itemRepository.GetByIdAsync(id);
+        if (itemToDelete is null) return Result.Failure(Errors.Items.DoesNotExit);
+        if (await itemRepository.IsItemAPartOfAnyKitAsync(id)) return Result.Failure(Errors.Items.IsPartOfKit);
 
         try
         {
-            await _itemRepository.DeleteAsync(id);
+            await itemRepository.DeleteAsync(id);
+            if (itemToDelete.ShouldBeShown) await itemRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
         }
-        catch(ResourceNotFoundException)
+        catch (ResourceNotFoundException)
         {
-            return DeleteItemResultsFactory.NotExist();
-        }
-        catch (Exception ex)
-        {
-            return DeleteItemResultsFactory.Exception(ex);
+            return Result.Failure(Errors.Items.DoesNotExit);
         }
 
-        if (itemToDelete.Image is not null)
-        {
-            _fileService.DeleteImage(itemToDelete.Image!.FileUrl);
-        }
-        return DeleteItemResultsFactory.Success();
+        if (itemToDelete.Image is not null) fileService.DeleteImage(itemToDelete.Image!.FileUrl);
+        return Result.Success();
     }
 
-    public async Task<ListItemsVM> GetFilteredListAsync(ListItemsVM listItemsVM)
+    public async Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm)
     {
-        IQueryable<Item> matchingItems = _itemRepository.GetFilteredItems(listItemsVM.NameFilter, listItemsVM.CategoryId);
-        listItemsVM.Pagination = await matchingItems.Paginate<Item, ItemForListVM>(listItemsVM.Pagination, _mapper.ConfigurationProvider);
-        return listItemsVM;
+        var matchingItems = itemRepository.GetFilteredItems(listItemsVm.NameFilter, listItemsVm.CategoryId);
+        listItemsVm.Pagination = await matchingItems.Paginate(listItemsVm.Pagination, mapper.ConfigurationProvider);
+        return listItemsVm;
     }
 
-    public async Task<CrEdItemVM?> GetForEditAsync(int id)
+    public async Task<CrEdItemVm?> GetForEditAsync(int id)
     {
-        var item = await _itemRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
+        var item = await itemRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
 
-        CrEdItemVM crEdObjItemVM = new()
+        CrEdItemVm crEdObjItemVm = new()
         {
-            ItemVM = _mapper.Map<ItemVM>(item),
-            Categories = await _categoryRepository.GetAll().ProjectTo<CategoryForSelectVM>(_mapper.ConfigurationProvider).ToListAsync()
+            ItemVm = mapper.Map<ItemVm>(item),
+            Categories = await categoryRepository.GetAll()
+                .ProjectTo<CategoryForSelectVm>(mapper.ConfigurationProvider).ToListAsync()
         };
-        return crEdObjItemVM;
+        return crEdObjItemVm;
     }
 
-    public async Task UpdateItemAsync(ItemVM updateItemVM)
+    public async Task UpdateItemAsync(ItemVm? updateItemVm)
     {
-        var item = _mapper.Map<Item>(updateItemVM);
-
-        if (ShouldSwitchImages(updateItemVM))
+        var item = mapper.Map<Item>(updateItemVm);
+        if (ShouldSwitchImages(updateItemVm))
         {
-            if (item.Image != null)
+            if (item.Image != null) fileService.DeleteImage(item.Image.FileUrl);
+            item.Image!.FileUrl = await fileService.UploadFileAsync(updateItemVm.Image!.FormFile!);
+        }
+
+        item.OrderNo = await itemRepository.GetOrderNoByIdAsync(item.Id);
+
+        if (item.ShouldBeShown && item.OrderNo is null)
+            item.OrderNo = await purchasableRepository.GetNextOrderNumberAsync();
+        _ = await itemRepository.UpdateAsync(item);
+    }
+
+    public async Task<Result<CrEdItemVm>> GetItemVmForAddingAsync(int? categoryId)
+    {
+        var crEdObjItem = new CrEdItemVm
+        {
+            Categories = await GetCategoriesForSelectVmAsync(),
+            ItemVm = new ItemVm
             {
-                _fileService.DeleteImage(item.Image.FileUrl);
+                CategoryId = categoryId
             }
-
-            item.Image!.FileUrl = await _fileService.UploadFileAsync(updateItemVM.Image!.FormFile!);
-        }
-        _ = _itemRepository.UpdateAsync(item);
-    }
-
-    public async Task<CrEdItemVM> GetItemVMForAddingAsync(int? categoryId)
-    {
-        CrEdItemVM crEdObjItem = new CrEdItemVM()
-        {
-            Categories = await GetCategoriesForSelectVMAsync()
         };
-        if(crEdObjItem.Categories.Count == 0)
-        {
-            throw new NoCategoriesException();
-        }
 
-        if(categoryId.HasValue)
-        {
-            crEdObjItem.ItemVM = new()
-            {
-                CategoryId = categoryId.Value
-            };
-        }
-        return crEdObjItem;
+        if (crEdObjItem.Categories.Count == 0) return Result<CrEdItemVm>.Failure(Errors.Items.NoCategories);
+        return Result<CrEdItemVm>.Success(crEdObjItem);
     }
 
-    public Task<List<CategoryForSelectVM>> GetCategoriesForSelectVMAsync()
+    public Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync()
     {
-        return _categoryRepository.GetAll()
-            .ProjectTo<CategoryForSelectVM>(_mapper.ConfigurationProvider)
+        return categoryRepository.GetAll()
+            .ProjectTo<CategoryForSelectVm>(mapper.ConfigurationProvider)
             .ToListAsync();
     }
 
-    private bool ShouldSwitchImages(ItemVM updatedItem)
+    public async Task<ItemComponentsSelectionVm?> GetComponentsForSelectionVmAsync(int id)
     {
-        return updatedItem != null && updatedItem.Image != null && updatedItem.Image.FormFile != null;
-    }
+        var item = await itemRepository.GetItemWithComponentsByIdAsync(id) ?? throw new EntityNotFoundException();
 
-    public async Task<ItemIngredientsSelectionVM?> GetIngredientsForSelectionVMAsync(int id)
-    {
-        var item = await _itemRepository.GetItemWithIngredientsByIdAsync(id) ?? throw new EntityNotFoundException();
-
-        var allIngredients = _ingredientRepository.GetAll();
-        List<IngredientForSelection> allIngredientsVMs = await allIngredients.ProjectTo<IngredientForSelection>(_mapper.ConfigurationProvider)
+        var allComponents = componentRepository.GetAll();
+        var allComponentsVMs = await allComponents.ProjectTo<ComponentForSelection>(mapper.ConfigurationProvider)
             .ToListAsync();
-        List<int> selectedIngredientsIds = item.Ingredients!
+        var selectedComponentsIds = item.Components!
             .Select(x => x.Id)
             .ToList();
-        ItemIngredientsSelectionVM selectionVM = new ItemIngredientsSelectionVM()
+        var selectionVm = new ItemComponentsSelectionVm
         {
-            Item = _mapper.Map<ItemVM>(item),
-            AllIngredients = allIngredientsVMs,
-            SelectedIngredientsIds = selectedIngredientsIds
+            Item = mapper.Map<ItemVm>(item),
+            AllComponents = allComponentsVMs,
+            SelectedComponentsIds = selectedComponentsIds
         };
-        return selectionVM;
+        return selectionVm;
     }
 
-    public Task UpdateItemIngredientsAsync(ItemIngredientsSelectionVM selectionVM)
+    public Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)
     {
-        var selectedIngredients = _mapper.Map<IEnumerable<Ingredient>>(selectionVM.AllIngredients.Where(x => x.IsSelected)).ToList();
-        return _itemRepository.UpdateIngredientsAsync(selectionVM.Item.Id, selectedIngredients);
+        var selectedComponents = mapper.Map<IEnumerable<Component>>(selectionVm.AllComponents.Where(x => x.IsSelected))
+            .ToList();
+        return itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
+    }
+
+    private bool ShouldSwitchImages(ItemVm? updatedItem)
+    {
+        return updatedItem is not null && updatedItem.Image is not null && updatedItem.Image.FormFile != null;
     }
 }

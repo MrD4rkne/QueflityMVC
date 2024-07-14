@@ -2,11 +2,15 @@
 
 namespace QueflityMVC.Domain.Interfaces;
 
-public interface IItemRepository : IBaseRepository<Item>
+public interface IItemRepository : IBasePurchasableRepository<Item>
 {
     IQueryable<Item> GetFilteredItems(string? nameFilter = default, int? categoryId = default);
 
-    Task<Item?> GetItemWithIngredientsByIdAsync(int itemId);
+    Task<Item?> GetItemWithComponentsByIdAsync(int itemId);
+
     Task<bool> IsItemAPartOfAnyKitAsync(int id);
-    Task UpdateIngredientsAsync(int itemId, List<Ingredient> ingredients);
+
+    Task UpdateComponentsAsync(int itemId, List<Component> components);
+
+    Task<uint?> GetOrderNoByIdAsync(int itemId);
 }

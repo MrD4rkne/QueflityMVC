@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Moq;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Services;
-using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
 using Xunit;
 
@@ -15,8 +14,8 @@ public class UserServiceTest
     [Fact]
     public async void DisableUserTest()
     {
-        string existingId = "1";
-        string nonExistingId = "D";
+        var existingId = "1";
+        var nonExistingId = "D";
         var userRepository = new Mock<IUserRepository>();
         userRepository.Setup(x => x.DoesUserExistAsync(existingId)).ReturnsAsync(true);
         userRepository.Setup(x => x.DoesUserExistAsync(nonExistingId)).ReturnsAsync(false);
@@ -25,8 +24,8 @@ public class UserServiceTest
         //userRepository.Setup(x => x.DisableUser(existingId)).Returns(Task.CompletedTask);
         IUserService userService = new UserService(userRepository.Object, mapper.Object);
 
-        Func<Task> existingAct = async () => { await userService.DisableUserAsync(existingId); };
-        Func<Task> nonExistingAct = async () => { await userService.DisableUserAsync(nonExistingId); };
+        var existingAct = async () => { await userService.DisableUserAsync(existingId); };
+        var nonExistingAct = async () => { await userService.DisableUserAsync(nonExistingId); };
 
         await nonExistingAct.Should().ThrowAsync<EntityNotFoundException>();
         await existingAct.Should().NotThrowAsync<EntityNotFoundException>();
@@ -35,15 +34,15 @@ public class UserServiceTest
     [Fact]
     public async void EnableUserTest()
     {
-        string existingId = "1";
-        string nonExistingId = "D";
+        var existingId = "1";
+        var nonExistingId = "D";
         var userRepository = new Mock<IUserRepository>();
         userRepository.Setup(x => x.DoesUserExistAsync(existingId)).ReturnsAsync(true);
         userRepository.Setup(x => x.DoesUserExistAsync(nonExistingId)).ReturnsAsync(false);
         IUserService userService = new UserService(userRepository.Object, null);
 
-        Func<Task> existingAct = async () => { await userService.EnableUserAsync(existingId); };
-        Func<Task> nonExistingAct = async () => { await userService.EnableUserAsync(nonExistingId); };
+        var existingAct = async () => { await userService.EnableUserAsync(existingId); };
+        var nonExistingAct = async () => { await userService.EnableUserAsync(nonExistingId); };
 
         await nonExistingAct.Should().ThrowAsync<EntityNotFoundException>();
         await existingAct.Should().NotThrowAsync<EntityNotFoundException>();

@@ -2,9 +2,9 @@
 
 namespace QueflityMVC.Application.ViewModels.User;
 
-public record ListUsersVM
+public record ListUsersVm
 {
-    public required PaginationVM<UserForListVM> Pagination { get; set; }
+    public required PaginationVm<UserForListVm> Pagination { get; set; }
 
     public string? UserNameFilter { get; set; }
 }

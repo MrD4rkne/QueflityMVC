@@ -1,4 +1,5 @@
-﻿@model QueflityMVC.Application.ViewModels.Category.CategoryVM
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model QueflityMVC.Application.ViewModels.Category.CategoryVm
 
 @{
     ViewData["Title"] = "Edit category";
@@ -7,18 +8,18 @@
 <h1>Edit</h1>
 
 <h4>Edit your category</h4>
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control"/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin: 5px">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary"/>
             </div>
             @Html.HiddenFor(model => model.Id)
         </form>
@@ -30,5 +31,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

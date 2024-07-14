@@ -1,36 +1,36 @@
-﻿@using QueflityMVC.Application.ViewModels.Element;
+﻿@inject IAuthorizationService AuthorizationService
 @using Microsoft.AspNetCore.Authorization
-@using QueflityMVC.Application.Constants;
-@inject IAuthorizationService AuthorizationService
-@model ElementVM
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QueflityMVC.Application.Constants
+@model QueflityMVC.Application.ViewModels.Element.ElementVm
 
 @{
     ViewData["Title"] = "Add item to kit";
-    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
 <h1>Create membership</h1>
 
 <h4>Add item in your set!</h4>
-<hr />
+<hr/>
 
 <form asp-action="AddComponent">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-md">
             <h4>Set</h4>
-            <partial name="~/Views/Kits/_KitDetailsPartial.cshtml" model="@Model.KitDetailsVM" />
-            @Html.HiddenFor(model => model.KitDetailsVM.Id)
-            @Html.HiddenFor(model => model.KitDetailsVM.Price)
-            @Html.HiddenFor(model => model.KitDetailsVM.ShouldBeShown)
-            @Html.HiddenFor(model => model.KitDetailsVM.Name)
-            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.Id)
-            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.AltDescription)
-            @Html.HiddenFor(model => model.KitDetailsVM!.Image!.FileUrl)
+            <partial name="~/Views/Kits/_KitDetailsPartial.cshtml" model="@Model.KitDetailsVm"/>
+            @Html.HiddenFor(model => model.KitDetailsVm.Id)
+            @Html.HiddenFor(model => model.KitDetailsVm.Price)
+            @Html.HiddenFor(model => model.KitDetailsVm.ShouldBeShown)
+            @Html.HiddenFor(model => model.KitDetailsVm.Name)
+            @Html.HiddenFor(model => model.KitDetailsVm!.Image!.Id)
+            @Html.HiddenFor(model => model.KitDetailsVm!.Image!.AltDescription)
+            @Html.HiddenFor(model => model.KitDetailsVm!.Image!.FileUrl)
         </div>
         <div class="col-md">
             <h4>Item</h4>
-            <partial name="~/Views/Items/_ItemDetailsPartial.cshtml" model="@Model.Item" />
+            <partial name="~/Views/Items/_ItemDetailsPartial.cshtml" model="@Model.Item"/>
             @Html.HiddenFor(model => model.Item.Id)
             @Html.HiddenFor(model => model.Item.Price)
             @Html.HiddenFor(model => model.Item.ShouldBeShown)
@@ -43,32 +43,32 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            @Html.HiddenFor(x=> x.Id)
+            @Html.HiddenFor(x => x.Id)
 
             <div class="row">
                 <div class="col-md">
                     <div class="form-floating">
-                        <input asp-for="ItemsAmmount" class="form-control" oninput="CalculateTotal()" type="number" min="0" />
-                        <label asp-for="ItemsAmmount">Quantity</label>
-                        <span asp-validation-for="ItemsAmmount" class="text-danger"></span>
+                        <input asp-for="ItemsAmount" class="form-control" oninput="CalculateTotal()" type="number" min="0"/>
+                        <label asp-for="ItemsAmount">Quantity</label>
+                        <span asp-validation-for="ItemsAmount" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md">
                     <div class="form-floating">
-                        <input asp-for="PricePerItem" class="form-control" oninput="CalculateTotal()" type="number" step="0.01" min="0" />
+                        <input asp-for="PricePerItem" class="form-control" oninput="CalculateTotal()" type="number" step="0.01" min="0"/>
                         <label asp-for="PricePerItem">Price per pcs</label>
                         <span asp-validation-for="PricePerItem" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md">
                     <div class="form-floating">
-                        <input id="total" class="form-control" readonly value="0" />
+                        <input id="total" class="form-control" readonly value="0"/>
                         <label for="total">Total</label>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </div>
     </div>
@@ -82,11 +82,11 @@
 }
 
 @section Scripts
-    {
+{
     <script type="text/javascript">
         function CalculateTotal() {
-            var pricePerItem = document.getElementById("@Html.IdFor(x=> x.PricePerItem)").value;
-            var quantity = document.getElementById("@Html.IdFor(x=> x.ItemsAmmount)").value;
+            var pricePerItem = document.getElementById("@Html.IdFor(x => x.PricePerItem)").value;
+            var quantity = document.getElementById("@Html.IdFor(x => x.ItemsAmount)").value;
             var total = 0;
 
             if (pricePerItem >= 0 && quantity >= 0) {
@@ -104,4 +104,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

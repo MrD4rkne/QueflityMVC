@@ -1,6 +1,6 @@
 ﻿namespace QueflityMVC.Application.ViewModels.Item;
 
-public class DeleteFailedItemVM
+public class DeleteFailedItemVm
 {
     public int ItemId { get; set; }
 

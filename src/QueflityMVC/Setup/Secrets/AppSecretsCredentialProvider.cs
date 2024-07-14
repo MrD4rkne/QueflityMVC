@@ -9,7 +9,7 @@ public class AppSecretsCredentialProvider : IVariablesProvider
     private const string OAUTH_GOOGLE_SECTION = "Authentication:Google";
     private const string DB_CONNECTION_STRING = "Database:ConnectionString";
 
-    private ConfigurationManager _configManager;
+    private readonly ConfigurationManager _configManager;
 
     public AppSecretsCredentialProvider(ConfigurationManager configManager)
     {
@@ -28,6 +28,19 @@ public class AppSecretsCredentialProvider : IVariablesProvider
         return googleSection[OAUTH_GOOGLE_CLIENT_SECRET];
     }
 
+    public Tuple<string?, string?> GetGoogleOAuthCredentials()
+    {
+        return new Tuple<string?, string?>(GetGoogleOAuthClientId(), GetGoogleOAuthClientSecret());
+    }
+
+    public string? GetConnectionString()
+    {
+        var connectionString = _configManager.GetValue<string>(DB_CONNECTION_STRING);
+        if (string.IsNullOrEmpty(connectionString))
+            throw new ConfigurationException("Database connection string is null or empty.");
+        return connectionString;
+    }
+
     private IConfigurationSection GetGoogleSection()
     {
         var credentialsSection = _configManager.GetSection(OAUTH_GOOGLE_SECTION);
@@ -37,18 +50,5 @@ public class AppSecretsCredentialProvider : IVariablesProvider
             throw new ConfigurationException("Could not found Google OAuth credentials: client secret.");
 
         return credentialsSection;
-    }
-
-    public Tuple<string?, string?> GetGoogleOAuthCredentials()
-    {
-        return new(GetGoogleOAuthClientId(), GetGoogleOAuthClientSecret());
-    }
-
-    public string? GetConnectionString()
-    {
-        string? connectionString = _configManager.GetValue<string>(DB_CONNECTION_STRING);
-        if (string.IsNullOrEmpty(connectionString))
-            throw new ConfigurationException("Database connection string is null or empty.");
-        return connectionString;
     }
 }

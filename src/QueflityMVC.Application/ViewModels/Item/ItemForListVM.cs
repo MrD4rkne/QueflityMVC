@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public record ItemForListVM : IMapFrom<Domain.Models.Item>
+public record ItemForListVm : IMapFrom<Domain.Models.Item>
 {
     public required int Id { get; set; }
 
@@ -12,11 +11,11 @@ public record ItemForListVM : IMapFrom<Domain.Models.Item>
 
     public required bool ShouldBeShown { get; set; }
 
-    public ImageForListVM? Image { get; set; }
+    public ImageForListVm? Image { get; set; }
 
-    public void Mapping(Profile profile)
+    public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Domain.Models.Item, ItemForListVM>()
+        profile.CreateMap<Domain.Models.Item, ItemForListVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image));
     }
 }

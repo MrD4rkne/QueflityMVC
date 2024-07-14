@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Errors.Common;
+using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results.Item;
-using QueflityMVC.Application.Results.Kit;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
-using QueflityMVC.Application.ViewModels.Pagination;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -18,169 +16,171 @@ namespace QueflityMVC.Application.Services;
 
 public class KitService : IKitService
 {
-    private readonly IKitRepository _kitRepository;
-    private readonly IItemRepository _itemRepository;
-    private readonly IMapper _mapper;
     private readonly IFileService _fileService;
+    private readonly IItemRepository _itemRepository;
+    private readonly IKitRepository _kitRepository;
+    private readonly IMapper _mapper;
+    private readonly IPurchasableRepository _purchasableRepository;
 
-    public KitService(IKitRepository kitRepository, IItemRepository itemRepository, IMapper mapper, IFileService fileService)
+    public KitService(IKitRepository kitRepository, IItemRepository itemRepository, IMapper mapper,
+        IFileService fileService, IPurchasableRepository purchasableRepository)
     {
         _kitRepository = kitRepository;
         _itemRepository = itemRepository;
         _mapper = mapper;
         _fileService = fileService;
+        _purchasableRepository = purchasableRepository;
     }
 
-    public async Task<int> CreateKitAsync(KitVM kitVM)
+    public async Task<int> CreateKitAsync(KitVm kitVm)
     {
-        kitVM.Image!.FileUrl = await _fileService.UploadFileAsync(kitVM.Image.FormFile);
-        var kitToCreate = _mapper.Map<Kit>(kitVM);
-        kitToCreate.Price = 0;
-
+        kitVm.Image!.FileUrl = await _fileService.UploadFileAsync(kitVm.Image.FormFile);
+        var kitToCreate = _mapper.Map<Kit>(kitVm);
         return await _kitRepository.AddAsync(kitToCreate);
     }
 
-    public async Task<int> EditKitAsync(KitVM editKitVM)
+    public async Task<int> EditKitAsync(KitVm editKitVm)
     {
-        if (ShouldSwitchImages(editKitVM?.Image))
+        if (ShouldSwitchImages(editKitVm?.Image))
         {
-            _fileService.DeleteImage(editKitVM.Image.FileUrl);
-            editKitVM.Image.FileUrl = await _fileService.UploadFileAsync(editKitVM.Image.FormFile!);
+            _fileService.DeleteImage(editKitVm.Image.FileUrl);
+            editKitVm.Image.FileUrl = await _fileService.UploadFileAsync(editKitVm.Image.FormFile!);
         }
 
-        var item = _mapper.Map<Kit>(editKitVM);
-        var updatedItem = await _kitRepository.UpdateAsync(item) ?? throw new ArgumentException("Item set does not exist!");
-        return updatedItem.Id;
+        var kit = _mapper.Map<Kit>(editKitVm);
+        if (!kit.ShouldBeShown) kit.OrderNo = null;
+
+        if (kit.ShouldBeShown && kit.OrderNo is null)
+            kit.OrderNo = await _purchasableRepository.GetNextOrderNumberAsync();
+        var updatedKit = await _kitRepository.UpdateAsync(kit);
+        return updatedKit.Id;
     }
 
-    private static bool ShouldSwitchImages(ImageVM? image)
+    public async Task<Result<KitDetailsVm>> GetDetailsVmAsync(int id)
     {
-        return image is not null && image.FormFile is not null;
+        var kit = await _kitRepository.GetFullKitWithMembershipsByIdAsync(id);
+        if (kit is null) return Result<KitDetailsVm>.Failure(Errors.Kits.DoesNotExit);
+
+        var kitDetailsVm = _mapper.Map<KitDetailsVm>(kit);
+        return Result<KitDetailsVm>.Success(kitDetailsVm);
     }
 
-    public async Task<KitDetailsVM> GetDetailsVMAsync(int id)
+    public async Task<ListKitsVm> GetFilteredListAsync(ListKitsVm listKitsVm)
     {
-        var kit = await _kitRepository.GetFullKitWithMembershipsByIdAsync(id) ?? throw new InvalidDataException("Kit does not exist!");
-        var kitDetailsVM = _mapper.Map<KitDetailsVM>(kit);
-        return kitDetailsVM;
+        var matchingSets = _kitRepository.GetFilteredKits(listKitsVm.NameFilter, listKitsVm.ItemId);
+        var pagination = await matchingSets.Paginate(listKitsVm.Pagination, _mapper.ConfigurationProvider);
+
+        var listItemVm = listKitsVm with { Pagination = pagination };
+        return listItemVm;
     }
 
-    public async Task<ListKitsVM> GetFilteredListAsync(ListKitsVM listKitsVM)
+    public async Task<Result<KitVm>> GetKitVmForEditAsync(int id)
     {
-        var matchingSets = _kitRepository.GetFilteredKits(listKitsVM.NameFilter, listKitsVM.ItemId);
-        var pagination = await matchingSets.Paginate(listKitsVM.Pagination, _mapper.ConfigurationProvider);
+        var kit = await _kitRepository.GetFullKitWithMembershipsByIdAsync(id);
+        if (kit is null) return Result<KitVm>.Failure(Errors.Kits.DoesNotExit);
 
-        ListKitsVM listItemVM = new()
+        var kitDetailsVm = _mapper.Map<KitVm>(kit);
+        return Result<KitVm>.Success(kitDetailsVm);
+    }
+
+    public Task<Result<ListItemsForComponentsVm>> GetFilteredListForComponentsAsync(int kitId)
+    {
+        var paginationVm = PaginationFactory.Default<ItemForListVm>();
+
+        ListItemsForComponentsVm listItemsForComponentsVm = new()
         {
-            Pagination = pagination,
-            ItemId = listKitsVM.ItemId,
-            NameFilter = listKitsVM.NameFilter
+            Pagination = paginationVm,
+            KitId = kitId
         };
-        return listItemVM;
+        return GetFilteredListForComponentsAsync(listItemsForComponentsVm);
     }
 
-    public async Task<KitVM> GetKitVMForEditAsync(int id)
+    public async Task<Result<ListItemsForComponentsVm>> GetFilteredListForComponentsAsync(
+        ListItemsForComponentsVm itemsForComponentsVm)
     {
-        var kit = await _kitRepository.GetFullKitWithMembershipsByIdAsync(id) ?? throw new InvalidDataException("Kit does not exist!");
-        var kitDetailsVM = _mapper.Map<KitVM>(kit);
-        return kitDetailsVM;
+        if (!await _kitRepository.ExistsAsync(itemsForComponentsVm.KitId))
+            return Result<ListItemsForComponentsVm>.Failure(Errors.Kits.DoesNotExit);
+
+        itemsForComponentsVm.KitComponentsIds =
+            await (await _kitRepository.GetComponentsIdsForSet(itemsForComponentsVm.KitId)).ToListAsync();
+        var kitDetailsResult = await GetDetailsVmAsync(itemsForComponentsVm.KitId);
+        if (kitDetailsResult.IsFailure) return Result<ListItemsForComponentsVm>.Failure(kitDetailsResult.Error);
+
+        var allItems =
+            _itemRepository.GetFilteredItems(itemsForComponentsVm.NameFilter, itemsForComponentsVm.CategoryId);
+        itemsForComponentsVm.Pagination =
+            await allItems.Paginate(itemsForComponentsVm.Pagination, _mapper.ConfigurationProvider);
+        return Result<ListItemsForComponentsVm>.Success(itemsForComponentsVm);
     }
 
-    public Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(int kitId)
+    public async Task<ElementVm> GetVmForAddingElementAsync(int kitId, int itemId)
     {
-        PaginationVM<ItemForListVM> paginationVM = PaginationFactory.Default<ItemForListVM>();
-
-        ListItemsForComponentsVM listItemsForComponentsVM = new()
+        var kit = await _kitRepository.GetByIdAsync(kitId) ??
+                  throw new EntityNotFoundException(entityName: nameof(Kit));
+        var item = await _itemRepository.GetByIdAsync(itemId) ??
+                   throw new EntityNotFoundException(entityName: nameof(Item));
+        ElementVm elementVm = new()
         {
-            Pagination = paginationVM,
-            kitId = kitId
-        };
-        return GetFilteredListForComponentsAsync(listItemsForComponentsVM);
-    }
-
-    public async Task<ListItemsForComponentsVM> GetFilteredListForComponentsAsync(ListItemsForComponentsVM itemsForComponentsVM)
-    {
-        if (!await _kitRepository.ExistsAsync(itemsForComponentsVM.kitId))
-        {
-            throw new EntityNotFoundException(entityName: "Set");
-        }
-        itemsForComponentsVM.KitComponentsIds = await (await _kitRepository.GetComponenetsIdsForSet(itemsForComponentsVM.kitId)).ToListAsync();
-        itemsForComponentsVM.KitDetailsVM = await GetDetailsVMAsync(itemsForComponentsVM.kitId);
-
-        IQueryable<Item> allItems = _itemRepository.GetFilteredItems(itemsForComponentsVM.NameFilter, itemsForComponentsVM.CategoryId);
-        itemsForComponentsVM.Pagination = await allItems.Paginate<Item, ItemForListVM>(itemsForComponentsVM.Pagination, _mapper.ConfigurationProvider);
-        return itemsForComponentsVM;
-    }
-
-    public async Task<ElementVM> GetVMForAddingElementAsync(int kitId, int itemId)
-    {
-        Kit? kit = await _kitRepository.GetByIdAsync(kitId) ?? throw new EntityNotFoundException(entityName: nameof(Kit));
-        Item? item = await _itemRepository.GetByIdAsync(itemId) ?? throw new EntityNotFoundException(entityName: nameof(Item));
-        ElementVM elementVM = new()
-        {
-            KitDetailsVM = _mapper.Map<KitDetailsVM>(kit),
-            Item = _mapper.Map<ItemVM>(item),
-            ItemsAmmount = 1,            
+            KitDetailsVm = _mapper.Map<KitDetailsVm>(kit),
+            Item = _mapper.Map<ItemVm>(item),
+            ItemsAmount = 1,
             PricePerItem = item.Price
         };
-
-        return elementVM;
+        return elementVm;
     }
 
-    public async Task AddElementAsync(ElementVM elementToCreate)
+    public async Task AddElementAsync(ElementVm elementToCreate)
     {
         var componentToCreate = _mapper.Map<Element>(elementToCreate);
         await _kitRepository.AddComponentAsync(componentToCreate);
-        await _kitRepository.UpdateKitPriceAsync(componentToCreate.KitId);
     }
 
-    public Task EditElementAsync(ElementVM elementToEdit)
+    public Task EditElementAsync(ElementVm elementToEdit)
     {
         var componentToEdit = _mapper.Map<Element>(elementToEdit);
         return _kitRepository.UpdateElementAsync(componentToEdit);
     }
 
-    public async Task<ElementVM> GetVMForEdittingElementAsync(int kitId, int itemId)
+    public async Task<ElementVm> GetVmForEditingElementAsync(int kitId, int itemId)
     {
-        Element? element = await _kitRepository.GetElementAsync(kitId, itemId);
-        if (element is null)
-        {
-            throw new EntityNotFoundException(entityName: nameof(Element));
-        }
-
-        ElementVM elementToEdit = _mapper.Map<ElementVM>(element);
+        var element = await _kitRepository.GetElementAsync(kitId, itemId) ??
+                      throw new EntityNotFoundException(entityName: nameof(Element));
+        var elementToEdit = _mapper.Map<ElementVm>(element);
         return elementToEdit;
     }
 
-    public Task DeleteElementAsync(int kitId, int itemId)
+    public Task<int> GetElementCount(int id)
     {
-        return _kitRepository.DeleteElementAsync(kitId, itemId);
+        return _kitRepository.GetElementCount(id);
     }
 
-    public async Task<DeleteKitResult> DeleteKitAsync(int id) {
-        Kit? kitToDelete = await _kitRepository.GetByIdAsync(id);
-        if (kitToDelete is null)
-        {
-            return DeleteKitResultsFactory.NotExist();
-        }
+    public async Task DeleteElementAsync(int kitId, int itemId)
+    {
+        await _kitRepository.DeleteElementAsync(kitId, itemId);
+    }
+
+    public async Task<Result> DeleteKitAsync(int id)
+    {
+        var kitToDelete = await _kitRepository.GetByIdAsync(id);
+        if (kitToDelete is null) return Result.Failure(Errors.Kits.DoesNotExit);
 
         try
         {
             await _kitRepository.DeleteAsync(id);
+            _fileService.DeleteImage(kitToDelete.Image.FileUrl);
+            if (kitToDelete.ShouldBeShown) await _kitRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
         }
         catch (ResourceNotFoundException)
         {
-            return DeleteKitResultsFactory.NotExist();
-        }
-        catch (Exception ex)
-        {
-            return DeleteKitResultsFactory.Exception(ex);
+            return Result.Failure(Errors.Kits.DoesNotExit);
         }
 
-        if (kitToDelete.Image is not null)
-        {
-            _fileService.DeleteImage(kitToDelete.Image!.FileUrl);
-        }
-        return DeleteKitResultsFactory.Success();
+        if (kitToDelete.Image is not null) _fileService.DeleteImage(kitToDelete.Image!.FileUrl);
+        return Result.Success();
+    }
+
+    private static bool ShouldSwitchImages(ImageVm? image)
+    {
+        return image is not null && image.FormFile is not null;
     }
 }

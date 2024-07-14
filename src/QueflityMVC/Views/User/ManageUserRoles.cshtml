@@ -1,13 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
-@using QueflityMVC.Application.ViewModels.User;
-@using QueflityMVC.Application.ViewModels.Other;
-@model UserRolesVM
+@model QueflityMVC.Application.ViewModels.User.UserRolesVm
 @inject IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = $"{@Model.Username} - roles";
-    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    ViewData["Title"] = $"{Model.Username} - roles";
+    var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
 }
 
 @if (canListUsers)
@@ -45,37 +44,37 @@
         @Html.HiddenFor(vm => vm.UserId)
         <table class="table">
             <thead>
-                <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Is assigned
-                    </th>
-                </tr>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Is assigned
+                </th>
+            </tr>
             </thead>
             <tbody>
-                @for (int i = 0; i < Model.AllRoles.Count; i++)
-                {
-                    RoleForSelectionVM role = Model.AllRoles[i];
-                    role.IsSelected = Model.AssignedRolesNames.Contains(role.Name);
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => role.Name)
-                        </td>
-                        <td>
-                            @Html.HiddenFor(vm => vm.AllRoles[i].Id)
-                            @if (Model.CanCallerManage)
-                            {
-                                @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected)
-                            }
-                            else
-                            {
-                                @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected,new{ disabled=""})
-                            }
-                        </td>
-                    </tr>
-                }
+            @for (var i = 0; i < Model.AllRoles.Count; i++)
+            {
+                var role = Model.AllRoles[i];
+                role.IsSelected = Model.AssignedRolesNames.Contains(role.Name);
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => role.Name)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(vm => vm.AllRoles[i].Id)
+                        @if (Model.CanCallerManage)
+                        {
+                            @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected)
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected, new { disabled = "" })
+                        }
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>
