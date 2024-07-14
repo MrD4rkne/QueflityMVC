@@ -35,7 +35,6 @@ module for seamless access control.
   the application, offering a seamless user experience and reducing development overhead.
 
 ## Installation
-
 ### Installation by Visual Studio
 
 - clone repo onto your desktop
@@ -44,7 +43,6 @@ module for seamless access control.
 - launch app from VS
     - make sure ports **5000**, **5001** are not used by any other process
     - in debug there will be seeded data
-    - you may have to [create database 'Queflity' manually](./DBMANUAL)
 - navigate to app in browser
     - [localhost:5001](https://localhost:5001) for https connection
     - [localhost:5000](https://localhost:5000) for http connection
@@ -65,6 +63,8 @@ module for seamless access control.
 - [Marcin Szopa (@MrD4rkne)](https://github.com/MrD4rkne)
 
 ## Acknowledgements
+ - App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
+ - Thanks to everyone, who gave me great advice [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
 
 - App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
 - Thanks to everyone who gave me great advice
