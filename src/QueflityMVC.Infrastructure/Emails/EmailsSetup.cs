@@ -6,12 +6,8 @@ namespace QueflityMVC.Infrastructure.Emails;
 
 internal static class EmailsSetup
 {
-    internal static IServiceCollection AddEmails(this IServiceCollection services, Action<SmtpConfig> configureOptions)
+    internal static IServiceCollection AddEmails(this IServiceCollection services)
     {
-        SmtpConfig smtpConfig = new();
-        configureOptions(smtpConfig);
-        services.AddSingleton(smtpConfig);
-
         services.AddTransient<IEmailDispatcher, EmailDispatcher>();
         return services;
     }

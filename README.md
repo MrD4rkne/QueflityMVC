@@ -37,6 +37,7 @@ module for seamless access control.
 - **Emails**: sending emails via SMTP using MailKit and Quartz for one-off jobs
 
 ## Installation
+
 ### Installation by Visual Studio
 
 - clone repo onto your desktop
@@ -65,8 +66,9 @@ module for seamless access control.
 - [Marcin Szopa (@MrD4rkne)](https://github.com/MrD4rkne)
 
 ## Acknowledgements
- - App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
- - Thanks to everyone, who gave me great advice [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
+
+- App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
+- Thanks to everyone, who gave me great advice [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
 
 - App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
 - Thanks to everyone who gave me great advice

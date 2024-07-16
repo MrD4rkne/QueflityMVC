@@ -9,13 +9,16 @@ namespace QueflityMVC.Infrastructure;
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
-        Action<SmtpConfig> configureOptions, string connectionString)
+        Action<SmtpConfig> configureSmtpOptions, Action<JobsConfig> configureJobsOptions)
     {
-        ArgumentNullException.ThrowIfNull(configureOptions);
+        ArgumentNullException.ThrowIfNull(configureSmtpOptions);
+
+        services.AddOptions<SmtpConfig>().Configure(configureSmtpOptions);
+        services.AddOptions<JobsConfig>().Configure(configureJobsOptions);
 
         services.AddTransient<IEmailDispatcher, EmailDispatcher>();
-        services.AddBackgroundJobs(connectionString);
-        services.AddEmails(configureOptions);
+        services.AddBackgroundJobs();
+        services.AddEmails();
         return services;
     }
 }
