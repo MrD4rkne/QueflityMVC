@@ -7,7 +7,7 @@
 @{
     ViewData["Title"] = "List";
     var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
-    int[] options = { 2, 5, 10, 25, 50, 100 };
+    int[] options = [2, 5, 10, 25, 50, 100];
 }
 
 @if (Model.KitDetailsVm is not null)
@@ -72,7 +72,7 @@
                     <td>
                         @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
                         {
-                            @Html.ActionLink("Edit membership", "EditComponent", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                            @Html.ActionLink("Edit membership", "EditComponent", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
                             ;
                             @if (canCreateEntities)
                             {

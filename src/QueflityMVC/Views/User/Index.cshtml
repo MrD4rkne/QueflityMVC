@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = "Users";
-    int[] options = { 2, 5, 10, 25, 50, 100 };
+    int[] options = [2, 5, 10, 25, 50, 100];
 
     var canSeeUserClaims = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_CLAIMS_VIEW)).Succeeded;
     var canSeeUserRoles = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ROLES_VIEW)).Succeeded;

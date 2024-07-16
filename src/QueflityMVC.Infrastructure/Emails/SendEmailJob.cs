@@ -2,9 +2,8 @@
 using Quartz;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
-using QueflityMVC.Infrastructure.Abstraction.Purchasables;
 
-namespace QueflityMVC.Infrastructure.Jobs;
+namespace QueflityMVC.Infrastructure.Emails;
 
 public class SendEmailJob(
     ILogger<SendEmailJob> logger,

@@ -1,7 +1,6 @@
-﻿using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Models;
+﻿using QueflityMVC.Domain.Models;
 
-namespace QueflityMVC.Domain.Interfaces;
+namespace QueflityMVC.Domain.Common;
 
 public abstract class Product : BaseEntity
 {

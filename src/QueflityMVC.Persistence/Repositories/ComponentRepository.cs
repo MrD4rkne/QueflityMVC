@@ -8,7 +8,7 @@ public class ComponentRepository(Context dbContext) : BaseRepository<Component>(
 {
     public IQueryable<Component> GetComponentsForItem(int itemId)
     {
-        return GetAll().Where(x => x.Items!.Any(x => x.Id == itemId));
+        return GetAll().Where(x => x.Items!.Any(item => item.Id == itemId));
     }
 
     public IQueryable<Component> GetComponentsForPagination(int? itemId, string? nameFilter)

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Purchasable;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 

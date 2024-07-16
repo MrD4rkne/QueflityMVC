@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
 
-namespace QueflityMVC.Web.Setup.Mails;
+namespace QueflityMVC.Web.Setup;
 
 public class JobsOptions
 {
@@ -17,6 +17,4 @@ public class JobsOptions
 }
 
 [OptionsValidator]
-public partial class JobsOptionsValidator : IValidateOptions<JobsOptions>
-{
-}
+public partial class JobsOptionsValidator : IValidateOptions<JobsOptions>;

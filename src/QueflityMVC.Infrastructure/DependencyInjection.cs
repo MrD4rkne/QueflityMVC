@@ -2,7 +2,6 @@
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Infrastructure.Jobs;
-using QueflityMVC.Infrastructure.Purchasables;
 
 namespace QueflityMVC.Infrastructure;
 

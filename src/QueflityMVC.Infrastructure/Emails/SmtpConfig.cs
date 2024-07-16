@@ -1,4 +1,4 @@
-﻿namespace QueflityMVC.Infrastructure.Purchasables;
+﻿namespace QueflityMVC.Infrastructure.Emails;
 
 public class SmtpConfig
 {

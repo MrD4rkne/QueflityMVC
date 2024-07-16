@@ -3,11 +3,15 @@ using Microsoft.Extensions.Options;
 using QueflityMVC.Application;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Infrastructure;
+using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
+using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
-using QueflityMVC.Web.Setup.Mails;
 using QueflityMVC.Web.Setup.Other;
 using Serilog;
+using DatabaseOptionsValidator = QueflityMVC.Web.Setup.DatabaseOptionsValidator;
+using JobsOptionsValidator = QueflityMVC.Web.Setup.JobsOptionsValidator;
+using SmtpOptionsValidator = QueflityMVC.Web.Setup.SmtpOptionsValidator;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);

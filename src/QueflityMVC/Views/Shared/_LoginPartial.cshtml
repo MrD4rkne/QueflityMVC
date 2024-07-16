@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Domain.Models
 @inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))

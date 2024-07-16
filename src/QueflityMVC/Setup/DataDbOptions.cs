@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
-using QueflityMVC.Web.Setup.Database;
+using QueflityMVC.Persistence.Setup;
 
-namespace QueflityMVC.Web.Setup.Mails;
+namespace QueflityMVC.Web.Setup;
 
 public class DatabaseOptions
 {
@@ -23,6 +23,4 @@ public class DatabaseOptions
 }
 
 [OptionsValidator]
-public partial class DatabaseOptionsValidator : IValidateOptions<DatabaseOptions>
-{
-}
+public partial class DatabaseOptionsValidator : IValidateOptions<DatabaseOptions>;

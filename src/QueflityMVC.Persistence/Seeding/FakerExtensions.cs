@@ -4,11 +4,6 @@ namespace QueflityMVC.Persistence.Seeding;
 
 internal static class FakerExtensions
 {
-    public static T SeedRow<T>(this Faker<T> faker, int index) where T : class
-    {
-        return faker.Generate(1).First();
-    }
-
     /// <summary>
     ///     1-based faker index instead of built-in 0-based
     /// </summary>

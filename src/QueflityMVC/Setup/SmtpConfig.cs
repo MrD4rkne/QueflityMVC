@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
 
-namespace QueflityMVC.Web.Setup.Mails;
+namespace QueflityMVC.Web.Setup;
 
 public record SmtpOptions
 {
@@ -19,6 +19,4 @@ public record SmtpOptions
 }
 
 [OptionsValidator]
-public partial class SmtpOptionsValidator : IValidateOptions<SmtpOptions>
-{
-}
+public partial class SmtpOptionsValidator : IValidateOptions<SmtpOptions>;

@@ -7,7 +7,7 @@ using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Repositories;
 using QueflityMVC.Persistence.Seeding;
-using QueflityMVC.Web.Setup.Database;
+using QueflityMVC.Persistence.Setup;
 
 namespace QueflityMVC.Persistence;
 
@@ -15,7 +15,7 @@ public static class DependencyInjection
 {
     public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder webApplicationBuilder)
     {
-        return webApplicationBuilder.AddPersistence(options => { });
+        return webApplicationBuilder.AddPersistence(_ => { });
     }
 
     public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder webApplicationBuilder,
@@ -32,7 +32,7 @@ public static class DependencyInjection
         services.AddTransient<IKitRepository, KitRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
 
-        webApplicationBuilder.ConfigureDbContext<Context>();
+        webApplicationBuilder.ConfigureDbConnection();
         return webApplicationBuilder;
     }
 
@@ -45,7 +45,7 @@ public static class DependencyInjection
         if (claims is not null) await roleManager.SeedRolesClaims(claims);
     }
 
-    public static WebApplication ApplyPendingMigrations(this WebApplication webApplication)
+    public static void ApplyPendingMigrations(this WebApplication webApplication)
     {
         try
         {
@@ -53,12 +53,10 @@ public static class DependencyInjection
         }
         catch (Exception ex)
         {
-            webApplication.Logger.LogError(
-                "Exception occured while applying pending migrations. See inner exception for more details.", ex);
+            webApplication.Logger.LogError(ex,
+                "Exception occured while applying pending migrations. See inner exception for more details.");
             throw;
         }
-
-        return webApplication;
     }
 
     private static void ApplyPendingMigrations<TContext>(this WebApplication webApplication) where TContext : DbContext

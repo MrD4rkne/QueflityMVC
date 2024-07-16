@@ -2,20 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using QueflityMVC.Persistence;
 
-namespace QueflityMVC.Web.Setup.Database;
+namespace QueflityMVC.Persistence.Setup;
 
 internal static class DbContextSetup
 {
-    internal static WebApplicationBuilder ConfigureDbContext<TContext>(this WebApplicationBuilder webApplicationBuilder)
-        where TContext : DbContext
-    {
-        webApplicationBuilder.ConfigureDbConnection();
-        return webApplicationBuilder;
-    }
-
-    private static WebApplicationBuilder ConfigureDbConnection(this WebApplicationBuilder appBuilder)
+    internal static WebApplicationBuilder ConfigureDbConnection(this WebApplicationBuilder appBuilder)
     {
         try
         {

@@ -1,4 +1,6 @@
-﻿namespace QueflityMVC.Domain.Interfaces;
+﻿using QueflityMVC.Domain.Common;
+
+namespace QueflityMVC.Domain.Interfaces;
 
 public interface IPurchasableRepository
 {

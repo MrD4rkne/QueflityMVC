@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;

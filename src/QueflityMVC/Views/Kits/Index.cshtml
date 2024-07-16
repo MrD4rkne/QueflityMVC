@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = "Index";
-    int[] options = { 2, 5, 10, 25, 50, 100 };
+    int[] options = [2, 5, 10, 25, 50, 100];
     var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     var canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
     var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;

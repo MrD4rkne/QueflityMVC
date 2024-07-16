@@ -1,4 +1,4 @@
-﻿namespace QueflityMVC.Web.Setup.Database;
+﻿namespace QueflityMVC.Persistence.Setup;
 
 public class PersistenceConfig
 {
