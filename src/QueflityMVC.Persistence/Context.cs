@@ -1,13 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Seeding;
+using QueflityMVC.Web.Setup.Database;
 
 namespace QueflityMVC.Persistence;
 
-public class Context(DbContextOptions options) : IdentityDbContext<ApplicationUser>(options)
+public class Context(DbContextOptions options, IOptions<PersistenceOptions> persistenceOptions) : IdentityDbContext<ApplicationUser>(options)
 {
+    private readonly PersistenceOptions _options = persistenceOptions.Value;
+    
     public DbSet<Component> Components { get; set; }
 
     public DbSet<Item> Items { get; set; }
@@ -59,5 +63,17 @@ public class Context(DbContextOptions options) : IdentityDbContext<ApplicationUs
         builder.Entity<Component>().HasData(entitySeeder.Components);
         builder.Entity<Category>().HasData(entitySeeder.Categories);
         builder.Entity<Image>().HasData(entitySeeder.Images);
+    }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(_options.ConnectionString, sqlOptions =>
+            {
+                if (_options.ShouldRetry)
+                    sqlOptions.EnableRetryOnFailure();
+            });
+        }
     }
 }
