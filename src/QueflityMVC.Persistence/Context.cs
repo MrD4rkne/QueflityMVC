@@ -8,10 +8,11 @@ using QueflityMVC.Web.Setup.Database;
 
 namespace QueflityMVC.Persistence;
 
-public class Context(DbContextOptions options, IOptions<PersistenceConfig> persistenceOptions) : IdentityDbContext<ApplicationUser>(options)
+public class Context(DbContextOptions options, IOptions<PersistenceConfig> persistenceOptions)
+    : IdentityDbContext<ApplicationUser>(options)
 {
     private readonly PersistenceConfig _config = persistenceOptions.Value;
-    
+
     public DbSet<Component> Components { get; set; }
 
     public DbSet<Item> Items { get; set; }
@@ -64,16 +65,14 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
         builder.Entity<Category>().HasData(entitySeeder.Categories);
         builder.Entity<Image>().HasData(entitySeeder.Images);
     }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
-        {
             optionsBuilder.UseSqlServer(_config.ConnectionString, sqlOptions =>
             {
                 if (_config.ShouldRetry)
                     sqlOptions.EnableRetryOnFailure();
             });
-        }
     }
 }

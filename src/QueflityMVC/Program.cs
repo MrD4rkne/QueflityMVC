@@ -4,7 +4,6 @@ using QueflityMVC.Application;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Infrastructure;
 using QueflityMVC.Persistence;
-using QueflityMVC.Web.Setup.Database;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.Mails;
 using QueflityMVC.Web.Setup.Other;
@@ -33,24 +32,24 @@ builder.Services
 builder.Services.AddSingleton<IValidateOptions<JobsOptions>, JobsOptionsValidator>();
 
 builder.Services.AddInfrastructure(smtpConfig =>
-{
-    var smtpOptions = builder.Services.BuildServiceProvider()
-        .GetRequiredService<IOptions<SmtpOptions>>().Value;
-    smtpConfig.Host = smtpOptions.Host;
-    smtpConfig.Port = smtpOptions.Port;
-    smtpConfig.Username = smtpOptions.Username;
-    smtpConfig.Password = smtpOptions.Password;
-    smtpConfig.Email = smtpOptions.Email;
-},
+    {
+        var smtpOptions = builder.Services.BuildServiceProvider()
+            .GetRequiredService<IOptions<SmtpOptions>>().Value;
+        smtpConfig.Host = smtpOptions.Host;
+        smtpConfig.Port = smtpOptions.Port;
+        smtpConfig.Username = smtpOptions.Username;
+        smtpConfig.Password = smtpOptions.Password;
+        smtpConfig.Email = smtpOptions.Email;
+    },
     jobsConfig =>
-{
-    var jobsOptions = builder.Services.BuildServiceProvider()
-        .GetRequiredService<IOptions<JobsOptions>>().Value;
-    jobsConfig.UseDatabase = jobsOptions.UseDatabase;
-    jobsConfig.ConnectionString = jobsOptions.ConnectionString;
-    jobsConfig.MaxConcurrency = jobsOptions.MaxConcurrency;
-    jobsConfig.WaitForJobsToComplete = jobsOptions.WaitForJobsToComplete;
-});
+    {
+        var jobsOptions = builder.Services.BuildServiceProvider()
+            .GetRequiredService<IOptions<JobsOptions>>().Value;
+        jobsConfig.UseDatabase = jobsOptions.UseDatabase;
+        jobsConfig.ConnectionString = jobsOptions.ConnectionString;
+        jobsConfig.MaxConcurrency = jobsOptions.MaxConcurrency;
+        jobsConfig.WaitForJobsToComplete = jobsOptions.WaitForJobsToComplete;
+    });
 
 builder.Services
     .Configure<DatabaseOptions>(config.GetSection(DatabaseOptions.SECTION_NAME));
@@ -58,12 +57,12 @@ builder.Services.TryAddEnumerable(
     ServiceDescriptor.Singleton
         <IValidateOptions<DatabaseOptions>, DatabaseOptionsValidator>());
 
-builder.AddPersistence((options)=>
-    {
-        var smtpOptions = builder.Services.BuildServiceProvider()
-            .GetRequiredService<IOptions<DatabaseOptions>>().Value;
-        options.ConnectionString = smtpOptions.ConnectionString;
-        options.ShouldRetry = smtpOptions.ShouldRetry;
+builder.AddPersistence(options =>
+{
+    var smtpOptions = builder.Services.BuildServiceProvider()
+        .GetRequiredService<IOptions<DatabaseOptions>>().Value;
+    options.ConnectionString = smtpOptions.ConnectionString;
+    options.ShouldRetry = smtpOptions.ShouldRetry;
 });
 
 builder.Services.AddApplication();
@@ -103,10 +102,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-if (app.Environment.IsDevelopment())
-{
-    app.ApplyPendingMigrations();
-}
+if (app.Environment.IsDevelopment()) app.ApplyPendingMigrations();
 
 await app.Services.SeedIdentity(Claims.GetAll().ToArray());
 

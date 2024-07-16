@@ -9,11 +9,12 @@ namespace QueflityMVC.Infrastructure.Purchasables;
 
 public class EmailDispatcher(IOptions<SmtpConfig> smtpOptions) : IEmailDispatcher
 {
-    private readonly SmtpConfig config = smtpOptions.Value;
     private readonly SmtpClient _smtpClient = new()
     {
         CheckCertificateRevocation = false
     };
+
+    private readonly SmtpConfig config = smtpOptions.Value;
 
     public async Task SendEmailAsync(Mail mail)
     {

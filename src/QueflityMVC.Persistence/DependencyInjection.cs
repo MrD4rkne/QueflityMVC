@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +8,6 @@ using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Repositories;
 using QueflityMVC.Persistence.Seeding;
 using QueflityMVC.Web.Setup.Database;
-using Serilog;
 
 namespace QueflityMVC.Persistence;
 
@@ -17,15 +15,16 @@ public static class DependencyInjection
 {
     public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder webApplicationBuilder)
     {
-        return webApplicationBuilder.AddPersistence((options) => { });
+        return webApplicationBuilder.AddPersistence(options => { });
     }
-    
-    public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder webApplicationBuilder, Action<PersistenceConfig> configureOptions)
+
+    public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder webApplicationBuilder,
+        Action<PersistenceConfig> configureOptions)
     {
-        IServiceCollection services = webApplicationBuilder.Services;
+        var services = webApplicationBuilder.Services;
 
         services.AddOptions<PersistenceConfig>().Configure(configureOptions);
-        
+
         services.AddTransient<IComponentRepository, ComponentRepository>();
         services.AddTransient<ICategoryRepository, CategoryRepository>();
         services.AddTransient<IPurchasableRepository, PurchasableRepository>();
@@ -43,12 +42,9 @@ public static class DependencyInjection
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         await IdentitySeed.SeedIdentity(userManager, roleManager);
-        if (claims is not null)
-        {
-            await roleManager.SeedRolesClaims(claims);
-        }
+        if (claims is not null) await roleManager.SeedRolesClaims(claims);
     }
-    
+
     public static WebApplication ApplyPendingMigrations(this WebApplication webApplication)
     {
         try
@@ -57,13 +53,14 @@ public static class DependencyInjection
         }
         catch (Exception ex)
         {
-            webApplication.Logger.LogError("Exception occured while applying pending migrations. See inner exception for more details.", ex);
+            webApplication.Logger.LogError(
+                "Exception occured while applying pending migrations. See inner exception for more details.", ex);
             throw;
         }
 
         return webApplication;
     }
-    
+
     private static void ApplyPendingMigrations<TContext>(this WebApplication webApplication) where TContext : DbContext
     {
         using var scope = webApplication.Services.CreateScope();

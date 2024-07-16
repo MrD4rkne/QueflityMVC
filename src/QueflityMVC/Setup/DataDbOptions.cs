@@ -11,7 +11,7 @@ public class DatabaseOptions
     [Required] public required string ConnectionString { get; init; }
 
     public bool ShouldRetry { get; init; } = true;
-    
+
     public PersistenceConfig AsPersistenceOptions()
     {
         return new PersistenceConfig

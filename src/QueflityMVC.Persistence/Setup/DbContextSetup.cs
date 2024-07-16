@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +8,8 @@ namespace QueflityMVC.Web.Setup.Database;
 
 internal static class DbContextSetup
 {
-    internal static WebApplicationBuilder ConfigureDbContext<TContext>(this WebApplicationBuilder webApplicationBuilder) where TContext : DbContext
+    internal static WebApplicationBuilder ConfigureDbContext<TContext>(this WebApplicationBuilder webApplicationBuilder)
+        where TContext : DbContext
     {
         webApplicationBuilder.ConfigureDbConnection();
         return webApplicationBuilder;
