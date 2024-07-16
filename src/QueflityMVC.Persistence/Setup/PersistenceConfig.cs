@@ -1,6 +1,6 @@
 ﻿namespace QueflityMVC.Web.Setup.Database;
 
-public class PersistenceOptions
+public class PersistenceConfig
 {
     public string ConnectionString { get; set; }
     

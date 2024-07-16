@@ -28,6 +28,10 @@ builder.Services
     .Configure<SmtpOptions>(config.GetSection(SmtpOptions.SECTION_NAME));
 builder.Services.AddSingleton<IValidateOptions<SmtpOptions>, SmtpOptionsValidator>();
 
+builder.Services
+    .Configure<JobsOptions>(config.GetSection(JobsOptions.SECTION_NAME));
+builder.Services.AddSingleton<IValidateOptions<JobsOptions>, JobsOptionsValidator>();
+
 builder.Services.AddInfrastructure(smtpConfig =>
 {
     var smtpOptions = builder.Services.BuildServiceProvider()
@@ -36,7 +40,17 @@ builder.Services.AddInfrastructure(smtpConfig =>
     smtpConfig.Port = smtpOptions.Port;
     smtpConfig.Username = smtpOptions.Username;
     smtpConfig.Password = smtpOptions.Password;
-}, "QueflityMVC");
+    smtpConfig.Email = smtpOptions.Email;
+},
+    jobsConfig =>
+{
+    var jobsOptions = builder.Services.BuildServiceProvider()
+        .GetRequiredService<IOptions<JobsOptions>>().Value;
+    jobsConfig.UseDatabase = jobsOptions.UseDatabase;
+    jobsConfig.ConnectionString = jobsOptions.ConnectionString;
+    jobsConfig.MaxConcurrency = jobsOptions.MaxConcurrency;
+    jobsConfig.WaitForJobsToComplete = jobsOptions.WaitForJobsToComplete;
+});
 
 builder.Services
     .Configure<DatabaseOptions>(config.GetSection(DatabaseOptions.SECTION_NAME));

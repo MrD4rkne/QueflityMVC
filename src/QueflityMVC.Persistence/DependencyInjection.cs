@@ -20,11 +20,11 @@ public static class DependencyInjection
         return webApplicationBuilder.AddPersistence((options) => { });
     }
     
-    public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder webApplicationBuilder, Action<PersistenceOptions> configureOptions)
+    public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder webApplicationBuilder, Action<PersistenceConfig> configureOptions)
     {
         IServiceCollection services = webApplicationBuilder.Services;
 
-        services.AddOptions<PersistenceOptions>().Configure(configureOptions);
+        services.AddOptions<PersistenceConfig>().Configure(configureOptions);
         
         services.AddTransient<IComponentRepository, ComponentRepository>();
         services.AddTransient<ICategoryRepository, CategoryRepository>();
@@ -34,7 +34,6 @@ public static class DependencyInjection
         services.AddTransient<IUserRepository, UserRepository>();
 
         webApplicationBuilder.ConfigureDbContext<Context>();
-
         return webApplicationBuilder;
     }
 

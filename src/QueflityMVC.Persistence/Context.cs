@@ -8,9 +8,9 @@ using QueflityMVC.Web.Setup.Database;
 
 namespace QueflityMVC.Persistence;
 
-public class Context(DbContextOptions options, IOptions<PersistenceOptions> persistenceOptions) : IdentityDbContext<ApplicationUser>(options)
+public class Context(DbContextOptions options, IOptions<PersistenceConfig> persistenceOptions) : IdentityDbContext<ApplicationUser>(options)
 {
-    private readonly PersistenceOptions _options = persistenceOptions.Value;
+    private readonly PersistenceConfig _config = persistenceOptions.Value;
     
     public DbSet<Component> Components { get; set; }
 
@@ -69,9 +69,9 @@ public class Context(DbContextOptions options, IOptions<PersistenceOptions> pers
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(_options.ConnectionString, sqlOptions =>
+            optionsBuilder.UseSqlServer(_config.ConnectionString, sqlOptions =>
             {
-                if (_options.ShouldRetry)
+                if (_config.ShouldRetry)
                     sqlOptions.EnableRetryOnFailure();
             });
         }

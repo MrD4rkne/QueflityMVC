@@ -12,9 +12,9 @@ public class DatabaseOptions
 
     public bool ShouldRetry { get; init; } = true;
     
-    public PersistenceOptions AsPersistenceOptions()
+    public PersistenceConfig AsPersistenceOptions()
     {
-        return new PersistenceOptions
+        return new PersistenceConfig
         {
             ConnectionString = ConnectionString,
             ShouldRetry = ShouldRetry

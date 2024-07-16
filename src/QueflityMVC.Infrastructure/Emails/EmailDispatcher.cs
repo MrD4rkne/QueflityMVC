@@ -1,19 +1,19 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 
 namespace QueflityMVC.Infrastructure.Purchasables;
 
-public class EmailDispatcher(SmtpConfig config) : IEmailDispatcher
+public class EmailDispatcher(IOptions<SmtpConfig> smtpOptions) : IEmailDispatcher
 {
+    private readonly SmtpConfig config = smtpOptions.Value;
     private readonly SmtpClient _smtpClient = new()
     {
         CheckCertificateRevocation = false
     };
-
-    private string HostEmail => "mp.szopa@student.uw.edu.pl";
 
     public async Task SendEmailAsync(Mail mail)
     {
@@ -28,7 +28,7 @@ public class EmailDispatcher(SmtpConfig config) : IEmailDispatcher
     private MimeMessage CreateEmailMessage(Mail mail)
     {
         var mailMessage = new MimeMessage();
-        mailMessage.From.Add(new MailboxAddress("Queflity", HostEmail));
+        mailMessage.From.Add(new MailboxAddress("Queflity", config.Email));
         mailMessage.To.Add(new MailboxAddress("sss", mail.Recipient));
         mailMessage.Subject = mail.Subject;
         mailMessage.Body = new TextPart("plain")
