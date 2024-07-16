@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace QueflityMVC.Web.Setup;
 
-public record SmtpOptions
+internal record SmtpOptions
 {
     public const string SECTION_NAME = "Smtp";
 
@@ -19,4 +19,4 @@ public record SmtpOptions
 }
 
 [OptionsValidator]
-public partial class SmtpOptionsValidator : IValidateOptions<SmtpOptions>;
+internal partial class SmtpOptionsValidator : IValidateOptions<SmtpOptions>;

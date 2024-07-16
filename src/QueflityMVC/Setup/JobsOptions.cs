@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace QueflityMVC.Web.Setup;
 
-public class JobsOptions
+internal class JobsOptions
 {
     public const string SECTION_NAME = "Jobs";
 
@@ -17,4 +17,4 @@ public class JobsOptions
 }
 
 [OptionsValidator]
-public partial class JobsOptionsValidator : IValidateOptions<JobsOptions>;
+internal partial class JobsOptionsValidator : IValidateOptions<JobsOptions>;
