@@ -3,11 +3,23 @@ using Microsoft.Extensions.Options;
 
 namespace QueflityMVC.Web.Setup;
 
-internal class ConfigureGoogleOAuth(IOptions<GoogleOAuthOptions> oAuthGoogleOptions) : IConfigureOptions<GoogleOptions>
+internal class ConfigureGoogleOAuth : IConfigureNamedOptions<GoogleOptions>
 {
+    private readonly IOptions<GoogleOAuthOptions> _oAuthGoogleOptions;
+
+    public ConfigureGoogleOAuth(IOptions<GoogleOAuthOptions> oAuthGoogleOptions)
+    {
+        _oAuthGoogleOptions = oAuthGoogleOptions;
+    }
+
     public void Configure(GoogleOptions options)
     {
-        options.ClientId = oAuthGoogleOptions.Value.ClientId;
-        options.ClientSecret = oAuthGoogleOptions.Value.ClientSecret;
+        options.ClientId = _oAuthGoogleOptions.Value.ClientId;
+        options.ClientSecret = _oAuthGoogleOptions.Value.ClientSecret;
+    }
+
+    public void Configure(string? name, GoogleOptions options)
+    {
+        Configure(options);
     }
 }

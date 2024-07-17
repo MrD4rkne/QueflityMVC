@@ -16,12 +16,6 @@ internal static class OAuthSetup
         services.AddTransient<IConfigureOptions<GoogleOptions>, ConfigureGoogleOAuth>();
         
         services.AddAuthentication()
-            .AddGoogle((opt =>
-            {
-                GoogleOAuthOptions googleOAuthOptions = applicationBuilder.Services.BuildServiceProvider()
-                    .GetRequiredService<IOptions<GoogleOAuthOptions>>().Value;
-                opt.ClientId = googleOAuthOptions.ClientId;
-                opt.ClientSecret = googleOAuthOptions.ClientSecret;
-            }));
+            .AddGoogle();
     }
 }
