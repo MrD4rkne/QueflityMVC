@@ -6,7 +6,7 @@ using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Purchasable;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Abstraction.Purchasables;
+using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 
 namespace QueflityMVC.Application.Services;
 

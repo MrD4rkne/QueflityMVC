@@ -9,7 +9,7 @@ public class ItemRepository(Context dbContext) : BasePurchasableRepository<Item>
 {
     public override Task<Item?> GetByIdAsync(int entityId)
     {
-        return _dbContext.Items
+        return DbContext.Items
             .AsNoTracking()
             .Include(it => it.Image)
             .FirstOrDefaultAsync(it => it.Id == entityId);
@@ -28,7 +28,7 @@ public class ItemRepository(Context dbContext) : BasePurchasableRepository<Item>
 
     public Task<Item?> GetItemWithComponentsByIdAsync(int itemId)
     {
-        return _dbContext.Items
+        return DbContext.Items
             .AsNoTracking()
             .Include(x => x.Components)
             .Include(it => it.Image)
@@ -40,14 +40,13 @@ public class ItemRepository(Context dbContext) : BasePurchasableRepository<Item>
         var item = await GetItemWithComponentsByIdAsync(itemId);
         if (item is null) throw new ResourceNotFoundException();
 
-        if (components is not null) item.Components = components;
-
+        item.Components = components;
         await UpdateAsync(item);
     }
 
     public Task<uint?> GetOrderNoByIdAsync(int itemId)
     {
-        return _dbContext.Items
+        return DbContext.Items
             .AsNoTracking()
             .Where(x => x.Id == itemId)
             .Select(x => x.OrderNo)
@@ -72,13 +71,13 @@ public class ItemRepository(Context dbContext) : BasePurchasableRepository<Item>
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
         if (entityToUpdate.Components is not null) originalEntity.Components = entityToUpdate.Components;
 
-        await _dbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
         return originalEntity;
     }
 
     public Task<bool> IsItemAPartOfAnyKitAsync(int id)
     {
-        return _dbContext.SetElements
+        return DbContext.SetElements
             .AnyAsync(x => x.ItemId == id);
     }
 }

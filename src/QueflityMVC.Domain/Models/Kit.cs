@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Domain.Interfaces;
+﻿using QueflityMVC.Domain.Common;
 
 namespace QueflityMVC.Domain.Models;
 
@@ -15,5 +15,5 @@ public class Kit : Product
         }
     }
 
-    public ICollection<Element> Elements { get; set; }
+    public ICollection<Element>? Elements { get; set; }
 }

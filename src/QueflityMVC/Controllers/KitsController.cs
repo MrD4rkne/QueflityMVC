@@ -74,10 +74,7 @@ public class KitsController : Controller
 
         var kitId = await _kitService.CreateKitAsync(createKitVm);
 
-        if (shouldRouteToDetails)
-            return RedirectToAction("Details", new { id = kitId });
-
-        return RedirectToAction("Index");
+        return shouldRouteToDetails ? RedirectToAction("Details", new { id = kitId }) : RedirectToAction("Index");
     }
 
     [Route("Details")]

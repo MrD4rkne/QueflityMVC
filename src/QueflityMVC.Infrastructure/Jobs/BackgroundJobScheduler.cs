@@ -1,10 +1,9 @@
 ﻿using Quartz;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
-using QueflityMVC.Infrastructure.Abstraction.Purchasables;
-using QueflityMVC.Infrastructure.Jobs;
+using QueflityMVC.Infrastructure.Emails;
 
-namespace QueflityMVC.Infrastructure.Purchasables;
+namespace QueflityMVC.Infrastructure.Jobs;
 
 public class BackgroundJobScheduler : IBackgroundJobScheduler
 {

@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Quartz;
-using QueflityMVC.Infrastructure.Abstraction.Purchasables;
+using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Emails;
-using QueflityMVC.Infrastructure.Purchasables;
 
 namespace QueflityMVC.Infrastructure.Jobs;
 

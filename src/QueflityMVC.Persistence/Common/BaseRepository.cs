@@ -8,12 +8,12 @@ namespace QueflityMVC.Persistence.Common;
 public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
     where T : BaseEntity
 {
-    protected Context _dbContext = dbContext;
+    protected readonly Context DbContext = dbContext;
 
     public virtual async Task<int> AddAsync(T entityToAdd)
     {
-        _dbContext.Set<T>().Add(entityToAdd);
-        await _dbContext.SaveChangesAsync();
+        DbContext.Set<T>().Add(entityToAdd);
+        await DbContext.SaveChangesAsync();
 
         return entityToAdd.Id;
     }
@@ -29,18 +29,18 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
     {
         if (!await ExistsAsync(entityToDelete)) throw new ResourceNotFoundException(entityName: nameof(T));
 
-        _dbContext.Set<T>().Remove(entityToDelete);
-        await _dbContext.SaveChangesAsync();
+        DbContext.Set<T>().Remove(entityToDelete);
+        await DbContext.SaveChangesAsync();
     }
 
     public virtual async Task<T?> UpdateAsync(T entityToUpdate)
     {
         var entity = await GetByIdAsync(entityToUpdate.Id) ??
                      throw new ResourceNotFoundException(entityName: nameof(T));
-        if (_dbContext.Entry(entity).State == EntityState.Detached) _dbContext.Set<T>().Attach(entity);
+        if (DbContext.Entry(entity).State == EntityState.Detached) DbContext.Set<T>().Attach(entity);
 
-        _dbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
-        await _dbContext.SaveChangesAsync();
+        DbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
+        await DbContext.SaveChangesAsync();
         return await GetByIdAsync(entityToUpdate.Id);
     }
 
@@ -56,14 +56,14 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
 
     public virtual Task<T?> GetByIdAsync(int entityId)
     {
-        return _dbContext.Set<T>()
+        return DbContext.Set<T>()
             .AsNoTracking()
             .FirstOrDefaultAsync(ent => ent.Id == entityId);
     }
 
     public IQueryable<T> GetAll()
     {
-        return _dbContext.Set<T>()
+        return DbContext.Set<T>()
             .AsNoTracking();
     }
 }

@@ -2,12 +2,16 @@
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Infrastructure.Jobs;
-using QueflityMVC.Infrastructure.Purchasables;
 
 namespace QueflityMVC.Infrastructure;
 
 public static class DependencyInjection
 {
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    {
+        return services.AddInfrastructure(_ => { }, _ => { });
+    }
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
         Action<SmtpConfig> configureSmtpOptions, Action<JobsConfig> configureJobsOptions)
     {

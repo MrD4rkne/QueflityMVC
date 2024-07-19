@@ -48,6 +48,8 @@
 
     <ItemGroup>
         <None Include="wwwroot\css\helpers.css"/>
+        <None Remove="Properties\serviceDependencies.json" />
+        <None Remove="Properties\serviceDependencies.local.json" />
     </ItemGroup>
 
 </Project>

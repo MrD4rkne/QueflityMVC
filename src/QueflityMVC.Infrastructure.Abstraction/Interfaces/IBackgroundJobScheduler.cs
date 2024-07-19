@@ -1,6 +1,6 @@
 ﻿using QueflityMVC.Domain.Models;
 
-namespace QueflityMVC.Infrastructure.Abstraction.Purchasables;
+namespace QueflityMVC.Infrastructure.Abstraction.Interfaces;
 
 public interface IBackgroundJobScheduler
 {

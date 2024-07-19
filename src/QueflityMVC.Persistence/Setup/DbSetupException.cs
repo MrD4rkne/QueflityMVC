@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace QueflityMVC.Web.Setup.Database;
+﻿namespace QueflityMVC.Persistence.Setup;
 
 public class DbSetupException : Exception
 {
@@ -13,10 +11,6 @@ public class DbSetupException : Exception
     }
 
     public DbSetupException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
-
-    protected DbSetupException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }

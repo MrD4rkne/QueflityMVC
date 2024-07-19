@@ -14,7 +14,7 @@ public class EntitySeeder
     private const int ELEMENTS_COUNT = 15;
     private const int VISIBLE_PURCHASABLE = 10;
 
-    private readonly HashSet<uint> _orderNumbers = new();
+    private readonly HashSet<uint> _orderNumbers = [];
     private int _visiblePurchasable;
 
     public EntitySeeder()
@@ -134,7 +134,7 @@ public class EntitySeeder
     private bool GetVisibility()
     {
         if (_visiblePurchasable >= VISIBLE_PURCHASABLE) return false;
-        var shouldBeVisible = Random.Shared.Next(0, 2) == 0 ? true : false;
+        var shouldBeVisible = Random.Shared.Next(0, 2) == 0;
         if (shouldBeVisible) _visiblePurchasable++;
         return shouldBeVisible;
     }

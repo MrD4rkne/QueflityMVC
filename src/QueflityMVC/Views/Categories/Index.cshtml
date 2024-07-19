@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = "List categories";
-    int[] options = { 2, 5, 10, 25, 50, 100 };
+    int[] options = [2, 5, 10, 25, 50, 100];
     var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     var canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
@@ -29,7 +29,7 @@
             <button type="submit" class="btn btn-secondary">Search</button>
         </li>
         <li class="nav-item">
-            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
+            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="PageSizeSelected()">
                 @foreach (var i in options)
                 {
                     @if (i == Model.Pagination.Info.PageSize)

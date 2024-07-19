@@ -14,7 +14,7 @@ public partial class SeedData : Migration
     {
         migrationBuilder.InsertData(
             "Categories",
-            new[] { "Id", "Name" },
+            ["Id", "Name"],
             new object[,]
             {
                 { 1, "Jewelery" },
@@ -26,7 +26,7 @@ public partial class SeedData : Migration
 
         migrationBuilder.InsertData(
             "Components",
-            new[] { "Id", "Name" },
+            ["Id", "Name"],
             new object[,]
             {
                 { 1, "Granite" },
@@ -53,7 +53,7 @@ public partial class SeedData : Migration
 
         migrationBuilder.InsertData(
             "Images",
-            new[] { "Id", "AltDescription", "FileUrl" },
+            ["Id", "AltDescription", "FileUrl"],
             new object[,]
             {
                 { 1, "repellendus", "https://picsum.photos/640/480/?image=630" },
@@ -80,7 +80,7 @@ public partial class SeedData : Migration
 
         migrationBuilder.InsertData(
             "BasePurchasableEntity",
-            new[] { "Id", "CategoryId", "Discriminator", "ImageId", "Name", "OrderNo", "Price", "ShouldBeShown" },
+            ["Id", "CategoryId", "Discriminator", "ImageId", "Name", "OrderNo", "Price", "ShouldBeShown"],
             new object[,]
             {
                 { 1, 3, "Item", 1, "Tasty Wooden Chips", 4L, 143.18m, true },
@@ -97,10 +97,9 @@ public partial class SeedData : Migration
 
         migrationBuilder.InsertData(
             "BasePurchasableEntity",
-            new[]
-            {
+            [
                 "Id", "Description", "Discriminator", "ImageId", "ItemId", "Name", "OrderNo", "Price", "ShouldBeShown"
-            },
+            ],
             new object[,]
             {
                 {
@@ -138,7 +137,7 @@ public partial class SeedData : Migration
 
         migrationBuilder.InsertData(
             "SetElements",
-            new[] { "Id", "ItemId", "ItemsAmount", "KitId", "PricePerItem" },
+            ["Id", "ItemId", "ItemsAmount", "KitId", "PricePerItem"],
             new object[,]
             {
                 { 1, 8, 8L, 16, 46.90m },

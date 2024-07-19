@@ -5,7 +5,7 @@ using MimeKit;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 
-namespace QueflityMVC.Infrastructure.Purchasables;
+namespace QueflityMVC.Infrastructure.Emails;
 
 public class EmailDispatcher(IOptions<SmtpConfig> smtpOptions) : IEmailDispatcher
 {

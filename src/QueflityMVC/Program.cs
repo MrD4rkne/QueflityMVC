@@ -3,11 +3,15 @@ using Microsoft.Extensions.Options;
 using QueflityMVC.Application;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Infrastructure;
+using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
+using QueflityMVC.Persistence.Setup;
+using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
-using QueflityMVC.Web.Setup.Mails;
 using QueflityMVC.Web.Setup.Other;
 using Serilog;
+using JobsOptionsValidator = QueflityMVC.Web.Setup.JobsOptionsValidator;
+using SmtpOptionsValidator = QueflityMVC.Web.Setup.SmtpOptionsValidator;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);
@@ -31,25 +35,9 @@ builder.Services
     .Configure<JobsOptions>(config.GetSection(JobsOptions.SECTION_NAME));
 builder.Services.AddSingleton<IValidateOptions<JobsOptions>, JobsOptionsValidator>();
 
-builder.Services.AddInfrastructure(smtpConfig =>
-    {
-        var smtpOptions = builder.Services.BuildServiceProvider()
-            .GetRequiredService<IOptions<SmtpOptions>>().Value;
-        smtpConfig.Host = smtpOptions.Host;
-        smtpConfig.Port = smtpOptions.Port;
-        smtpConfig.Username = smtpOptions.Username;
-        smtpConfig.Password = smtpOptions.Password;
-        smtpConfig.Email = smtpOptions.Email;
-    },
-    jobsConfig =>
-    {
-        var jobsOptions = builder.Services.BuildServiceProvider()
-            .GetRequiredService<IOptions<JobsOptions>>().Value;
-        jobsConfig.UseDatabase = jobsOptions.UseDatabase;
-        jobsConfig.ConnectionString = jobsOptions.ConnectionString;
-        jobsConfig.MaxConcurrency = jobsOptions.MaxConcurrency;
-        jobsConfig.WaitForJobsToComplete = jobsOptions.WaitForJobsToComplete;
-    });
+builder.Services.AddTransient<IConfigureOptions<SmtpConfig>, ConfigureSmtp>();
+builder.Services.AddTransient<IConfigureOptions<JobsConfig>, ConfigureJobs>();
+builder.Services.AddInfrastructure();
 
 builder.Services
     .Configure<DatabaseOptions>(config.GetSection(DatabaseOptions.SECTION_NAME));
@@ -57,20 +45,14 @@ builder.Services.TryAddEnumerable(
     ServiceDescriptor.Singleton
         <IValidateOptions<DatabaseOptions>, DatabaseOptionsValidator>());
 
-builder.AddPersistence(options =>
-{
-    var smtpOptions = builder.Services.BuildServiceProvider()
-        .GetRequiredService<IOptions<DatabaseOptions>>().Value;
-    options.ConnectionString = smtpOptions.ConnectionString;
-    options.ShouldRetry = smtpOptions.ShouldRetry;
-});
+builder.Services.AddTransient<IConfigureOptions<PersistenceConfig>, ConfigurePersistence>();
+builder.AddPersistence();
 
 builder.Services.AddApplication();
 builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();
 
-// builder.Services.AddAuthentication()
-//     .AddOAuths(variablesProvider);
+builder.AddAuthenticationWithOAuths();
 builder.Services.AddAuthorization(options =>
     options.AddPolicies());
 

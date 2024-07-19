@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Persistence.Common;
 
@@ -10,7 +11,7 @@ public class BasePurchasableRepository<T>(Context dbContext)
 {
     public Task BulkUpdateOrderAsync(uint pivot)
     {
-        return _dbContext.Set<T>()
+        return DbContext.Set<T>()
             .Where(x => x.OrderNo >= pivot)
             .ForEachAsync(x => x.OrderNo--);
     }
