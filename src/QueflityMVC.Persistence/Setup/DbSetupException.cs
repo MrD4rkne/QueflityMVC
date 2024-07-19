@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace QueflityMVC.Persistence.Setup;
+﻿namespace QueflityMVC.Persistence.Setup;
 
 public class DbSetupException : Exception
 {

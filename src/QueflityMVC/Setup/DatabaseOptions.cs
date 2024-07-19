@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
-using QueflityMVC.Persistence.Setup;
 
 namespace QueflityMVC.Web.Setup;
 

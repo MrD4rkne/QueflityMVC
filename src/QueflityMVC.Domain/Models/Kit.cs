@@ -1,5 +1,4 @@
 ﻿using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Domain.Models;
 

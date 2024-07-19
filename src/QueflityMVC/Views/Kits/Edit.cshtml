@@ -15,7 +15,7 @@
 <hr/>
 <div class="row">
     <form asp-action="Edit" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"/>
         <input type="hidden" asp-for="Id" value="@Model.Id"/>
         <partial name="_ImageEditPartial" for="Image"/>
 

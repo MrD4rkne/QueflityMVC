@@ -2,7 +2,6 @@
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Component;
 using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
 

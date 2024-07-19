@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using QueflityMVC.Infrastructure.Emails;
-using QueflityMVC.Persistence.Setup;
 
 namespace QueflityMVC.Web.Setup.Other;
 

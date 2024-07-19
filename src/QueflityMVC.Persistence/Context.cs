@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Seeding;
 using QueflityMVC.Persistence.Setup;

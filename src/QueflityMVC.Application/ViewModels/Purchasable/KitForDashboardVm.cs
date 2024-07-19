@@ -1,7 +1,6 @@
 ﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Domain.Common;
-using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Application.ViewModels.Purchasable;
 

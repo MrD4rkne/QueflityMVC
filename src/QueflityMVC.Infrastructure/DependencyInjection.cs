@@ -9,9 +9,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        return services.AddInfrastructure(_ => { }, _ => { });   
+        return services.AddInfrastructure(_ => { }, _ => { });
     }
-    
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
         Action<SmtpConfig> configureSmtpOptions, Action<JobsConfig> configureJobsOptions)
     {

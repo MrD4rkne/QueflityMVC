@@ -35,8 +35,8 @@ builder.Services
     .Configure<JobsOptions>(config.GetSection(JobsOptions.SECTION_NAME));
 builder.Services.AddSingleton<IValidateOptions<JobsOptions>, JobsOptionsValidator>();
 
-builder.Services.AddTransient<IConfigureOptions<SmtpConfig>,ConfigureSmtp>();
-builder.Services.AddTransient<IConfigureOptions<JobsConfig>,ConfigureJobs>();
+builder.Services.AddTransient<IConfigureOptions<SmtpConfig>, ConfigureSmtp>();
+builder.Services.AddTransient<IConfigureOptions<JobsConfig>, ConfigureJobs>();
 builder.Services.AddInfrastructure();
 
 builder.Services
@@ -45,7 +45,7 @@ builder.Services.TryAddEnumerable(
     ServiceDescriptor.Singleton
         <IValidateOptions<DatabaseOptions>, DatabaseOptionsValidator>());
 
-builder.Services.AddTransient<IConfigureOptions<PersistenceConfig>,ConfigurePersistence>();
+builder.Services.AddTransient<IConfigureOptions<PersistenceConfig>, ConfigurePersistence>();
 builder.AddPersistence();
 
 builder.Services.AddApplication();
