@@ -16,6 +16,7 @@ module for seamless access control.
   permissions, ensuring smooth operation and security. There also a enabling/disabling users feature.
 - **OAuth** - users can login via Google OAuth 2.0.
 - **Dashboard** - main view with details for products.
+- **Emails** - user can send message about chosen purchasable.
 
 ## Tech Stack
 
@@ -34,16 +35,17 @@ module for seamless access control.
 - **Custom pagination**: A custom, reusable pagination module has been developed, featuring a factory and partial view
   for enhanced usability and flexibility. This module streamlines pagination implementation across various sections of
   the application, offering a seamless user experience and reducing development overhead.
-- **Emails**: sending emails via SMTP using MailKit and Quartz for one-off jobs
+- **Quartz & Mailkit**: sending emails via SMTP and one-off jobs.
 
 ## Installation
 
-### Installation by Visual Studio
+### Installation by IDE
 
 - clone repo onto your desktop
 - open solution
 - install Docker
-- launch app from VS
+- configure app (see: [Configuration](./CONFIGURATION.md))
+- launch app
     - make sure ports **5000**, **5001** are not used by any other process
     - in debug there will be seeded data
 - navigate to app in browser
@@ -69,10 +71,6 @@ module for seamless access control.
 
 - App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
 - Thanks to everyone, who gave me great advice [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
-
-- App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
-- Thanks to everyone who gave me great advice
-  from [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
 
 ## License
 
