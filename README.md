@@ -44,7 +44,7 @@ module for seamless access control.
 - clone repo onto your desktop
 - open solution
 - install Docker
-- configure app (see: [Configuration](./CONFIGURATION.md))
+- configure app (see: [Configuration](./docs/CONFIGURATION.md))
 - launch app
     - make sure ports **5000**, **5001** are not used by any other process
     - in debug there will be seeded data
@@ -58,10 +58,10 @@ module for seamless access control.
 
 ## Screenshots
 
-<img src="./images/listItems.png" width="500" alt="List items">
-<img src="./images/kitDetails.png" width="500" alt="Kit's details">
-<img src="./images/itemIngredients.png" width="500" alt="Item's ingredients">
-<img src="./images/editKit.png" width="500" alt="Edit kit">
+<img src="./docs/images/listItems.png" width="500" alt="List items">
+<img src="./docs/images/kitDetails.png" width="500" alt="Kit's details">
+<img src="./docs/images/itemIngredients.png" width="500" alt="Item's ingredients">
+<img src="./docs/images/editKit.png" width="500" alt="Edit kit">
 
 ## Authors
 
