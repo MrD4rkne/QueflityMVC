@@ -1,9 +1,9 @@
 ﻿using QueflityMVC.Application.Results;
-using QueflityMVC.Application.ViewModels.Purchasable;
+using QueflityMVC.Application.ViewModels.Product;
 
 namespace QueflityMVC.Application.Interfaces;
 
-public interface IPurchasableEntityService
+public interface IProductEntityService
 {
     Task<EditOrderVm> GetEntitiesOrderVm();
 

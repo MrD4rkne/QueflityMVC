@@ -20,7 +20,7 @@ public class ItemService(
     ICategoryRepository categoryRepository,
     IComponentRepository componentRepository,
     IFileService fileService,
-    IPurchasableRepository purchasableRepository)
+    IProductRepository purchasableRepository)
     : IItemService
 {
     public async Task<int> CreateItemAsync(ItemVm? createItemVm)

@@ -17,9 +17,9 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly IMessageService _messageService;
     private readonly IValidator<MessageVm> _messageValidator;
-    private readonly IPurchasableEntityService _purchasableEntityService;
+    private readonly IProductEntityService _purchasableEntityService;
 
-    public HomeController(ILogger<HomeController> logger, IPurchasableEntityService purchasableEntityService,
+    public HomeController(ILogger<HomeController> logger, IProductEntityService purchasableEntityService,
         IMessageService messageService, IValidator<MessageVm> messageValidator)
     {
         _logger = logger;
@@ -46,7 +46,7 @@ public class HomeController : Controller
         {
             ErrorCodes.User.EMAIL_NOT_VERIFIED => RedirectToPage("RegisterConfirmation",
                 new { email = User.FindFirstValue(ClaimTypes.Email) }),
-            ErrorCodes.Purchasable.DOES_NOT_EXIST => RedirectToAction("PurchasableNotFound", "Home")
+            ErrorCodes.Product.DOES_NOT_EXIST => RedirectToAction("ProductNotFound", "Home")
         };
     }
 
@@ -78,7 +78,7 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    public IActionResult PurchasableNotFound()
+    public IActionResult ProductNotFound()
     {
         return View();
     }

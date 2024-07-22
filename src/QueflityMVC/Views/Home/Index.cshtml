@@ -1,14 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using QueflityMVC.Application.ViewModels.Purchasable
-@model QueflityMVC.Application.ViewModels.Purchasable.DashboardVm
+@using QueflityMVC.Application.ViewModels.Product
+@model QueflityMVC.Application.ViewModels.Product.DashboardVm
 @{
     ViewData["Title"] = "Home Page";
     const int itemsPerRow = 4;
-    var rowsCount = (int)Math.Ceiling((double)Model.Purchasables.Count / itemsPerRow);
+    var rowsCount = (int)Math.Ceiling((double)Model.Products.Count / itemsPerRow);
 }
 
 <div class="section itemsLayout m-2">
-    @if (Model.Purchasables is { Count: > 0 })
+    @if (Model.Products is { Count: > 0 })
     {
         @for (var row = 0; row < rowsCount; row++)
         {
@@ -16,12 +16,12 @@
                 @for (var column = 0; column < itemsPerRow; column++)
                 {
                     var itemNo = row * itemsPerRow + column;
-                    if (itemNo >= Model.Purchasables.Count)
+                    if (itemNo >= Model.Products.Count)
                         break;
 
-                    var currentPurchasable = Model.Purchasables[itemNo];
+                    var currentProduct = Model.Products[itemNo];
                     <div class="col">
-                        @switch (currentPurchasable)
+                        @switch (currentProduct)
                         {
                             case ItemForDashboardVm itemForDashboardVm:
                                 <partial name="_ItemDashboardPartial" model="itemForDashboardVm"/>
@@ -30,8 +30,8 @@
                                 <partial name="_KitDashboardPartial" model="kitForDashboardVm"/>
                                 break;
                             default:
-                                throw new ArgumentOutOfRangeException($"Purchasables[{itemNo}]",
-                                    $"Partial dashboard view is not provided for type: {currentPurchasable.GetType()}");
+                                throw new ArgumentOutOfRangeException($"Products[{itemNo}]",
+                                    $"Partial dashboard view is not provided for type: {currentProduct.GetType()}");
                         }
                     </div>
                 }

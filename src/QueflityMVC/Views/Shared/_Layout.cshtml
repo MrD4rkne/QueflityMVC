@@ -5,7 +5,7 @@
 @{
     var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
     var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
-    var canReorderPurchasables = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
+    var canReorderProducts = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -59,7 +59,7 @@
                             </ul>
                         </li>
                     }
-                    @if (canReorderPurchasables)
+                    @if (canReorderProducts)
                     {
                         <li class="nav-item" s>
                             <a class="nav-link active" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>

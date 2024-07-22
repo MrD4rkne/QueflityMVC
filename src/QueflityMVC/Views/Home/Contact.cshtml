@@ -10,17 +10,17 @@
 
     <div class="card mb-3">
         <div class="row g-0">
-            @Html.HiddenFor(model => model.Purchasable.Id)
+            @Html.HiddenFor(model => model.Product.Id)
             <div class="col-md-auto">
-                <img class="img-fluid rounded-start" src="@Model.Purchasable.Image.FileUrl" alt="@Model.Purchasable.Image.AltDescription" style="max-height: 200px"/>
-                @Html.HiddenFor(model => model.Purchasable.Image.FileUrl)
-                @Html.HiddenFor(model => model.Purchasable.Image.AltDescription)
+                <img class="img-fluid rounded-start" src="@Model.Product.Image.FileUrl" alt="@Model.Product.Image.AltDescription" style="max-height: 200px"/>
+                @Html.HiddenFor(model => model.Product.Image.FileUrl)
+                @Html.HiddenFor(model => model.Product.Image.AltDescription)
             </div>
             <div class="col-md">
                 <div class="card-body">
                     <div class="row">
-                        <h4 class="card-title">@Html.DisplayFor(model => model.Purchasable.Name)</h4>
-                        @Html.HiddenFor(model => model.Purchasable.Name)
+                        <h4 class="card-title">@Html.DisplayFor(model => model.Product.Name)</h4>
+                        @Html.HiddenFor(model => model.Product.Name)
                     </div>
                     <div class="row">
                         <div class="col-6">
@@ -29,7 +29,7 @@
                                     Price
                                 </dt>
                                 <dd class="col-sm">
-                                    @Html.DisplayFor(model => model.Purchasable.Price)
+                                    @Html.DisplayFor(model => model.Product.Price)
                                 </dd>
                             </dl>
                         </div>

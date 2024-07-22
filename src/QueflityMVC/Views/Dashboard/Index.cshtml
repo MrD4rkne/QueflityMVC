@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using QueflityMVC.Application.ViewModels.Purchasable
-@model QueflityMVC.Application.ViewModels.Purchasable.EditOrderVm
+@using QueflityMVC.Application.ViewModels.Product
+@model QueflityMVC.Application.ViewModels.Product.EditOrderVm
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -57,17 +57,17 @@
             </tr>
             </thead>
             <tbody style="cursor:pointer;">
-            @for (var i = 1; i <= Model.PurchasablesVMs.Count; i++)
+            @for (var i = 1; i <= Model.ProductsVMs.Count; i++)
             {
-                var currentEntity = Model.PurchasablesVMs[i - 1];
+                var currentEntity = Model.ProductsVMs[i - 1];
                 <tr id="@i">
-                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Id)
-                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Type)
-                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].OrderNo)
-                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.FileUrl)
-                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Image.AltDescription)
-                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Price)
-                    @Html.HiddenFor(model => model.PurchasablesVMs[i - 1].Name)
+                    @Html.HiddenFor(model => model.ProductsVMs[i - 1].Id)
+                    @Html.HiddenFor(model => model.ProductsVMs[i - 1].Type)
+                    @Html.HiddenFor(model => model.ProductsVMs[i - 1].OrderNo)
+                    @Html.HiddenFor(model => model.ProductsVMs[i - 1].Image.FileUrl)
+                    @Html.HiddenFor(model => model.ProductsVMs[i - 1].Image.AltDescription)
+                    @Html.HiddenFor(model => model.ProductsVMs[i - 1].Price)
+                    @Html.HiddenFor(model => model.ProductsVMs[i - 1].Name)
                     <td>
                         <img src="@currentEntity.Image.FileUrl" alt="@currentEntity.Image.AltDescription" style="height:30px"/>
                     </td>
@@ -77,10 +77,10 @@
                     <td>
                         @switch (currentEntity.Type)
                         {
-                            case PurchasableType.Item:
+                            case ProductType.Item:
                                 <span class="badge bg-primary">Item</span>
                                 break;
-                            case PurchasableType.Kit:
+                            case ProductType.Kit:
                                 <span class="badge bg-secondary">Kit</span>
                                 break;
                             default:

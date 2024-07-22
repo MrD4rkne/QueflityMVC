@@ -1,10 +1,10 @@
-﻿using QueflityMVC.Application.ViewModels.Purchasable;
+﻿using QueflityMVC.Application.ViewModels.Product;
 
 namespace QueflityMVC.Application.ViewModels.Other;
 
 public record MessageVm
 {
-    public required PurchasableForDashboardVm Purchasable { get; init; }
+    public required ProductForDashboardVm Product { get; init; }
 
     public string? Message { get; init; }
 

@@ -10,7 +10,7 @@ public class MessageValidator : AbstractValidator<MessageVm>
 
     public MessageValidator()
     {
-        RuleFor(x => x.Purchasable)
+        RuleFor(x => x.Product)
             .NotNull();
         RuleFor(x => x.Message)
             .MinimumLength(MESSAGE_MIN_LENGTH)

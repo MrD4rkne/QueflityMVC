@@ -20,16 +20,16 @@ public static class Errors
             ErrorCodes.Kits.DOES_NOT_EXIST, "Kit does not exist");
     }
 
-    public static class Purchasable
+    public static class Product
     {
         public static readonly Error InvalidOrder = new(
-            ErrorCodes.Purchasable.INVALID_ORDER, "Order of purchasable is not valid");
+            ErrorCodes.Product.INVALID_ORDER, "Order of purchasable is not valid");
 
-        public static readonly Error PurchasableMissingInOrder = new(
-            ErrorCodes.Purchasable.PURCHASABLE_MISSING_IN_ORDER, "Not every visible purchasable is in order");
+        public static readonly Error ProductMissingInOrder = new(
+            ErrorCodes.Product.PURCHASABLE_MISSING_IN_ORDER, "Not every visible purchasable is in order");
 
         public static readonly Error DoesNotExist = new(
-            ErrorCodes.Purchasable.DOES_NOT_EXIST, "Not every visible purchasable is in order");
+            ErrorCodes.Product.DOES_NOT_EXIST, "Not every visible purchasable is in order");
     }
 
     public static class User

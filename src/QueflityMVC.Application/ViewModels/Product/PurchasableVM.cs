@@ -1,10 +1,9 @@
 ﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
-using QueflityMVC.Domain.Common;
 
-namespace QueflityMVC.Application.ViewModels.Purchasable;
+namespace QueflityMVC.Application.ViewModels.Product;
 
-public class PurchasableVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Models.Kit>
+public class ProductVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Models.Kit>
 {
     public int Id { get; set; }
 
@@ -16,26 +15,26 @@ public class PurchasableVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Model
 
     public ImageForListVm Image { get; set; }
 
-    public PurchasableType Type { get; set; }
+    public ProductType Type { get; set; }
 
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Domain.Models.Item, PurchasableVm>()
+        profile.CreateMap<Domain.Models.Item, ProductVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
-            .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => PurchasableType.Item))
+            .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => ProductType.Item))
             .ReverseMap();
 
-        profile.CreateMap<Domain.Models.Kit, PurchasableVm>()
+        profile.CreateMap<Domain.Models.Kit, ProductVm>()
             .ForMember(vm => vm.Image, opt => opt.MapFrom(ent => ent.Image))
-            .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => PurchasableType.Kit))
+            .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => ProductType.Kit))
             .ReverseMap();
 
-        profile.CreateMap<PurchasableVm, Product>()
+        profile.CreateMap<ProductVm, Domain.Common.Product>()
             .ConstructUsing((vm, ctx) => vm.Type switch
             {
-                PurchasableType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(PurchasableVm),
+                ProductType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(ProductVm),
                     typeof(Domain.Models.Item)),
-                PurchasableType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(PurchasableVm),
+                ProductType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(ProductVm),
                     typeof(Domain.Models.Kit)),
                 _ => throw new InvalidOperationException("Unknown purchasable type")
             });

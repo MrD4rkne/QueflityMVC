@@ -3,7 +3,7 @@ using AutoMapper;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
-using QueflityMVC.Application.ViewModels.Purchasable;
+using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
@@ -14,10 +14,10 @@ public class MessageService : IMessageService
 {
     private readonly IBackgroundJobScheduler _backgroundJobScheduler;
     private readonly IMapper _mapper;
-    private readonly IPurchasableRepository _purchasableRepository;
+    private readonly IProductRepository _purchasableRepository;
     private readonly IUserRepository _userRepository;
 
-    public MessageService(IPurchasableRepository purchasableRepository, IUserRepository userRepository,
+    public MessageService(IProductRepository purchasableRepository, IUserRepository userRepository,
         IBackgroundJobScheduler backgroundJobScheduler, IMapper mapper)
     {
         _purchasableRepository = purchasableRepository;
@@ -32,11 +32,11 @@ public class MessageService : IMessageService
             return Result<MessageVm>.Failure(Errors.User.EmailNotVerified);
 
         var purchasable = await _purchasableRepository.GetByIdAsync(id);
-        if (purchasable is null) return Result<MessageVm>.Failure(Errors.Purchasable.DoesNotExist);
+        if (purchasable is null) return Result<MessageVm>.Failure(Errors.Product.DoesNotExist);
 
         MessageVm messageVm = new()
         {
-            Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable),
+            Product = _mapper.Map<ProductForDashboardVm>(purchasable),
             Email = await _userRepository.GetEmailForUserAsync(userId)
         };
         return Result<MessageVm>.Success(messageVm);
@@ -47,17 +47,17 @@ public class MessageService : IMessageService
         if (!await _userRepository.HasVerifiedEmail(userId))
             return Result<MessageVm>.Failure(Errors.User.EmailNotVerified);
 
-        var purchasable = await _purchasableRepository.GetByIdAsync(messageVm.Purchasable.Id);
-        if (purchasable is null) return Result<MessageVm>.Failure(Errors.Purchasable.DoesNotExist);
+        var purchasable = await _purchasableRepository.GetByIdAsync(messageVm.Product.Id);
+        if (purchasable is null) return Result<MessageVm>.Failure(Errors.Product.DoesNotExist);
 
-        messageVm = messageVm with { Purchasable = _mapper.Map<PurchasableForDashboardVm>(purchasable) };
+        messageVm = messageVm with { Product = _mapper.Map<ProductForDashboardVm>(purchasable) };
 
         var email = await _userRepository.GetEmailForUserAsync(userId);
         if (string.IsNullOrWhiteSpace(email))
             return Result.Failure(Errors.User.EmailNotVerified);
 
         var message = BuildEmailBody(messageVm);
-        var subject = $"COPY: Your message about {messageVm.Purchasable.Name} on {DateTime.Now}";
+        var subject = $"COPY: Your message about {messageVm.Product.Name} on {DateTime.Now}";
         await _backgroundJobScheduler.ScheduleSendMessageJob(new Mail
         {
             Body = message,
@@ -71,7 +71,7 @@ public class MessageService : IMessageService
     private static string BuildEmailBody(MessageVm messageVm)
     {
         StringBuilder sb = new();
-        sb.AppendLine($"This is a copy of the message you sent about {messageVm.Purchasable.Name} on {DateTime.Now}");
+        sb.AppendLine($"This is a copy of the message you sent about {messageVm.Product.Name} on {DateTime.Now}");
         sb.AppendLine();
         sb.AppendLine(messageVm.Message);
         sb.AppendLine(

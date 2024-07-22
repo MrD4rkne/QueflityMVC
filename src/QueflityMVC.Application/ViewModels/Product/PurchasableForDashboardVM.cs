@@ -1,10 +1,9 @@
 ﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Image;
-using QueflityMVC.Domain.Common;
 
-namespace QueflityMVC.Application.ViewModels.Purchasable;
+namespace QueflityMVC.Application.ViewModels.Product;
 
-public record PurchasableForDashboardVm : IMapFrom<Product>
+public record ProductForDashboardVm : IMapFrom<Domain.Common.Product>
 {
     public required int Id { get; set; }
 
@@ -18,7 +17,7 @@ public record PurchasableForDashboardVm : IMapFrom<Product>
 
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Product, PurchasableForDashboardVm>()
+        profile.CreateMap<Domain.Common.Product, ProductForDashboardVm>()
             .Include<Domain.Models.Kit, KitForDashboardVm>()
             .Include<Domain.Models.Item, ItemForDashboardVm>();
     }

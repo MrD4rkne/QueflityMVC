@@ -1,4 +1,4 @@
-﻿namespace QueflityMVC.Application.ViewModels.Purchasable;
+﻿namespace QueflityMVC.Application.ViewModels.Product;
 
 public class UpdateOrderFailedVm
 {

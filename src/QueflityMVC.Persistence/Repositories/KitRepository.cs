@@ -5,7 +5,7 @@ using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Persistence.Repositories;
 
-public class KitRepository(Context dbContext) : BasePurchasableRepository<Kit>(dbContext), IKitRepository
+public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbContext), IKitRepository
 {
     public override Task<Kit?> GetByIdAsync(int entityId)
     {

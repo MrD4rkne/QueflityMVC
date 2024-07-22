@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
-using QueflityMVC.Application.ViewModels.Purchasable;
+using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Web.Exceptions;
 
 namespace QueflityMVC.Web.Controllers;
 
 public class DashboardController : Controller
 {
-    private readonly IPurchasableEntityService _purchasableEntityService;
+    private readonly IProductEntityService _purchasableEntityService;
 
-    public DashboardController(IPurchasableEntityService purchasableEntityService)
+    public DashboardController(IProductEntityService purchasableEntityService)
     {
         _purchasableEntityService = purchasableEntityService;
     }
@@ -29,18 +29,18 @@ public class DashboardController : Controller
     [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public async Task<IActionResult> Index(EditOrderVm editOrderVm)
     {
-        if (editOrderVm?.PurchasablesVMs is null) return BadRequest();
+        if (editOrderVm?.ProductsVMs is null) return BadRequest();
         var result = await _purchasableEntityService.UpdateOrderAsync(editOrderVm);
         if (result.IsSuccess) return RedirectToAction(nameof(Index), "Home");
         switch (result.Error.Code)
         {
-            case ErrorCodes.Purchasable.INVALID_ORDER:
+            case ErrorCodes.Product.INVALID_ORDER:
                 ModelState.AddModelError(string.Empty, "Order is not valid");
                 return View(editOrderVm);
 
-            case ErrorCodes.Purchasable.PURCHASABLE_MISSING_IN_ORDER:
+            case ErrorCodes.Product.PURCHASABLE_MISSING_IN_ORDER:
                 return RedirectToAction("UpdateFailed",
-                    new UpdateOrderFailedVm { Message = "Purchasable list was altered. Please try again." });
+                    new UpdateOrderFailedVm { Message = "Product list was altered. Please try again." });
             default:
                 throw new UnexpectedApplicationException();
         }
