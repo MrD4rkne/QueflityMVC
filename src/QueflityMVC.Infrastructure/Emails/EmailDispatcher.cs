@@ -2,8 +2,8 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
+using QueflityMVC.Infrastructure.Abstraction.Model;
 
 namespace QueflityMVC.Infrastructure.Emails;
 
@@ -30,7 +30,7 @@ public class EmailDispatcher(IOptions<SmtpConfig> smtpOptions) : IEmailDispatche
     {
         var mailMessage = new MimeMessage();
         mailMessage.From.Add(new MailboxAddress("Queflity", config.Email));
-        mailMessage.To.Add(new MailboxAddress("sss", mail.Recipient));
+        mailMessage.To.Add(new MailboxAddress(mail.RecipientName, mail.RecipientEmail));
         mailMessage.Subject = mail.Subject;
         mailMessage.Body = new TextPart("plain")
         {

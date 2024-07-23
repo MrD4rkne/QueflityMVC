@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Quartz;
-using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
+using QueflityMVC.Infrastructure.Abstraction.Model;
 
 namespace QueflityMVC.Infrastructure.Emails;
 
@@ -11,6 +11,7 @@ public class SendEmailJob(
     IEmailDispatcher emailDispatcher)
     : IJob
 {
+    public const string DATA_KEY = "Mail";
     public static readonly JobKey Key = new("send-copy-of-message", "email");
 
     private readonly IBackgroundJobScheduler _backgroundJobScheduler = backgroundJobScheduler;
@@ -18,7 +19,7 @@ public class SendEmailJob(
     public Task Execute(IJobExecutionContext context)
     {
         var dataMap = context.JobDetail.JobDataMap;
-        if (!TryParseMessage(context, out var message))
+        if (!TryParseMessage(context, out var mail))
         {
             logger.LogError("Message not found in job data map: @{jobDetail}", context.JobDetail);
             return Task.CompletedTask;
@@ -26,7 +27,7 @@ public class SendEmailJob(
 
         try
         {
-            return emailDispatcher.SendEmailAsync(message!);
+            return emailDispatcher.SendEmailAsync(mail!);
         }
         catch (Exception ex)
         {
@@ -35,17 +36,17 @@ public class SendEmailJob(
         }
     }
 
-    private bool TryParseMessage(IJobExecutionContext context, out Mail? message)
+    private bool TryParseMessage(IJobExecutionContext context, out Mail? mail)
     {
         var dataMap = context.Trigger.JobDataMap;
-        if (dataMap.TryGetValue("Mail", out var value))
-            if (value is Mail messageFromDataMap)
+        if (dataMap.TryGetValue(DATA_KEY, out var value))
+            if (value is Mail mailFromDataMap)
             {
-                message = messageFromDataMap;
+                mail = mailFromDataMap;
                 return true;
             }
 
-        message = null;
+        mail = null;
         return false;
     }
 }

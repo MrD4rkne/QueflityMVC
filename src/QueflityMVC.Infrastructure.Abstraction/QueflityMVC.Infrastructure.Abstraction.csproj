@@ -10,4 +10,8 @@
         <ProjectReference Include="..\QueflityMVC.Domain\QueflityMVC.Domain.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Model\"/>
+    </ItemGroup>
+
 </Project>

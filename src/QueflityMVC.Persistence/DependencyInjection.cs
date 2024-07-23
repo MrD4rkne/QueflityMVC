@@ -31,6 +31,8 @@ public static class DependencyInjection
         services.AddTransient<IItemRepository, ItemRepository>();
         services.AddTransient<IKitRepository, KitRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IMessageRepository, MessageRepository>();
+        services.AddTransient<IConversationRepository, ConversationRepository>();
 
         webApplicationBuilder.ConfigureDbConnection();
         return webApplicationBuilder;

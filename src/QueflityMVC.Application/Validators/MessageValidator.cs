@@ -5,7 +5,7 @@ namespace QueflityMVC.Application.Validators;
 
 public class MessageValidator : AbstractValidator<MessageVm>
 {
-    private const int MESSAGE_MIN_LENGTH = 40;
+    private const int MESSAGE_MIN_LENGTH = 10;
     private const int MESSAGE_MAX_LENGTH = 400;
 
     public MessageValidator()
@@ -15,5 +15,7 @@ public class MessageValidator : AbstractValidator<MessageVm>
         RuleFor(x => x.Message)
             .MinimumLength(MESSAGE_MIN_LENGTH)
             .MaximumLength(MESSAGE_MAX_LENGTH);
+        RuleFor(x => x.Title)
+            .NotEmpty();
     }
 }

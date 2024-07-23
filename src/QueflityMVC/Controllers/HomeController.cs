@@ -63,7 +63,7 @@ public class HomeController : Controller
             return View(messageVm);
         }
 
-        await _messageService.SendMessageAsync(messageVm, User.GetLoggedInUserId());
+        await _messageService.StartConversationAsync(messageVm, User.GetLoggedInUserId());
         return RedirectToAction(nameof(Index));
     }
 

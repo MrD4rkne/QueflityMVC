@@ -9,4 +9,6 @@ public record MessageVm
     public string? Message { get; init; }
 
     public string? Email { get; init; }
+
+    public string Title { get; set; }
 }

@@ -1,72 +1,104 @@
 ﻿using System.Text;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
-using QueflityMVC.Application.ViewModels.Other;
+using QueflityMVC.Application.ViewModels.Message;
 using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
+using QueflityMVC.Infrastructure.Abstraction.Model;
+using MessageVm = QueflityMVC.Application.ViewModels.Other.MessageVm;
 
 namespace QueflityMVC.Application.Services;
 
-public class MessageService : IMessageService
+public class MessageService(
+    IProductRepository purchasableRepository,
+    IUserRepository userRepository,
+    IMessageRepository messageRepository,
+    IConversationRepository conversationRepository,
+    IBackgroundJobScheduler backgroundJobScheduler,
+    IMapper mapper)
+    : IMessageService
 {
-    private readonly IBackgroundJobScheduler _backgroundJobScheduler;
-    private readonly IMapper _mapper;
-    private readonly IProductRepository _purchasableRepository;
-    private readonly IUserRepository _userRepository;
-
-    public MessageService(IProductRepository purchasableRepository, IUserRepository userRepository,
-        IBackgroundJobScheduler backgroundJobScheduler, IMapper mapper)
-    {
-        _purchasableRepository = purchasableRepository;
-        _userRepository = userRepository;
-        _mapper = mapper;
-        _backgroundJobScheduler = backgroundJobScheduler;
-    }
+    private readonly IConversationRepository _conversationRepository = conversationRepository;
 
     public async Task<Result<MessageVm>> GetContactVmAsync(int id, string userId)
     {
-        if (!await _userRepository.HasVerifiedEmail(userId))
+        if (!await userRepository.HasVerifiedEmail(userId))
             return Result<MessageVm>.Failure(Errors.User.EmailNotVerified);
 
-        var purchasable = await _purchasableRepository.GetByIdAsync(id);
+        var purchasable = await purchasableRepository.GetByIdAsync(id);
         if (purchasable is null) return Result<MessageVm>.Failure(Errors.Product.DoesNotExist);
 
         MessageVm messageVm = new()
         {
-            Product = _mapper.Map<ProductForDashboardVm>(purchasable),
-            Email = await _userRepository.GetEmailForUserAsync(userId)
+            Product = mapper.Map<ProductForDashboardVm>(purchasable),
+            Email = await userRepository.GetEmailForUserAsync(userId)
         };
         return Result<MessageVm>.Success(messageVm);
     }
 
-    public async Task<Result> SendMessageAsync(MessageVm messageVm, string userId)
+    public async Task<Result> StartConversationAsync(MessageVm messageVm, string userId)
     {
-        if (!await _userRepository.HasVerifiedEmail(userId))
+        if (!await userRepository.HasVerifiedEmail(userId))
             return Result<MessageVm>.Failure(Errors.User.EmailNotVerified);
 
-        var purchasable = await _purchasableRepository.GetByIdAsync(messageVm.Product.Id);
+        var purchasable = await purchasableRepository.GetByIdAsync(messageVm.Product.Id);
         if (purchasable is null) return Result<MessageVm>.Failure(Errors.Product.DoesNotExist);
 
-        messageVm = messageVm with { Product = _mapper.Map<ProductForDashboardVm>(purchasable) };
+        messageVm = messageVm with { Product = mapper.Map<ProductForDashboardVm>(purchasable) };
 
-        var email = await _userRepository.GetEmailForUserAsync(userId);
+        var email = await userRepository.GetEmailForUserAsync(userId);
         if (string.IsNullOrWhiteSpace(email))
             return Result.Failure(Errors.User.EmailNotVerified);
 
-        var message = BuildEmailBody(messageVm);
-        var subject = $"COPY: Your message about {messageVm.Product.Name} on {DateTime.Now}";
-        await _backgroundJobScheduler.ScheduleSendMessageJob(new Mail
+        messageVm = messageVm with { Email = email };
+
+        Message message = new()
         {
-            Body = message,
-            Recipient = email,
-            Subject = subject
-        });
+            SentAt = DateTime.Now,
+            UserId = userId,
+            Content = messageVm.Message
+        };
+
+        Conversation conversation = new()
+        {
+            ProductId = messageVm.Product.Id,
+            UserId = userId,
+            Title = messageVm.Title,
+            IsClosed = false,
+            Messages = [message]
+        };
+        _ = await _conversationRepository.AddAsync(conversation);
+        SentCopyEmail(messageVm);
+
         return Result.Success();
     }
 
+    public Task<Result<UserConversationsVm>> GetUsersConversationsAsync(string userId)
+    {
+        var conversations = _conversationRepository.GetUsersConversations(userId);
+        var userConversionsVm = new UserConversationsVm
+        {
+            Conversations = conversations.ProjectTo<ConversationVm>(mapper.ConfigurationProvider).ToList()
+        };
+        return Task.FromResult(Result<UserConversationsVm>.Success(userConversionsVm));
+    }
+
+    private void SentCopyEmail(MessageVm messageVm)
+    {
+        var mailBody = BuildEmailBody(messageVm);
+        var subject = $"COPY: Your message about {messageVm.Product.Name} on {DateTime.Now}";
+        backgroundJobScheduler.ScheduleSendMessageJob(new Mail
+        {
+            Body = mailBody,
+            RecipientName = messageVm.Email,
+            RecipientEmail = messageVm.Email,
+            Subject = subject
+        });
+    }
 
     private static string BuildEmailBody(MessageVm messageVm)
     {

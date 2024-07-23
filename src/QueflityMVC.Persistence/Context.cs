@@ -13,6 +13,11 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
 {
     private readonly PersistenceConfig _config = persistenceOptions.Value;
 
+    public Context() : this(new DbContextOptions<Context>(),
+        new OptionsWrapper<PersistenceConfig>(new PersistenceConfig()))
+    {
+    }
+
     public DbSet<Component> Components { get; set; }
 
     public DbSet<Item> Items { get; set; }
@@ -22,6 +27,10 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
     public DbSet<Kit> Kits { get; set; }
 
     public DbSet<Image> Images { get; set; }
+
+    public DbSet<Conversation> Conversations { get; set; }
+
+    public DbSet<Message> Messages { get; set; }
 
     public DbSet<Element> SetElements { get; set; }
 
@@ -34,7 +43,8 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
             .HasOne(it => it.Image);
 
         builder.Entity<Item>()
-            .Property(it => it.Price);
+            .Property(it => it.Price)
+            .HasColumnType("decimal(10, 2)");
 
         builder.Entity<Item>()
             .HasMany(it => it.Components)
@@ -56,6 +66,12 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
             .WithMany(kit => kit.Elements)
             .HasForeignKey(se => se.KitId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Message>()
+            .HasOne(m => m.Conversation)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ConversationId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         EntitySeeder entitySeeder = new();
         builder.Entity<Element>().HasData(entitySeeder.Elements);

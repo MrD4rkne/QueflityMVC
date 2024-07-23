@@ -42,6 +42,12 @@
     <h3>Contact us!</h3>
 
     <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input type="text" class="form-control" asp-for="Title"></input>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="Message" class="control-label"></label>
         <textarea class="form-control" asp-for="Message"></textarea>
         <span asp-validation-for="Message" class="text-danger"></span>
