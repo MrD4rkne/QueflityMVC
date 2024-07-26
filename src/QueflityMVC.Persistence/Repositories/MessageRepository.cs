@@ -6,4 +6,5 @@ namespace QueflityMVC.Persistence.Repositories;
 
 public class MessageRepository(Context context) : BaseRepository<Message>(context), IMessageRepository
 {
+    
 }

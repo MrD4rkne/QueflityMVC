@@ -6,6 +6,7 @@ using QueflityMVC.Infrastructure;
 using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
 using QueflityMVC.Persistence.Setup;
+using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.Other;
@@ -26,6 +27,8 @@ var config = builder.Configuration;
 // Add logging
 SerilogSetup.SetupLogger();
 builder.Host.UseSerilog(Log.Logger);
+
+builder.Services.AddCommonServices();
 
 builder.Services
     .Configure<SmtpOptions>(config.GetSection(SmtpOptions.SECTION_NAME));

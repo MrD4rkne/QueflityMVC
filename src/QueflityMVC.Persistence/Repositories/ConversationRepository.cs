@@ -1,4 +1,5 @@
-﻿using QueflityMVC.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Common;
 
@@ -10,6 +11,12 @@ public class ConversationRepository(Context dbContext)
     public IQueryable<Conversation> GetUsersConversations(string userId)
     {
         return dbContext.Conversations
+            .AsNoTracking()
+            .Include(convo => convo.Product)
+            .Include(convo => convo.User)
+            .Include(convo => convo.Messages
+                .OrderBy(msg=>msg.SentAt)
+                .TakeLast(20))
             .Where(c => c.UserId == userId);
     }
 }

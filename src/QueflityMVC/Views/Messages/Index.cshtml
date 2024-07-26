@@ -1,5 +1,67 @@
-﻿@model QueflityMVC.Application.ViewModels.Message.UserConversationsVm
+﻿@using System.Security.Claims
+@using QueflityMVC.Web.Common
+@model QueflityMVC.Application.ViewModels.Message.UserConversationsVm
+@inject IMessageDateTimeFormatter dateTimeFormatter
 
 @{
     ViewData["Title"] = "Messages";
+    string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+}
+
+<style>
+.conversation-wrapper {
+            display: flex;
+            height: 20vh;
+        }
+        .partial-view {
+            width: 30%;
+            border-right: 1px solid #ccc;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .messages {
+            width: 70%;
+            padding: 15px;
+            overflow-y: auto;
+            height: 100%;
+        }
+        .message {
+            margin-bottom: 15px;
+        }
+        .message .time {
+            font-size: 0.8em;
+            color: #999;
+        }
+        .partial-view .last-message-time {
+            font-size: 0.9em;
+            color: #666;
+        }
+</style>
+
+@foreach (var conversationVm in Model.Conversations)
+{
+        <div class="row conversation-wrapper">
+            <div class="partial-view">
+                <h5>@conversationVm.Title</h5>
+                <h7>About: <strong>@conversationVm.Product.Name</strong></h7>
+                <div class="user-info">
+                    <p class="last-message-time">Last message: @dateTimeFormatter.FormatDateTime(conversationVm.Messages.Last().SentAt)</p>
+                </div>
+            </div>
+            
+            @foreach(var message in conversationVm.Messages)
+            {
+                string contentClass = 
+                    "message-content "+message.UserId == userId ? "bg-primary text-white" : "bg-light"
+                +" p-3 rounded";
+                <div class="messages">
+                    <div class="message">
+                        <div class="@contentClass">
+                            @message.Content
+                        </div>
+                        <div class="time">@dateTimeFormatter.FormatDateTime(message.SentAt)</div>
+                    </div>
+                </div>
+            }
+        </div>
 }
