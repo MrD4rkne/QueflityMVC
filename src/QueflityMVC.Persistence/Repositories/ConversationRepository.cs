@@ -13,8 +13,6 @@ public class ConversationRepository(Context dbContext)
     {
         return DbContext.Conversations
             .AsNoTracking()
-            .Include(convo => convo.Product)
-            .Include(convo => convo.User)
             .Include(convo => convo.Messages
                 .OrderByDescending(msg=>msg.SentAt)
                 .Take(lastMessageCount)
