@@ -2,5 +2,5 @@
 
 public class UserConversationsVm
 {
-    public List<ConversationVm> Conversations { get; set; }
+    public List<ConversationShortVm> Conversations { get; set; }
 }

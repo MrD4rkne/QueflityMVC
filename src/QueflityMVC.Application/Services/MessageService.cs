@@ -82,7 +82,7 @@ public class MessageService(
         var conversations = _conversationRepository.GetUsersConversations(userId);
         var userConversionsVm = new UserConversationsVm
         {
-            Conversations = conversations.ProjectTo<ConversationVm>(mapper.ConfigurationProvider).ToList()
+            Conversations = conversations.ProjectTo<ConversationShortVm>(mapper.ConfigurationProvider).ToList()
         };
         return Task.FromResult(Result<UserConversationsVm>.Success(userConversionsVm));
     }
