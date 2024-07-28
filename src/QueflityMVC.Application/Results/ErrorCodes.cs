@@ -25,4 +25,10 @@ public static class ErrorCodes
     {
         public const string EMAIL_NOT_VERIFIED = "User.EmailNotVerified";
     }
+    
+    public static class Conversation
+    {
+        public const string DOES_NOT_EXIST = "Conversation.DoesNotExist";
+        public const string DOES_NOT_BELONG_TO_USER = "Conversation.DoesNotBelongToUser";
+    }
 }

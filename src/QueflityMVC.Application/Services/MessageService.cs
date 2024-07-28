@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
@@ -85,6 +86,16 @@ public class MessageService(
             Conversations = conversations.ProjectTo<ConversationShortVm>(mapper.ConfigurationProvider).ToList()
         };
         return Task.FromResult(Result<UserConversationsVm>.Success(userConversionsVm));
+    }
+
+    public async Task<Result<ConversationVm>> GetConversationDetailsAsync(string? userId, int conversationId)
+    {
+        var conversation = await _conversationRepository.GetByIdAsync(conversationId);
+        if (conversation is null) return Result<ConversationVm>.Failure(Errors.Product.DoesNotExist);
+        if(conversation.UserId != userId) return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
+        
+        var conversationVm = mapper.Map<ConversationVm>(conversation);
+        PaginationFactory.CreatePagination()
     }
 
     private void SentCopyEmail(MessageVm messageVm)

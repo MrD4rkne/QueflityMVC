@@ -37,4 +37,13 @@ public static class Errors
         public static readonly Error EmailNotVerified = new(
             ErrorCodes.User.EMAIL_NOT_VERIFIED, "Email is not verified");
     }
+
+    public class Conversation
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Conversation.DOES_NOT_EXIST, "Conversation does not exist");
+        
+        public static readonly Error DoesNotBelongToUser = new(
+            ErrorCodes.Conversation.DOES_NOT_BELONG_TO_USER, "Conversation does not belong to user");
+    }
 }
