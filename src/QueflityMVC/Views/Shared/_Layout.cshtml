@@ -25,6 +25,29 @@
         .nav-tabs .dropdown-menu, .nav-pills .dropdown-menu, .navbar .dropdown-menu {
             margin-top: 0;
         }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            flex: 0 0 auto;
+        }
+
+        main {
+            flex: 1 0 auto;
+            padding-bottom: 1rem; /* Ensure some space for the footer */
+        }
+
+        footer {
+            flex: 0 0 auto;
+        }
     </style>
 </head>
 <body>
@@ -74,13 +97,13 @@
         </div>
     </nav>
 </header>
-<div class="container">
-    <main role="main" class="pb-3 m-5">
+<div class="container-fluid flex-fill d-flex flex-column">
+    <main role="main" class="pb-3 flex-fill mx-5">
         @RenderBody()
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
+<footer class="border-top footer text-muted mt-auto">
     <div class="container">
         &copy; @DateTime.Now.Year - QueflityMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>

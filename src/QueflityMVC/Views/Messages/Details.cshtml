@@ -4,13 +4,14 @@
 @inject IMessageDateTimeFormatter dateTimeFormatter
 
 @{
-ViewData["Title"] = "Messages";
-string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+    ViewData["Title"] = "Messages";
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 }
 
 <style>
     .conversation-wrapper {
-        min-height: 100%;
+        display: flex;
+        flex-direction: column;
         height: 100%;
     }
     .top-bar {
@@ -19,16 +20,24 @@ string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
         border-bottom: 1px solid #dee2e6;
         width: 100%;
     }
+    .main-content {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+    }
     .left-panel {
         background-color: #f8f9fa;
         padding: 15px;
         border-right: 1px solid #dee2e6;
         overflow-y: auto;
+        flex: 0 0 25%; /* or a percentage to fit your needs */
     }
     .right-panel {
         padding: 15px;
         display: flex;
         flex-direction: column;
+        flex: 1;
+        overflow: hidden;
     }
     .messages-container {
         flex: 1;
@@ -59,23 +68,27 @@ string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             <h4>@Model.Title</h4>
         </div>
     </div>
-    <div class="row">
-        <div class="col-3 left-panel">
+    <div class="main-content">
+        <div class="left-panel">
             <h5>Product Details</h5>
-            <p><strong>Name:</strong> @Model.Product.Name</p>
-            <p><strong>Price:</strong> @Model.Product.Price.ToString("C")</p>
+            <p>
+                <strong>Name:</strong> @Model.Product.Name
+            </p>
+            <p>
+                <strong>Price:</strong> @Model.Product.Price.ToString("C")
+            </p>
         </div>
-        <div class="col-9 right-panel">
+        <div class="right-panel">
             <div class="messages-container">
                 @foreach (var message in Model.Messages.Entities)
                 {
-                string contentClass = message.UserId == userId ? "bg-primary text-white" : "bg-light";
-                <div class="message">
-                    <div class="message-content @contentClass">
-                        @message.Content
+                    var contentClass = message.UserId == userId ? "bg-primary text-white" : "bg-light";
+                    <div class="message">
+                        <div class="message-content @contentClass">
+                            @message.Content
+                        </div>
+                        <div class="time">@dateTimeFormatter.FormatDateTime(message.SentAt)</div>
                     </div>
-                    <div class="time">@dateTimeFormatter.FormatDateTime(message.SentAt)</div>
-                </div>
                 }
             </div>
             <div class="input-group">
