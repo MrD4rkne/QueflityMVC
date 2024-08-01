@@ -43,6 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Views\Messages\" />
         <Folder Include="wwwroot\"/>
     </ItemGroup>
 
