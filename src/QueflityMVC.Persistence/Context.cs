@@ -71,7 +71,7 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
             .HasOne(m => m.Conversation)
             .WithMany(c => c.Messages)
             .HasForeignKey(m => m.ConversationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.ClientCascade);
 
         EntitySeeder entitySeeder = new();
         builder.Entity<Element>().HasData(entitySeeder.Elements);

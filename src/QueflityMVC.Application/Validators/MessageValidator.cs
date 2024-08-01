@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Other;
 
 namespace QueflityMVC.Application.Validators;
 
-public class MessageValidator : AbstractValidator<MessageVm>
+public class MessageValidator : AbstractValidator<FirstMessageInConversationVm>
 {
     private const int MESSAGE_MIN_LENGTH = 10;
     private const int MESSAGE_MAX_LENGTH = 400;

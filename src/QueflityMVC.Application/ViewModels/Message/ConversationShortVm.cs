@@ -10,6 +10,8 @@ public class ConversationShortVm : IMapFrom<Conversation>
     public int Id { get; set; }
 
     public string Title { get; set; }
+    
+    public ProductShortVm Product { get; set; }
 
     public List<MessageVm> Messages { get; set; }
 
@@ -17,6 +19,7 @@ public class ConversationShortVm : IMapFrom<Conversation>
     {
         profile.CreateMap<Conversation, ConversationShortVm>()
             .ForMember(msg => msg.Messages, opt => opt.MapFrom(con => con.Messages))
+            .ForMember(vm=>vm.Product, opt=>opt.MapFrom(con=>con.Product))
             .ReverseMap();
     }
 }

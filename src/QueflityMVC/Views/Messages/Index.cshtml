@@ -60,7 +60,7 @@
             <div class="user-info">
                 <p class="last-message-time">Last message: @dateTimeFormatter.FormatDateTime(conversationVm.Messages.Last().SentAt)</p>
             </div>
-            <a href="/Messages/@conversationVm.Id" class="arrow-link">&rarr;</a>
+            <a href="/Messages/Details/@conversationVm.Id" class="arrow-link">&rarr;</a>
         </div>
         
         @foreach(var message in conversationVm.Messages)

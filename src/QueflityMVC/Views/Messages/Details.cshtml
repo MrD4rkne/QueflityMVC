@@ -1,0 +1,102 @@
+﻿@using System.Security.Claims
+@using QueflityMVC.Web.Common
+@model QueflityMVC.Application.ViewModels.Message.ConversationVm
+@inject IMessageDateTimeFormatter dateTimeFormatter
+
+@{
+ViewData["Title"] = "Messages";
+string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+}
+
+<style>
+    .conversation-wrapper {
+        min-height: 100%;
+        height: 100%;
+    }
+    .top-bar {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+        width: 100%;
+    }
+    .left-panel {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-right: 1px solid #dee2e6;
+        overflow-y: auto;
+    }
+    .right-panel {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+    .messages-container {
+        flex: 1;
+        overflow-y: auto;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 15px;
+    }
+    .message {
+        margin-bottom: 15px;
+    }
+    .message .time {
+        font-size: 0.8em;
+        color: #999;
+    }
+    .message-content {
+        display: inline-block;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .input-group {
+        margin-top: 15px;
+    }
+</style>
+
+<div class="container-fluid conversation-wrapper">
+    <div class="row">
+        <div class="col-12 top-bar">
+            <h4>@Model.Title</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 left-panel">
+            <h5>Product Details</h5>
+            <p><strong>Name:</strong> @Model.Product.Name</p>
+            <p><strong>Price:</strong> @Model.Product.Price.ToString("C")</p>
+        </div>
+        <div class="col-9 right-panel">
+            <div class="messages-container">
+                @foreach (var message in Model.Messages.Entities)
+                {
+                string contentClass = message.UserId == userId ? "bg-primary text-white" : "bg-light";
+                <div class="message">
+                    <div class="message-content @contentClass">
+                        @message.Content
+                    </div>
+                    <div class="time">@dateTimeFormatter.FormatDateTime(message.SentAt)</div>
+                </div>
+                }
+            </div>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Type your message here..." id="newMessageContent">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="sendMessageButton">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#sendMessageButton').on('click', function () {
+            var content = $('#newMessageContent').val();
+            if (content) {
+                // Handle the message sending logic here
+                alert('Message sent: ' + content);
+                $('#newMessageContent').val(''); // Clear the input field after sending
+            }
+        });
+    });
+</script>

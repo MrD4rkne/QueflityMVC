@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Application.ViewModels.Other;
 
-public record MessageVm
+public record FirstMessageInConversationVm
 {
     public required ProductForDashboardVm Product { get; init; }
 

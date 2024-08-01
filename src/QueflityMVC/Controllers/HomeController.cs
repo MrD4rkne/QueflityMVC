@@ -16,11 +16,11 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IMessageService _messageService;
-    private readonly IValidator<MessageVm> _messageValidator;
+    private readonly IValidator<FirstMessageInConversationVm> _messageValidator;
     private readonly IProductEntityService _purchasableEntityService;
 
     public HomeController(ILogger<HomeController> logger, IProductEntityService purchasableEntityService,
-        IMessageService messageService, IValidator<MessageVm> messageValidator)
+        IMessageService messageService, IValidator<FirstMessageInConversationVm> messageValidator)
     {
         _logger = logger;
         _purchasableEntityService = purchasableEntityService;
@@ -54,16 +54,16 @@ public class HomeController : Controller
     [HttpPost]
     [Route("Contact")]
     [Authorize]
-    public async Task<IActionResult> Contact(MessageVm messageVm)
+    public async Task<IActionResult> Contact(FirstMessageInConversationVm firstMessageInConversationVm)
     {
-        var validationResults = await _messageValidator.ValidateAsync(messageVm);
+        var validationResults = await _messageValidator.ValidateAsync(firstMessageInConversationVm);
         if (!validationResults.IsValid)
         {
             validationResults.AddToModelState(ModelState);
-            return View(messageVm);
+            return View(firstMessageInConversationVm);
         }
 
-        await _messageService.StartConversationAsync(messageVm, User.GetLoggedInUserId());
+        await _messageService.StartConversationAsync(firstMessageInConversationVm, User.GetLoggedInUserId());
         return RedirectToAction(nameof(Index));
     }
 

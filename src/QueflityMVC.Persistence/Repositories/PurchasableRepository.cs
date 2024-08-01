@@ -66,6 +66,7 @@ public class ProductRepository(Context dbContext) : IProductRepository
         return dbContext.Set<Product>()
             .AsNoTracking()
             .Include(x => x.Image)
+            .Include(x => (x as Kit).Elements)
             .FirstOrDefaultAsync(purchasable => purchasable.Id == id);
     }
 }
