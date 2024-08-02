@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Common;
@@ -9,7 +8,7 @@ namespace QueflityMVC.Persistence.Repositories;
 public class ConversationRepository(Context dbContext)
     : BaseRepository<Conversation>(dbContext), IConversationRepository
 {
-    public IQueryable<Conversation> GetUsersConversations(string userId, int lastMessageCount=20)
+    public IQueryable<Conversation> GetUsersConversations(Guid userId, int lastMessageCount = 20)
     {
         return DbContext.Conversations
             .AsNoTracking()
@@ -18,7 +17,7 @@ public class ConversationRepository(Context dbContext)
                 .Take(lastMessageCount)
                 .OrderBy(msg => msg.SentAt))
             .Include(convo => convo.Product)
-            .ThenInclude(prod=> (prod as Kit).Elements)
+            .ThenInclude(prod => (prod as Kit).Elements)
             .Where(c => c.UserId == userId);
     }
 
@@ -27,7 +26,7 @@ public class ConversationRepository(Context dbContext)
         return DbContext.Conversations
             .AsNoTracking()
             .Include(convo => convo.Product)
-            .ThenInclude(prod=> (prod as Kit).Elements)
+            .ThenInclude(prod => (prod as Kit).Elements)
             .FirstOrDefaultAsync(c => c.Id == conversationId);
     }
 

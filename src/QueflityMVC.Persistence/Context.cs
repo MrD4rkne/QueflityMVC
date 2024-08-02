@@ -9,7 +9,7 @@ using QueflityMVC.Persistence.Setup;
 namespace QueflityMVC.Persistence;
 
 public class Context(DbContextOptions options, IOptions<PersistenceConfig> persistenceOptions)
-    : IdentityDbContext<ApplicationUser>(options)
+    : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
 {
     private readonly PersistenceConfig _config = persistenceOptions.Value;
 

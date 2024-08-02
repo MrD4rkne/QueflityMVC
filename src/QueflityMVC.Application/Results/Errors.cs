@@ -29,20 +29,26 @@ public static class Errors
             ErrorCodes.Product.PURCHASABLE_MISSING_IN_ORDER, "Not every visible purchasable is in order");
 
         public static readonly Error DoesNotExist = new(
-            ErrorCodes.Product.DOES_NOT_EXIST, "Not every visible purchasable is in order");
+            ErrorCodes.Product.DOES_NOT_EXIST, "Product does not exist");
     }
 
     public static class User
     {
         public static readonly Error EmailNotVerified = new(
             ErrorCodes.User.EMAIL_NOT_VERIFIED, "Email is not verified");
+
+        public static readonly Error CannotManageThemselves = new(
+            ErrorCodes.User.CANNOT_MANAGE_SELF, "User cannot manage themselves");
+
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.User.DOES_NOT_EXIST, "User does not exist");
     }
 
-    public class Conversation
+    public static class Conversation
     {
         public static readonly Error DoesNotExist = new(
             ErrorCodes.Conversation.DOES_NOT_EXIST, "Conversation does not exist");
-        
+
         public static readonly Error DoesNotBelongToUser = new(
             ErrorCodes.Conversation.DOES_NOT_BELONG_TO_USER, "Conversation does not belong to user");
     }

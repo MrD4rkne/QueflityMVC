@@ -10,10 +10,10 @@ namespace QueflityMVC.Persistence.Repositories;
 public class UserRepository(
     Context dbContext,
     UserManager<ApplicationUser> userManager,
-    RoleManager<IdentityRole> roleManager)
+    RoleManager<ApplicationRole> roleManager)
     : IUserRepository
 {
-    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
 
     protected Context DbContext = dbContext;
 
@@ -27,50 +27,34 @@ public class UserRepository(
         return matchingUsers;
     }
 
-    public async Task DisableUserAsync(string userId)
+    public Task<ApplicationUser?> GetUserByIdAsync(Guid userId)
     {
-        var userToDisable = await GetUserByIdAsync(userId);
-        if (userToDisable is null) throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-
-        userToDisable.IsEnabled = false;
-        await userManager.UpdateAsync(userToDisable);
-        await userManager.UpdateSecurityStampAsync(userToDisable);
+        return userManager.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == userId);
     }
 
-    public Task<ApplicationUser?> GetUserByIdAsync(string userId)
+    public async Task<bool> DoesUserExistAsync(Guid userId)
     {
-        return userManager.FindByIdAsync(userId);
-    }
-
-    public async Task<bool> DoesUserExistAsync(string userId)
-    {
-        var allegedUser = await userManager.FindByIdAsync(userId);
+        var allegedUser = await GetUserByIdAsync(userId);
         return allegedUser is not null;
     }
 
-    public async Task EnableUserAsync(string userToEnableId)
-    {
-        var userToEnable = await GetUserByIdAsync(userToEnableId) ??
-                           throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        userToEnable.IsEnabled = true;
-        await userManager.UpdateAsync(userToEnable);
-    }
-
-    public IQueryable<IdentityRole> GetAllRoles()
+    public IQueryable<ApplicationRole> GetAllRoles()
     {
         var allRoles = DbContext.Roles
             .AsNoTracking();
         return allRoles;
     }
 
-    public async Task<IList<string>> GetAssignedRolesNamesAsync(string userId)
+    public async Task<IList<string>> GetAssignedRolesNamesAsync(Guid userId)
     {
         var rolesOwner = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException();
         var allAssignedRolesIds = await userManager.GetRolesAsync(rolesOwner);
         return allAssignedRolesIds;
     }
 
-    public async Task AddToRoleAsync(string userId, string roleId)
+    public async Task AddToRoleAsync(Guid userId, string roleId)
     {
         var user = await GetUserByIdAsync(userId) ??
                    throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
@@ -80,7 +64,7 @@ public class UserRepository(
         await userManager.UpdateSecurityStampAsync(user);
     }
 
-    public async Task RemoveFromRoleAsync(string userId, string roleId)
+    public async Task RemoveFromRoleAsync(Guid userId, string roleId)
     {
         var user = await GetUserByIdAsync(userId) ??
                    throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
@@ -90,7 +74,7 @@ public class UserRepository(
         await userManager.UpdateSecurityStampAsync(user);
     }
 
-    public async Task<List<string>> GetAssignedClaimsIdsAsync(string userId)
+    public async Task<List<string>> GetAssignedClaimsIdsAsync(Guid userId)
     {
         var rolesOwner = await GetUserByIdAsync(userId) ?? throw new ResourceNotFoundException();
 
@@ -99,7 +83,7 @@ public class UserRepository(
             .ToList()!;
     }
 
-    public async Task GiveClaimsAsync(string userId, string[] claimsIds)
+    public async Task GiveClaimsAsync(Guid userId, string[] claimsIds)
     {
         var user = await GetUserByIdAsync(userId);
         if (user is null) throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
@@ -109,31 +93,42 @@ public class UserRepository(
         await userManager.UpdateSecurityStampAsync(user);
     }
 
-    public async Task RemoveClaimsAsync(string userId, string[] claimsIds)
+    public async Task RemoveClaimsAsync(Guid userId, string[] claimsIds)
     {
         var user = await GetUserByIdAsync(userId) ??
                    throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        IEnumerable<Claim> claimsToRemove = claimsIds.AsParallel().Select(cl => { return new Claim(cl, cl); });
+        IEnumerable<Claim> claimsToRemove = claimsIds.AsParallel().Select(cl => new Claim(cl, cl));
         await userManager.RemoveClaimsAsync(user, claimsToRemove);
         await userManager.UpdateSecurityStampAsync(user);
     }
 
-    public async Task<bool> HasVerifiedEmail(string userId)
+    public async Task<bool> HasVerifiedEmail(Guid userId)
     {
         return await userManager.IsEmailConfirmedAsync(await GetUserByIdAsync(userId));
     }
 
-    public async Task<string?> GetEmailForUserAsync(string userId)
+    public async Task<string?> GetEmailForUserAsync(Guid userId)
     {
         var user = await userManager.Users.FirstAsync(user => user.Id == userId) ??
                    throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
         return user.Email;
     }
 
-    private Task<IdentityRole?> GetRoleByIdAsync(string roleId)
+    public Task<bool> CanRespondToConversations(Guid userId)
     {
-        return DbContext.Roles
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == roleId);
+        return Task.FromResult(true);
+    }
+
+    public async Task UpdateAsync(ApplicationUser userToUpdate)
+    {
+        var user = await DbContext.Users.FirstOrDefaultAsync(user => user.Id == userToUpdate.Id);
+        user.UserName = userToUpdate.UserName;
+        user.IsEnabled = userToUpdate.IsEnabled;
+        await DbContext.SaveChangesAsync();
+    }
+
+    private Task<ApplicationRole?> GetRoleByIdAsync(string roleId)
+    {
+        return roleManager.FindByIdAsync(roleId);
     }
 }

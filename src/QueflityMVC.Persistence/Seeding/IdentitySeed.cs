@@ -11,7 +11,7 @@ public static class IdentitySeed
     private const string ADMIN_DEFAULT_PASSWORD = "Password1#";
 
     public static async Task SeedIdentity(UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager)
+        RoleManager<ApplicationRole> roleManager)
     {
         ArgumentNullException.ThrowIfNull(userManager, nameof(userManager));
         ArgumentNullException.ThrowIfNull(roleManager, nameof(roleManager));
@@ -19,16 +19,16 @@ public static class IdentitySeed
         await SeedAdmin(userManager);
     }
 
-    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    private static async Task SeedRoles(RoleManager<ApplicationRole> roleManager)
     {
         if (!await roleManager.RoleExistsAsync("Admin"))
         {
-            IdentityRole role = new("Admin");
+            ApplicationRole role = new("Admin");
             await roleManager.CreateAsync(role);
         }
     }
 
-    public static async Task SeedRolesClaims(this RoleManager<IdentityRole> roleManager, string[] claims)
+    public static async Task SeedRolesClaims(this RoleManager<ApplicationRole> roleManager, string[] claims)
     {
         var adminRole = await roleManager.FindByNameAsync("Admin") ?? throw new Exception("Admin role not found");
         foreach (var claim in claims) await roleManager.AddClaimAsync(adminRole, new Claim(claim, claim));

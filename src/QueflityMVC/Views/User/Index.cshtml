@@ -1,7 +1,9 @@
 ﻿@inject IAuthorizationService AuthorizationService
+@inject IUserContext UserContext
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
+@using QueflityMVC.Domain.Interfaces
 @model QueflityMVC.Application.ViewModels.User.ListUsersVm
 
 @{
@@ -10,8 +12,8 @@
 
     var canSeeUserClaims = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_CLAIMS_VIEW)).Succeeded;
     var canSeeUserRoles = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ROLES_VIEW)).Succeeded;
-    var canDisableUser = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_DISABLE)).Succeeded;
-    var canEnableUser = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ENABLE)).Succeeded;
+    var canDisableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_DISABLE)).Succeeded;
+    var canEnableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ENABLE)).Succeeded;
 }
 
 <form asp-action="Index" method="post">
@@ -78,18 +80,22 @@
                             @Html.ActionLink("Claims", "ManageUserClaims", new { userId = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
                         }
 
-                        @if (item.IsEnabled)
+
+                        @if (item.Id != UserContext.UserId)
                         {
-                            if (canDisableUser)
+                            @if (item.IsEnabled)
                             {
-                                @Html.ActionLink("Disable", "DisableUser", new { userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                if (canDisableUsers)
+                                {
+                                    @Html.ActionLink("Disable", "DisableUser", new { userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                }
                             }
-                        }
-                        else
-                        {
-                            if (canEnableUser)
+                            else
                             {
-                                @Html.ActionLink("Enable", "EnableUser", new { userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                if (canEnableUsers)
+                                {
+                                    @Html.ActionLink("Enable", "EnableUser", new { userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                }
                             }
                         }
 

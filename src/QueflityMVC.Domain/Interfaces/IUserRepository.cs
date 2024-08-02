@@ -1,35 +1,34 @@
-﻿using Microsoft.AspNetCore.Identity;
-using QueflityMVC.Domain.Models;
+﻿using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Domain.Interfaces;
 
 public interface IUserRepository
 {
-    Task DisableUserAsync(string userToDisableId);
+    Task<bool> DoesUserExistAsync(Guid userId);
 
-    Task<bool> DoesUserExistAsync(string userId);
+    Task<ApplicationUser?> GetUserByIdAsync(Guid userId);
 
-    Task<ApplicationUser?> GetUserByIdAsync(string userId);
-
-    Task EnableUserAsync(string userToEnableId);
+    Task UpdateAsync(ApplicationUser userToUpdate);
 
     IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter);
 
-    IQueryable<IdentityRole> GetAllRoles();
+    IQueryable<ApplicationRole> GetAllRoles();
 
-    Task<IList<string>> GetAssignedRolesNamesAsync(string userId);
+    Task<IList<string>> GetAssignedRolesNamesAsync(Guid userId);
 
-    Task AddToRoleAsync(string userId, string roleId);
+    Task AddToRoleAsync(Guid userId, string roleId);
 
-    Task RemoveFromRoleAsync(string userId, string roleId);
+    Task RemoveFromRoleAsync(Guid userId, string roleId);
 
-    Task<List<string>> GetAssignedClaimsIdsAsync(string userId);
+    Task<List<string>> GetAssignedClaimsIdsAsync(Guid userId);
 
-    Task GiveClaimsAsync(string userId, string[] claimsIds);
+    Task GiveClaimsAsync(Guid userId, string[] claimsIds);
 
-    Task RemoveClaimsAsync(string userId, string[] claimsIds);
+    Task RemoveClaimsAsync(Guid userId, string[] claimsIds);
 
-    Task<bool> HasVerifiedEmail(string userId);
+    Task<bool> HasVerifiedEmail(Guid userId);
 
-    Task<string?> GetEmailForUserAsync(string userId);
+    Task<string?> GetEmailForUserAsync(Guid userId);
+
+    Task<bool> CanRespondToConversations(Guid userId);
 }

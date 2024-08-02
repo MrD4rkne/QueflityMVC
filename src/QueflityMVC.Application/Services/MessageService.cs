@@ -20,38 +20,40 @@ public class MessageService(
     IMessageRepository messageRepository,
     IConversationRepository conversationRepository,
     IBackgroundJobScheduler backgroundJobScheduler,
-    IMapper mapper)
+    IMapper mapper,
+    IUserContext userContext)
     : IMessageService
 {
-    private readonly IConversationRepository _conversationRepository = conversationRepository;
-
-    public async Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int id, string userId)
+    public async Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int purchasableId)
     {
-        if (!await userRepository.HasVerifiedEmail(userId))
+        if (!await userRepository.HasVerifiedEmail(userContext.UserId))
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
 
-        var purchasable = await purchasableRepository.GetByIdAsync(id);
+        var purchasable = await purchasableRepository.GetByIdAsync(purchasableId);
         if (purchasable is null) return Result<FirstMessageInConversationVm>.Failure(Errors.Product.DoesNotExist);
 
         FirstMessageInConversationVm firstMessageInConversationVm = new()
         {
             Product = mapper.Map<ProductForDashboardVm>(purchasable),
-            Email = await userRepository.GetEmailForUserAsync(userId)
+            Email = await userRepository.GetEmailForUserAsync(userContext.UserId)
         };
         return Result<FirstMessageInConversationVm>.Success(firstMessageInConversationVm);
     }
 
-    public async Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm, string userId)
+    public async Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm)
     {
-        if (!await userRepository.HasVerifiedEmail(userId))
+        if (!await userRepository.HasVerifiedEmail(userContext.UserId))
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
 
         var purchasable = await purchasableRepository.GetByIdAsync(firstMessageInConversationVm.Product.Id);
         if (purchasable is null) return Result<FirstMessageInConversationVm>.Failure(Errors.Product.DoesNotExist);
 
-        firstMessageInConversationVm = firstMessageInConversationVm with { Product = mapper.Map<ProductForDashboardVm>(purchasable) };
+        firstMessageInConversationVm = firstMessageInConversationVm with
+        {
+            Product = mapper.Map<ProductForDashboardVm>(purchasable)
+        };
 
-        var email = await userRepository.GetEmailForUserAsync(userId);
+        var email = await userRepository.GetEmailForUserAsync(userContext.UserId);
         if (string.IsNullOrWhiteSpace(email))
             return Result.Failure(Errors.User.EmailNotVerified);
 
@@ -60,27 +62,27 @@ public class MessageService(
         Message message = new()
         {
             SentAt = DateTime.Now,
-            UserId = userId,
+            UserId = userContext.UserId,
             Content = firstMessageInConversationVm.Message
         };
 
         Conversation conversation = new()
         {
             ProductId = firstMessageInConversationVm.Product.Id,
-            UserId = userId,
+            UserId = userContext.UserId,
             Title = firstMessageInConversationVm.Title,
             IsClosed = false,
             Messages = [message]
         };
-        _ = await _conversationRepository.AddAsync(conversation);
+        _ = await conversationRepository.AddAsync(conversation);
         SentCopyEmail(firstMessageInConversationVm);
 
         return Result.Success();
     }
 
-    public Task<Result<UserConversationsVm>> GetUsersConversationsAsync(string userId)
+    public Task<Result<UserConversationsVm>> GetUsersConversationsAsync()
     {
-        var conversations = _conversationRepository.GetUsersConversations(userId);
+        var conversations = conversationRepository.GetUsersConversations(userContext.UserId);
         var userConversionsVm = new UserConversationsVm
         {
             Conversations = conversations.ProjectTo<ConversationShortVm>(mapper.ConfigurationProvider).ToList()
@@ -88,17 +90,18 @@ public class MessageService(
         return Task.FromResult(Result<UserConversationsVm>.Success(userConversionsVm));
     }
 
-    public async Task<Result<ConversationVm>> GetConversationDetailsAsync(string? userId, int conversationId)
+    public async Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId)
     {
-        var conversation = await _conversationRepository.GetConversationDetails(conversationId);
+        var conversation = await conversationRepository.GetConversationDetails(conversationId);
         if (conversation is null) return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotExist);
-        if(conversation.UserId != userId) return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
-        
+        if (conversation.UserId != userContext.UserId)
+            return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
+
         var conversationVm = mapper.Map<ConversationVm>(conversation);
         conversationVm.Messages = PaginationFactory.Default<MessageVm>();
-        
-        var messages = _conversationRepository.GetMessagesForConversation(conversationId);
-        conversationVm.Messages= await messages.Paginate(conversationVm.Messages, mapper.ConfigurationProvider);
+
+        var messages = conversationRepository.GetMessagesForConversation(conversationId);
+        conversationVm.Messages = await messages.Paginate(conversationVm.Messages, mapper.ConfigurationProvider);
         return Result<ConversationVm>.Success(conversationVm);
     }
 
@@ -118,7 +121,8 @@ public class MessageService(
     private static string BuildEmailBody(FirstMessageInConversationVm firstMessageInConversationVm)
     {
         StringBuilder sb = new();
-        sb.AppendLine($"This is a copy of the message you sent about {firstMessageInConversationVm.Product.Name} on {DateTime.Now}");
+        sb.AppendLine(
+            $"This is a copy of the message you sent about {firstMessageInConversationVm.Product.Name} on {DateTime.Now}");
         sb.AppendLine();
         sb.AppendLine(firstMessageInConversationVm.Message);
         sb.AppendLine(

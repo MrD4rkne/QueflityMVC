@@ -42,7 +42,7 @@ public static class DependencyInjection
     {
         using var scope = serviceProvider.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         await IdentitySeed.SeedIdentity(userManager, roleManager);
         if (claims is not null) await roleManager.SeedRolesClaims(claims);
     }

@@ -24,8 +24,12 @@ public static class ErrorCodes
     public static class User
     {
         public const string EMAIL_NOT_VERIFIED = "User.EmailNotVerified";
+
+        public const string CANNOT_MANAGE_SELF = "User.CannotManageSelf";
+
+        public const string DOES_NOT_EXIST = "User.DoesNotExist";
     }
-    
+
     public static class Conversation
     {
         public const string DOES_NOT_EXIST = "Conversation.DoesNotExist";

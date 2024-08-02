@@ -6,11 +6,11 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IMessageService
 {
-    Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int id, string email);
+    Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int id);
 
-    Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm, string userId);
+    Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm);
 
-    Task<Result<UserConversationsVm>> GetUsersConversationsAsync(string userId);
-    
-    Task<Result<ConversationVm>> GetConversationDetailsAsync(string? userId, int conversationId);
+    Task<Result<UserConversationsVm>> GetUsersConversationsAsync();
+
+    Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId);
 }

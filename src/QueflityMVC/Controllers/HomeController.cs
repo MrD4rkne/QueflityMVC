@@ -7,30 +7,22 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
-using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Models;
 
 namespace QueflityMVC.Web.Controllers;
 
-public class HomeController : Controller
+public class HomeController(
+    ILogger<HomeController> logger,
+    IProductEntityService purchasableEntityService,
+    IMessageService messageService,
+    IValidator<FirstMessageInConversationVm> messageValidator)
+    : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly IMessageService _messageService;
-    private readonly IValidator<FirstMessageInConversationVm> _messageValidator;
-    private readonly IProductEntityService _purchasableEntityService;
-
-    public HomeController(ILogger<HomeController> logger, IProductEntityService purchasableEntityService,
-        IMessageService messageService, IValidator<FirstMessageInConversationVm> messageValidator)
-    {
-        _logger = logger;
-        _purchasableEntityService = purchasableEntityService;
-        _messageValidator = messageValidator;
-        _messageService = messageService;
-    }
+    private readonly ILogger<HomeController> _logger = logger;
 
     public async Task<IActionResult> Index()
     {
-        var dashboardVm = await _purchasableEntityService.GetDashboardVmAsync();
+        var dashboardVm = await purchasableEntityService.GetDashboardVmAsync();
         return View(dashboardVm);
     }
 
@@ -39,7 +31,7 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Contact(int id)
     {
-        var contactVmResult = await _messageService.GetContactVmAsync(id, User.GetLoggedInUserId());
+        var contactVmResult = await messageService.GetContactVmAsync(id);
         if (contactVmResult.IsSuccess) return View(contactVmResult.Value);
 
         return contactVmResult.Error.Code switch
@@ -56,14 +48,14 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> Contact(FirstMessageInConversationVm firstMessageInConversationVm)
     {
-        var validationResults = await _messageValidator.ValidateAsync(firstMessageInConversationVm);
+        var validationResults = await messageValidator.ValidateAsync(firstMessageInConversationVm);
         if (!validationResults.IsValid)
         {
             validationResults.AddToModelState(ModelState);
             return View(firstMessageInConversationVm);
         }
 
-        await _messageService.StartConversationAsync(firstMessageInConversationVm, User.GetLoggedInUserId());
+        await messageService.StartConversationAsync(firstMessageInConversationVm);
         return RedirectToAction(nameof(Index));
     }
 

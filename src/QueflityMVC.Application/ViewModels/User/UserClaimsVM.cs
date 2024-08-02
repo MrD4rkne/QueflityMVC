@@ -4,7 +4,7 @@ namespace QueflityMVC.Application.ViewModels.User;
 
 public record UserClaimsVm
 {
-    public required string UserId { get; set; }
+    public required Guid UserId { get; set; }
 
     public string? Username { get; set; }
 
