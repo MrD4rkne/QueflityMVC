@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using QueflityMVC.Infrastructure.Emails;
 
-namespace QueflityMVC.Web.Setup.Other;
+namespace QueflityMVC.Web.Setup;
 
 internal class ConfigureSmtp(IOptions<SmtpOptions> smtpOptions) : IConfigureOptions<SmtpConfig>
 {

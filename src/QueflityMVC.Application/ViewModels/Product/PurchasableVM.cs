@@ -29,7 +29,7 @@ public class ProductVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Models.Ki
             .ForMember(vm => vm.Type, opt => opt.MapFrom(kit => ProductType.Kit))
             .ReverseMap();
 
-        profile.CreateMap<ProductVm, Domain.Common.Product>()
+        profile.CreateMap<ProductVm, Domain.Models.Product>()
             .ConstructUsing((vm, ctx) => vm.Type switch
             {
                 ProductType.Item => (Domain.Models.Item)ctx.Mapper.Map(vm, typeof(ProductVm),

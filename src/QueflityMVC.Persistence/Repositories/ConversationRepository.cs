@@ -37,4 +37,10 @@ public class ConversationRepository(Context dbContext)
             .Where(m => m.ConversationId == conversationId)
             .OrderBy(m => m.SentAt);
     }
+
+    public Task AddMessageAsync(Message message)
+    {
+        DbContext.Messages.Add(message);
+        return DbContext.SaveChangesAsync();
+    }
 }

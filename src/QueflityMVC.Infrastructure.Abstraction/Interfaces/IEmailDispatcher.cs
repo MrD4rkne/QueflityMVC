@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Infrastructure.Abstraction.Model;
+﻿using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Infrastructure.Abstraction.Interfaces;
 

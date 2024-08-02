@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
+using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;

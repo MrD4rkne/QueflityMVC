@@ -2,8 +2,8 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
-using QueflityMVC.Infrastructure.Abstraction.Model;
 
 namespace QueflityMVC.Infrastructure.Emails;
 

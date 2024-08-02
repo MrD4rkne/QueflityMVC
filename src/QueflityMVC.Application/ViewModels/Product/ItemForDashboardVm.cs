@@ -13,7 +13,7 @@ public record ItemForDashboardVm : ProductForDashboardVm, IMapFrom<Domain.Models
     public void Mapping(MappingProfile profile)
     {
         profile.CreateMap<Domain.Models.Item, ItemForDashboardVm>()
-            .IncludeBase<Domain.Common.Product, ProductForDashboardVm>()
+            .IncludeBase<Domain.Models.Product, ProductForDashboardVm>()
             .ForMember(vm => vm.Category, opt => opt.MapFrom(it => it.Category))
             .ForMember(vm => vm.Components, opt => opt.MapFrom(it => it.Components));
     }

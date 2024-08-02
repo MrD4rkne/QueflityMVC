@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Quartz;
+using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
-using QueflityMVC.Infrastructure.Abstraction.Model;
 
 namespace QueflityMVC.Infrastructure.Emails;
 

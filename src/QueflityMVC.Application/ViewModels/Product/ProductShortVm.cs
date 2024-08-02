@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Application.ViewModels.Product;
 
-public class ProductShortVm : IMapFrom<Domain.Common.Product>
+public class ProductShortVm : IMapFrom<Domain.Models.Product>
 {
     public int Id { get; set; }
     
@@ -12,7 +12,7 @@ public class ProductShortVm : IMapFrom<Domain.Common.Product>
     
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Domain.Common.Product, ProductShortVm>()
+        profile.CreateMap<Domain.Models.Product, ProductShortVm>()
             .ReverseMap();
     }
 }

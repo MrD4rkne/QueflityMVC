@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddTransient<IEmailDispatcher, EmailDispatcher>();
         services.AddBackgroundJobs();
         services.AddEmails();
+        
         return services;
     }
 }

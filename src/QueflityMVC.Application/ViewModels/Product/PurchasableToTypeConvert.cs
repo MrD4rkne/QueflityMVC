@@ -2,9 +2,9 @@
 
 namespace QueflityMVC.Application.ViewModels.Product;
 
-public class ProductToTypeConvert : IValueConverter<Domain.Common.Product, ProductType>
+public class ProductToTypeConvert : IValueConverter<Domain.Models.Product, ProductType>
 {
-    public ProductType Convert(Domain.Common.Product sourceMember, ResolutionContext context)
+    public ProductType Convert(Domain.Models.Product sourceMember, ResolutionContext context)
     {
         switch (sourceMember)
         {

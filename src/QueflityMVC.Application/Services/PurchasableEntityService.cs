@@ -5,6 +5,7 @@ using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
+using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 
 namespace QueflityMVC.Application.Services;
