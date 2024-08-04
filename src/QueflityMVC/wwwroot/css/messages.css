@@ -1,0 +1,42 @@
+﻿.messages-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+.message-content {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    word-wrap: break-word;
+}
+
+.message-left {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+}
+
+.message-right {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+}
+
+.date {
+    font-size: 0.8rem;
+    color: gray;
+    margin-top: 5px;
+}
+
+.date-left {
+    align-self: flex-start;
+}
+
+.date-right {
+    align-self: flex-end;
+}

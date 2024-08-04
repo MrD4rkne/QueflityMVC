@@ -13,4 +13,8 @@ public interface IMessageService
     Task<Result<UserConversationsVm>> GetUsersConversationsAsync();
 
     Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId);
+
+    Task<Result<MessageVm>> SendMessage(int conversationId, string messageContent);
+
+    Task<bool> CanAccessConversation(int conversationId);
 }

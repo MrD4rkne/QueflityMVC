@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using QueflityMVC.Application;
@@ -6,6 +7,7 @@ using QueflityMVC.Infrastructure;
 using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
 using QueflityMVC.Persistence.Setup;
+using QueflityMVC.Web.Chat;
 using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
@@ -61,6 +63,8 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.ConfigureIdentity();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -84,6 +88,15 @@ app.UseAuthorization();
 app.MapControllerRoute(
     "default",
     "{controller=Home}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<MessageHub>("/messageHub", options =>
+    {
+        options.Transports = HttpTransportType.LongPolling | HttpTransportType.ServerSentEvents;
+        options.CloseOnAuthenticationExpiration = true;
+    });
+});
 
 app.MapRazorPages();
 
