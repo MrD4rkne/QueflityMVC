@@ -1,14 +1,15 @@
-﻿@using System.Security.Claims
+﻿@using QueflityMVC.Domain.Interfaces
 @using QueflityMVC.Web.Common
 @model QueflityMVC.Application.ViewModels.Message.ConversationVm
 @inject IMessageDateTimeFormatter dateTimeFormatter
+@inject IUserContext UserContext
 
 @{
     ViewData["Title"] = "Messages";
-    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 }
 
-<style>
+@section Styles{
+    <style>
     .conversation-wrapper {
         display: flex;
         flex-direction: column;
@@ -30,7 +31,7 @@
         padding: 15px;
         border-right: 1px solid #dee2e6;
         overflow-y: auto;
-        flex: 0 0 25%; /* or a percentage to fit your needs */
+        flex: 0 0 25%;
     }
     .right-panel {
         padding: 15px;
@@ -39,28 +40,19 @@
         flex: 1;
         overflow: hidden;
     }
-    .messages-container {
+    
+    .message-space {
         flex: 1;
-        overflow-y: auto;
-        border-bottom: 1px solid #dee2e6;
-        padding-bottom: 15px;
-    }
-    .message {
-        margin-bottom: 15px;
-    }
-    .message .time {
-        font-size: 0.8em;
-        color: #999;
-    }
-    .message-content {
-        display: inline-block;
-        padding: 10px;
-        border-radius: 5px;
-    }
-    .input-group {
-        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
     }
 </style>
+
+    <link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
+}
+
+<input type="hidden" id="messagesData" value="@Json.Serialize(Model.Messages.Entities)"/>
 
 <div class="container-fluid conversation-wrapper">
     <div class="row">
@@ -79,18 +71,12 @@
             </p>
         </div>
         <div class="right-panel">
-            <div class="messages-container">
-                @foreach (var message in Model.Messages.Entities)
-                {
-                    var contentClass = message.UserId == userId ? "bg-primary text-white" : "bg-light";
-                    <div class="message">
-                        <div class="message-content @contentClass">
-                            @message.Content
-                        </div>
-                        <div class="time">@dateTimeFormatter.FormatDateTime(message.SentAt)</div>
-                    </div>
-                }
+            <div class="message-space">
+                <div class="messages-container" id="messagesList">
+
+                </div>
             </div>
+
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="Type your message here..." id="newMessageContent">
                 <div class="input-group-append">
@@ -101,15 +87,74 @@
     </div>
 </div>
 
-<script>
+@section Scripts{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/messages.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const messagesData = document.getElementById("messagesData").value;
+            const messages = JSON.parse(messagesData);
+            const currentUserId = "@UserContext.UserId";
+
+            renderMessages(messages, currentUserId);
+        });
+
+        // Function to render messages from JSON data
+        function renderMessages(messages, currentUserId) {
+            messages.forEach(message => {
+                const messageDiv = createMessageDiv(message, currentUserId);
+                $('#messagesList').append(messageDiv);
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        // Configure connection with server.
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/messageHub", {
+                transport: signalR.HttpTransportType.LongPolling | signalR.HttpTransportType.ServerSentEvents
+            })
+            .build();
+            
+        // Start connection and listen to conversation.
+        connection.start().then(() => {
+            const conversationId = @Model.Id; // Replace with actual conversation ID
+            connection.invoke("JoinGroup", conversationId).catch(err => console.error(err.toString()));
+        }).catch(err => console.error(err.toString()));
+
+        // Bind new message behavior.
+        connection.on("ReceiveMessage", (message) => {
+            console.log("Got message:");
+            console.log(message);
+            const msg = createMessageDiv(message, "@UserContext.UserId");
+            $('#messagesList').append(msg);
+        });
+        
+        // Handle SignalR connection close event
+        connection.onclose(error => {
+            if (error) {
+                console.error("Connection closed with error: " + error);
+            } else {
+                console.log("Connection closed.");
+            }
+            // Redirect to login page if the connection is closed due to unauthorized access
+            if (error && error.statusCode === 401) {
+                window.location.href = "/login";
+            }
+        });
+    </script>
+
+    <script>
     $(document).ready(function () {
         $('#sendMessageButton').on('click', function () {
             var content = $('#newMessageContent').val();
             if (content) {
-                // Handle the message sending logic here
-                alert('Message sent: ' + content);
+                const conversationId = @Model.Id; // Replace with actual conversation ID
+                connection.invoke("SendMessageToGroup", conversationId, content).catch(err => console.error(err.toString()));
                 $('#newMessageContent').val(''); // Clear the input field after sending
             }
         });
     });
-</script>
+    </script>
+}

@@ -1,17 +1,18 @@
-﻿@using System.Security.Claims
+﻿@using QueflityMVC.Domain.Interfaces
 @using QueflityMVC.Web.Common
 @model QueflityMVC.Application.ViewModels.Message.UserConversationsVm
 @inject IMessageDateTimeFormatter dateTimeFormatter
+@inject IUserContext UserContext
 
 @{
     ViewData["Title"] = "Messages";
-    string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 }
 
-<style>
+@section Styles{
+    <style>
     .conversation-wrapper {
         display: flex;
-        height: 20vh;
+        height: 35vh;
     }
     .partial-view {
         width: 30%;
@@ -20,18 +21,11 @@
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         position: relative;
     }
-    .messages {
+    .messages-view {
         width: 70%;
         padding: 15px;
         overflow-y: auto;
         height: 100%;
-    }
-    .message {
-        margin-bottom: 15px;
-    }
-    .message .time {
-        font-size: 0.8em;
-        color: #999;
     }
     .partial-view .last-message-time {
         font-size: 0.9em;
@@ -51,6 +45,11 @@
     }
 </style>
 
+    <link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
+}
+
+<input type="hidden" id="conversationsData" value="@Json.Serialize(Model.Conversations)"/>
+
 @foreach (var conversationVm in Model.Conversations)
 {
     <div class="row conversation-wrapper">
@@ -60,22 +59,38 @@
             <div class="user-info">
                 <p class="last-message-time">Last message: @dateTimeFormatter.FormatDateTime(conversationVm.Messages.Last().SentAt)</p>
             </div>
-            <a href="/Messages/Details/@conversationVm.Id" class="arrow-link">&rarr;</a>
+            <a href="/Conversations/Details/@conversationVm.Id" class="arrow-link">&rarr;</a>
         </div>
-        
-        @foreach(var message in conversationVm.Messages)
-        {
-            string contentClass = 
-                "message-content " + (message.UserId == userId ? "bg-primary text-white" : "bg-light")
-                + " p-3 rounded";
-            <div class="messages">
-                <div class="message">
-                    <div class="@contentClass">
-                        @message.Content
-                    </div>
-                    <div class="time">@dateTimeFormatter.FormatDateTime(message.SentAt)</div>
-                </div>
+        <div class="messages-view">
+            @{
+                var containerId = $"messagesList{conversationVm.Id}";
+            }
+            <div class="messages-container" id="@containerId">
             </div>
-        }
+
+        </div>
     </div>
+}
+
+@section Scripts{
+    <script src="~/js/messages.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        const conversationsData = document.getElementById("conversationsData").value;
+        const conversations = JSON.parse(conversationsData);
+        const currentUserId = "@UserContext.UserId";
+        conversations.forEach(conversation=>{
+            const messagesContainerId="messagesList"+conversation.id;
+            const messagesContainer=$('#' +messagesContainerId);
+            
+            conversation.messages.forEach(message => {
+                const messageDiv = createMessageDiv(message, currentUserId);
+                messagesContainer.append(messageDiv);
+            });
+        });
+            document.querySelectorAll('.messages-view').forEach(element => {
+                element.scrollTop = element.scrollHeight;
+            });
+        });
+    </script>
 }

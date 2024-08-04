@@ -38,9 +38,10 @@ public class ConversationRepository(Context dbContext)
             .OrderBy(m => m.SentAt);
     }
 
-    public Task AddMessageAsync(Message message)
+    public async Task<Message> AddMessageAsync(Message message)
     {
         DbContext.Messages.Add(message);
-        return DbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
+        return message;
     }
 }

@@ -10,7 +10,6 @@ using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
-using QueflityMVC.Infrastructure.Abstraction.Model;
 
 namespace QueflityMVC.Application.Services;
 
@@ -92,17 +91,41 @@ public class MessageService(
 
     public async Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId)
     {
-        var conversation = await conversationRepository.GetConversationDetails(conversationId);
-        if (conversation is null) return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotExist);
-        if (conversation.UserId != userContext.UserId)
+        if (!await CanAccessConversation(conversationId))
             return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
 
+        var conversation = await conversationRepository.GetConversationDetails(conversationId);
         var conversationVm = mapper.Map<ConversationVm>(conversation);
         conversationVm.Messages = PaginationFactory.Default<MessageVm>();
 
         var messages = conversationRepository.GetMessagesForConversation(conversationId);
         conversationVm.Messages = await messages.Paginate(conversationVm.Messages, mapper.ConfigurationProvider);
         return Result<ConversationVm>.Success(conversationVm);
+    }
+
+    public async Task<Result<MessageVm>> SendMessage(int conversationId, string messageContent)
+    {
+        if (!await CanAccessConversation(conversationId))
+            return Result<MessageVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
+
+        Message message = new()
+        {
+            SentAt = DateTime.Now,
+            UserId = userContext.UserId,
+            Content = messageContent,
+            ConversationId = conversationId
+        };
+        message = await conversationRepository.AddMessageAsync(message);
+
+        return Result<MessageVm>.Success(mapper.Map<MessageVm>(message));
+    }
+
+    public async Task<bool> CanAccessConversation(int conversationId)
+    {
+        var conversation = await conversationRepository.GetByIdAsync(conversationId);
+        if (conversation.UserId == userContext.UserId) return true;
+
+        return await userRepository.CanRespondToConversations(userContext.UserId);
     }
 
     private void SentCopyEmail(FirstMessageInConversationVm firstMessageInConversationVm)

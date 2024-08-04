@@ -9,6 +9,6 @@ public interface IConversationRepository : IBaseRepository<Conversation>
     Task<Conversation> GetConversationDetails(int conversationId);
 
     IQueryable<Message> GetMessagesForConversation(int conversationId);
-    
-    Task AddMessageAsync(Message message);
+
+    Task<Message> AddMessageAsync(Message message);
 }

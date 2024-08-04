@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
+@using QueflityMVC.Domain.Interfaces
 @inject IAuthorizationService AuthorizationService
+@inject IUserContext UserContext
 @{
     var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
     var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
@@ -49,6 +51,8 @@
             flex: 0 0 auto;
         }
     </style>
+
+    @await RenderSectionAsync("Styles", false)
 </head>
 <body>
 <header>
@@ -91,6 +95,7 @@
                     <li class="nav-item">
                         <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>
@@ -112,6 +117,5 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", false)
-@await RenderSectionAsync("Styles", false)
 </body>
 </html>

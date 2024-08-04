@@ -8,7 +8,7 @@ public class MessageVm : IMapFrom<Domain.Models.Message>
 
     public string Content { get; set; }
 
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
 
     public DateTime SentAt { get; set; }
 
