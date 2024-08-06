@@ -1,6 +1,8 @@
-﻿namespace QueflityMVC.Application.ViewModels.Message;
+﻿using QueflityMVC.Application.ViewModels.Pagination;
 
-public class UserConversationsVm
+namespace QueflityMVC.Application.ViewModels.Message;
+
+public record UserConversationsVm
 {
-    public List<ConversationShortVm> Conversations { get; set; }
+    public PaginationVm<ConversationShortVm> PaginatedConversations { get; set; }
 }

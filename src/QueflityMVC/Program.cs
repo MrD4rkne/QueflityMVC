@@ -89,13 +89,10 @@ app.MapControllerRoute(
     "default",
     "{controller=Home}/{action=Index}/{id?}");
 
-app.UseEndpoints(endpoints =>
+app.MapHub<MessageHub>("/messageHub", options =>
 {
-    endpoints.MapHub<MessageHub>("/messageHub", options =>
-    {
-        options.Transports = HttpTransportType.LongPolling | HttpTransportType.ServerSentEvents;
-        options.CloseOnAuthenticationExpiration = true;
-    });
+    options.Transports = HttpTransportType.LongPolling | HttpTransportType.ServerSentEvents;
+    options.CloseOnAuthenticationExpiration = true;
 });
 
 app.MapRazorPages();

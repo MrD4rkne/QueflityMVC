@@ -1,11 +1,13 @@
-﻿@using QueflityMVC.Domain.Interfaces
+﻿@using QueflityMVC.Application.ViewModels.Message
+@using QueflityMVC.Domain.Interfaces
 @using QueflityMVC.Web.Common
 @model QueflityMVC.Application.ViewModels.Message.UserConversationsVm
-@inject IMessageDateTimeFormatter dateTimeFormatter
+@inject IMessageDateTimeFormatter DateTimeFormatter
 @inject IUserContext UserContext
 
 @{
     ViewData["Title"] = "Messages";
+    int[] options = [2, 5, 10, 25, 50, 100];
 }
 
 @section Styles{
@@ -13,6 +15,11 @@
     .conversation-wrapper {
         display: flex;
         height: 35vh;
+        margin-bottom: 20px; /* Add space between conversations */
+        border: 1px solid #ddd; /* Add border around each conversation */
+        border-radius: 5px;
+        padding: 0;
+        overflow: hidden; /* Ensure child elements do not overflow */
     }
     .partial-view {
         width: 30%;
@@ -23,9 +30,7 @@
     }
     .messages-view {
         width: 70%;
-        padding: 15px;
-        overflow-y: auto;
-        height: 100%;
+        background: #F0F8FF; /* AliceBlue */
     }
     .partial-view .last-message-time {
         font-size: 0.9em;
@@ -44,36 +49,69 @@
         text-decoration: underline;
     }
 </style>
-
+    
     <link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
 }
 
-<input type="hidden" id="conversationsData" value="@Json.Serialize(Model.Conversations)"/>
+<input type="hidden" id="conversationsData" value='@Json.Serialize(Model.PaginatedConversations.Entities)'/>
 
-@foreach (var conversationVm in Model.Conversations)
-{
-    <div class="row conversation-wrapper">
-        <div class="partial-view">
-            <h5>@conversationVm.Title</h5>
-            <h7>About: <strong>@conversationVm.Product.Name</strong></h7>
-            <div class="user-info">
-                <p class="last-message-time">Last message: @dateTimeFormatter.FormatDateTime(conversationVm.Messages.Last().SentAt)</p>
-            </div>
-            <a href="/Conversations/Details/@conversationVm.Id" class="arrow-link">&rarr;</a>
-        </div>
-        <div class="messages-view">
-            @{
-                var containerId = $"messagesList{conversationVm.Id}";
-            }
-            <div class="messages-container" id="@containerId">
-            </div>
+<form asp-action="Index" asp-controller="Conversations" method="post">
+    <ul class="nav gap-1">
+        <li class="nav-item">
+            <select class="form-select" asp-for="PaginatedConversations.Info.PageSize" onchange="PageSizeSelected()">
+                @foreach (var i in options)
+                {
+                    @if (i == Model.PaginatedConversations.Info.PageSize)
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+        </li>
+    </ul>
+    
+    <div class="row">
+        @foreach (var conversationVm in Model.PaginatedConversations.Entities)
+        {
+            <div class="row conversation-wrapper">
+                <div class="partial-view">
+                    <h5 class="text-break">@conversationVm.Title</h5>
+                    <h7>About: <strong>@conversationVm.Product.Name</strong></h7>
+                    <div class="user-info">
+                        @if (conversationVm.Messages.LastOrDefault() is { } lastMessageVm)
+                        {
+                            <p class="last-message-time">Last message: @DateTimeFormatter.FormatDateTime(lastMessageVm.SentAt)</p>
+                        }
+                        else
+                        {
+                            <p class="last-message-time">No messages yet</p>
+                        }
+                    </div>
+                    <a href="/Conversations/Details/@conversationVm.Id" class="arrow-link">&rarr;</a>
+                </div>
+                <div class="messages-view">
+                    @{
+                        var containerId = $"messagesList{conversationVm.Id}";
+                    }
+                    <div class="messages-container" id="@containerId">
+                    </div>
 
-        </div>
+                </div>
+            </div>
+        }
     </div>
-}
+    <div class="row">
+        <partial name="_PaginationPartial" for="PaginatedConversations.Info"/>
+    </div>
+
+</form>
 
 @section Scripts{
-    <script src="~/js/messages.js"></script>
+    <script src="@Url.Content("~/js/messages.js")"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
         const conversationsData = document.getElementById("conversationsData").value;
@@ -93,4 +131,9 @@
             });
         });
     </script>
+    <script type="text/javascript">
+            function PageSizeSelected() {
+                SubmitPagination();
+            }
+        </script>
 }

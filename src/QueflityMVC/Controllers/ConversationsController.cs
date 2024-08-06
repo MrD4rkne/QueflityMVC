@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
+using QueflityMVC.Application.ViewModels.Message;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Web.Common;
 
@@ -17,6 +18,19 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
         var usersConversations = await messageService.GetUsersConversationsAsync();
         if (usersConversations.IsFailure)
             return RedirectToAction("Index", "Home");
+        return View(usersConversations.Value);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Index(UserConversationsVm userConversationsVm)
+    {
+        if(userConversationsVm.PaginatedConversations is not {})
+            return BadRequest();
+        
+        var usersConversations = await messageService.GetUsersConversationsAsync(userConversationsVm);
+        if (usersConversations.IsFailure)
+            return RedirectToAction("Index", "Home");
+        
         return View(usersConversations.Value);
     }
     

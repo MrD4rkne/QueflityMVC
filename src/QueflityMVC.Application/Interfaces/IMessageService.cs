@@ -11,6 +11,8 @@ public interface IMessageService
     Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm);
 
     Task<Result<UserConversationsVm>> GetUsersConversationsAsync();
+    
+    Task<Result<UserConversationsVm>> GetUsersConversationsAsync(UserConversationsVm userConversationsVm);
 
     Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId);
 

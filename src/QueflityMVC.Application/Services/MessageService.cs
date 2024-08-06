@@ -81,12 +81,20 @@ public class MessageService(
 
     public Task<Result<UserConversationsVm>> GetUsersConversationsAsync()
     {
-        var conversations = conversationRepository.GetUsersConversations(userContext.UserId);
-        var userConversionsVm = new UserConversationsVm
+        UserConversationsVm userConversationsVm = new()
         {
-            Conversations = conversations.ProjectTo<ConversationShortVm>(mapper.ConfigurationProvider).ToList()
+            PaginatedConversations = PaginationFactory.Default<ConversationShortVm>()
         };
-        return Task.FromResult(Result<UserConversationsVm>.Success(userConversionsVm));
+        return GetUsersConversationsAsync(userConversationsVm);
+    }
+
+    public async Task<Result<UserConversationsVm>> GetUsersConversationsAsync(UserConversationsVm userConversationsVm)
+    {
+        var conversations = conversationRepository.GetUsersConversations(userContext.UserId);
+        userConversationsVm.PaginatedConversations =
+            await conversations.Paginate(userConversationsVm.PaginatedConversations,
+                mapper.ConfigurationProvider);
+        return Result<UserConversationsVm>.Success(userConversationsVm);
     }
 
     public async Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId)
