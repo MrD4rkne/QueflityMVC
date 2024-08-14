@@ -1,8 +1,5 @@
-﻿@using QueflityMVC.Application.ViewModels.Message
-@using QueflityMVC.Domain.Interfaces
-@using QueflityMVC.Web.Common
+﻿@using QueflityMVC.Domain.Interfaces
 @model QueflityMVC.Application.ViewModels.Message.UserConversationsVm
-@inject IMessageDateTimeFormatter DateTimeFormatter
 @inject IUserContext UserContext
 
 @{
@@ -18,10 +15,10 @@
         margin-bottom: 20px; /* Add space between conversations */
         border: 1px solid #ddd; /* Add border around each conversation */
         border-radius: 5px;
-        padding: 0;
-        overflow: hidden; /* Ensure child elements do not overflow */
+        overflow: hidden;
     }
     .partial-view {
+        height: 100%;
         width: 30%;
         border-right: 1px solid #ccc;
         padding: 15px;
@@ -29,8 +26,13 @@
         position: relative;
     }
     .messages-view {
+        height: 100%;
         width: 70%;
         background: #F0F8FF; /* AliceBlue */
+        overflow: auto;
+    }
+    .messages-container{
+        padding: 5px;
     }
     .partial-view .last-message-time {
         font-size: 0.9em;
@@ -49,13 +51,13 @@
         text-decoration: underline;
     }
 </style>
-    
+
     <link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
 }
 
-<input type="hidden" id="conversationsData" value='@Json.Serialize(Model.PaginatedConversations.Entities)'/>
+<input type="hidden" id="conversationsData" value="@Json.Serialize(Model.PaginatedConversations.Entities)"/>
 
-<form asp-action="Index" asp-controller="Conversations" method="post">
+<form asp-action="Index" asp-controller="Conversations" method="post" class="container-fluid">
     <ul class="nav gap-1">
         <li class="nav-item">
             <select class="form-select" asp-for="PaginatedConversations.Info.PageSize" onchange="PageSizeSelected()">
@@ -73,7 +75,7 @@
             </select>
         </li>
     </ul>
-    
+
     <div class="row">
         @foreach (var conversationVm in Model.PaginatedConversations.Entities)
         {
@@ -84,7 +86,7 @@
                     <div class="user-info">
                         @if (conversationVm.Messages.LastOrDefault() is { } lastMessageVm)
                         {
-                            <p class="last-message-time">Last message: @DateTimeFormatter.FormatDateTime(lastMessageVm.SentAt)</p>
+                            <p class="last-message-time">Last message: @lastMessageVm.SentAt.ToShortDateString()</p>
                         }
                         else
                         {

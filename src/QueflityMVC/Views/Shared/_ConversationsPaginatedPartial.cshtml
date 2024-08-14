@@ -1,0 +1,131 @@
+﻿@using QueflityMVC.Domain.Interfaces
+@model QueflityMVC.Application.ViewModels.Pagination.PaginationVm<QueflityMVC.Application.ViewModels.Message.ConversationShortVm>
+@inject IUserContext UserContext
+
+@{
+    ViewData["Title"] = "Messages";
+    int[] options = [2, 5, 10, 25, 50, 100];
+}
+
+<style>
+    .conversation-wrapper {
+        display: flex;
+        height: 35vh;
+        margin-bottom: 20px; /* Add space between conversations */
+        border: 1px solid #ddd; /* Add border around each conversation */
+        border-radius: 5px;
+        padding: 0;
+        overflow: hidden; /* Ensure child elements do not overflow */
+    }
+    .partial-view {
+        width: 30%;
+        border-right: 1px solid #ccc;
+        padding: 15px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+    .messages-view {
+        width: 70%;
+        background: #F0F8FF; /* AliceBlue */
+        overflow-y: scroll;
+    }
+    .partial-view .last-message-time {
+        font-size: 0.9em;
+        color: #666;
+    }
+    .arrow-link {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2em;
+        color: #007bff;
+        text-decoration: none;
+    }
+    .arrow-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
+
+
+<input type="hidden" id="conversationsData" value="@Json.Serialize(Model.Entities)"/>
+
+<ul class="nav gap-1">
+    <li class="nav-item">
+        <select class="form-select" asp-for="Info.PageSize" onchange="PageSizeSelected()">
+            @foreach (var i in options)
+            {
+                @if (i == Model.Info.PageSize)
+                {
+                    <option value="@i" selected>@i</option>
+                }
+                else
+                {
+                    <option value="@i">@i</option>
+                }
+            }
+        </select>
+    </li>
+</ul>
+
+<div class="row" onload="loadMessages()">
+    @foreach (var conversationVm in Model.Entities)
+    {
+        <div class="row conversation-wrapper">
+            <div class="partial-view">
+                <h5 class="text-break">@conversationVm.Title</h5>
+                <h7>About: <strong>@conversationVm.Product.Name</strong></h7>
+                <div class="user-info">
+                    @if (conversationVm.Messages.LastOrDefault() is { } lastMessageVm)
+                    {
+                        <p class="last-message-time">Last message: @lastMessageVm.SentAt.ToShortDateString()</p>
+                    }
+                    else
+                    {
+                        <p class="last-message-time">No messages yet</p>
+                    }
+                </div>
+                <a href="/Conversations/Details/@conversationVm.Id" class="arrow-link">&rarr;</a>
+            </div>
+            <div class="messages-view">
+                @{
+                    var containerId = $"messagesList{conversationVm.Id}";
+                }
+                <div class="messages-container" id="@containerId">
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+<div class="row">
+    <partial name="_PaginationPartial" for="Info"/>
+</div>
+
+<script src="@Url.Content("~/js/messages.js")"></script>
+<script>
+    function loadMessages() {
+        const conversationsData = document.getElementById("conversationsData").value;
+        const conversations = JSON.parse(conversationsData);
+        const currentUserId = "@UserContext.UserId";
+        conversations.forEach(conversation=>{
+            const messagesContainerId="messagesList"+conversation.id;
+            const messagesContainer=$('#' +messagesContainerId);
+
+            conversation.messages.forEach(message => {
+                const messageDiv = createMessageDiv(message, currentUserId);
+                messagesContainer.append(messageDiv);
+            });
+        });
+        document.querySelectorAll('.messages-view').forEach(element => {
+            element.scrollTop = element.scrollHeight;
+        });
+    }
+</script>
+<script type="text/javascript">
+    function PageSizeSelected() {
+        SubmitPagination();
+    }
+</script>

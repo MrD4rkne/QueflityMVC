@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
@@ -104,10 +105,11 @@ public class MessageService(
 
         var conversation = await conversationRepository.GetConversationDetails(conversationId);
         var conversationVm = mapper.Map<ConversationVm>(conversation);
-        conversationVm.Messages = PaginationFactory.Default<MessageVm>();
 
         var messages = conversationRepository.GetMessagesForConversation(conversationId);
-        conversationVm.Messages = await messages.Paginate(conversationVm.Messages, mapper.ConfigurationProvider);
+        conversationVm.Messages = await messages.ProjectTo<MessageVm>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
         return Result<ConversationVm>.Success(conversationVm);
     }
 

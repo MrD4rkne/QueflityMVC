@@ -1,7 +1,5 @@
 ﻿@using QueflityMVC.Domain.Interfaces
-@using QueflityMVC.Web.Common
 @model QueflityMVC.Application.ViewModels.Message.ConversationVm
-@inject IMessageDateTimeFormatter dateTimeFormatter
 @inject IUserContext UserContext
 
 @{
@@ -12,20 +10,23 @@
     <style>
     .conversation-wrapper {
         display: flex;
+        flex: 1;
         flex-direction: column;
         height: 100%;
     }
+
     .top-bar {
         background-color: #f8f9fa;
         padding: 10px;
         border-bottom: 1px solid #dee2e6;
-        width: 100%;
     }
+
     .main-content {
         display: flex;
         flex: 1;
         overflow: hidden;
     }
+
     .left-panel {
         background-color: #f8f9fa;
         padding: 15px;
@@ -33,6 +34,7 @@
         overflow-y: auto;
         flex: 0 0 25%;
     }
+
     .right-panel {
         padding: 15px;
         display: flex;
@@ -40,24 +42,35 @@
         flex: 1;
         overflow: hidden;
     }
-    
+
     .message-space {
         flex: 1;
         display: flex;
         flex-direction: column;
         margin-bottom: 20px;
+        overflow: auto;
+    }
+
+    #connection-status {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
     }
 </style>
 
     <link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
 }
 
-<input type="hidden" id="messagesData" value="@Json.Serialize(Model.Messages.Entities)"/>
+@* ReSharper disable once Html.AttributesQuotes *@
+<input type="hidden" id="messagesData" value='@Json.Serialize(Model.Messages)'/>
 
-<div class="container-fluid conversation-wrapper">
+<div class="conversation-wrapper">
     <div class="row">
         <div class="col-12 top-bar">
-            <h4>@Model.Title</h4>
+            <h4>
+                @Model.Title
+                <span class="badge" id="connection-status" onclick="tryReconnect()"></span>
+            </h4>
         </div>
     </div>
     <div class="main-content">
@@ -67,21 +80,88 @@
                 <strong>Name:</strong> @Model.Product.Name
             </p>
             <p>
-                <strong>Price:</strong> @Model.Product.Price.ToString("C")
+                <strong>Price:</strong> @Model.Product.Price.ToString()
             </p>
         </div>
         <div class="right-panel">
-            <div class="message-space">
+            <div class="message-space px-2">
                 <div class="messages-container" id="messagesList">
-
                 </div>
             </div>
 
-            <div class="input-group">
+            <div class="input-group" id="send-message-panel">
                 <input type="text" class="form-control" placeholder="Type your message here..." id="newMessageContent">
                 <div class="input-group-append">
-                    <button class="btn btn-primary" type="button" id="sendMessageButton">Send</button>
+                    <button class="btn btn-primary" type="button" id="sendMessageButton" onclick="sendMessage()">Send</button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Connection refused modal -->
+<div class="modal fade" id="connectionRefusedModal" tabindex="-1" aria-labelledby="connectionRefusedByServerModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5">Connection to the server was refused</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Server refused connection. Please reload the page or try to connect by clicking the "Disconnected"
+                badge.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.reload()">Reload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Disconnected modal -->
+<div class="modal fade" id="disconnectedModal" tabindex="-1" aria-labelledby="appDisconnectedModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5">Disconnected from the server</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Application is disconnected from the server. Please reload the page or try to connect by clicking the
+                "Disconnected" badge.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="connectToServer()">
+                    Try to
+                    connect
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cannot connect modal -->
+<div class="modal fade" id="cannotConnectModal" tabindex="-1" aria-labelledby="cannotConnectToServerModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5">Could not connect to the server</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Application could not connect to the server. Please reload the page or try to connect by clicking the
+                "Cannot Connect" badge.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="connectToServer()">
+                    Try to
+                    connect
+                </button>
             </div>
         </div>
     </div>
@@ -92,69 +172,182 @@
     <script src="~/js/messages.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const messagesData = document.getElementById("messagesData").value;
-            const messages = JSON.parse(messagesData);
-            const currentUserId = "@UserContext.UserId";
+    const ConnectionStatus = {
+        Connected: 'Connected',
+        Disconnected: 'Disconnected',
+        Connecting: 'Connecting',
+        Refused: 'Refused',
+        CannotConnect: 'CannotConnect'
+    };
 
-            renderMessages(messages, currentUserId);
+    var connectionStatus = ConnectionStatus.Disconnected;
+    var connection = undefined;
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const messagesData = document.getElementById("messagesData").value;
+        const messages = JSON.parse(messagesData);
+        const currentUserId = "@UserContext.UserId";
+        renderMessages(messages, currentUserId);
         });
 
-        // Function to render messages from JSON data
-        function renderMessages(messages, currentUserId) {
-            messages.forEach(message => {
-                const messageDiv = createMessageDiv(message, currentUserId);
-                $('#messagesList').append(messageDiv);
-            });
+    // Function to render messages from JSON data
+    function renderMessages(messages, currentUserId) {
+        messages.forEach(message => {
+            const messageDiv = createMessageDiv(message, currentUserId);
+            $('#messagesList').append(messageDiv);
+        });
+        document.querySelectorAll('.message-space').forEach(element => {
+            element.scrollTop = element.scrollHeight;
+        });
+    }
+    
+    
+    try {
+        connectToServer();
+    } catch (error) {
+        console.error("Error connecting to server");
+        console.error(error.toString());
+        setConnectionStatus(ConnectionStatus.CannotConnect);
+        $('#cannotConnectModal').modal('show');
+        toggleMessageInput(false);
+    }
+
+        // Function to set the connection status
+        function setConnectionStatus(status) {
+            connectionStatus = status;
+
+            const connectionStatusBadge = document.getElementById('connection-status');
+            // Remove existing badge color classes
+            connectionStatusBadge.classList.remove('bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark');
+
+            toggleMessageInput(status === ConnectionStatus.Connected); // Enable input if connected
+
+            // Update status text and badge class based on status
+            switch (status) {
+                case ConnectionStatus.Connected:
+                    connectionStatusBadge.innerText = 'Connected';
+                    connectionStatusBadge.classList.add('bg-success'); // Green badge for connected
+                    break;
+                case ConnectionStatus.Disconnected:
+                    connectionStatusBadge.innerText = 'Disconnected';
+                    connectionStatusBadge.classList.add('bg-danger'); // Red badge for disconnected
+                    break;
+                case ConnectionStatus.Connecting:
+                    connectionStatusBadge.innerText = 'Connecting...';
+                    connectionStatusBadge.classList.add('bg-warning'); // Yellow badge for Connecting
+                    break;
+                case ConnectionStatus.Refused:
+                    connectionStatusBadge.innerText = 'Connection Refused';
+                    connectionStatusBadge.classList.add('bg-dark'); // Dark badge for refused
+                    break;
+                case ConnectionStatus.CannotConnect:
+                    connectionStatusBadge.innerText = 'Cannot Connect';
+                    connectionStatusBadge.classList.add('bg-danger'); // Red badge for cannot connect
+                    break;
+                default:
+                    connectionStatusBadge.innerText = '';
+                    connectionStatusBadge.classList.add('bg-secondary'); // Grey badge for unknown status
+            }
         }
-    </script>
 
-    <script type="text/javascript">
+        function tryReconnect() {
+            if (connectionStatus === ConnectionStatus.Disconnected) {
+                connectToServer();
+            }
+        }
+
+        // If send message should be available
+        function toggleMessageInput(isEnabled) {
+            const messageInput = document.getElementById('newMessageContent');
+            messageInput.disabled =! isEnabled;
+
+            const sendMessageButton = document.getElementById('sendMessageButton');
+            sendMessageButton.disabled =! isEnabled;
+        }
+
+    function connectToServer() {
+        toggleMessageInput(false); // Disable input while connecting
+        setConnectionStatus(ConnectionStatus.Connecting);
         // Configure connection with server.
-        const connection = new signalR.HubConnectionBuilder()
+        connection = new signalR.HubConnectionBuilder()
             .withUrl("/messageHub", {
-                transport: signalR.HttpTransportType.LongPolling | signalR.HttpTransportType.ServerSentEvents
+                transport: signalR.HttpTransportType.LongPolling | signalR.HttpTransportType.ServerSentEvents,
             })
+            .withAutomaticReconnect([0, 3000, 5000, 10000])
+            .configureLogging(signalR.LogLevel.Error)
             .build();
-            
-        // Start connection and listen to conversation.
-        connection.start().then(() => {
-            const conversationId = @Model.Id; // Replace with actual conversation ID
-            connection.invoke("JoinGroup", conversationId).catch(err => console.error(err.toString()));
-        }).catch(err => console.error(err.toString()));
-
+        
         // Bind new message behavior.
-        connection.on("ReceiveMessage", (message) => {
-            console.log("Got message:");
-            console.log(message);
+        connection.on("ReceiveMessage", message => {
+            console.log("Received message.");
             const msg = createMessageDiv(message, "@UserContext.UserId");
             $('#messagesList').append(msg);
         });
-        
-        // Handle SignalR connection close event
-        connection.onclose(error => {
+
+        connection.onreconnecting(error => {
+            console.log("Reconnecting...");
+            setConnectionStatus(ConnectionStatus.Connecting); // Update status to connecting
+        });
+
+        connection.onreconnected(connectionId => {
+            console.log("Connection successfully reconnected.");
+            setConnectionStatus(ConnectionStatus.Connected); // Update status to connected
+        });
+
+        connection.onclose(async error => {
+            setConnectionStatus(ConnectionStatus.Disconnected);
+            
             if (error) {
                 console.error("Connection closed with error: " + error);
             } else {
                 console.log("Connection closed.");
+                return;
             }
-            // Redirect to login page if the connection is closed due to unauthorized access
-            if (error && error.statusCode === 401) {
-                window.location.href = "/login";
-            }
-        });
-    </script>
 
-    <script>
-    $(document).ready(function () {
-        $('#sendMessageButton').on('click', function () {
-            var content = $('#newMessageContent').val();
-            if (content) {
-                const conversationId = @Model.Id; // Replace with actual conversation ID
-                connection.invoke("SendMessageToGroup", conversationId, content).catch(err => console.error(err.toString()));
-                $('#newMessageContent').val(''); // Clear the input field after sending
+            // Show modal if the connection is closed due to unauthorized access
+            if (error && error.statusCode === 401) {
+                setConnectionStatus(ConnectionStatus.Refused);
+                $('#connectionRefusedModal').modal('show');
+                return;
             }
+
+            $('#disconnectedModal').modal('show');
         });
-    });
-    </script>
+
+
+        // Start connection and listen to conversation.
+        connection.start().then(() => {
+            setConnectionStatus(ConnectionStatus.Connected);
+            const conversationId = @Model.Id;
+            connection.invoke("JoinGroup", conversationId).catch(err => console.error(err.toString()));
+        })
+            .catch(err => {
+                console.error("Error connecting to server");
+                console.error(err.toString());
+                setConnectionStatus(ConnectionStatus.CannotConnect);
+                $('#cannotConnectModal').modal('show');
+            });
+    }
+    
+    function sendMessage(){
+        if (connectionStatus !== ConnectionStatus.Connected) {
+            tryReconnect();
+            return;
+        }
+
+        const content = $('#newMessageContent').val();
+        if (content) {
+            toggleMessageInput(false); // Disable input while sending
+            const conversationId = @Model.Id; // Replace with actual conversation ID
+            if (!connection || connectionStatus !== ConnectionStatus.Connected) {
+                console.error("Cannot send message while disconnected.");
+                return;
+            }
+            connection.invoke("SendMessageToGroup", conversationId, content).then(() => {
+                $('#newMessageContent').val(''); // Clear the input field after sending
+                toggleMessageInput(true);
+            }).catch(err => console.error(err.toString()));
+        }
+        }
+</script>
 }
