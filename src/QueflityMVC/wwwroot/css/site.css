@@ -1,0 +1,18 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    padding: 15px;
+}
+
+/* Footer sticks to the bottom when there's little content */
+footer {
+    position: sticky;
+    top: 100vh;
+    margin-top: auto;
+}

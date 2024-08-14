@@ -4,115 +4,97 @@
 @using QueflityMVC.Domain.Interfaces
 @inject IAuthorizationService AuthorizationService
 @inject IUserContext UserContext
+
 @{
     var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
     var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
     var canReorderProducts = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - QueflityMVC</title>
+    <title>@ViewData["Title"] - Queflity</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/QueflityMVC.styles.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/helpers.css" asp-append-version="false"/>
-    <style>
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-
-        .nav-tabs .dropdown-menu, .nav-pills .dropdown-menu, .navbar .dropdown-menu {
-            margin-top: 0;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            flex: 0 0 auto;
-        }
-
-        main {
-            flex: 1 0 auto;
-            padding-bottom: 1rem; /* Ensure some space for the footer */
-        }
-
-        footer {
-            flex: 0 0 auto;
-        }
-    </style>
 
     @await RenderSectionAsync("Styles", false)
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QueflityMVC</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item" s>
-                        <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    @if (canListUsers)
-                    {
-                        <li class="nav-item" s>
-                            <a class="nav-link active" asp-area="" asp-controller="User" asp-action="Index">User</a>
-                        </li>
-                    }
-                    @if (canListEntities)
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown">Entities</a>
-                            <ul class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Item Categories</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Components" asp-action="Index">Components</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Kits" asp-action="Index">Kits</a>
-                            </ul>
-                        </li>
-                    }
-                    @if (canReorderProducts)
-                    {
-                        <li class="nav-item" s>
-                            <a class="nav-link active" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                        </li>
-                    }
-                    <li class="nav-item">
-                        <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="@Url.Action("Index", "Home")">Queflity</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <!-- Left-aligned links -->
+            <ul class="navbar-nav me-auto">
+            </ul>
 
-                </ul>
-                <partial name="_LoginPartial"/>
-            </div>
+            <!-- Centered links -->
+            <ul class="navbar-nav mx-auto">
+                @if (canListUsers)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">User</a>
+                    </li>
+                }
+                @if (canListEntities)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="entitiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Entities
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="entitiesDropdown">
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Item Categories</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Components" asp-action="Index">Components</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Kits" asp-action="Index">Kits</a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                @if (canReorderProducts)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    </li>
+                }
+            </ul>
+
+            <!-- Right-aligned login partial -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <partial name="_LoginPartial"/>
+                </li>
+            </ul>
         </div>
-    </nav>
-</header>
-<div class="container-fluid flex-fill d-flex flex-column">
-    <main role="main" class="pb-3 flex-fill mx-5">
-        @RenderBody()
-    </main>
+    </div>
+</nav>
+
+<div class="main-content">
+    @RenderBody()
 </div>
 
-<footer class="border-top footer text-muted mt-auto">
-    <div class="container">
-        &copy; @DateTime.Now.Year - QueflityMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
+<footer class="bg-dark text-white text-center py-3">
+    <p>&copy; @DateTime.Now.Year - QueflityMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
 </footer>
+
+<!-- Scripts -->
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
