@@ -2,23 +2,22 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
-using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
 
 #endregion
 
-namespace QueflityMVC.Web.Controllers;
+namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
-[Route("Conversations")]
-[Authorize]
+[Authorize(Policy = Policies.CONVERSATIONS_RESPOND)]
 public class ConversationsController(IMessageService messageService, ILogger<ConversationsController> logger)
     : Controller
 {
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var usersConversations = await messageService.GetUsersConversationsAsync();
+        var usersConversations = await messageService.GetAllConversationsAsync();
         if (usersConversations.IsFailure)
             return RedirectToAction("Index", "Home");
         return View(usersConversations.Value);
@@ -30,24 +29,10 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
         if (userConversationsVm.PaginatedConversations is null)
             return BadRequest();
 
-        var usersConversations = await messageService.GetUsersConversationsAsync(userConversationsVm);
+        var usersConversations = await messageService.GetAllConversationsAsync(userConversationsVm);
         if (usersConversations.IsFailure)
             return RedirectToAction("Index", "Home");
 
         return View(usersConversations.Value);
-    }
-
-    [HttpGet]
-    [Route("Details/{conversationId:int}")]
-    public async Task<IActionResult> Details(int conversationId)
-    {
-        var conversationDetails = await messageService.GetConversationDetailsAsync(conversationId);
-        if (conversationDetails.IsSuccess)
-            return View(conversationDetails.Value);
-        return conversationDetails.Error.Code switch
-        {
-            ErrorCodes.Conversation.DOES_NOT_EXIST => StatusCode(404),
-            ErrorCodes.Conversation.DOES_NOT_BELONG_TO_USER => StatusCode(403)
-        };
     }
 }

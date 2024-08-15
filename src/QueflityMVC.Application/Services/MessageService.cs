@@ -1,8 +1,11 @@
-﻿using System.Text;
+﻿#region
+
+using System.Text;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
@@ -11,6 +14,8 @@ using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
+
+#endregion
 
 namespace QueflityMVC.Application.Services;
 
@@ -98,6 +103,24 @@ public class MessageService(
         return Result<UserConversationsVm>.Success(userConversationsVm);
     }
 
+    public Task<Result<UserConversationsVm>> GetAllConversationsAsync()
+    {
+        UserConversationsVm userConversationsVm = new()
+        {
+            PaginatedConversations = PaginationFactory.Default<ConversationShortVm>()
+        };
+        return GetAllConversationsAsync(userConversationsVm);
+    }
+
+    public async Task<Result<UserConversationsVm>> GetAllConversationsAsync(UserConversationsVm userConversationsVm)
+    {
+        var conversations = conversationRepository.GetAll();
+        userConversationsVm.PaginatedConversations =
+            await conversations.Paginate(userConversationsVm.PaginatedConversations,
+                mapper.ConfigurationProvider);
+        return Result<UserConversationsVm>.Success(userConversationsVm);
+    }
+
     public async Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId)
     {
         if (!await CanAccessConversation(conversationId))
@@ -135,7 +158,13 @@ public class MessageService(
         var conversation = await conversationRepository.GetByIdAsync(conversationId);
         if (conversation.UserId == userContext.UserId) return true;
 
-        return await userRepository.CanRespondToConversations(userContext.UserId);
+        return await CanRespondToConversations(userContext.UserId);
+    }
+
+    private Task<bool> CanRespondToConversations(Guid userContextUserId)
+    {
+        return userRepository.HasClaimAsync(userContextUserId, Claims.CONVERSATIONS_RESPOND,
+            Claims.CONVERSATIONS_RESPOND);
     }
 
     private void SentCopyEmail(FirstMessageInConversationVm firstMessageInConversationVm)

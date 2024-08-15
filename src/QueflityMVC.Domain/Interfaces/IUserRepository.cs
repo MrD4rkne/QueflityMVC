@@ -1,4 +1,8 @@
-﻿using QueflityMVC.Domain.Models;
+﻿#region
+
+using QueflityMVC.Domain.Models;
+
+#endregion
 
 namespace QueflityMVC.Domain.Interfaces;
 
@@ -30,5 +34,5 @@ public interface IUserRepository
 
     Task<string?> GetEmailForUserAsync(Guid userId);
 
-    Task<bool> CanRespondToConversations(Guid userId);
+    Task<bool> HasClaimAsync(Guid userId, string claimType, string claimValue);
 }

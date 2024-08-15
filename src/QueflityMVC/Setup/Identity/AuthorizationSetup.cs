@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿#region
+
+using Microsoft.AspNetCore.Authorization;
 using QueflityMVC.Application.Constants;
+
+#endregion
 
 namespace QueflityMVC.Web.Setup.Identity;
 
@@ -38,6 +42,9 @@ public static class AuthorizationSetup
         options.AddPolicy(Policies.ENTITIES_ORDER, policy =>
             policy.RequireClaim(Claims.ENTITIES_ORDER)
                 .RequireClaim(Claims.ENTITIES_LIST));
+
+        options.AddPolicy(Policies.CONVERSATIONS_RESPOND, policy =>
+            policy.RequireClaim(Claims.CONVERSATIONS_RESPOND));
 
         return options;
     }

@@ -13,4 +13,5 @@ public static class Policies
     public const string ENTITIES_LIST = "CanListEntities";
     public const string ENTITIES_CREATE = "CanCreateEntities";
     public const string ENTITIES_ORDER = "OrderEntities";
+    public const string CONVERSATIONS_RESPOND = "CanRespondToConversations";
 }

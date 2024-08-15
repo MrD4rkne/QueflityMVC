@@ -1,6 +1,10 @@
-﻿using QueflityMVC.Application.Results;
+﻿#region
+
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
 using QueflityMVC.Application.ViewModels.Other;
+
+#endregion
 
 namespace QueflityMVC.Application.Interfaces;
 
@@ -11,8 +15,12 @@ public interface IMessageService
     Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm);
 
     Task<Result<UserConversationsVm>> GetUsersConversationsAsync();
-    
+
     Task<Result<UserConversationsVm>> GetUsersConversationsAsync(UserConversationsVm userConversationsVm);
+
+    Task<Result<UserConversationsVm>> GetAllConversationsAsync();
+
+    Task<Result<UserConversationsVm>> GetAllConversationsAsync(UserConversationsVm userConversationsVm);
 
     Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId);
 

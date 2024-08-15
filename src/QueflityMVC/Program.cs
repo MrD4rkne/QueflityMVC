@@ -1,3 +1,5 @@
+#region
+
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -14,6 +16,8 @@ using QueflityMVC.Web.Setup.Other;
 using Serilog;
 using JobsOptionsValidator = QueflityMVC.Web.Setup.JobsOptionsValidator;
 using SmtpOptionsValidator = QueflityMVC.Web.Setup.SmtpOptionsValidator;
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);
@@ -81,6 +85,11 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    "Admin",
+    "Admin/{controller}/{action}/{id?}",
+    new { controller = "Conversations", action = "Index" });
 
 app.MapControllerRoute(
     "default",

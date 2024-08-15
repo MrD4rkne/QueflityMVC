@@ -80,14 +80,14 @@
                 <div class="user-info">
                     @if (conversationVm.Messages.LastOrDefault() is { } lastMessageVm)
                     {
-                        <p class="last-message-time">Last message: @lastMessageVm.SentAt.ToShortDateString()</p>
+                        <p class="last-message-time">Last message: @lastMessageVm.SentAt.ToShortDateString() </p>
                     }
                     else
                     {
                         <p class="last-message-time">No messages yet</p>
                     }
                 </div>
-                <a href="/Conversations/Details/@conversationVm.Id" class="arrow-link">&rarr;</a>
+                @Html.ActionLink("Details", "Conversations", new { id = conversationVm.Id }, new { @class = "arrow-link" })
             </div>
             <div class="messages-view">
                 @{

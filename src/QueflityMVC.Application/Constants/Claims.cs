@@ -13,6 +13,7 @@ public static class Claims
     public const string ENTITIES_LIST = "ListEntities";
     public const string ENTITIES_CREATE = "CreateEntities";
     public const string ENTITIES_ORDER = "OrderEntities";
+    public const string CONVERSATIONS_RESPOND = "RespondToConversations";
 
     public static IEnumerable<string> GetAll()
     {
@@ -28,7 +29,8 @@ public static class Claims
             ENTITIES_EDIT,
             ENTITIES_CREATE,
             ENTITIES_LIST,
-            ENTITIES_ORDER
+            ENTITIES_ORDER,
+            CONVERSATIONS_RESPOND
         ];
     }
 }

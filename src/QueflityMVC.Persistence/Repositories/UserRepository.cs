@@ -1,9 +1,13 @@
-﻿using System.Security.Claims;
+﻿#region
+
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
+
+#endregion
 
 namespace QueflityMVC.Persistence.Repositories;
 
@@ -111,12 +115,26 @@ public class UserRepository(
     {
         var user = await userManager.Users.FirstAsync(user => user.Id == userId) ??
                    throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+
         return user.Email;
     }
 
-    public Task<bool> CanRespondToConversations(Guid userId)
+    public async Task<bool> HasClaimAsync(Guid userId, string claimName, string claimValue)
     {
-        return Task.FromResult(true);
+        var user = await GetUserByIdAsync(userId) ??
+                   throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+
+        var hasClaimDirectly = await DbContext.UserClaims.AnyAsync(uc =>
+            uc.UserId == user.Id &&
+            uc.ClaimType == claimName &&
+            uc.ClaimValue == claimValue);
+        if (hasClaimDirectly) return true;
+
+        var hasClaimByRole = await DbContext.RoleClaims.AnyAsync(rc =>
+            DbContext.UserRoles.Any(ur => ur.UserId == user.Id && ur.RoleId == rc.RoleId) &&
+            rc.ClaimType == claimName &&
+            rc.ClaimValue == claimValue);
+        return hasClaimByRole;
     }
 
     public async Task UpdateAsync(ApplicationUser userToUpdate)
@@ -124,6 +142,7 @@ public class UserRepository(
         var user = await DbContext.Users.FirstOrDefaultAsync(user => user.Id == userToUpdate.Id);
         user.UserName = userToUpdate.UserName;
         user.IsEnabled = userToUpdate.IsEnabled;
+
         await DbContext.SaveChangesAsync();
     }
 
