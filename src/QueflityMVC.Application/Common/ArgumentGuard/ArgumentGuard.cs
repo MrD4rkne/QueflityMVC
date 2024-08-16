@@ -20,38 +20,56 @@ public static class ArgumentGuard
         IEquatable<T>,
         IFormattable
     {
-        var comparision = inputValue.CompareTo(referencedValue);
+        int comparision = inputValue.CompareTo(referencedValue);
 
         switch (argGuardType)
         {
             case ArgumentGuardType.GreaterThan:
                 if (IsGreaterThan(comparision))
+                {
                     return;
+                }
+
                 break;
 
             case ArgumentGuardType.GreaterThanOrEquals:
                 if (IsGreaterThanOrEquals(comparision))
+                {
                     return;
+                }
+
                 break;
 
             case ArgumentGuardType.LessThan:
                 if (IsLessThan(comparision))
+                {
                     return;
+                }
+
                 break;
 
             case ArgumentGuardType.LessThanOrEquals:
                 if (IsLessThanOrEquals(comparision))
+                {
                     return;
+                }
+
                 break;
 
             case ArgumentGuardType.Equals:
                 if (IsEquals(comparision))
+                {
                     return;
+                }
+
                 break;
 
             case ArgumentGuardType.OtherThan:
                 if (OtherThan(comparision))
+                {
                     return;
+                }
+
                 break;
         }
 
@@ -61,37 +79,37 @@ public static class ArgumentGuard
 
     private static bool IsGreaterThanOrEquals(int comparision)
     {
-        var isGreaterThanOrEquals = comparision >= 0;
+        bool isGreaterThanOrEquals = comparision >= 0;
         return isGreaterThanOrEquals;
     }
 
     private static bool IsGreaterThan(int comparision)
     {
-        var isGreaterThanOrEquals = comparision > 0;
+        bool isGreaterThanOrEquals = comparision > 0;
         return isGreaterThanOrEquals;
     }
 
     private static bool IsLessThan(int comparision)
     {
-        var isLessThan = comparision < 0;
+        bool isLessThan = comparision < 0;
         return isLessThan;
     }
 
     private static bool IsLessThanOrEquals(int comparision)
     {
-        var isLessThanOrEquals = comparision <= 0;
+        bool isLessThanOrEquals = comparision <= 0;
         return isLessThanOrEquals;
     }
 
     private static bool IsEquals(int comparision)
     {
-        var isEquals = comparision == 0;
+        bool isEquals = comparision == 0;
         return isEquals;
     }
 
     private static bool OtherThan(int comparision)
     {
-        var otherThan = comparision != 0;
+        bool otherThan = comparision != 0;
         return otherThan;
     }
 }

@@ -1,6 +1,4 @@
-﻿using QueflityMVC.Domain.Common;
-
-namespace QueflityMVC.Domain.Models;
+﻿namespace QueflityMVC.Domain.Models;
 
 public class Kit : Product
 {

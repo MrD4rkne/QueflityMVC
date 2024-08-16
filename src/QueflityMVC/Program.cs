@@ -98,7 +98,10 @@ app.MapHub<MessageHub>("/messageHub", options =>
 
 app.MapRazorPages();
 
-if (app.Environment.IsDevelopment()) app.ApplyPendingMigrations();
+if (app.Environment.IsDevelopment())
+{
+    app.ApplyPendingMigrations();
+}
 
 await app.Services.SeedIdentity(Claims.GetAll().ToArray());
 

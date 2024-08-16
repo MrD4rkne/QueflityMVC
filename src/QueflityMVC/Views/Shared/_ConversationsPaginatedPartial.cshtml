@@ -84,7 +84,7 @@
 <ul class="nav gap-1 mb-1">
     <li class="nav-item">
         <select class="form-select" asp-for="Info.PageSize" onchange="PageSizeSelected()">
-            @foreach (var i in options)
+            @foreach (int i in options)
             {
                 @if (i == Model.Info.PageSize)
                 {

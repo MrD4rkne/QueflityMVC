@@ -82,10 +82,10 @@ public class RegisterModel : PageModel
             {
                 _logger.LogInformation("User created a new account with password.");
 
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                string userId = await _userManager.GetUserIdAsync(user);
+                string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
+                string callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     null,
                     new { area = "Identity", userId, code, returnUrl },
@@ -95,13 +95,18 @@ public class RegisterModel : PageModel
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                {
                     return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
+                }
 
                 await _signInManager.SignInAsync(user, false);
                 return LocalRedirect(returnUrl);
             }
 
-            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
 
         // If we got this far, something failed, redisplay form
@@ -127,7 +132,10 @@ public class RegisterModel : PageModel
     private IUserEmailStore<ApplicationUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
+        {
             throw new NotSupportedException("The default UI requires a user store with email support.");
+        }
+
         return (IUserEmailStore<ApplicationUser>)_userStore;
     }
 

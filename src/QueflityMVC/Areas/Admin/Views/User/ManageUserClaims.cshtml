@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = $"{Model.Username} - claims";
-    var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
 }
 
 @if (canListUsers)

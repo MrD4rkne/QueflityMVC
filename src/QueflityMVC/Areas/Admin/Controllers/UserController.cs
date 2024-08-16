@@ -27,7 +27,11 @@ public class UserController(IUserService userService, IUserContext userContext) 
     [Authorize(Policy = Policies.USERS_LIST)]
     public async Task<IActionResult> Index(ListUsersVm listUsersVm)
     {
-        if (listUsersVm is null) return BadRequest();
+        if (listUsersVm is null)
+        {
+            return BadRequest();
+        }
+
         listUsersVm.UserNameFilter ??= string.Empty;
 
         var listVm = await userService.GetFilteredListAsync(listUsersVm);
@@ -42,7 +46,10 @@ public class UserController(IUserService userService, IUserContext userContext) 
         ArgumentNullException.ThrowIfNull(userId);
 
         var result = await userService.DisableUserAsync(userId);
-        if (result.IsSuccess) return RedirectToAction("Index");
+        if (result.IsSuccess)
+        {
+            return RedirectToAction("Index");
+        }
 
         return result.Error.Code switch
         {
@@ -59,7 +66,10 @@ public class UserController(IUserService userService, IUserContext userContext) 
         ArgumentNullException.ThrowIfNull(userId);
 
         var result = await userService.EnableUserAsync(userId);
-        if (result.IsSuccess) return RedirectToAction("Index");
+        if (result.IsSuccess)
+        {
+            return RedirectToAction("Index");
+        }
 
         return result.Error.Code switch
         {
@@ -85,7 +95,10 @@ public class UserController(IUserService userService, IUserContext userContext) 
     public async Task<IActionResult> ManageUserRoles(UserRolesVm userRolesVm)
     {
         ArgumentNullException.ThrowIfNull(userRolesVm);
-        if (!CanUserManageRoles(userRolesVm.UserId)) return Forbid();
+        if (!CanUserManageRoles(userRolesVm.UserId))
+        {
+            return Forbid();
+        }
 
         await userService.UpdateUserRolesAsync(userRolesVm);
 
@@ -110,7 +123,10 @@ public class UserController(IUserService userService, IUserContext userContext) 
     public async Task<IActionResult> ManageUserClaims(UserClaimsVm userClaimsVm)
     {
         ArgumentNullException.ThrowIfNull(userClaimsVm);
-        if (!CanUserManageClaims(userClaimsVm.UserId)) return Forbid();
+        if (!CanUserManageClaims(userClaimsVm.UserId))
+        {
+            return Forbid();
+        }
 
         await userService.UpdateUserClaimsAsync(userClaimsVm);
         return RedirectToAction("Index");

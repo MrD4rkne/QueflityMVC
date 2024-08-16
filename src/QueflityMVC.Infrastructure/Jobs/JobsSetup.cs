@@ -21,14 +21,18 @@ internal static class JobsSetup
             var jobsOptions = services.BuildServiceProvider()
                 .GetRequiredService<IOptions<JobsConfig>>().Value;
             if (jobsOptions.UseDatabase)
+            {
                 q.UsePersistentStore(storageOptions =>
                 {
                     storageOptions.UseProperties = true;
                     storageOptions.UseSqlServer(jobsOptions.ConnectionString);
                     storageOptions.UseNewtonsoftJsonSerializer();
                 });
+            }
             else
+            {
                 q.UseInMemoryStore();
+            }
 
             q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = jobsOptions.MaxConcurrency; });
         });

@@ -35,7 +35,11 @@ public class CategoriesController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(ListCategoriesVm listCategoriesVm)
     {
-        if (listCategoriesVm is null) return BadRequest();
+        if (listCategoriesVm is null)
+        {
+            return BadRequest();
+        }
+
         listCategoriesVm.NameFilter ??= string.Empty;
 
         var listVm = await _categoryService.GetFilteredListAsync(listCategoriesVm);

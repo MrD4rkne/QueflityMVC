@@ -16,11 +16,16 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
     public async Task<Result> DisableUserAsync(Guid userToDisableId)
     {
         if (userContext.UserId == userToDisableId)
+        {
             return Result.Failure(Errors.User.CannotManageThemselves);
+        }
 
         var user = await userRepository.GetUserByIdAsync(userToDisableId);
         if (user is null)
+        {
             return Result.Failure(Errors.User.DoesNotExist);
+        }
+
         user.IsEnabled = false;
 
         await userRepository.UpdateAsync(user);
@@ -30,11 +35,16 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
     public async Task<Result> EnableUserAsync(Guid userToEnableId)
     {
         if (userContext.UserId == userToEnableId)
+        {
             return Result.Failure(Errors.User.CannotManageThemselves);
+        }
 
         var user = await userRepository.GetUserByIdAsync(userToEnableId);
         if (user is null)
+        {
             return Result.Failure(Errors.User.DoesNotExist);
+        }
+
         user.IsEnabled = true;
 
         await userRepository.UpdateAsync(user);
@@ -52,7 +62,10 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
     public async Task<UserClaimsVm> GetUsersClaimsVmAsync(Guid userId)
     {
         var user = await userRepository.GetUserByIdAsync(userId);
-        if (user is null) throw new EntityNotFoundException();
+        if (user is null)
+        {
+            throw new EntityNotFoundException();
+        }
 
         var allClaims = Claims.GetAll()
             .Select(str => new ClaimForSelectionVm(str));
@@ -72,7 +85,10 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
     public async Task<UserRolesVm> GetUsersRolesVmAsync(Guid userId)
     {
         var user = await userRepository.GetUserByIdAsync(userId);
-        if (user is null) throw new EntityNotFoundException();
+        if (user is null)
+        {
+            throw new EntityNotFoundException();
+        }
 
         var allRoles = userRepository.GetAllRoles()
             .ProjectTo<RoleForSelectionVm>(mapper.ConfigurationProvider);
@@ -92,11 +108,11 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
 
     public async Task UpdateUserClaimsAsync(UserClaimsVm userClaimsVm)
     {
-        var claimsToGive = userClaimsVm.AllClaims
+        string[] claimsToGive = userClaimsVm.AllClaims
             .Where(x => x.IsSelected)
             .Select(x => x.Id)
             .ToArray();
-        var claimsToRemove = userClaimsVm.AllClaims
+        string[] claimsToRemove = userClaimsVm.AllClaims
             .Where(x => x.IsSelected == false)
             .Select(x => x.Id)
             .ToArray();
@@ -114,7 +130,10 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
     private Task UpdateRoleMembership(RoleForSelectionVm? role, Guid userId)
     {
         if (role is null)
+        {
             return Task.CompletedTask;
+        }
+
         return role.IsSelected
             ? userRepository.AddToRoleAsync(userId, role.Id)
             : userRepository.RemoveFromRoleAsync(userId, role.Id);

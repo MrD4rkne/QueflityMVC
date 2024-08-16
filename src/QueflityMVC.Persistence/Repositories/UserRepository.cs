@@ -22,8 +22,11 @@ public class UserRepository(
         var matchingUsers = userManager.Users.AsNoTracking();
 
         if (!string.IsNullOrEmpty(userNameFilter))
+        {
             matchingUsers = matchingUsers.Where(user => user.UserName != null)
                 .Where(x => x.UserName!.Contains(userNameFilter));
+        }
+
         return matchingUsers;
     }
 
@@ -86,7 +89,10 @@ public class UserRepository(
     public async Task GiveClaimsAsync(Guid userId, string[] claimsIds)
     {
         var user = await GetUserByIdAsync(userId);
-        if (user is null) throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+        if (user is null)
+        {
+            throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+        }
 
         IEnumerable<Claim> claimsToAdd = claimsIds.AsParallel().Select(cl => { return new Claim(cl, cl); });
         await userManager.AddClaimsAsync(user, claimsToAdd);
@@ -120,13 +126,16 @@ public class UserRepository(
         var user = await GetUserByIdAsync(userId) ??
                    throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
 
-        var hasClaimDirectly = await DbContext.UserClaims.AnyAsync(uc =>
+        bool hasClaimDirectly = await DbContext.UserClaims.AnyAsync(uc =>
             uc.UserId == user.Id &&
             uc.ClaimType == claimName &&
             uc.ClaimValue == claimValue);
-        if (hasClaimDirectly) return true;
+        if (hasClaimDirectly)
+        {
+            return true;
+        }
 
-        var hasClaimByRole = await DbContext.RoleClaims.AnyAsync(rc =>
+        bool hasClaimByRole = await DbContext.RoleClaims.AnyAsync(rc =>
             DbContext.UserRoles.Any(ur => ur.UserId == user.Id && ur.RoleId == rc.RoleId) &&
             rc.ClaimType == claimName &&
             rc.ClaimValue == claimValue);

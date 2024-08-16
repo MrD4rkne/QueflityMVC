@@ -9,7 +9,7 @@ public class OneOfMultiplePoliciesAuthorizationHandler(IServiceProvider serviceP
         OneOfMultiplePoliciesRequirement requirement)
     {
         var authorizationService = serviceProvider.GetRequiredService<IAuthorizationService>();
-        foreach (var policy in requirement.Policies)
+        foreach (string policy in requirement.Policies)
         {
             var result = await authorizationService.AuthorizeAsync(context.User, policy);
             if (result.Succeeded)

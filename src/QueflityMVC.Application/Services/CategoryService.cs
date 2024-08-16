@@ -28,7 +28,10 @@ public class CategoryService : ICategoryService
     public async Task DeleteCategoryAsync(int id)
     {
         if (!await _categoriesRepository.IsAnyItemWithCategory(id))
+        {
             throw new InvalidOperationException("First, remove or change category for items!");
+        }
+
         await _categoriesRepository.DeleteAsync(id);
     }
 

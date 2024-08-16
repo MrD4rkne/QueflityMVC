@@ -3,7 +3,7 @@
 @inject IAuthorizationService AuthorizationService
 @{
     ViewData["Title"] = "No components";
-    var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
 }
 
 <h1 class="text-danger">No components!</h1>

@@ -16,7 +16,10 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
     {
         var usersConversations = await messageService.GetUsersConversationsAsync();
         if (usersConversations.IsFailure)
+        {
             return RedirectToAction("Index", "Home");
+        }
+
         return View(usersConversations.Value);
     }
 
@@ -24,11 +27,15 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
     public async Task<IActionResult> Index(UserConversationsVm userConversationsVm)
     {
         if (userConversationsVm.PaginatedConversations is null)
+        {
             return BadRequest();
+        }
 
         var usersConversations = await messageService.GetUsersConversationsAsync(userConversationsVm);
         if (usersConversations.IsFailure)
+        {
             return RedirectToAction("Index", "Home");
+        }
 
         return View(usersConversations.Value);
     }
@@ -39,7 +46,10 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
     {
         var conversationDetails = await messageService.GetConversationDetailsAsync(conversationId);
         if (conversationDetails.IsSuccess)
+        {
             return View(conversationDetails.Value);
+        }
+
         return conversationDetails.Error.Code switch
         {
             ErrorCodes.Conversation.DOES_NOT_EXIST => StatusCode(404),

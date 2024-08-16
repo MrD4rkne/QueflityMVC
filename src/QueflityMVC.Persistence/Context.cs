@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Seeding;
 using QueflityMVC.Persistence.Setup;
@@ -85,10 +84,14 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
+        {
             optionsBuilder.UseSqlServer(_config.ConnectionString, sqlOptions =>
             {
                 if (_config.ShouldRetry)
+                {
                     sqlOptions.EnableRetryOnFailure();
+                }
             });
+        }
     }
 }

@@ -54,73 +54,73 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Create.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Delete.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Edit.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Index.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Components\Create.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Components\Edit.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Components\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Create.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Delete.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Edit.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Index.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Components\Create.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Components\Edit.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Components\Index.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Conversations\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\UpdateFailed.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Components.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Create.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Delete.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Edit.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Index.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\NoCategories.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\NoComponents.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Items\_ItemDetailsPartial.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\AddComponent.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Create.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Details.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Edit.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\EditComponent.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Index.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\ListItemsForComponents.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\_KitDetailsPartial.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\User\Index.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\User\ManageUserClaims.cshtml" />
-        <AdditionalFiles Include="Areas\Admin\Views\User\ManageUserRoles.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\Index.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\UpdateFailed.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Components.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Create.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Delete.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Edit.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Index.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\NoCategories.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\NoComponents.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Items\_ItemDetailsPartial.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\AddComponent.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Create.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Details.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Edit.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\EditComponent.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Index.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\ListItemsForComponents.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\_KitDetailsPartial.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\User\Index.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\User\ManageUserClaims.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\User\ManageUserRoles.cshtml"/>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Categories\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Categories\Delete.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Categories\Edit.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Categories\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Components\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Components\Edit.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Components\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Dashboard\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Dashboard\UpdateFailed.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\Components.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\Delete.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\Edit.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\NoCategories.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\NoComponents.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Items\_ItemDetailsPartial.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\AddComponent.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\Details.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\Edit.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\EditComponent.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\ListItemsForComponents.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Kits\_KitDetailsPartial.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\User\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\User\ManageUserClaims.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\User\ManageUserRoles.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Categories\Create.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Categories\Delete.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Categories\Edit.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Categories\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Components\Create.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Components\Edit.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Components\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Dashboard\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Dashboard\UpdateFailed.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\Components.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\Create.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\Delete.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\Edit.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\NoCategories.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\NoComponents.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Items\_ItemDetailsPartial.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\AddComponent.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\Create.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\Details.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\Edit.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\EditComponent.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\ListItemsForComponents.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Kits\_KitDetailsPartial.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\User\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\User\ManageUserClaims.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\User\ManageUserRoles.cshtml"/>
     </ItemGroup>
 
     <ItemGroup>
-      <UpToDateCheckInput Remove="Views\Categories\Create.cshtml" />
-      <UpToDateCheckInput Remove="Views\Categories\Delete.cshtml" />
-      <UpToDateCheckInput Remove="Views\Categories\Edit.cshtml" />
-      <UpToDateCheckInput Remove="Views\Categories\Index.cshtml" />
+        <UpToDateCheckInput Remove="Views\Categories\Create.cshtml"/>
+        <UpToDateCheckInput Remove="Views\Categories\Delete.cshtml"/>
+        <UpToDateCheckInput Remove="Views\Categories\Edit.cshtml"/>
+        <UpToDateCheckInput Remove="Views\Categories\Index.cshtml"/>
     </ItemGroup>
 
 </Project>

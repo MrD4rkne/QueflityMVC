@@ -27,7 +27,10 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
 
     public virtual async Task DeleteAsync(T entityToDelete)
     {
-        if (!await ExistsAsync(entityToDelete)) throw new ResourceNotFoundException(entityName: nameof(T));
+        if (!await ExistsAsync(entityToDelete))
+        {
+            throw new ResourceNotFoundException(entityName: nameof(T));
+        }
 
         DbContext.Set<T>().Remove(entityToDelete);
         await DbContext.SaveChangesAsync();
@@ -37,7 +40,10 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
     {
         var entity = await GetByIdAsync(entityToUpdate.Id) ??
                      throw new ResourceNotFoundException(entityName: nameof(T));
-        if (DbContext.Entry(entity).State == EntityState.Detached) DbContext.Set<T>().Attach(entity);
+        if (DbContext.Entry(entity).State == EntityState.Detached)
+        {
+            DbContext.Set<T>().Attach(entity);
+        }
 
         DbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
         await DbContext.SaveChangesAsync();

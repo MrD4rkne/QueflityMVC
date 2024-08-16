@@ -32,7 +32,10 @@ public class HomeController(
     public async Task<IActionResult> Contact(int id)
     {
         var contactVmResult = await messageService.GetContactVmAsync(id);
-        if (contactVmResult.IsSuccess) return View(contactVmResult.Value);
+        if (contactVmResult.IsSuccess)
+        {
+            return View(contactVmResult.Value);
+        }
 
         return contactVmResult.Error.Code switch
         {
@@ -48,10 +51,16 @@ public class HomeController(
     [Authorize]
     public async Task<IActionResult> Contact(FirstMessageInConversationVm firstMessageInConversationVm)
     {
-        if (firstMessageInConversationVm.Product is null) return RedirectToAction("ProductNotFound", "Home");
+        if (firstMessageInConversationVm.Product is null)
+        {
+            return RedirectToAction("ProductNotFound", "Home");
+        }
 
         var productResult = await messageService.GetProductForDashboardVmAsync(firstMessageInConversationVm.Product.Id);
-        if (productResult.IsFailure) return RedirectToAction("ProductNotFound", "Home");
+        if (productResult.IsFailure)
+        {
+            return RedirectToAction("ProductNotFound", "Home");
+        }
 
         firstMessageInConversationVm = firstMessageInConversationVm with { Product = productResult.Value };
 

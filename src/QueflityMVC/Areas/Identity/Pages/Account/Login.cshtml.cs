@@ -51,7 +51,10 @@ public class LoginModel : PageModel
 
     public async Task OnGetAsync(string returnUrl = null)
     {
-        if (!string.IsNullOrEmpty(ErrorMessage)) ModelState.AddModelError(string.Empty, ErrorMessage);
+        if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            ModelState.AddModelError(string.Empty, ErrorMessage);
+        }
 
         returnUrl ??= Url.Content("~/");
 
@@ -81,7 +84,10 @@ public class LoginModel : PageModel
             }
 
             if (result.RequiresTwoFactor)
+            {
                 return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
+            }
+
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User account locked out.");

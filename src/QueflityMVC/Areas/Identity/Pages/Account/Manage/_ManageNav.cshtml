@@ -1,9 +1,9 @@
-﻿@using QueflityMVC.Web.Common
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
+@using QueflityMVC.Web.Common
 @inject MySignInManager SignInManager
 @{
-    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    bool hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
 <ul class="nav nav-pills flex-column">
     <li class="nav-item">

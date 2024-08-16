@@ -44,7 +44,10 @@ public static class DependencyInjection
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         await IdentitySeed.SeedIdentity(userManager, roleManager);
-        if (claims is not null) await roleManager.SeedRolesClaims(claims);
+        if (claims is not null)
+        {
+            await roleManager.SeedRolesClaims(claims);
+        }
     }
 
     public static void ApplyPendingMigrations(this WebApplication webApplication)

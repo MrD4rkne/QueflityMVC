@@ -69,7 +69,11 @@ public class EntitySeeder
             .RuleFor(it => it.ShouldBeShown, f => GetVisibility())
             .RuleFor(it => it.CategoryId, f => f.Random.Number(1, CATEGORIES_COUNT));
         var items = itemFaker.Generate(ITEMS_COUNT);
-        foreach (var item in items) item.OrderNo = GetRandomOrderNumber(item.ShouldBeShown);
+        foreach (var item in items)
+        {
+            item.OrderNo = GetRandomOrderNumber(item.ShouldBeShown);
+        }
+
         return items;
     }
 
@@ -82,7 +86,10 @@ public class EntitySeeder
             .RuleFor(it => it.ShouldBeShown, f => GetVisibility())
             .RuleFor(kit => kit.Description, f => f.Lorem.Sentence());
         var kits = kitFaker.Generate(KITS_COUNT);
-        foreach (var kit in kits) kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
+        foreach (var kit in kits)
+        {
+            kit.OrderNo = GetRandomOrderNumber(kit.ShouldBeShown);
+        }
 
         return kits;
     }
@@ -101,7 +108,11 @@ public class EntitySeeder
         while (elementsCreatedCount < ELEMENTS_COUNT)
         {
             var element = elementFaker.Generate();
-            if (elements.Any(e => e.ItemId == element.ItemId && e.KitId == element.KitId)) continue;
+            if (elements.Any(e => e.ItemId == element.ItemId && e.KitId == element.KitId))
+            {
+                continue;
+            }
+
             elements.Add(element);
             elementsCreatedCount++;
         }
@@ -120,7 +131,11 @@ public class EntitySeeder
 
     private uint? GetRandomOrderNumber(bool isVisible)
     {
-        if (!isVisible) return null;
+        if (!isVisible)
+        {
+            return null;
+        }
+
         uint orderNumber;
         do
         {
@@ -133,9 +148,17 @@ public class EntitySeeder
 
     private bool GetVisibility()
     {
-        if (_visibleProduct >= VISIBLE_PURCHASABLE) return false;
-        var shouldBeVisible = Random.Shared.Next(0, 2) == 0;
-        if (shouldBeVisible) _visibleProduct++;
+        if (_visibleProduct >= VISIBLE_PURCHASABLE)
+        {
+            return false;
+        }
+
+        bool shouldBeVisible = Random.Shared.Next(0, 2) == 0;
+        if (shouldBeVisible)
+        {
+            _visibleProduct++;
+        }
+
         return shouldBeVisible;
     }
 }

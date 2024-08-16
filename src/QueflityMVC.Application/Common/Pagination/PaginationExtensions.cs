@@ -29,10 +29,10 @@ public static class PaginationExtensions
         pageNo.MustBe(ArgumentGuardType.GreaterThan, 0);
         pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
 
-        var totalCount = await entitiesSource.CountAsync();
-        var pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
+        int totalCount = await entitiesSource.CountAsync();
+        int pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
         pageNo = Math.Max(Math.Min(pageNo, pagesCount), 1);
-        var itemsCountToSkip = (pageNo - 1) * pageSize;
+        int itemsCountToSkip = (pageNo - 1) * pageSize;
         var itemsForPage = entitiesSource.Skip(itemsCountToSkip).Take(pageSize);
 
         var itemsList = await itemsForPage.ProjectTo<T2>(configurationProvider).ToListAsync();
@@ -77,10 +77,10 @@ public static class PaginationExtensions
         pageSize.MustBe(ArgumentGuardType.OtherThan, 0);
         pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
 
-        var totalCount = await entitiesSource.CountAsync();
-        var pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
+        int totalCount = await entitiesSource.CountAsync();
+        int pagesCount = PaginationFactory.CalcPagesCount(pageSize, totalCount);
         pageNo = Math.Max(Math.Min(pageNo, pagesCount), 1);
-        var itemsCountToSkip = (pageNo - 1) * pageSize;
+        int itemsCountToSkip = (pageNo - 1) * pageSize;
         var itemsForPage = entitiesSource.Skip(itemsCountToSkip).Take(pageSize);
         var itemsList = await itemsForPage.ToListAsync();
 
@@ -96,7 +96,14 @@ public static class PaginationExtensions
 
     public static void FillInfoWhenNull(this PaginationInfo paginationInfo)
     {
-        if (paginationInfo.CurrentPageNo <= 0) paginationInfo.CurrentPageNo = DEFAULT_PAGE_NO;
-        if (paginationInfo.PageSize <= 1) paginationInfo.PageSize = DEFAULT_PAGE_SIZE;
+        if (paginationInfo.CurrentPageNo <= 0)
+        {
+            paginationInfo.CurrentPageNo = DEFAULT_PAGE_NO;
+        }
+
+        if (paginationInfo.PageSize <= 1)
+        {
+            paginationInfo.PageSize = DEFAULT_PAGE_SIZE;
+        }
     }
 }

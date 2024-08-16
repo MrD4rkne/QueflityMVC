@@ -49,7 +49,7 @@ public static class PaginationFactory
         pageSize.MustBe(ArgumentGuardType.GreaterThan, 0);
         totalCount.MustBe(ArgumentGuardType.GreaterThanOrEquals, 0);
 
-        var pageRatio = totalCount * 1.0 / pageSize;
+        double pageRatio = totalCount * 1.0 / pageSize;
         return (int)Math.Ceiling(pageRatio);
     }
 }

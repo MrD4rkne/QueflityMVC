@@ -76,7 +76,7 @@ public class ExternalLoginModel : PageModel
     public IActionResult OnPost(string provider, string returnUrl = null)
     {
         // Request a redirect to the external login provider.
-        var redirectUrl = Url.Page("./ExternalLogin", "Callback", new { returnUrl });
+        string redirectUrl = Url.Page("./ExternalLogin", "Callback", new { returnUrl });
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
         return new ChallengeResult(provider, properties);
     }
@@ -106,17 +106,27 @@ public class ExternalLoginModel : PageModel
             return LocalRedirect(returnUrl);
         }
 
-        if (result.IsNotAllowed) return RedirectToPage("./Disabled");
-        if (result.IsLockedOut) return RedirectToPage("./Lockout");
+        if (result.IsNotAllowed)
+        {
+            return RedirectToPage("./Disabled");
+        }
+
+        if (result.IsLockedOut)
+        {
+            return RedirectToPage("./Lockout");
+        }
 
         // If the user does not have an account, then ask the user to create an account.
         ReturnUrl = returnUrl;
         ProviderDisplayName = info.ProviderDisplayName;
         if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+        {
             Input = new InputModel
             {
                 Email = info.Principal.FindFirstValue(ClaimTypes.Email)
             };
+        }
+
         return Page();
     }
 
@@ -147,10 +157,10 @@ public class ExternalLoginModel : PageModel
                 {
                     _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    string userId = await _userManager.GetUserIdAsync(user);
+                    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
+                    string callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         null,
                         new { area = "Identity", userId, code },
@@ -161,14 +171,19 @@ public class ExternalLoginModel : PageModel
 
                     // If account confirmation is required, we need to show the link if we don't have a real email sender
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
                         return RedirectToPage("./RegisterConfirmation", new { Input.Email });
+                    }
 
                     await _signInManager.SignInAsync(user, false, info.LoginProvider);
                     return LocalRedirect(returnUrl);
                 }
             }
 
-            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
 
         ProviderDisplayName = info.ProviderDisplayName;
@@ -193,7 +208,10 @@ public class ExternalLoginModel : PageModel
     private IUserEmailStore<ApplicationUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
+        {
             throw new NotSupportedException("The default UI requires a user store with email support.");
+        }
+
         return (IUserEmailStore<ApplicationUser>)_userStore;
     }
 

@@ -34,20 +34,34 @@ public class ItemService(
     public async Task<Result> DeleteItemAsync(int id)
     {
         var itemToDelete = await itemRepository.GetByIdAsync(id);
-        if (itemToDelete is null) return Result.Failure(Errors.Items.DoesNotExit);
-        if (await itemRepository.IsItemAPartOfAnyKitAsync(id)) return Result.Failure(Errors.Items.IsPartOfKit);
+        if (itemToDelete is null)
+        {
+            return Result.Failure(Errors.Items.DoesNotExit);
+        }
+
+        if (await itemRepository.IsItemAPartOfAnyKitAsync(id))
+        {
+            return Result.Failure(Errors.Items.IsPartOfKit);
+        }
 
         try
         {
             await itemRepository.DeleteAsync(id);
-            if (itemToDelete.ShouldBeShown) await itemRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
+            if (itemToDelete.ShouldBeShown)
+            {
+                await itemRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
+            }
         }
         catch (ResourceNotFoundException)
         {
             return Result.Failure(Errors.Items.DoesNotExit);
         }
 
-        if (itemToDelete.Image is not null) fileService.DeleteImage(itemToDelete.Image!.FileUrl);
+        if (itemToDelete.Image is not null)
+        {
+            fileService.DeleteImage(itemToDelete.Image!.FileUrl);
+        }
+
         return Result.Success();
     }
 
@@ -76,14 +90,21 @@ public class ItemService(
         var item = mapper.Map<Item>(updateItemVm);
         if (ShouldSwitchImages(updateItemVm))
         {
-            if (item.Image != null) fileService.DeleteImage(item.Image.FileUrl);
+            if (item.Image != null)
+            {
+                fileService.DeleteImage(item.Image.FileUrl);
+            }
+
             item.Image!.FileUrl = await fileService.UploadFileAsync(updateItemVm.Image!.FormFile!);
         }
 
         item.OrderNo = await itemRepository.GetOrderNoByIdAsync(item.Id);
 
         if (item.ShouldBeShown && item.OrderNo is null)
+        {
             item.OrderNo = await purchasableRepository.GetNextOrderNumberAsync();
+        }
+
         _ = await itemRepository.UpdateAsync(item);
     }
 
@@ -98,7 +119,11 @@ public class ItemService(
             }
         };
 
-        if (crEdObjItem.Categories.Count == 0) return Result<CrEdItemVm>.Failure(Errors.Items.NoCategories);
+        if (crEdObjItem.Categories.Count == 0)
+        {
+            return Result<CrEdItemVm>.Failure(Errors.Items.NoCategories);
+        }
+
         return Result<CrEdItemVm>.Success(crEdObjItem);
     }
 
