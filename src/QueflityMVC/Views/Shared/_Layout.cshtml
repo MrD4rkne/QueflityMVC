@@ -1,14 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
-@using QueflityMVC.Domain.Interfaces
 @inject IAuthorizationService AuthorizationService
-@inject IUserContext UserContext
 
 @{
-    var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
-    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
-    var canReorderProducts = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
+    var canSeeAdminPage = (await AuthorizationService.AuthorizeAsync(User, Policies.SEE_ADMIN_PANEL)).Succeeded;
 }
 
 <!DOCTYPE html>
@@ -40,38 +36,10 @@
 
             <!-- Centered links -->
             <ul class="navbar-nav mx-auto">
-                @if (canListUsers)
+                @if (canSeeAdminPage)
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">User</a>
-                    </li>
-                }
-                @if (canListEntities)
-                {
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="entitiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Entities
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="entitiesDropdown">
-                            <li>
-                                <a class="dropdown-item" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Item Categories</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" asp-area="" asp-controller="Components" asp-action="Index">Components</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" asp-area="" asp-controller="Kits" asp-action="Index">Kits</a>
-                            </li>
-                        </ul>
-                    </li>
-                }
-                @if (canReorderProducts)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        <a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a>
                     </li>
                 }
             </ul>

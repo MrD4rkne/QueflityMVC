@@ -1,0 +1,161 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@inject IAuthorizationService AuthorizationService
+@{
+    ViewData["Title"] = "Admin Panel";
+
+    var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    var canReorderProducts = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
+    var canRespondToConversations = (await AuthorizationService.AuthorizeAsync(User, Policies.CONVERSATIONS_RESPOND)).Succeeded;
+}
+
+@section Styles{
+    <style>
+    body {
+        background-color: #f4f4f9;
+    }
+    .card {
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.2s ease;
+        cursor: pointer;
+    }
+    .card:hover {
+        transform: translateY(-10px);
+    }
+    .card-header {
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.2rem;
+        border-radius: 15px 15px 0 0;
+    }
+    .card-body {
+        font-size: 1rem;
+        color: whitesmoke;
+    }
+    .card-footer {
+        background-color: transparent;
+        border-top: none;
+    }
+    .text-center {
+        font-size: 1.1rem;
+    }
+    /* Card Colors */
+    .users-card { background-color: #f39c12; }
+    .items-card { background-color: #3498db; }
+    .kits-card { background-color: #e74c3c; }
+    .components-card { background-color: #1abc9c; }
+    .conversations-card { background-color: #9b59b6; }
+    .dashboard-card { background-color: #e67e22; }
+    .categories-card { background-color: #34495e; }
+</style>
+}
+
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">Admin Navigation Panel</h1>
+    <div class="row">
+        @if (canListUsers)
+        {
+            <!-- Users Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card users-card">
+                    <div class="card-header text-center">Users</div>
+                    <div class="card-body text-center">
+                        Manage users and permissions.
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Index", "User")" class="btn btn-light">Go to Users</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (canListEntities)
+        {
+            <!-- Items Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card items-card">
+                    <div class="card-header text-center">Items</div>
+                    <div class="card-body text-center">
+                        Manage items, add components.
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Index", "Items")" class="btn btn-light">Go to Items</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Card -->
+            <div class="col-md-4 mb-4 mx-auto">
+                <div class="card categories-card">
+                    <div class="card-header text-center">Categories</div>
+                    <div class="card-body text-center">
+                        Manage item categories.
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Index", "Categories")" class="btn btn-light">Go to Categories</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Components Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card components-card">
+                    <div class="card-header text-center">Components</div>
+                    <div class="card-body text-center">
+                        Manage components - the things Items are made of.
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Index", "Components")" class="btn btn-light">Go to Components</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Kits Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card kits-card">
+                    <div class="card-header text-center">Kits</div>
+                    <div class="card-body text-center">
+                        Manage kits - multiple items in one element.
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Index", "Kits")" class="btn btn-light">Go to Kits</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (canReorderProducts)
+        {
+            <!-- Dashboard Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card dashboard-card">
+                    <div class="card-header text-center">Dashboard</div>
+                    <div class="card-body text-center">
+                        Reorder Products on the main page.
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="btn btn-light">Go to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (canRespondToConversations)
+        {
+            <!-- Conversations Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card conversations-card">
+                    <div class="card-header text-center">Conversations</div>
+                    <div class="card-body text-center">
+                        List of all conversations and respond to your users' questions.
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Index", "Conversations", new { area = "Admin" })" class="btn btn-light">Go to Conversations</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

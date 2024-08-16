@@ -11,9 +11,9 @@ using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Web.Exceptions;
 
-namespace QueflityMVC.Web.Controllers;
+namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
-[Route("Kits")]
+[Area("Admin")]
 public class KitsController : Controller
 {
     private readonly IValidator<ElementVm> _elemValidator;

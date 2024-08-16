@@ -7,9 +7,9 @@ using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Category;
 
-namespace QueflityMVC.Web.Controllers;
+namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
-[Route("Categories")]
+[Area("Admin")]
 public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;
