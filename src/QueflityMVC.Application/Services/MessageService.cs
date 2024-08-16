@@ -39,7 +39,7 @@ public class MessageService(
 
         FirstMessageInConversationVm firstMessageInConversationVm = new()
         {
-            Product = mapper.Map<ProductForDashboardVm>(purchasable),
+            Product = mapper.Map<ProductForCardVm>(purchasable),
             Email = await userRepository.GetEmailForUserAsync(userContext.UserId)
         };
         return Result<FirstMessageInConversationVm>.Success(firstMessageInConversationVm);
@@ -50,19 +50,18 @@ public class MessageService(
         if (!await userRepository.HasVerifiedEmail(userContext.UserId))
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
 
-        var purchasable = await purchasableRepository.GetByIdAsync(firstMessageInConversationVm.Product.Id);
-        if (purchasable is null) return Result<FirstMessageInConversationVm>.Failure(Errors.Product.DoesNotExist);
-
-        firstMessageInConversationVm = firstMessageInConversationVm with
-        {
-            Product = mapper.Map<ProductForDashboardVm>(purchasable)
-        };
+        var productResult = await GetProductForDashboardVmAsync(firstMessageInConversationVm.Product.Id);
+        if (productResult.IsFailure) return Result.Failure(productResult.Error);
 
         var email = await userRepository.GetEmailForUserAsync(userContext.UserId);
         if (string.IsNullOrWhiteSpace(email))
             return Result.Failure(Errors.User.EmailNotVerified);
 
-        firstMessageInConversationVm = firstMessageInConversationVm with { Email = email };
+        firstMessageInConversationVm = firstMessageInConversationVm with
+        {
+            Product = productResult.Value,
+            Email = email
+        };
 
         Message message = new()
         {
@@ -151,6 +150,14 @@ public class MessageService(
         message = await conversationRepository.AddMessageAsync(message);
 
         return Result<MessageVm>.Success(mapper.Map<MessageVm>(message));
+    }
+
+    public async Task<Result<ProductForCardVm>> GetProductForDashboardVmAsync(int productId)
+    {
+        var product = await purchasableRepository.GetByIdAsync(productId);
+        if (product is null) return Result<ProductForCardVm>.Failure(Errors.Product.DoesNotExist);
+
+        return Result<ProductForCardVm>.Success(mapper.Map<ProductForCardVm>(product));
     }
 
     public async Task<bool> CanAccessConversation(int conversationId)

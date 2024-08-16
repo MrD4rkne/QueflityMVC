@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿#region
+
+using System.Diagnostics;
 using System.Security.Claims;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -8,6 +10,8 @@ using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Web.Models;
+
+#endregion
 
 namespace QueflityMVC.Web.Controllers;
 
@@ -48,6 +52,13 @@ public class HomeController(
     [Authorize]
     public async Task<IActionResult> Contact(FirstMessageInConversationVm firstMessageInConversationVm)
     {
+        if (firstMessageInConversationVm.Product is null) return RedirectToAction("ProductNotFound", "Home");
+
+        var productResult = await messageService.GetProductForDashboardVmAsync(firstMessageInConversationVm.Product.Id);
+        if (productResult.IsFailure) return RedirectToAction("ProductNotFound", "Home");
+
+        firstMessageInConversationVm = firstMessageInConversationVm with { Product = productResult.Value };
+
         var validationResults = await messageValidator.ValidateAsync(firstMessageInConversationVm);
         if (!validationResults.IsValid)
         {

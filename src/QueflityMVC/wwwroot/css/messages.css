@@ -2,7 +2,7 @@
 .messages-container {
     height: 100%;
     flex: 1;
-    overflow-y: auto; /* Ensure messages-container is scrollable */
+    display: flex;
 }
 
 .message {

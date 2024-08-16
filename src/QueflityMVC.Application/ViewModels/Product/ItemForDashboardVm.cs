@@ -1,10 +1,14 @@
-﻿using QueflityMVC.Application.Mapping;
+﻿#region
+
+using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Application.ViewModels.Component;
 
+#endregion
+
 namespace QueflityMVC.Application.ViewModels.Product;
 
-public record ItemForDashboardVm : ProductForDashboardVm, IMapFrom<Domain.Models.Item>
+public record ItemForCardVm : ProductForCardVm, IMapFrom<Domain.Models.Item>
 {
     public required CategoryVm Category { get; set; }
 
@@ -12,8 +16,8 @@ public record ItemForDashboardVm : ProductForDashboardVm, IMapFrom<Domain.Models
 
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Domain.Models.Item, ItemForDashboardVm>()
-            .IncludeBase<Domain.Models.Product, ProductForDashboardVm>()
+        profile.CreateMap<Domain.Models.Item, ItemForCardVm>()
+            .IncludeBase<Domain.Models.Product, ProductForCardVm>()
             .ForMember(vm => vm.Category, opt => opt.MapFrom(it => it.Category))
             .ForMember(vm => vm.Components, opt => opt.MapFrom(it => it.Components));
     }

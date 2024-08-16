@@ -10,6 +10,7 @@ using QueflityMVC.Application.ViewModels.Message;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
+[Area("Admin")]
 [Authorize(Policy = Policies.CONVERSATIONS_RESPOND)]
 public class ConversationsController(IMessageService messageService, ILogger<ConversationsController> logger)
     : Controller

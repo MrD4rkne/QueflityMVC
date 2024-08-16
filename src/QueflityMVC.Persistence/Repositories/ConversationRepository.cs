@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#region
+
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Common;
+
+#endregion
 
 namespace QueflityMVC.Persistence.Repositories;
 
@@ -17,17 +21,20 @@ public class ConversationRepository(Context dbContext)
                 .Take(lastMessageCount)
                 .OrderBy(msg => msg.SentAt))
             .Include(convo => convo.Product)
-            .ThenInclude(prod => (prod as Kit).Elements)
+            .ThenInclude(product => product.Image)
             .Where(c => c.UserId == userId);
     }
 
-    public Task<Conversation> GetConversationDetails(int conversationId)
+    public async Task<Conversation> GetConversationDetails(int conversationId)
     {
-        return DbContext.Conversations
+        var conversation = await DbContext.Conversations
             .AsNoTracking()
-            .Include(convo => convo.Product)
-            .ThenInclude(prod => (prod as Kit).Elements)
             .FirstOrDefaultAsync(c => c.Id == conversationId);
+        conversation.Product = await DbContext.Set<Product>()
+            .AsNoTracking()
+            .Include(p => p.Image)
+            .FirstOrDefaultAsync(p => p.Id == conversation.ProductId);
+        return conversation;
     }
 
     public IQueryable<Message> GetMessagesForConversation(int conversationId)

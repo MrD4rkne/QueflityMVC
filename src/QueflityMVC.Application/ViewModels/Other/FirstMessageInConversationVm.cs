@@ -1,10 +1,14 @@
-﻿using QueflityMVC.Application.ViewModels.Product;
+﻿#region
+
+using QueflityMVC.Application.ViewModels.Product;
+
+#endregion
 
 namespace QueflityMVC.Application.ViewModels.Other;
 
 public record FirstMessageInConversationVm
 {
-    public required ProductForDashboardVm Product { get; init; }
+    public required ProductForCardVm Product { get; init; }
 
     public string? Message { get; init; }
 

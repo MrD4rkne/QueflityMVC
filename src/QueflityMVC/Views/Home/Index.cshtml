@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using QueflityMVC.Application.ViewModels.Product
 @model QueflityMVC.Application.ViewModels.Product.DashboardVm
 @{
     ViewData["Title"] = "Home Page";
@@ -19,21 +18,7 @@
                     if (itemNo >= Model.Products.Count)
                         break;
 
-                    var currentProduct = Model.Products[itemNo];
-                    <div class="col">
-                        @switch (currentProduct)
-                        {
-                            case ItemForDashboardVm itemForDashboardVm:
-                                <partial name="_ItemDashboardPartial" model="itemForDashboardVm"/>
-                                break;
-                            case KitForDashboardVm kitForDashboardVm:
-                                <partial name="_KitDashboardPartial" model="kitForDashboardVm"/>
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException($"Products[{itemNo}]",
-                                    $"Partial dashboard view is not provided for type: {currentProduct.GetType()}");
-                        }
-                    </div>
+                    <partial name="_ProductCardPartial" model="Model.Products[itemNo]"/>
                 }
             </div>
         }

@@ -1,7 +1,11 @@
-﻿using QueflityMVC.Application.Mapping;
+﻿#region
+
+using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Models;
+
+#endregion
 
 namespace QueflityMVC.Application.ViewModels.Message;
 
@@ -11,7 +15,7 @@ public class ConversationVm : IMapFrom<Conversation>
 
     public string Title { get; set; }
 
-    public ProductVm Product { get; set; }
+    public ProductForCardVm Product { get; set; }
 
     public UserShortVm User { get; set; }
 

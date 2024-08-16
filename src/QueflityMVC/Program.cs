@@ -89,11 +89,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     "Admin",
     "Admin/{controller}/{action}/{id?}",
-    new { controller = "Conversations", action = "Index" });
+    new { area = "Admin", controller = "Home", action = "Index" });
 
-app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}");
+app.MapDefaultControllerRoute();
 
 app.MapHub<MessageHub>("/messageHub", options =>
 {

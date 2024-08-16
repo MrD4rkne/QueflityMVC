@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Domain.Common;
+﻿#region
+
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
+
+#endregion
 
 namespace QueflityMVC.Persistence.Repositories;
 
@@ -66,6 +69,8 @@ public class ProductRepository(Context dbContext) : IProductRepository
         return dbContext.Set<Product>()
             .AsNoTracking()
             .Include(x => x.Image)
+            .Include(x => (x as Item).Category)
+            .Include(x => (x as Item).Components)
             .Include(x => (x as Kit).Elements)
             .FirstOrDefaultAsync(purchasable => purchasable.Id == id);
     }

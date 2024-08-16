@@ -3,6 +3,7 @@
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
 using QueflityMVC.Application.ViewModels.Other;
+using QueflityMVC.Application.ViewModels.Product;
 
 #endregion
 
@@ -27,4 +28,6 @@ public interface IMessageService
     Task<Result<MessageVm>> SendMessage(int conversationId, string messageContent);
 
     Task<bool> CanAccessConversation(int conversationId);
+
+    Task<Result<ProductForCardVm>> GetProductForDashboardVmAsync(int productId);
 }

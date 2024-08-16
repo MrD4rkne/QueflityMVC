@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QueflityMVC.Application.ViewModels.Product
+@model QueflityMVC.Application.ViewModels.Product.ProductForCardVm
+
+<div class="col">
+    @switch (Model)
+    {
+        case ItemForCardVm itemForDashboardVm:
+            <partial name="_ItemDashboardPartial" model="itemForDashboardVm"/>
+            break;
+        case KitForCardVm kitForDashboardVm:
+            <partial name="_KitDashboardPartial" model="kitForDashboardVm"/>
+            break;
+    }
+</div>

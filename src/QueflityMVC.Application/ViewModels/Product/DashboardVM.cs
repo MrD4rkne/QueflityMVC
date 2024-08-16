@@ -2,5 +2,5 @@
 
 public record DashboardVm
 {
-    public required List<ProductForDashboardVm> Products { get; set; }
+    public required List<ProductForCardVm> Products { get; set; }
 }

@@ -1,9 +1,13 @@
-﻿using QueflityMVC.Application.Mapping;
+﻿#region
+
+using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Element;
+
+#endregion
 
 namespace QueflityMVC.Application.ViewModels.Product;
 
-public record KitForDashboardVm : ProductForDashboardVm, IMapFrom<Domain.Models.Kit>
+public record KitForCardVm : ProductForCardVm, IMapFrom<Domain.Models.Kit>
 {
     public string? Description { get; set; }
 
@@ -11,8 +15,8 @@ public record KitForDashboardVm : ProductForDashboardVm, IMapFrom<Domain.Models.
 
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Domain.Models.Kit, KitForDashboardVm>()
-            .IncludeBase<Domain.Models.Product, ProductForDashboardVm>()
+        profile.CreateMap<Domain.Models.Kit, KitForCardVm>()
+            .IncludeBase<Domain.Models.Product, ProductForCardVm>()
             .ForMember(vm => vm.Elements, opt => opt.MapFrom(kit => kit.Elements));
     }
 }

@@ -1,12 +1,15 @@
-﻿using AutoMapper;
+﻿#region
+
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Product;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
+
+#endregion
 
 namespace QueflityMVC.Application.Services;
 
@@ -57,7 +60,7 @@ public class ProductEntityService : IProductEntityService
         var purchasables = _purchasableRepository.GetVisibleProductsForDashboard();
         DashboardVm dashboard = new()
         {
-            Products = await purchasables.Select(x => _mapper.Map<ProductForDashboardVm>(x)).ToListAsync()
+            Products = await purchasables.Select(x => _mapper.Map<ProductForCardVm>(x)).ToListAsync()
         };
         return dashboard;
     }
