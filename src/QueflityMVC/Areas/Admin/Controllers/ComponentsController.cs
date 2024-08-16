@@ -37,7 +37,10 @@ public class ComponentsController : Controller
     public async Task<IActionResult> Index(ListComponentsVm listComponents)
     {
         if (listComponents is null)
+        {
             return BadRequest();
+        }
+
         listComponents.NameFilter ??= string.Empty;
 
         var listVm = await _componentService.GetFilteredListAsync(listComponents);
@@ -75,7 +78,11 @@ public class ComponentsController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var componentVm = await _componentService.GetComponentVmForEditAsync(id);
-        if (componentVm is null) return NotFound();
+        if (componentVm is null)
+        {
+            return NotFound();
+        }
+
         return View(componentVm);
     }
 

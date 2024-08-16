@@ -4,7 +4,7 @@
 @inject IAuthorizationService AuthorizationService
 
 @{
-    var canSeeAdminPage = (await AuthorizationService.AuthorizeAsync(User, Policies.SEE_ADMIN_PANEL)).Succeeded;
+    bool canSeeAdminPage = (await AuthorizationService.AuthorizeAsync(User, Policies.SEE_ADMIN_PANEL)).Succeeded;
 }
 
 <!DOCTYPE html>

@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = "List";
-    var canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
+    bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     int[] options = [2, 5, 10, 25, 50, 100];
 }
 
@@ -30,7 +30,7 @@
         </li>
         <li class="nav-item">
             <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (var i in options)
+                @foreach (int i in options)
                 {
                     @if (i == Model.Pagination.Info.PageSize)
                     {

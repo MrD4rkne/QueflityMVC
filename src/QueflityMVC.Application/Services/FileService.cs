@@ -17,10 +17,13 @@ public class FileService : IFileService
 
     public async Task<string> UploadFileAsync(IFormFile file)
     {
-        var directory = GetImagesDirectory(_rootDirectory);
-        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+        string directory = GetImagesDirectory(_rootDirectory);
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
 
-        var path = GetFileName(directory, Path.GetExtension(file.FileName));
+        string path = GetFileName(directory, Path.GetExtension(file.FileName));
         await using (var stream = new FileStream(path, FileMode.Create))
         {
             await file.CopyToAsync(stream);
@@ -31,7 +34,7 @@ public class FileService : IFileService
 
     public void DeleteImage(string relativeImagePath)
     {
-        var path = Path.Combine(GetRootDirectory(_rootDirectory), NormaliseFilePath(relativeImagePath));
+        string path = Path.Combine(GetRootDirectory(_rootDirectory), NormaliseFilePath(relativeImagePath));
         try
         {
             File.Delete(path);
@@ -55,9 +58,16 @@ public class FileService : IFileService
 
     private string NormaliseFilePath(string path)
     {
-        if (string.IsNullOrEmpty(path)) return string.Empty;
+        if (string.IsNullOrEmpty(path))
+        {
+            return string.Empty;
+        }
 
-        if (path.First() == '/') path = path.Substring(1);
+        if (path.First() == '/')
+        {
+            path = path.Substring(1);
+        }
+
         return path.Replace('/', '\\');
     }
 

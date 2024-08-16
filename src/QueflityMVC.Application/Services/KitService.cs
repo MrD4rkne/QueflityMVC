@@ -48,10 +48,16 @@ public class KitService : IKitService
         }
 
         var kit = _mapper.Map<Kit>(editKitVm);
-        if (!kit.ShouldBeShown) kit.OrderNo = null;
+        if (!kit.ShouldBeShown)
+        {
+            kit.OrderNo = null;
+        }
 
         if (kit.ShouldBeShown && kit.OrderNo is null)
+        {
             kit.OrderNo = await _purchasableRepository.GetNextOrderNumberAsync();
+        }
+
         var updatedKit = await _kitRepository.UpdateAsync(kit);
         return updatedKit.Id;
     }
@@ -59,7 +65,10 @@ public class KitService : IKitService
     public async Task<Result<KitDetailsVm>> GetDetailsVmAsync(int id)
     {
         var kit = await _kitRepository.GetFullKitWithMembershipsByIdAsync(id);
-        if (kit is null) return Result<KitDetailsVm>.Failure(Errors.Kits.DoesNotExit);
+        if (kit is null)
+        {
+            return Result<KitDetailsVm>.Failure(Errors.Kits.DoesNotExit);
+        }
 
         var kitDetailsVm = _mapper.Map<KitDetailsVm>(kit);
         return Result<KitDetailsVm>.Success(kitDetailsVm);
@@ -77,7 +86,10 @@ public class KitService : IKitService
     public async Task<Result<KitVm>> GetKitVmForEditAsync(int id)
     {
         var kit = await _kitRepository.GetFullKitWithMembershipsByIdAsync(id);
-        if (kit is null) return Result<KitVm>.Failure(Errors.Kits.DoesNotExit);
+        if (kit is null)
+        {
+            return Result<KitVm>.Failure(Errors.Kits.DoesNotExit);
+        }
 
         var kitDetailsVm = _mapper.Map<KitVm>(kit);
         return Result<KitVm>.Success(kitDetailsVm);
@@ -99,12 +111,17 @@ public class KitService : IKitService
         ListItemsForComponentsVm itemsForComponentsVm)
     {
         if (!await _kitRepository.ExistsAsync(itemsForComponentsVm.KitId))
+        {
             return Result<ListItemsForComponentsVm>.Failure(Errors.Kits.DoesNotExit);
+        }
 
         itemsForComponentsVm.KitComponentsIds =
             await (await _kitRepository.GetComponentsIdsForSet(itemsForComponentsVm.KitId)).ToListAsync();
         var kitDetailsResult = await GetDetailsVmAsync(itemsForComponentsVm.KitId);
-        if (kitDetailsResult.IsFailure) return Result<ListItemsForComponentsVm>.Failure(kitDetailsResult.Error);
+        if (kitDetailsResult.IsFailure)
+        {
+            return Result<ListItemsForComponentsVm>.Failure(kitDetailsResult.Error);
+        }
 
         var allItems =
             _itemRepository.GetFilteredItems(itemsForComponentsVm.NameFilter, itemsForComponentsVm.CategoryId);
@@ -162,20 +179,30 @@ public class KitService : IKitService
     public async Task<Result> DeleteKitAsync(int id)
     {
         var kitToDelete = await _kitRepository.GetByIdAsync(id);
-        if (kitToDelete is null) return Result.Failure(Errors.Kits.DoesNotExit);
+        if (kitToDelete is null)
+        {
+            return Result.Failure(Errors.Kits.DoesNotExit);
+        }
 
         try
         {
             await _kitRepository.DeleteAsync(id);
             _fileService.DeleteImage(kitToDelete.Image.FileUrl);
-            if (kitToDelete.ShouldBeShown) await _kitRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
+            if (kitToDelete.ShouldBeShown)
+            {
+                await _kitRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
+            }
         }
         catch (ResourceNotFoundException)
         {
             return Result.Failure(Errors.Kits.DoesNotExit);
         }
 
-        if (kitToDelete.Image is not null) _fileService.DeleteImage(kitToDelete.Image!.FileUrl);
+        if (kitToDelete.Image is not null)
+        {
+            _fileService.DeleteImage(kitToDelete.Image!.FileUrl);
+        }
+
         return Result.Success();
     }
 

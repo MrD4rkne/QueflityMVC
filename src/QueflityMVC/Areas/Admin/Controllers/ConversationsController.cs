@@ -16,7 +16,10 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
     {
         var usersConversations = await messageService.GetAllConversationsAsync();
         if (usersConversations.IsFailure)
+        {
             return RedirectToAction("Index", "Home");
+        }
+
         return View(usersConversations.Value);
     }
 
@@ -24,11 +27,15 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
     public async Task<IActionResult> Index(UserConversationsVm userConversationsVm)
     {
         if (userConversationsVm.PaginatedConversations is null)
+        {
             return BadRequest();
+        }
 
         var usersConversations = await messageService.GetAllConversationsAsync(userConversationsVm);
         if (usersConversations.IsFailure)
+        {
             return RedirectToAction("Index", "Home");
+        }
 
         return View(usersConversations.Value);
     }

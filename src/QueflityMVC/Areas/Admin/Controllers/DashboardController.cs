@@ -29,9 +29,17 @@ public class DashboardController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(EditOrderVm editOrderVm)
     {
-        if (editOrderVm?.ProductsVMs is null) return BadRequest();
+        if (editOrderVm?.ProductsVMs is null)
+        {
+            return BadRequest();
+        }
+
         var result = await _purchasableEntityService.UpdateOrderAsync(editOrderVm);
-        if (result.IsSuccess) return RedirectToAction(nameof(Index), "Home");
+        if (result.IsSuccess)
+        {
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
         switch (result.Error.Code)
         {
             case ErrorCodes.Product.INVALID_ORDER:

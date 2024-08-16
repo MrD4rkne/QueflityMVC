@@ -42,11 +42,17 @@ public class ProductEntityService : IProductEntityService
     public async Task<Result> UpdateOrderAsync(EditOrderVm editOrderVm)
     {
         if (!IsOrderValid(editOrderVm.ProductsVMs))
+        {
             return Result.Failure(Errors.Product.InvalidOrder);
+        }
+
         var purchasableModels =
             editOrderVm.ProductsVMs.Select(p => _mapper.Map<Product>(p)).ToList();
         if (!await _purchasableRepository.AreTheseAllVisibleProductsAsync(purchasableModels))
+        {
             return Result.Failure(Errors.Product.ProductMissingInOrder);
+        }
+
         await _purchasableRepository.UpdateProductsOrderAsync(purchasableModels);
         return Result.Success();
     }
@@ -63,7 +69,11 @@ public class ProductEntityService : IProductEntityService
 
     private static bool IsOrderValid(List<ProductVm> purchasables)
     {
-        if (!purchasables.All(p => p.OrderNo >= 0)) return false;
+        if (!purchasables.All(p => p.OrderNo >= 0))
+        {
+            return false;
+        }
+
         var orders = purchasables.Select(purchasable => purchasable.OrderNo).ToList();
         return IsOrderFull(orders);
     }

@@ -4,10 +4,10 @@
 @{
     ViewData["Title"] = "Admin Panel";
 
-    var canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
-    var canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
-    var canReorderProducts = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
-    var canRespondToConversations = (await AuthorizationService.AuthorizeAsync(User, Policies.CONVERSATIONS_RESPOND)).Succeeded;
+    bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
+    bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
+    bool canReorderProducts = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_ORDER)).Succeeded;
+    bool canRespondToConversations = (await AuthorizationService.AuthorizeAsync(User, Policies.CONVERSATIONS_RESPOND)).Succeeded;
 }
 
 @section Styles{

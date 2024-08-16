@@ -10,10 +10,10 @@
     ViewData["Title"] = "Users";
     int[] options = [2, 5, 10, 25, 50, 100];
 
-    var canSeeUserClaims = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_CLAIMS_VIEW)).Succeeded;
-    var canSeeUserRoles = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ROLES_VIEW)).Succeeded;
-    var canDisableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_DISABLE)).Succeeded;
-    var canEnableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ENABLE)).Succeeded;
+    bool canSeeUserClaims = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_CLAIMS_VIEW)).Succeeded;
+    bool canSeeUserRoles = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ROLES_VIEW)).Succeeded;
+    bool canDisableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_DISABLE)).Succeeded;
+    bool canEnableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ENABLE)).Succeeded;
 }
 
 <form asp-action="Index" method="post">
@@ -26,7 +26,7 @@
         </li>
         <li class="nav-item">
             <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (var i in options)
+                @foreach (int i in options)
                 {
                     @if (i == Model.Pagination.Info.PageSize)
                     {

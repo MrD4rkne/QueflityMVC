@@ -43,7 +43,11 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(ListKitsVm listKitsVm)
     {
-        if (listKitsVm is null) return BadRequest();
+        if (listKitsVm is null)
+        {
+            return BadRequest();
+        }
+
         listKitsVm.NameFilter ??= string.Empty;
 
         var listVm = await _kitService.GetFilteredListAsync(listKitsVm);
@@ -72,7 +76,7 @@ public class KitsController : Controller
             return View("Create", createKitVm);
         }
 
-        var kitId = await _kitService.CreateKitAsync(createKitVm);
+        int kitId = await _kitService.CreateKitAsync(createKitVm);
 
         return shouldRouteToDetails ? RedirectToAction("Details", new { id = kitId }) : RedirectToAction("Index");
     }
@@ -82,7 +86,10 @@ public class KitsController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var kitDetailsResult = await _kitService.GetDetailsVmAsync(id);
-        if (kitDetailsResult.IsSuccess) return View(kitDetailsResult.Value);
+        if (kitDetailsResult.IsSuccess)
+        {
+            return View(kitDetailsResult.Value);
+        }
 
         return kitDetailsResult.Error.Code switch
         {
@@ -97,7 +104,11 @@ public class KitsController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var kitToEditResult = await _kitService.GetKitVmForEditAsync(id);
-        if (kitToEditResult.IsSuccess) return View(kitToEditResult.Value);
+        if (kitToEditResult.IsSuccess)
+        {
+            return View(kitToEditResult.Value);
+        }
+
         return kitToEditResult.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
@@ -111,7 +122,10 @@ public class KitsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(KitVm editedKitVm)
     {
-        if (editedKitVm is null) return BadRequest();
+        if (editedKitVm is null)
+        {
+            return BadRequest();
+        }
 
         editedKitVm.ElementCount = await _kitService.GetElementCount(editedKitVm.Id);
         var validationResults = await _kitValidator.ValidateAsync(editedKitVm);
@@ -121,7 +135,7 @@ public class KitsController : Controller
             return View("Edit", editedKitVm);
         }
 
-        var kitId = await _kitService.EditKitAsync(editedKitVm);
+        int kitId = await _kitService.EditKitAsync(editedKitVm);
         return RedirectToAction("Details", new { id = kitId });
     }
 
@@ -131,7 +145,11 @@ public class KitsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var results = await _kitService.DeleteKitAsync(id);
-        if (results.IsSuccess) return RedirectToAction("Index");
+        if (results.IsSuccess)
+        {
+            return RedirectToAction("Index");
+        }
+
         return results.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
@@ -145,7 +163,10 @@ public class KitsController : Controller
     public async Task<IActionResult> ListItemsForComponents(int kitId)
     {
         var getFilteredComponentsResult = await _kitService.GetFilteredListForComponentsAsync(kitId);
-        if (getFilteredComponentsResult.IsSuccess) return View(getFilteredComponentsResult.Value);
+        if (getFilteredComponentsResult.IsSuccess)
+        {
+            return View(getFilteredComponentsResult.Value);
+        }
 
         throw new UnexpectedApplicationException();
     }
@@ -156,7 +177,11 @@ public class KitsController : Controller
     public async Task<IActionResult> ListItemsForComponents(ListItemsForComponentsVm listItemsForComponentsVm)
     {
         var filterComponentsResult = await _kitService.GetFilteredListForComponentsAsync(listItemsForComponentsVm);
-        if (filterComponentsResult.IsSuccess) return View(filterComponentsResult.Value);
+        if (filterComponentsResult.IsSuccess)
+        {
+            return View(filterComponentsResult.Value);
+        }
+
         return filterComponentsResult.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),

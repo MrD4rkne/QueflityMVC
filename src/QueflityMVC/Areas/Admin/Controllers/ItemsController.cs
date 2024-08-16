@@ -40,7 +40,11 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(ListItemsVm listItemsVm)
     {
-        if (listItemsVm is null) return BadRequest();
+        if (listItemsVm is null)
+        {
+            return BadRequest();
+        }
+
         listItemsVm.NameFilter ??= string.Empty;
 
         var listVm = await _itemService.GetFilteredListAsync(listItemsVm);
@@ -53,7 +57,10 @@ public class ItemsController : Controller
     public async Task<IActionResult> Create(int? categoryId)
     {
         var addingVm = await _itemService.GetItemVmForAddingAsync(categoryId);
-        if (addingVm.IsSuccess) return View(addingVm.Value);
+        if (addingVm.IsSuccess)
+        {
+            return View(addingVm.Value);
+        }
 
         return addingVm.Error.Code switch
         {
@@ -113,7 +120,10 @@ public class ItemsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var results = await _itemService.DeleteItemAsync(id);
-        if (results.IsSuccess) return RedirectToAction("Index");
+        if (results.IsSuccess)
+        {
+            return RedirectToAction("Index");
+        }
 
         return results.Error.Code switch
         {
@@ -132,8 +142,15 @@ public class ItemsController : Controller
     public async Task<IActionResult> Components(int id)
     {
         var componentsViewModel = await _itemService.GetComponentsForSelectionVmAsync(id);
-        if (componentsViewModel is null) return NotFound();
-        if (componentsViewModel.AllComponents.Count == 0) return RedirectToAction("NoComponents");
+        if (componentsViewModel is null)
+        {
+            return NotFound();
+        }
+
+        if (componentsViewModel.AllComponents.Count == 0)
+        {
+            return RedirectToAction("NoComponents");
+        }
 
         return View(componentsViewModel);
     }

@@ -14,7 +14,7 @@
             <div class="row gx-sm-1">
                 @for (var column = 0; column < itemsPerRow; column++)
                 {
-                    var itemNo = row * itemsPerRow + column;
+                    int itemNo = row * itemsPerRow + column;
                     if (itemNo >= Model.Products.Count)
                         break;
 

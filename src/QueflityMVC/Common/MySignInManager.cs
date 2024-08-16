@@ -18,27 +18,41 @@ public class MySignInManager : SignInManager<ApplicationUser>
     public override Task<SignInResult> PasswordSignInAsync(ApplicationUser user, string password, bool isPersistent,
         bool lockoutOnFailure)
     {
-        if (!IsUserEnabled(user)) return Task.FromResult(SignInResult.NotAllowed);
+        if (!IsUserEnabled(user))
+        {
+            return Task.FromResult(SignInResult.NotAllowed);
+        }
+
         return base.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure);
     }
 
     public override Task<bool> ValidateSecurityStampAsync(ApplicationUser? user, string? securityStamp)
     {
-        if (!IsUserEnabled(user)) return Task.FromResult(false);
+        if (!IsUserEnabled(user))
+        {
+            return Task.FromResult(false);
+        }
 
         return base.ValidateSecurityStampAsync(user, securityStamp);
     }
 
     public override Task<bool> CanSignInAsync(ApplicationUser user)
     {
-        if (!IsUserEnabled(user)) return Task.FromResult(false);
+        if (!IsUserEnabled(user))
+        {
+            return Task.FromResult(false);
+        }
 
         return base.CanSignInAsync(user);
     }
 
     private static bool IsUserEnabled(ApplicationUser? user)
     {
-        if (user is null) return true;
+        if (user is null)
+        {
+            return true;
+        }
+
         return user.IsEnabled;
     }
 }

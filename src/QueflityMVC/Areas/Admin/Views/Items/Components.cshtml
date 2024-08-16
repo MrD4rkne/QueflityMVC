@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = "Components";
-    var canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
+    bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 <form asp-action="Components" enctype="multipart/form-data">
     <h1>Item</h1>

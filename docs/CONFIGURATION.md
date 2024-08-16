@@ -4,7 +4,9 @@ Here's everything you need to know about Queflity's configuration.
 
 ## How it works
 
-Configuration is fetched by app on demand when needed. It can be provided by command line arguments, appsetting file, environmental values or other sources. See: [Configuration in C#](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration)
+Configuration is fetched by app on demand when needed. It can be provided by command line arguments, appsetting file,
+environmental values or other sources.
+See: [Configuration in C#](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration)
 
 ## Sections
 
@@ -13,6 +15,7 @@ Here you can find what to configure. It is in format as it should be when using 
 ### `Database` section
 
 This section holds settings for connection with database for main logic.
+
 ```json
 "Database":
 {
@@ -23,9 +26,11 @@ This section holds settings for connection with database for main logic.
 
 ### `GoogleOAuth` section
 
-Secrets for Google OAuth. Remember to hold them secured! You can obtain these secrets as explained [here](https://support.google.com/cloud/answer/6158849?hl=en).
+Secrets for Google OAuth. Remember to hold them secured! You can obtain these secrets as
+explained [here](https://support.google.com/cloud/answer/6158849?hl=en).
 
 Return url: *[app's adress]/sign-in-google*, for instance: *https://localhost:5001/sign-in-google*
+
 ```json
 "GoogleOAuth":
 {
@@ -37,6 +42,7 @@ Return url: *[app's adress]/sign-in-google*, for instance: *https://localhost:50
 ### `Smtp` section
 
 Here's configuration for sending emails using SMTP protocol.
+
 ```json
 "Smtp":
 {
@@ -51,7 +57,9 @@ Here's configuration for sending emails using SMTP protocol.
 ### `Jobs` section
 
 Configuration for jobs. Currently only for email sending.
-**WARNING** if you want jobs data to be preserved in database, you need to create necessary tables. See: [Scripts for databases](https://github.com/quartznet/quartznet/tree/main/database)
+**WARNING** if you want jobs data to be preserved in database, you need to create necessary tables.
+See: [Scripts for databases](https://github.com/quartznet/quartznet/tree/main/database)
+
 ```json
 "Jobs":
 {

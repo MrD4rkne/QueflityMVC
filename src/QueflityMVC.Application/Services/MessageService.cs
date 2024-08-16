@@ -28,10 +28,15 @@ public class MessageService(
     public async Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int purchasableId)
     {
         if (!await userRepository.HasVerifiedEmail(userContext.UserId))
+        {
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
+        }
 
         var purchasable = await purchasableRepository.GetByIdAsync(purchasableId);
-        if (purchasable is null) return Result<FirstMessageInConversationVm>.Failure(Errors.Product.DoesNotExist);
+        if (purchasable is null)
+        {
+            return Result<FirstMessageInConversationVm>.Failure(Errors.Product.DoesNotExist);
+        }
 
         FirstMessageInConversationVm firstMessageInConversationVm = new()
         {
@@ -44,14 +49,21 @@ public class MessageService(
     public async Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm)
     {
         if (!await userRepository.HasVerifiedEmail(userContext.UserId))
+        {
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
+        }
 
         var productResult = await GetProductForDashboardVmAsync(firstMessageInConversationVm.Product.Id);
-        if (productResult.IsFailure) return Result.Failure(productResult.Error);
+        if (productResult.IsFailure)
+        {
+            return Result.Failure(productResult.Error);
+        }
 
-        var email = await userRepository.GetEmailForUserAsync(userContext.UserId);
+        string? email = await userRepository.GetEmailForUserAsync(userContext.UserId);
         if (string.IsNullOrWhiteSpace(email))
+        {
             return Result.Failure(Errors.User.EmailNotVerified);
+        }
 
         firstMessageInConversationVm = firstMessageInConversationVm with
         {
@@ -119,7 +131,9 @@ public class MessageService(
     public async Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId)
     {
         if (!await CanAccessConversation(conversationId))
+        {
             return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
+        }
 
         var conversation = await conversationRepository.GetConversationDetails(conversationId);
         var conversationVm = mapper.Map<ConversationVm>(conversation);
@@ -134,7 +148,9 @@ public class MessageService(
     public async Task<Result<MessageVm>> SendMessage(int conversationId, string messageContent)
     {
         if (!await CanAccessConversation(conversationId))
+        {
             return Result<MessageVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
+        }
 
         Message message = new()
         {
@@ -151,7 +167,10 @@ public class MessageService(
     public async Task<Result<ProductForCardVm>> GetProductForDashboardVmAsync(int productId)
     {
         var product = await purchasableRepository.GetByIdAsync(productId);
-        if (product is null) return Result<ProductForCardVm>.Failure(Errors.Product.DoesNotExist);
+        if (product is null)
+        {
+            return Result<ProductForCardVm>.Failure(Errors.Product.DoesNotExist);
+        }
 
         return Result<ProductForCardVm>.Success(mapper.Map<ProductForCardVm>(product));
     }
@@ -159,7 +178,10 @@ public class MessageService(
     public async Task<bool> CanAccessConversation(int conversationId)
     {
         var conversation = await conversationRepository.GetByIdAsync(conversationId);
-        if (conversation.UserId == userContext.UserId) return true;
+        if (conversation.UserId == userContext.UserId)
+        {
+            return true;
+        }
 
         return await CanRespondToConversations(userContext.UserId);
     }
@@ -172,7 +194,7 @@ public class MessageService(
 
     private void SentCopyEmail(FirstMessageInConversationVm firstMessageInConversationVm)
     {
-        var mailBody = BuildEmailBody(firstMessageInConversationVm);
+        string mailBody = BuildEmailBody(firstMessageInConversationVm);
         var subject = $"COPY: Your message about {firstMessageInConversationVm.Product.Name} on {DateTime.Now}";
         backgroundJobScheduler.ScheduleSendMessageJob(new Mail
         {
