@@ -78,7 +78,8 @@
 <link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
 
 
-<input type="hidden" id="conversationsData" value="@Json.Serialize(Model.Entities)"/>
+@* ReSharper disable once Html.AttributesQuotes *@
+<input type="hidden" id="conversationsData" value='@Json.Serialize(Model.Entities)'/>
 
 <ul class="nav gap-1 mb-1">
     <li class="nav-item">
