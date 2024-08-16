@@ -15,9 +15,15 @@ public class ComponentRepository(Context dbContext) : BaseRepository<Component>(
     {
         var matchingComponents = GetAll();
 
-        if (itemId.HasValue) matchingComponents = matchingComponents.Where(x => x.Items!.Any(y => y.Id == itemId));
+        if (itemId.HasValue)
+        {
+            matchingComponents = matchingComponents.Where(x => x.Items!.Any(y => y.Id == itemId));
+        }
+
         if (!string.IsNullOrEmpty(nameFilter))
+        {
             matchingComponents = matchingComponents.Where(x => x.Name.StartsWith(nameFilter));
+        }
 
         return matchingComponents;
     }

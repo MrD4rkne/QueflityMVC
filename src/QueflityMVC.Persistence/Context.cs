@@ -84,10 +84,14 @@ public class Context(DbContextOptions options, IOptions<PersistenceConfig> persi
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
+        {
             optionsBuilder.UseSqlServer(_config.ConnectionString, sqlOptions =>
             {
                 if (_config.ShouldRetry)
+                {
                     sqlOptions.EnableRetryOnFailure();
+                }
             });
+        }
     }
 }

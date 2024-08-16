@@ -39,12 +39,14 @@ public class SendEmailJob(
     private bool TryParseMessage(IJobExecutionContext context, out Mail? mail)
     {
         var dataMap = context.Trigger.JobDataMap;
-        if (dataMap.TryGetValue(DATA_KEY, out var value))
+        if (dataMap.TryGetValue(DATA_KEY, out object value))
+        {
             if (value is Mail mailFromDataMap)
             {
                 mail = mailFromDataMap;
                 return true;
             }
+        }
 
         mail = null;
         return false;

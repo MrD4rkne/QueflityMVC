@@ -20,8 +20,14 @@ public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbC
         var entitiesSource = GetAll();
 
         if (!string.IsNullOrEmpty(nameFilter))
+        {
             entitiesSource = entitiesSource.Where(x => x.Name.StartsWith(nameFilter));
-        if (categoryId.HasValue) entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
+        }
+
+        if (categoryId.HasValue)
+        {
+            entitiesSource = entitiesSource.Where(x => x.CategoryId == categoryId);
+        }
 
         return entitiesSource;
     }
@@ -38,7 +44,10 @@ public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbC
     public async Task UpdateComponentsAsync(int itemId, List<Component> components)
     {
         var item = await GetItemWithComponentsByIdAsync(itemId);
-        if (item is null) throw new ResourceNotFoundException();
+        if (item is null)
+        {
+            throw new ResourceNotFoundException();
+        }
 
         item.Components = components;
         await UpdateAsync(item);
@@ -61,7 +70,7 @@ public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbC
                                  .FirstOrDefaultAsync(Item => Item.Id == entityToUpdate.Id)
                              ?? throw new ResourceNotFoundException(entityName: nameof(Item));
 
-        var oldOrderNo = originalEntity.OrderNo;
+        uint? oldOrderNo = originalEntity.OrderNo;
 
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
@@ -69,7 +78,10 @@ public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbC
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
-        if (entityToUpdate.Components is not null) originalEntity.Components = entityToUpdate.Components;
+        if (entityToUpdate.Components is not null)
+        {
+            originalEntity.Components = entityToUpdate.Components;
+        }
 
         await DbContext.SaveChangesAsync();
         return originalEntity;

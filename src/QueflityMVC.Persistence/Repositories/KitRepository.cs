@@ -32,8 +32,16 @@ public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbCon
     public IQueryable<Kit> GetFilteredKits(string? searchName = default, int? itemId = null)
     {
         var itemsSource = GetAll();
-        if (itemId.HasValue) itemsSource = itemsSource.Where(x => x.Elements.Any(y => y.ItemId == itemId));
-        if (!string.IsNullOrEmpty(searchName)) itemsSource = itemsSource.Where(x => x.Name.StartsWith(searchName));
+        if (itemId.HasValue)
+        {
+            itemsSource = itemsSource.Where(x => x.Elements.Any(y => y.ItemId == itemId));
+        }
+
+        if (!string.IsNullOrEmpty(searchName))
+        {
+            itemsSource = itemsSource.Where(x => x.Name.StartsWith(searchName));
+        }
+
         return itemsSource;
     }
 
@@ -79,7 +87,11 @@ public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbCon
     public async Task DeleteElementAsync(int kitId, int itemId)
     {
         var elemToDelete = await GetElementAsync(kitId, itemId);
-        if (elemToDelete is null) throw new ResourceNotFoundException(nameof(Element));
+        if (elemToDelete is null)
+        {
+            throw new ResourceNotFoundException(nameof(Element));
+        }
+
         var kit = await GetFullKitWithMembershipsByIdAsync(kitId) ??
                   throw new ResourceNotFoundException(entityName: nameof(Kit));
 
@@ -100,7 +112,7 @@ public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbCon
                                  .Include(Kit => Kit.Image)
                                  .FirstOrDefaultAsync(kit => kit.Id == entityToUpdate.Id) ??
                              throw new ResourceNotFoundException(entityName: nameof(Kit));
-        var oldOrderNo = originalEntity.OrderNo;
+        uint? oldOrderNo = originalEntity.OrderNo;
 
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
@@ -111,7 +123,11 @@ public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbCon
         var strategy = DbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
-            if (oldOrderNo.HasValue) await BulkUpdateOrderAsync(oldOrderNo.Value);
+            if (oldOrderNo.HasValue)
+            {
+                await BulkUpdateOrderAsync(oldOrderNo.Value);
+            }
+
             await DbContext.SaveChangesAsync();
         });
         return originalEntity;
@@ -119,7 +135,11 @@ public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbCon
 
     public override async Task DeleteAsync(Kit entityToDelete)
     {
-        if (!await ExistsAsync(entityToDelete)) throw new ResourceNotFoundException(entityName: nameof(Kit));
+        if (!await ExistsAsync(entityToDelete))
+        {
+            throw new ResourceNotFoundException(entityName: nameof(Kit));
+        }
+
         await DbContext.SetElements.Where(x => x.KitId == entityToDelete.Id)
             .ExecuteDeleteAsync();
         DbContext.Kits.Remove(entityToDelete);

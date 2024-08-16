@@ -13,7 +13,9 @@ internal static class DbContextSetup
             appBuilder.Services.AddDbContext<Context>();
 
             if (appBuilder.Environment.IsDevelopment())
+            {
                 appBuilder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            }
 
             return appBuilder;
         }

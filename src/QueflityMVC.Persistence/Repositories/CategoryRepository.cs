@@ -16,7 +16,10 @@ public class CategoryRepository(Context dbContext) : BaseRepository<Category>(db
     {
         var filteredCategories = GetAll();
         if (!string.IsNullOrEmpty(nameFilter))
+        {
             filteredCategories = filteredCategories.Where(ct => ct.Name.StartsWith(nameFilter));
+        }
+
         return filteredCategories;
     }
 }

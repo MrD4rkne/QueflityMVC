@@ -31,7 +31,10 @@ public static class IdentitySeed
     public static async Task SeedRolesClaims(this RoleManager<ApplicationRole> roleManager, string[] claims)
     {
         var adminRole = await roleManager.FindByNameAsync("Admin") ?? throw new Exception("Admin role not found");
-        foreach (var claim in claims) await roleManager.AddClaimAsync(adminRole, new Claim(claim, claim));
+        foreach (string claim in claims)
+        {
+            await roleManager.AddClaimAsync(adminRole, new Claim(claim, claim));
+        }
     }
 
     private static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
@@ -57,6 +60,7 @@ public static class IdentitySeed
         }
 
         if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        {
             try
             {
                 await userManager.AddToRoleAsync(adminUser, "Admin");
@@ -66,5 +70,6 @@ public static class IdentitySeed
                 Log.Error(ex, "Error while seeding admin user");
                 await userManager.DeleteAsync(adminUser);
             }
+        }
     }
 }

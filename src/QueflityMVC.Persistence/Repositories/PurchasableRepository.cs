@@ -8,7 +8,7 @@ public class ProductRepository(Context dbContext) : IProductRepository
 {
     public async Task<bool> AreTheseAllVisibleProductsAsync(List<Product> purchasableModels)
     {
-        var isAnyNotInList = await dbContext.Set<Product>()
+        bool isAnyNotInList = await dbContext.Set<Product>()
             .Where(x => !purchasableModels.Contains(x))
             .AnyAsync(x => x.ShouldBeShown);
         return !isAnyNotInList;
@@ -16,8 +16,12 @@ public class ProductRepository(Context dbContext) : IProductRepository
 
     public async Task<uint> GetNextOrderNumberAsync()
     {
-        var lastOrderNo = await dbContext.Set<Product>().MaxAsync(x => x.OrderNo);
-        if (lastOrderNo is null) return 0;
+        uint? lastOrderNo = await dbContext.Set<Product>().MaxAsync(x => x.OrderNo);
+        if (lastOrderNo is null)
+        {
+            return 0;
+        }
+
         return lastOrderNo.Value + 1;
     }
 
@@ -33,7 +37,7 @@ public class ProductRepository(Context dbContext) : IProductRepository
 
     public async Task UpdateOrderNoAsync(Product purchasable)
     {
-        var orderNo = await GetNextOrderNumberAsync();
+        uint orderNo = await GetNextOrderNumberAsync();
         purchasable.OrderNo = orderNo;
         dbContext.Update(purchasable);
         await dbContext.SaveChangesAsync();
