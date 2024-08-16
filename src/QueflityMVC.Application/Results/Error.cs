@@ -15,6 +15,7 @@ public sealed record Error(string Code, string Description)
             sb.Append(": ");
             sb.Append(Description);
         }
+
         return sb.ToString();
     }
 }

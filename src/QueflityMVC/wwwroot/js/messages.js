@@ -1,5 +1,5 @@
 ﻿function createMessageDiv(message, userId) {
-    
+
     const messageContainer = $('<div class="message"></div>');
     const messageDiv = $('<div class="message-content"></div>').text(message.content);
     const dateDiv = $('<div class="date"></div>').text(formatDateTime(message.sentAt));
@@ -21,7 +21,7 @@ function formatDateTime(dateTime) {
     const now = new Date();
     const date = new Date(dateTime);
 
-    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const time = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
 
     if (date.toDateString() === now.toDateString()) {
         return time;
@@ -34,11 +34,11 @@ function formatDateTime(dateTime) {
     if (diffDays === 1) {
         day = "Yesterday";
     } else if (diffDays < 7) {
-        day = date.toLocaleDateString([], { weekday: 'long' });
+        day = date.toLocaleDateString([], {weekday: 'long'});
     } else {
         day = date.getFullYear() === now.getFullYear()
-            ? date.toLocaleDateString([], { day: '2-digit', month: '2-digit' })
-            : date.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' });
+            ? date.toLocaleDateString([], {day: '2-digit', month: '2-digit'})
+            : date.toLocaleDateString([], {day: '2-digit', month: '2-digit', year: 'numeric'});
     }
 
     return `${time} | ${day}`;
