@@ -6,6 +6,6 @@
     ViewData["Title"] = "Messages";
 }
 
-<form asp-action="Index" asp-controller="Conversations" method="post">
+<form asp-action="Index" asp-controller="Conversations" asp-area="Admin" method="post">
     <partial name="_ConversationsPaginatedPartial" for="@Model.PaginatedConversations"/>
 </form>
