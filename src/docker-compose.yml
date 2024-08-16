@@ -7,11 +7,10 @@ services:
       context: .
       dockerfile: QueflityMVC/Dockerfile
     ports:
-      - "5000:80"
-      - "5001:443"
+      - "8000:80"
+      - "8001:443"
     environment:
-      - DB_CONNECTION_STRING=Server=queflity_database;Database=QueflityDb;User Id=SA;Password=Lf5892dENz;MultipleActiveResultSets=true;TrustServerCertificate=true
-      - ASPNETCORE_URLS=https://+:5001;http://+:5000
+      - ASPNETCORE_URLS=https://+:8001;http://+:8000
   sql:
     container_name: queflity_database
     build:

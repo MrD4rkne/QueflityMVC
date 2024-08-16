@@ -43,13 +43,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Areas\Admin\Data\"/>
+        <Folder Include="Areas\Admin\Models\"/>
+        <Folder Include="Areas\Admin\Views\"/>
         <Folder Include="wwwroot\"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="wwwroot\css\helpers.css"/>
-        <None Remove="Properties\serviceDependencies.json" />
-        <None Remove="Properties\serviceDependencies.local.json" />
+        <None Remove="Properties\serviceDependencies.json"/>
+        <None Remove="Properties\serviceDependencies.local.json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="Areas\Admin\Views\Conversations\Index.cshtml"/>
     </ItemGroup>
 
 </Project>

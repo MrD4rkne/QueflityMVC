@@ -1,10 +1,11 @@
 ﻿using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Domain.Interfaces;
 
-public interface IPurchasableRepository
+public interface IProductRepository
 {
-    Task<bool> AreTheseAllVisiblePurchasablesAsync(List<Product> purchasableModels);
+    Task<bool> AreTheseAllVisibleProductsAsync(List<Product> purchasableModels);
 
     Task<uint> GetNextOrderNumberAsync();
 
@@ -12,9 +13,9 @@ public interface IPurchasableRepository
 
     Task UpdateOrderNoAsync(Product purchasable);
 
-    Task UpdatePurchasablesOrderAsync(List<Product> purchasableModels);
+    Task UpdateProductsOrderAsync(List<Product> purchasableModels);
 
-    IQueryable<Product> GetVisiblePurchasablesForDashboard();
+    IQueryable<Product> GetVisibleProductsForDashboard();
 
     Task<Product?> GetByIdAsync(int id);
 }

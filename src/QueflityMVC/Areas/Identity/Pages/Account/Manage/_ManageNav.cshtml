@@ -1,5 +1,6 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using QueflityMVC.Web.Common
+﻿@using QueflityMVC.Web.Common
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
 @inject MySignInManager SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

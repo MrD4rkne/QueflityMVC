@@ -20,10 +20,10 @@ public class KitService : IKitService
     private readonly IItemRepository _itemRepository;
     private readonly IKitRepository _kitRepository;
     private readonly IMapper _mapper;
-    private readonly IPurchasableRepository _purchasableRepository;
+    private readonly IProductRepository _purchasableRepository;
 
     public KitService(IKitRepository kitRepository, IItemRepository itemRepository, IMapper mapper,
-        IFileService fileService, IPurchasableRepository purchasableRepository)
+        IFileService fileService, IProductRepository purchasableRepository)
     {
         _kitRepository = kitRepository;
         _itemRepository = itemRepository;

@@ -15,7 +15,7 @@ public class EntitySeeder
     private const int VISIBLE_PURCHASABLE = 10;
 
     private readonly HashSet<uint> _orderNumbers = [];
-    private int _visiblePurchasable;
+    private int _visibleProduct;
 
     public EntitySeeder()
     {
@@ -133,9 +133,9 @@ public class EntitySeeder
 
     private bool GetVisibility()
     {
-        if (_visiblePurchasable >= VISIBLE_PURCHASABLE) return false;
+        if (_visibleProduct >= VISIBLE_PURCHASABLE) return false;
         var shouldBeVisible = Random.Shared.Next(0, 2) == 0;
-        if (shouldBeVisible) _visiblePurchasable++;
+        if (shouldBeVisible) _visibleProduct++;
         return shouldBeVisible;
     }
 }

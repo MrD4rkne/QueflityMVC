@@ -6,6 +6,8 @@ public class Item : Product
 {
     public int CategoryId { get; set; }
 
+    public override decimal Price { get; protected set; }
+
     public Category? Category { get; set; }
 
     public ICollection<Element>? SetElements { get; set; }

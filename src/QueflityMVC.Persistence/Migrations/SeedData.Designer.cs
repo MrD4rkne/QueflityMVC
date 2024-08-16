@@ -174,7 +174,7 @@ namespace QueflityMVC.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Common.BasePurchasableEntity", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Common.BaseProductEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -208,9 +208,9 @@ namespace QueflityMVC.Persistence.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("BasePurchasableEntity");
+                    b.ToTable("BaseProductEntity");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("BasePurchasableEntity");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseProductEntity");
 
                     b.UseTphMappingStrategy();
                 });
@@ -743,7 +743,7 @@ namespace QueflityMVC.Persistence.Migrations
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
                 {
-                    b.HasBaseType("QueflityMVC.Domain.Common.BasePurchasableEntity");
+                    b.HasBaseType("QueflityMVC.Domain.Common.BaseProductEntity");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -853,7 +853,7 @@ namespace QueflityMVC.Persistence.Migrations
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
-                    b.HasBaseType("QueflityMVC.Domain.Common.BasePurchasableEntity");
+                    b.HasBaseType("QueflityMVC.Domain.Common.BaseProductEntity");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -1028,7 +1028,7 @@ namespace QueflityMVC.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Common.BasePurchasableEntity", b =>
+            modelBuilder.Entity("QueflityMVC.Domain.Common.BaseProductEntity", b =>
                 {
                     b.HasOne("QueflityMVC.Domain.Models.Image", "Image")
                         .WithMany()

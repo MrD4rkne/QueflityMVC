@@ -27,10 +27,12 @@ public static class DependencyInjection
 
         services.AddTransient<IComponentRepository, ComponentRepository>();
         services.AddTransient<ICategoryRepository, CategoryRepository>();
-        services.AddTransient<IPurchasableRepository, PurchasableRepository>();
+        services.AddTransient<IProductRepository, ProductRepository>();
         services.AddTransient<IItemRepository, ItemRepository>();
         services.AddTransient<IKitRepository, KitRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IMessageRepository, MessageRepository>();
+        services.AddTransient<IConversationRepository, ConversationRepository>();
 
         webApplicationBuilder.ConfigureDbConnection();
         return webApplicationBuilder;
@@ -40,7 +42,7 @@ public static class DependencyInjection
     {
         using var scope = serviceProvider.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         await IdentitySeed.SeedIdentity(userManager, roleManager);
         if (claims is not null) await roleManager.SeedRolesClaims(claims);
     }

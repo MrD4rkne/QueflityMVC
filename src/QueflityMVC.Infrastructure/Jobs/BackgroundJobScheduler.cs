@@ -19,7 +19,7 @@ public class BackgroundJobScheduler : IBackgroundJobScheduler
     public async Task ScheduleSendMessageJob(Mail mail)
     {
         JobDataMap jobData = new();
-        jobData.Put("Mail", mail);
+        jobData.Put(SendEmailJob.DATA_KEY, mail);
 
         var scheduler = await _schedulerFactory.GetScheduler();
         await scheduler.TriggerJob(SendEmailJob.Key, jobData);

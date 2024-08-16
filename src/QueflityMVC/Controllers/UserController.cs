@@ -1,24 +1,17 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.User;
-using QueflityMVC.Web.Common;
+using QueflityMVC.Domain.Interfaces;
 
 namespace QueflityMVC.Web.Controllers;
 
 [Route("User")]
-public class UserController : Controller
+public class UserController(IUserService userService, IUserContext userContext) : Controller
 {
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService)
-    {
-        _userService = userService;
-    }
-
     [HttpGet]
     [Authorize(Policy = Policies.USERS_LIST)]
     public async Task<IActionResult> Index()
@@ -37,40 +30,51 @@ public class UserController : Controller
         if (listUsersVm is null) return BadRequest();
         listUsersVm.UserNameFilter ??= string.Empty;
 
-        var listVm = await _userService.GetFilteredListAsync(listUsersVm);
+        var listVm = await userService.GetFilteredListAsync(listUsersVm);
         return View(listVm);
     }
 
     [HttpGet]
     [Route("DisableUser")]
     [Authorize(Policy = Policies.USER_DISABLE)]
-    public async Task<IActionResult> DisableUser(string userId)
+    public async Task<IActionResult> DisableUser(Guid userId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(userId);
-        var callerId = User.GetLoggedInUserId();
-        if (IsTheSameUser(callerId, userId)) return Unauthorized("User cannot disable himself.");
+        ArgumentNullException.ThrowIfNull(userId);
 
-        await _userService.DisableUserAsync(userId);
-        return RedirectToAction("Index");
+        var result = await userService.DisableUserAsync(userId);
+        if (result.IsSuccess) return RedirectToAction("Index");
+
+        return result.Error.Code switch
+        {
+            ErrorCodes.User.CANNOT_MANAGE_SELF => Forbid(),
+            ErrorCodes.User.DOES_NOT_EXIST => NotFound()
+        };
     }
 
     [HttpGet]
     [Route("EnableUser")]
     [Authorize(Policy = Policies.USER_ENABLE)]
-    public async Task<IActionResult> EnableUser(string userId)
+    public async Task<IActionResult> EnableUser(Guid userId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(userId);
-        await _userService.EnableUserAsync(userId);
-        return RedirectToAction("Index");
+        ArgumentNullException.ThrowIfNull(userId);
+
+        var result = await userService.EnableUserAsync(userId);
+        if (result.IsSuccess) return RedirectToAction("Index");
+
+        return result.Error.Code switch
+        {
+            ErrorCodes.User.CANNOT_MANAGE_SELF => Forbid(),
+            ErrorCodes.User.DOES_NOT_EXIST => NotFound()
+        };
     }
 
     [HttpGet]
     [Route("ManageUserRoles")]
     [Authorize(Policy = Policies.USER_ROLES_VIEW)]
-    public async Task<IActionResult> ManageUserRoles(string userId)
+    public async Task<IActionResult> ManageUserRoles(Guid userId)
     {
-        var userRolesVm = await _userService.GetUsersRolesVmAsync(userId);
-        userRolesVm.CanCallerManage = CanUserManageRoles(User, userId);
+        var userRolesVm = await userService.GetUsersRolesVmAsync(userId);
+        userRolesVm.CanCallerManage = CanUserManageRoles(userId);
         return View(userRolesVm);
     }
 
@@ -81,10 +85,9 @@ public class UserController : Controller
     public async Task<IActionResult> ManageUserRoles(UserRolesVm userRolesVm)
     {
         ArgumentNullException.ThrowIfNull(userRolesVm);
-        ArgumentException.ThrowIfNullOrEmpty(userRolesVm.UserId);
-        if (!CanUserManageRoles(User, userRolesVm.UserId)) return Forbid();
+        if (!CanUserManageRoles(userRolesVm.UserId)) return Forbid();
 
-        await _userService.UpdateUserRolesAsync(userRolesVm);
+        await userService.UpdateUserRolesAsync(userRolesVm);
 
         return RedirectToAction("Index");
     }
@@ -92,10 +95,10 @@ public class UserController : Controller
     [HttpGet]
     [Route("ManageUserClaims")]
     [Authorize(Policy = Policies.USER_CLAIMS_VIEW)]
-    public async Task<IActionResult> ManageUserClaims(string userId)
+    public async Task<IActionResult> ManageUserClaims(Guid userId)
     {
-        var userClaimsVm = await _userService.GetUsersClaimsVmAsync(userId);
-        userClaimsVm.CanCallerManage = CanUserManageClaims(User, userId);
+        var userClaimsVm = await userService.GetUsersClaimsVmAsync(userId);
+        userClaimsVm.CanCallerManage = CanUserManageClaims(userId);
 
         return View(userClaimsVm);
     }
@@ -107,34 +110,26 @@ public class UserController : Controller
     public async Task<IActionResult> ManageUserClaims(UserClaimsVm userClaimsVm)
     {
         ArgumentNullException.ThrowIfNull(userClaimsVm);
-        ArgumentException.ThrowIfNullOrEmpty(userClaimsVm.UserId);
-        if (!CanUserManageClaims(User, userClaimsVm.UserId)) return Forbid();
+        if (!CanUserManageClaims(userClaimsVm.UserId)) return Forbid();
 
-        await _userService.UpdateUserClaimsAsync(userClaimsVm);
+        await userService.UpdateUserClaimsAsync(userClaimsVm);
         return RedirectToAction("Index");
     }
 
-    // TODO: force user to logout after permissions update
-
-    private static bool CanUserManageRoles(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
+    private bool CanUserManageRoles(Guid userToBeManagedId)
     {
-        var callerId = callerPrincipal.GetLoggedInUserId();
-        if (IsTheSameUser(callerId, userToBeManagedId)) return false;
-        return callerPrincipal.HasClaim(Claims.USER_ROLES_MANAGE, Claims.USER_ROLES_MANAGE);
+        return !IsTheSameUser(userContext.UserId, userToBeManagedId) &&
+               User.HasClaim(Claims.USER_ROLES_MANAGE, Claims.USER_ROLES_MANAGE);
     }
 
-    private static bool CanUserManageClaims(ClaimsPrincipal callerPrincipal, string userToBeManagedId)
+    private bool CanUserManageClaims(Guid userToBeManagedId)
     {
-        var callerId = callerPrincipal.GetLoggedInUserId();
-        if (IsTheSameUser(callerId, userToBeManagedId)) return false;
-        return callerPrincipal.HasClaim(Claims.USER_ROLES_MANAGE, Claims.USER_ROLES_MANAGE) &&
-               callerPrincipal.HasClaim(Claims.USER_CLAIMS_MANAGE, Claims.USER_CLAIMS_MANAGE);
+        return !IsTheSameUser(userContext.UserId, userToBeManagedId) &&
+               User.HasClaim(Claims.USER_CLAIMS_MANAGE, Claims.USER_CLAIMS_MANAGE);
     }
 
-    private static bool IsTheSameUser(string? userIdA, string? userIdB)
+    private static bool IsTheSameUser(Guid? userIdA, Guid? userIdB)
     {
-        if (string.IsNullOrEmpty(userIdA) || string.IsNullOrEmpty(userIdB)) return false;
-
-        return userIdA.Equals(userIdB);
+        return userIdA == userIdB;
     }
 }

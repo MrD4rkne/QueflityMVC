@@ -182,7 +182,7 @@ public partial class InitialMigration : Migration
             });
 
         migrationBuilder.CreateTable(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             table => new
             {
                 Id = table.Column<int>("int", nullable: false)
@@ -199,20 +199,20 @@ public partial class InitialMigration : Migration
             },
             constraints: table =>
             {
-                table.PrimaryKey("PK_BasePurchasableEntity", x => x.Id);
+                table.PrimaryKey("PK_BaseProductEntity", x => x.Id);
                 table.ForeignKey(
-                    "FK_BasePurchasableEntity_BasePurchasableEntity_ItemId",
+                    "FK_BaseProductEntity_BaseProductEntity_ItemId",
                     x => x.ItemId,
-                    "BasePurchasableEntity",
+                    "BaseProductEntity",
                     "Id");
                 table.ForeignKey(
-                    "FK_BasePurchasableEntity_Categories_CategoryId",
+                    "FK_BaseProductEntity_Categories_CategoryId",
                     x => x.CategoryId,
                     "Categories",
                     "Id",
                     onDelete: ReferentialAction.Cascade);
                 table.ForeignKey(
-                    "FK_BasePurchasableEntity_Images_ImageId",
+                    "FK_BaseProductEntity_Images_ImageId",
                     x => x.ImageId,
                     "Images",
                     "Id");
@@ -229,9 +229,9 @@ public partial class InitialMigration : Migration
             {
                 table.PrimaryKey("PK_ComponentItem", x => new { x.ComponentsId, x.ItemsId });
                 table.ForeignKey(
-                    "FK_ComponentItem_BasePurchasableEntity_ItemsId",
+                    "FK_ComponentItem_BaseProductEntity_ItemsId",
                     x => x.ItemsId,
-                    "BasePurchasableEntity",
+                    "BaseProductEntity",
                     "Id",
                     onDelete: ReferentialAction.Cascade);
                 table.ForeignKey(
@@ -257,14 +257,14 @@ public partial class InitialMigration : Migration
             {
                 table.PrimaryKey("PK_SetElements", x => x.Id);
                 table.ForeignKey(
-                    "FK_SetElements_BasePurchasableEntity_ItemId",
+                    "FK_SetElements_BaseProductEntity_ItemId",
                     x => x.ItemId,
-                    "BasePurchasableEntity",
+                    "BaseProductEntity",
                     "Id");
                 table.ForeignKey(
-                    "FK_SetElements_BasePurchasableEntity_KitId",
+                    "FK_SetElements_BaseProductEntity_KitId",
                     x => x.KitId,
-                    "BasePurchasableEntity",
+                    "BaseProductEntity",
                     "Id");
             });
 
@@ -308,18 +308,18 @@ public partial class InitialMigration : Migration
             filter: "[NormalizedUserName] IS NOT NULL");
 
         migrationBuilder.CreateIndex(
-            "IX_BasePurchasableEntity_CategoryId",
-            "BasePurchasableEntity",
+            "IX_BaseProductEntity_CategoryId",
+            "BaseProductEntity",
             "CategoryId");
 
         migrationBuilder.CreateIndex(
-            "IX_BasePurchasableEntity_ImageId",
-            "BasePurchasableEntity",
+            "IX_BaseProductEntity_ImageId",
+            "BaseProductEntity",
             "ImageId");
 
         migrationBuilder.CreateIndex(
-            "IX_BasePurchasableEntity_ItemId",
-            "BasePurchasableEntity",
+            "IX_BaseProductEntity_ItemId",
+            "BaseProductEntity",
             "ItemId");
 
         migrationBuilder.CreateIndex(
@@ -372,7 +372,7 @@ public partial class InitialMigration : Migration
             "Components");
 
         migrationBuilder.DropTable(
-            "BasePurchasableEntity");
+            "BaseProductEntity");
 
         migrationBuilder.DropTable(
             "Categories");

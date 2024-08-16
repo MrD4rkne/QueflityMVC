@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using QueflityMVC.Application;
@@ -6,12 +7,14 @@ using QueflityMVC.Infrastructure;
 using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
 using QueflityMVC.Persistence.Setup;
+using QueflityMVC.Web.Chat;
 using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.Other;
 using Serilog;
 using JobsOptionsValidator = QueflityMVC.Web.Setup.JobsOptionsValidator;
 using SmtpOptionsValidator = QueflityMVC.Web.Setup.SmtpOptionsValidator;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);
@@ -58,6 +61,8 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.ConfigureIdentity();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -79,8 +84,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}");
+    "Admin",
+    "Admin/{controller}/{action}/{id?}",
+    new { area = "Admin", controller = "Home", action = "Index" });
+
+app.MapDefaultControllerRoute();
+
+app.MapHub<MessageHub>("/messageHub", options =>
+{
+    options.Transports = HttpTransportType.LongPolling | HttpTransportType.ServerSentEvents;
+    options.CloseOnAuthenticationExpiration = true;
+});
 
 app.MapRazorPages();
 

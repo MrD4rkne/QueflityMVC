@@ -1,52 +1,110 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model QueflityMVC.Application.ViewModels.Other.MessageVm
+@model QueflityMVC.Application.ViewModels.Other.FirstMessageInConversationVm
 
 @{
     ViewData["Title"] = "Contact";
 }
 
-<form asp-action="Contact" asp-controller="Home">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+@section Styles {
+    <style>
+    .contact-container {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        margin: 20px auto;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
 
-    <div class="card mb-3">
-        <div class="row g-0">
-            @Html.HiddenFor(model => model.Purchasable.Id)
-            <div class="col-md-auto">
-                <img class="img-fluid rounded-start" src="@Model.Purchasable.Image.FileUrl" alt="@Model.Purchasable.Image.AltDescription" style="max-height: 200px"/>
-                @Html.HiddenFor(model => model.Purchasable.Image.FileUrl)
-                @Html.HiddenFor(model => model.Purchasable.Image.AltDescription)
+    .contact-left {
+        flex: 1;
+        min-width: 300px;
+        padding: 20px;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-right: 1px solid #e0e0e0;
+    }
+
+    .contact-right {
+        flex: 1;
+        min-width: 300px;
+        padding: 40px;
+        background-color: #fafafa;
+    }
+
+    .contact-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-form h3 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #555555;
+    }
+
+    .form-control {
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
+}
+
+<div class="contact-container">
+
+    <div class="contact-left">
+        <partial name="_ProductCardPartial" model="Model.Product"/>
+    </div>
+    <div class="contact-right">
+        <form asp-action="Contact" asp-controller="Home" class="contact-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @Html.HiddenFor(model => model.Product.Id)
+
+            <h3>Contact Us!</h3>
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input type="text" class="form-control" asp-for="Title"/>
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="col-md">
-                <div class="card-body">
-                    <div class="row">
-                        <h4 class="card-title">@Html.DisplayFor(model => model.Purchasable.Name)</h4>
-                        @Html.HiddenFor(model => model.Purchasable.Name)
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <dl style="width:fit-content;">
-                                <dt class="col-sm">
-                                    Price
-                                </dt>
-                                <dd class="col-sm">
-                                    @Html.DisplayFor(model => model.Purchasable.Price)
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="form-group">
+                <label asp-for="Message" class="control-label"></label>
+                <textarea class="form-control" asp-for="Message"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
             </div>
-        </div>
-    </div>
 
-    <h3>Contact us!</h3>
-
-    <div class="form-group">
-        <label asp-for="Message" class="control-label"></label>
-        <textarea class="form-control" asp-for="Message"></textarea>
-        <span asp-validation-for="Message" class="text-danger"></span>
+            <div class="form-group">
+                <input type="submit" value="Send Message" class="btn btn-primary"/>
+            </div>
+        </form>
     </div>
-    <div class="form-group" style="margin: 5px">
-        <input type="submit" value="Save" class="btn btn-primary"/>
-    </div>
-</form>
+</div>

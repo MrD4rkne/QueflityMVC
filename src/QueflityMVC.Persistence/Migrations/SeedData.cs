@@ -79,7 +79,7 @@ public partial class SeedData : Migration
             });
 
         migrationBuilder.InsertData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             ["Id", "CategoryId", "Discriminator", "ImageId", "Name", "OrderNo", "Price", "ShouldBeShown"],
             new object[,]
             {
@@ -96,7 +96,7 @@ public partial class SeedData : Migration
             });
 
         migrationBuilder.InsertData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             [
                 "Id", "Description", "Discriminator", "ImageId", "ItemId", "Name", "OrderNo", "Price", "ShouldBeShown"
             ],
@@ -162,22 +162,22 @@ public partial class SeedData : Migration
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             5);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             7);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             14);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             20);
 
@@ -357,82 +357,82 @@ public partial class SeedData : Migration
             15);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             1);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             2);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             3);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             4);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             6);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             8);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             9);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             10);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             11);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             12);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             13);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             15);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             16);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             17);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             18);
 
         migrationBuilder.DeleteData(
-            "BasePurchasableEntity",
+            "BaseProductEntity",
             "Id",
             19);
 

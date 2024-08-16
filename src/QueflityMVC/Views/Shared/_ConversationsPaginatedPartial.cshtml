@@ -1,0 +1,171 @@
+﻿@using QueflityMVC.Domain.Interfaces
+@model QueflityMVC.Application.ViewModels.Pagination.PaginationVm<QueflityMVC.Application.ViewModels.Message.ConversationShortVm>
+@inject IUserContext UserContext
+
+@{
+    ViewData["Title"] = "Messages";
+    int[] options = [2, 5, 10, 25, 50, 100];
+}
+
+<style>
+    .conversation-wrapper {
+        display: flex;
+        margin-bottom: 20px; /* Add space between conversations */
+        border: 1px solid #ddd; /* Add border around each conversation */
+        border-radius: 5px;
+        height: 20vh; /* Fixed height */
+        overflow: hidden; /* Ensure child elements do not overflow */
+        padding: 0;
+    }
+
+    .partial-view {
+        width: 30%; /* Adjust width to fit within the conversation-wrapper */
+        border-right: 1px solid #ccc;
+        padding: 15px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+    }
+
+    .partial-view h5 {
+        font-size: 1.1em;
+        font-weight: bold;
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .partial-view img {
+        border-radius: 8px;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .partial-view h7 {
+        font-size: 1em;
+        color: #333;
+        text-align: center;
+    }
+
+    .partial-view .product-price {
+        font-size: 1em;
+        color: #28a745;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .partial-view .last-message-time {
+        font-size: 0.9em;
+        color: #666;
+        margin-top: auto;
+    }
+
+    .arrow-link:hover {
+        text-decoration: underline;
+    }
+
+    .messages-view {
+        height: 100%;
+        width: 100%; /* Adjust width to fit within the conversation-wrapper */
+        background: #F0F8FF; /* AliceBlue */
+        overflow-y: auto; /* Scroll only if needed */
+        display: flex;
+        flex-direction: column;
+        padding: 10px; /* Add padding if needed */
+    }
+
+
+</style>
+
+<link href="@Url.Content("~/css/messages.css")" rel="stylesheet" type="text/css"/>
+
+
+@* ReSharper disable once Html.AttributesQuotes *@
+<input type="hidden" id="conversationsData" value='@Json.Serialize(Model.Entities)'/>
+
+<ul class="nav gap-1 mb-1">
+    <li class="nav-item">
+        <select class="form-select" asp-for="Info.PageSize" onchange="PageSizeSelected()">
+            @foreach (var i in options)
+            {
+                @if (i == Model.Info.PageSize)
+                {
+                    <option value="@i" selected>@i</option>
+                }
+                else
+                {
+                    <option value="@i">@i</option>
+                }
+            }
+        </select>
+    </li>
+</ul>
+
+<div class="row">
+    @foreach (var conversationVm in Model.Entities)
+    {
+        <div class="conversation-wrapper">
+            <div class="row partial-view">
+                <div class="col">
+                    <img src="@conversationVm.Product.Image.FileUrl" alt="@conversationVm.Product.Image.AltDescription" class="img-thumbnail"/>
+                </div>
+                <div class="col">
+                    <h5 class="text-break">@conversationVm.Title</h5>
+                    <h7>About: <strong>@conversationVm.Product.Name</strong></h7>
+                    <div class="product-price">Price: $@conversationVm.Product.Price</div>
+                    <div class="user-info">
+                        @if (conversationVm.Messages.LastOrDefault() is { } lastMessageVm)
+                        {
+                            <p class="last-message-time">Last message: @lastMessageVm.SentAt.ToShortDateString()</p>
+                        }
+                        else
+                        {
+                            <p class="last-message-time">No messages yet</p>
+                        }
+                    </div>
+                    <a class="arrow-link" asp-area="" asp-controller="Conversations" asp-action="Details" asp-route-id="@conversationVm.Id">&rarr;</a>
+                </div>
+            </div>
+            <div class="messages-view">
+                @{
+                    var containerId = $"messagesList{conversationVm.Id}";
+                }
+                <div class="messages-container" id="@containerId">
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<div class="row">
+    <partial name="_PaginationPartial" for="Info"/>
+</div>
+
+<script src="@Url.Content("~/js/messages.js")"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMessages();
+    });
+    function loadMessages() {
+        const conversationsData = document.getElementById("conversationsData").value;
+        const conversations = JSON.parse(conversationsData);
+        const currentUserId = "@UserContext.UserId";
+        conversations.forEach(conversation=>{
+            const messagesContainerId="messagesList"+conversation.id;
+            const messagesContainer=$('#' +messagesContainerId);
+
+            conversation.messages.forEach(message => {
+                const messageDiv = createMessageDiv(message, currentUserId);
+                messagesContainer.append(messageDiv);
+            });
+        });
+        document.querySelectorAll('.messages-view').forEach(element => {
+            element.scrollTop = element.scrollHeight;
+        });
+    }
+
+</script>
+<script type="text/javascript">
+    function PageSizeSelected() {
+        SubmitPagination();
+    }
+</script>

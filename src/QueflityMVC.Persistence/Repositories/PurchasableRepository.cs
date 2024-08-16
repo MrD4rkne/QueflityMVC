@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QueflityMVC.Domain.Common;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Persistence.Repositories;
 
-public class PurchasableRepository(Context dbContext) : IPurchasableRepository
+public class ProductRepository(Context dbContext) : IProductRepository
 {
-    public async Task<bool> AreTheseAllVisiblePurchasablesAsync(List<Product> purchasableModels)
+    public async Task<bool> AreTheseAllVisibleProductsAsync(List<Product> purchasableModels)
     {
         var isAnyNotInList = await dbContext.Set<Product>()
             .Where(x => !purchasableModels.Contains(x))
@@ -40,14 +39,14 @@ public class PurchasableRepository(Context dbContext) : IPurchasableRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdatePurchasablesOrderAsync(List<Product> purchasableModels)
+    public async Task UpdateProductsOrderAsync(List<Product> purchasableModels)
     {
         var entities = dbContext.Set<Product>().Where(x => purchasableModels.Contains(x));
         await entities.ForEachAsync(x => x.OrderNo = purchasableModels.First(p => p.Id == x.Id).OrderNo);
         await dbContext.SaveChangesAsync();
     }
 
-    public IQueryable<Product> GetVisiblePurchasablesForDashboard()
+    public IQueryable<Product> GetVisibleProductsForDashboard()
     {
         return dbContext.Set<Product>()
             .AsNoTracking()
@@ -66,6 +65,9 @@ public class PurchasableRepository(Context dbContext) : IPurchasableRepository
         return dbContext.Set<Product>()
             .AsNoTracking()
             .Include(x => x.Image)
+            .Include(x => (x as Item).Category)
+            .Include(x => (x as Item).Components)
+            .Include(x => (x as Kit).Elements)
             .FirstOrDefaultAsync(purchasable => purchasable.Id == id);
     }
 }

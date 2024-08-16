@@ -39,6 +39,9 @@ public static class AuthorizationSetup
             policy.RequireClaim(Claims.ENTITIES_ORDER)
                 .RequireClaim(Claims.ENTITIES_LIST));
 
+        options.AddPolicy(Policies.CONVERSATIONS_RESPOND, policy =>
+            policy.RequireClaim(Claims.CONVERSATIONS_RESPOND));
+
         return options;
     }
 }

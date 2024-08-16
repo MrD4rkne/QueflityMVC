@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Domain.Interfaces;
 
-public interface IKitRepository : IBasePurchasableRepository<Kit>
+public interface IKitRepository : IBaseProductRepository<Kit>
 {
     Task<Kit?> GetFullKitWithMembershipsByIdAsync(int id);
 

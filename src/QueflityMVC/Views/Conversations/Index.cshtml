@@ -1,0 +1,12 @@
+﻿@using QueflityMVC.Domain.Interfaces
+@model QueflityMVC.Application.ViewModels.Message.UserConversationsVm
+@inject IUserContext UserContext
+
+@{
+    ViewData["Title"] = "Conversations";
+    int[] options = [2, 5, 10, 25, 50, 100];
+}
+
+<form asp-action="Index" asp-controller="Conversations" method="post">
+    <partial name="_ConversationsPaginatedPartial" for="@Model.PaginatedConversations"/>
+</form>

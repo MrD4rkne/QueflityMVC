@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence;
 using QueflityMVC.Web.Common;
@@ -11,7 +12,7 @@ public static class IdentitySetup
     {
         services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddDefaultUI()
-            .AddRoles<IdentityRole>()
+            .AddRoles<ApplicationRole>()
             .AddSignInManager<MySignInManager>()
             .AddEntityFrameworkStores<Context>();
         services.Configure<IdentityOptions>(options =>
@@ -25,6 +26,8 @@ public static class IdentitySetup
         });
 
         services.Configure<SecurityStampValidatorOptions>(options => { options.ValidationInterval = TimeSpan.Zero; });
+
+        services.AddTransient<IUserContext, UserContext>();
 
         return services;
     }

@@ -1,11 +1,29 @@
 ﻿using QueflityMVC.Application.Results;
+using QueflityMVC.Application.ViewModels.Message;
 using QueflityMVC.Application.ViewModels.Other;
+using QueflityMVC.Application.ViewModels.Product;
 
 namespace QueflityMVC.Application.Interfaces;
 
 public interface IMessageService
 {
-    Task<Result<MessageVm>> GetContactVmAsync(int id, string email);
+    Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int id);
 
-    Task<Result> SendMessageAsync(MessageVm messageVm, string userId);
+    Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm);
+
+    Task<Result<UserConversationsVm>> GetUsersConversationsAsync();
+
+    Task<Result<UserConversationsVm>> GetUsersConversationsAsync(UserConversationsVm userConversationsVm);
+
+    Task<Result<UserConversationsVm>> GetAllConversationsAsync();
+
+    Task<Result<UserConversationsVm>> GetAllConversationsAsync(UserConversationsVm userConversationsVm);
+
+    Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId);
+
+    Task<Result<MessageVm>> SendMessage(int conversationId, string messageContent);
+
+    Task<bool> CanAccessConversation(int conversationId);
+
+    Task<Result<ProductForCardVm>> GetProductForDashboardVmAsync(int productId);
 }

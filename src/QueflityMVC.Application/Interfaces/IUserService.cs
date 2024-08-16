@@ -1,18 +1,19 @@
-﻿using QueflityMVC.Application.ViewModels.User;
+﻿using QueflityMVC.Application.Results;
+using QueflityMVC.Application.ViewModels.User;
 
 namespace QueflityMVC.Application.Interfaces;
 
 public interface IUserService
 {
-    Task DisableUserAsync(string userToDisableId);
+    Task<Result> DisableUserAsync(Guid userToDisableId);
 
-    Task EnableUserAsync(string userToEnableId);
+    Task<Result> EnableUserAsync(Guid userToEnableId);
 
     Task<ListUsersVm> GetFilteredListAsync(ListUsersVm listUsersVm);
 
-    Task<UserClaimsVm> GetUsersClaimsVmAsync(string userId);
+    Task<UserClaimsVm> GetUsersClaimsVmAsync(Guid userId);
 
-    Task<UserRolesVm> GetUsersRolesVmAsync(string userId);
+    Task<UserRolesVm> GetUsersRolesVmAsync(Guid userId);
 
     Task UpdateUserClaimsAsync(UserClaimsVm userClaimsVm);
 
