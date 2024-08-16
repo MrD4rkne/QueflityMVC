@@ -6,8 +6,10 @@ using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Web.Exceptions;
 
-namespace QueflityMVC.Web.Controllers;
+namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
+[Area("Admin")]
+[Authorize(Policy = Policies.ENTITIES_ORDER)]
 public class DashboardController : Controller
 {
     private readonly IProductEntityService _purchasableEntityService;
@@ -18,7 +20,6 @@ public class DashboardController : Controller
     }
 
     [HttpGet]
-    [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public async Task<IActionResult> Index()
     {
         var orderEditVm = await _purchasableEntityService.GetEntitiesOrderVm();
@@ -26,7 +27,6 @@ public class DashboardController : Controller
     }
 
     [HttpPost]
-    [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public async Task<IActionResult> Index(EditOrderVm editOrderVm)
     {
         if (editOrderVm?.ProductsVMs is null) return BadRequest();
@@ -47,7 +47,6 @@ public class DashboardController : Controller
     }
 
     [HttpGet]
-    [Authorize(Policy = Policies.ENTITIES_ORDER)]
     public IActionResult UpdateFailed(UpdateOrderFailedVm updateFailedVm)
     {
         return View(updateFailedVm);

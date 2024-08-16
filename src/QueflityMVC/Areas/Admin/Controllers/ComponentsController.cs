@@ -7,9 +7,9 @@ using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.ViewModels.Component;
 
-namespace QueflityMVC.Web.Controllers;
+namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
-[Route("Components")]
+[Area("Admin")]
 public class ComponentsController : Controller
 {
     private readonly IValidator<ComponentVm> _categoryValidator;

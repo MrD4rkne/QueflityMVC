@@ -14,4 +14,5 @@ public static class Policies
     public const string ENTITIES_CREATE = "CanCreateEntities";
     public const string ENTITIES_ORDER = "OrderEntities";
     public const string CONVERSATIONS_RESPOND = "CanRespondToConversations";
+    public const string SEE_ADMIN_PANEL = "CanSeeAdminPanel";
 }

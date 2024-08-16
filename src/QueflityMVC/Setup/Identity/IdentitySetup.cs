@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence;
@@ -28,6 +29,7 @@ public static class IdentitySetup
         services.Configure<SecurityStampValidatorOptions>(options => { options.ValidationInterval = TimeSpan.Zero; });
 
         services.AddTransient<IUserContext, UserContext>();
+        services.AddTransient<IAuthorizationHandler, OneOfMultiplePoliciesAuthorizationHandler>();
 
         return services;
     }

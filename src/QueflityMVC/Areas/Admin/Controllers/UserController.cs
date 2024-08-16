@@ -7,9 +7,9 @@ using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
 
-namespace QueflityMVC.Web.Controllers;
+namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
-[Route("User")]
+[Area("Admin")]
 public class UserController(IUserService userService, IUserContext userContext) : Controller
 {
     [HttpGet]

@@ -9,9 +9,9 @@ using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Web.Exceptions;
 
-namespace QueflityMVC.Web.Controllers;
+namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
-[Route("Items")]
+[Area("Admin")]
 public class ItemsController : Controller
 {
     private readonly IItemService _itemService;

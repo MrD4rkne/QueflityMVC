@@ -42,6 +42,10 @@ public static class AuthorizationSetup
         options.AddPolicy(Policies.CONVERSATIONS_RESPOND, policy =>
             policy.RequireClaim(Claims.CONVERSATIONS_RESPOND));
 
+        options.AddPolicy(Policies.SEE_ADMIN_PANEL, policy =>
+            policy.Requirements.Add(new OneOfMultiplePoliciesRequirement(Policies.USERS_LIST, Policies.ENTITIES_LIST,
+                Policies.CONVERSATIONS_RESPOND, Policies.ENTITIES_ORDER)));
+
         return options;
     }
 }
