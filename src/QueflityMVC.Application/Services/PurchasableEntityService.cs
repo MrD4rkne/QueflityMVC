@@ -1,6 +1,4 @@
-﻿#region
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
@@ -8,8 +6,6 @@ using QueflityMVC.Application.ViewModels.Product;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Infrastructure.Abstraction.Interfaces;
-
-#endregion
 
 namespace QueflityMVC.Application.Services;
 

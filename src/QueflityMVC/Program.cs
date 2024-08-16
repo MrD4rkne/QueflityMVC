@@ -1,5 +1,3 @@
-#region
-
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -17,7 +15,6 @@ using Serilog;
 using JobsOptionsValidator = QueflityMVC.Web.Setup.JobsOptionsValidator;
 using SmtpOptionsValidator = QueflityMVC.Web.Setup.SmtpOptionsValidator;
 
-#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestHeadersTotalSize = 1048576);

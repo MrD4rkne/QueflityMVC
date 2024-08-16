@@ -1,11 +1,7 @@
-﻿#region
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Common;
-
-#endregion
 
 namespace QueflityMVC.Persistence.Repositories;
 

@@ -1,11 +1,7 @@
-﻿#region
-
-using QueflityMVC.Application.Results;
+﻿using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Product;
-
-#endregion
 
 namespace QueflityMVC.Application.Interfaces;
 

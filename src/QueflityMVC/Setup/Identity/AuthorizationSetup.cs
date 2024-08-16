@@ -1,9 +1,5 @@
-﻿#region
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using QueflityMVC.Application.Constants;
-
-#endregion
 
 namespace QueflityMVC.Web.Setup.Identity;
 

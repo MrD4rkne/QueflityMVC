@@ -1,13 +1,9 @@
-﻿#region
-
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
-
-#endregion
 
 namespace QueflityMVC.Persistence.Repositories;
 

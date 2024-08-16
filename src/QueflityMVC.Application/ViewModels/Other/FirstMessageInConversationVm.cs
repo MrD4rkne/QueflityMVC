@@ -1,8 +1,4 @@
-﻿#region
-
-using QueflityMVC.Application.ViewModels.Product;
-
-#endregion
+﻿using QueflityMVC.Application.ViewModels.Product;
 
 namespace QueflityMVC.Application.ViewModels.Other;
 

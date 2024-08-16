@@ -1,12 +1,8 @@
-﻿#region
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
-
-#endregion
 
 namespace QueflityMVC.Web.Controllers;
 

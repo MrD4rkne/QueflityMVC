@@ -1,8 +1,4 @@
-﻿#region
-
-using QueflityMVC.Domain.Models;
-
-#endregion
+﻿using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Domain.Interfaces;
 

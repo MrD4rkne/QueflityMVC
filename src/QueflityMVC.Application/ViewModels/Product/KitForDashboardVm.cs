@@ -1,9 +1,5 @@
-﻿#region
-
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Element;
-
-#endregion
 
 namespace QueflityMVC.Application.ViewModels.Product;
 

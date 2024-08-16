@@ -1,6 +1,4 @@
-﻿#region
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Security.Claims;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -10,8 +8,6 @@ using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Web.Models;
-
-#endregion
 
 namespace QueflityMVC.Web.Controllers;
 
