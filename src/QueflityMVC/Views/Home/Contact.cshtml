@@ -2,11 +2,11 @@
 @model QueflityMVC.Application.ViewModels.Other.FirstMessageInConversationVm
 
 @{
-    ViewData["Title"] = "Contact";
+ViewData["Title"] = "Contact";
 }
 
 @section Styles {
-    <style>
+<style>
     .contact-container {
         flex: 1;
         display: flex;
@@ -24,9 +24,30 @@
         padding: 20px;
         background-color: #ffffff;
         display: flex;
+        flex-direction: column;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         border-right: 1px solid #e0e0e0;
+    }
+
+    .product-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .product-name {
+        font-size: 22px;
+        font-weight: bold;
+        color: #333333;
+        margin-bottom: 10px;
+    }
+
+    .product-price {
+        font-size: 18px;
+        color: #666666;
+        margin-bottom: 20px;
     }
 
     .contact-right {
@@ -80,8 +101,11 @@
 <div class="contact-container">
 
     <div class="contact-left">
-        <partial name="_ProductCardPartial" model="Model.Product"/>
+        <img src="@Model.Product.Image.FileUrl" alt="@Model.Product.Image.AltDescription" class="product-image"/>
+        <div class="product-name">@Model.Product.Name</div>
+        <div class="product-price">$@Model.Product.Price</div>
     </div>
+
     <div class="contact-right">
         <form asp-action="Contact" asp-controller="Home" class="contact-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>

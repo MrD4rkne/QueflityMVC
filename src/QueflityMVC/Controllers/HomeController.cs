@@ -56,7 +56,7 @@ public class HomeController(
             return RedirectToAction("ProductNotFound", "Home");
         }
 
-        var productResult = await messageService.GetProductForDashboardVmAsync(firstMessageInConversationVm.Product.Id);
+        var productResult = await messageService.GetProductForContactVmAsync(firstMessageInConversationVm.Product.Id);
         if (productResult.IsFailure)
         {
             return RedirectToAction("ProductNotFound", "Home");

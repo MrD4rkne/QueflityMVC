@@ -40,7 +40,7 @@ public class MessageService(
 
         FirstMessageInConversationVm firstMessageInConversationVm = new()
         {
-            Product = mapper.Map<ProductForCardVm>(purchasable),
+            Product = mapper.Map<ProductShortVm>(purchasable),
             Email = await userRepository.GetEmailForUserAsync(userContext.UserId)
         };
         return Result<FirstMessageInConversationVm>.Success(firstMessageInConversationVm);
@@ -53,7 +53,7 @@ public class MessageService(
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
         }
 
-        var productResult = await GetProductForDashboardVmAsync(firstMessageInConversationVm.Product.Id);
+        var productResult = await GetProductForContactVmAsync(firstMessageInConversationVm.Product.Id);
         if (productResult.IsFailure)
         {
             return Result.Failure(productResult.Error);
@@ -164,15 +164,15 @@ public class MessageService(
         return Result<MessageVm>.Success(mapper.Map<MessageVm>(message));
     }
 
-    public async Task<Result<ProductForCardVm>> GetProductForDashboardVmAsync(int productId)
+    public async Task<Result<ProductShortVm>> GetProductForContactVmAsync(int productId)
     {
         var product = await purchasableRepository.GetByIdAsync(productId);
         if (product is null)
         {
-            return Result<ProductForCardVm>.Failure(Errors.Product.DoesNotExist);
+            return Result<ProductShortVm>.Failure(Errors.Product.DoesNotExist);
         }
 
-        return Result<ProductForCardVm>.Success(mapper.Map<ProductForCardVm>(product));
+        return Result<ProductShortVm>.Success(mapper.Map<ProductShortVm>(product));
     }
 
     public async Task<bool> CanAccessConversation(int conversationId)
