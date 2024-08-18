@@ -72,7 +72,7 @@ public class HomeController(
         }
 
         await messageService.StartConversationAsync(firstMessageInConversationVm);
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction("Index", "Home", new { area = "" });
     }
 
     public IActionResult Privacy()

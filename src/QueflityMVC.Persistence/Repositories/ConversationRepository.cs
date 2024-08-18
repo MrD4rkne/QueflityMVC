@@ -17,6 +17,8 @@ public class ConversationRepository(Context dbContext)
                 .Take(lastMessageCount)
                 .OrderBy(msg => msg.SentAt))
             .Include(convo => convo.Product)
+            .ThenInclude(product => (product as Kit).Elements)
+            .Include(convo => convo.Product)
             .ThenInclude(product => product.Image)
             .Where(c => c.UserId == userId);
     }
@@ -29,6 +31,7 @@ public class ConversationRepository(Context dbContext)
         conversation.Product = await DbContext.Set<Product>()
             .AsNoTracking()
             .Include(p => p.Image)
+            .Include(product => (product as Kit).Elements)
             .FirstOrDefaultAsync(p => p.Id == conversation.ProductId);
         return conversation;
     }
@@ -46,5 +49,19 @@ public class ConversationRepository(Context dbContext)
         DbContext.Messages.Add(message);
         await DbContext.SaveChangesAsync();
         return message;
+    }
+
+    public IQueryable<Conversation> GetAllConversations(int lastMessageCount = 20)
+    {
+        return DbContext.Conversations
+            .AsNoTracking()
+            .Include(convo => convo.Messages
+                .OrderByDescending(msg => msg.SentAt)
+                .Take(lastMessageCount)
+                .OrderBy(msg => msg.SentAt))
+            .Include(convo => convo.Product)
+            .ThenInclude(product => (product as Kit).Elements)
+            .Include(convo => convo.Product)
+            .ThenInclude(product => product.Image);
     }
 }

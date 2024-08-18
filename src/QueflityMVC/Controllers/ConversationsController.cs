@@ -26,7 +26,7 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
     [HttpPost]
     public async Task<IActionResult> Index(UserConversationsVm userConversationsVm)
     {
-        if (userConversationsVm.PaginatedConversations is null)
+        if (userConversationsVm is null)
         {
             return BadRequest();
         }

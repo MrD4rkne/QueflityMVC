@@ -94,37 +94,29 @@ public class MessageService(
 
     public Task<Result<UserConversationsVm>> GetUsersConversationsAsync()
     {
-        UserConversationsVm userConversationsVm = new()
-        {
-            PaginatedConversations = PaginationFactory.Default<ConversationShortVm>()
-        };
+        UserConversationsVm userConversationsVm = new();
         return GetUsersConversationsAsync(userConversationsVm);
     }
 
     public async Task<Result<UserConversationsVm>> GetUsersConversationsAsync(UserConversationsVm userConversationsVm)
     {
         var conversations = conversationRepository.GetUsersConversations(userContext.UserId);
-        userConversationsVm.PaginatedConversations =
-            await conversations.Paginate(userConversationsVm.PaginatedConversations,
-                mapper.ConfigurationProvider);
+
+        userConversationsVm = await GetConversationsPaginatedAsync(conversations, userConversationsVm);
         return Result<UserConversationsVm>.Success(userConversationsVm);
     }
 
     public Task<Result<UserConversationsVm>> GetAllConversationsAsync()
     {
-        UserConversationsVm userConversationsVm = new()
-        {
-            PaginatedConversations = PaginationFactory.Default<ConversationShortVm>()
-        };
+        UserConversationsVm userConversationsVm = new();
         return GetAllConversationsAsync(userConversationsVm);
     }
 
     public async Task<Result<UserConversationsVm>> GetAllConversationsAsync(UserConversationsVm userConversationsVm)
     {
-        var conversations = conversationRepository.GetAll();
-        userConversationsVm.PaginatedConversations =
-            await conversations.Paginate(userConversationsVm.PaginatedConversations,
-                mapper.ConfigurationProvider);
+        var conversations = conversationRepository.GetAllConversations();
+
+        userConversationsVm = await GetConversationsPaginatedAsync(conversations, userConversationsVm);
         return Result<UserConversationsVm>.Success(userConversationsVm);
     }
 
@@ -184,6 +176,26 @@ public class MessageService(
         }
 
         return await CanRespondToConversations(userContext.UserId);
+    }
+
+    private async Task<UserConversationsVm> GetConversationsPaginatedAsync(IQueryable<Conversation> conversations,
+        UserConversationsVm userConversationsVm)
+    {
+        if (userConversationsVm.ShouldSortFromTheLatest)
+        {
+            conversations = conversations.OrderByDescending(convo => convo.Messages
+                .Max(message => message.SentAt));
+        }
+        else
+        {
+            conversations = conversations.OrderBy(convo => convo.Messages
+                .Max(message => message.SentAt));
+        }
+
+        userConversationsVm =
+            await conversations.Paginate<Conversation, ConversationShortVm, UserConversationsVm>(userConversationsVm,
+                mapper.ConfigurationProvider);
+        return userConversationsVm;
     }
 
     private Task<bool> CanRespondToConversations(Guid userContextUserId)

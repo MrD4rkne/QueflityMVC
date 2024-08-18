@@ -1,5 +1,5 @@
 ﻿@using QueflityMVC.Domain.Interfaces
-@model QueflityMVC.Application.ViewModels.Pagination.PaginationVm<QueflityMVC.Application.ViewModels.Message.ConversationShortVm>
+@model QueflityMVC.Application.ViewModels.Message.UserConversationsVm
 @inject IUserContext UserContext
 
 @{
@@ -94,6 +94,20 @@
                 {
                     <option value="@i">@i</option>
                 }
+            }
+        </select>
+    </li>
+    <li class="nav-item">
+        <select class="form-select" asp-for="ShouldSortFromTheLatest" onchange="PageSizeSelected()">
+            @if (Model.ShouldSortFromTheLatest)
+            {
+                <option value="true" selected>Sort from the latest</option>
+                <option value="false">Sort from the oldest</option>
+            }
+            else
+            {
+                <option value="true">Sort from the latest</option>
+                <option value="false" selected>Sort from the oldest</option>
             }
         </select>
     </li>
