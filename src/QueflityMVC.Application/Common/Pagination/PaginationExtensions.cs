@@ -8,6 +8,15 @@ namespace QueflityMVC.Application.Common.Pagination;
 
 public static class PaginationExtensions
 {
+    /// <summary>
+    ///     Paginates a queryable collection and maps the result to a view model using AutoMapper.
+    /// </summary>
+    /// <typeparam name="T1">The type of the original entity.</typeparam>
+    /// <typeparam name="T2">The type of the entity after mapping.</typeparam>
+    /// <param name="entitiesSource">The queryable source of entities.</param>
+    /// <param name="paginationVm">Pagination view model to get Pagination info from.</param>
+    /// <param name="configurationProvider">The AutoMapper configuration provider.</param>
+    /// <returns>A pagination view model containing the requested page of mapped entities.</returns>
     public static Task<PaginationVm<T2>> Paginate<T1, T2>(
         this IQueryable<T1> entitiesSource,
         PaginationVm<T2> paginationVm,
