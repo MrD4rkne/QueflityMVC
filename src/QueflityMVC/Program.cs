@@ -31,6 +31,10 @@ SerilogSetup.SetupLogger();
 builder.Host.UseSerilog(Log.Logger);
 
 builder.Services
+    .Configure<BrandOptions>(config.GetSection(BrandOptions.SECTION_NAME));
+builder.Services.AddSingleton<IValidateOptions<BrandOptions>, BrandOptionsValidator>();
+
+builder.Services
     .Configure<SmtpOptions>(config.GetSection(SmtpOptions.SECTION_NAME));
 builder.Services.AddSingleton<IValidateOptions<SmtpOptions>, SmtpOptionsValidator>();
 
