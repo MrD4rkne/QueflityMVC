@@ -14,10 +14,10 @@ Here you can find what to configure. It is in format as it should be when using 
 
 ### Brand
 ```json
-  "Brand":
+"Brand":
   {
     "Name": "Your brand's name"
-  },
+}
 ```
 
 ### `Database` section
