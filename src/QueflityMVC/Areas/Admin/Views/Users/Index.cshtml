@@ -16,7 +16,7 @@
     bool canEnableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ENABLE)).Succeeded;
 }
 
-<form asp-action="Index" method="post">
+<form asp-action="Index" asp-controller="Users" asp-area="Admin" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="UserNameFilter"/>
@@ -70,35 +70,35 @@
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td>
-                        @* Action buttons *@
-                        @if (canSeeUserRoles)
-                        {
-                            @Html.ActionLink("Roles", "ManageUserRoles", new { userId = item.Id }, new { @class = "btn btn-outline-info btn-sm" })
-                        }
-                        @if (canSeeUserClaims)
-                        {
-                            @Html.ActionLink("Claims", "ManageUserClaims", new { userId = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
-                        }
-
-
-                        @if (item.Id != UserContext.UserId)
-                        {
-                            @if (item.IsEnabled)
+                        <div class="btn-group" role="group" aria-label="Manage users">
+                            @if (canSeeUserRoles)
                             {
-                                if (canDisableUsers)
+                                @Html.ActionLink("Roles", "ManageUserRoles", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-info btn-sm" })
+                            }
+                            @if (canSeeUserClaims)
+                            {
+                                @Html.ActionLink("Claims", "ManageUserClaims", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
+                            }
+
+
+                            @if (item.Id != UserContext.UserId)
+                            {
+                                @if (item.IsEnabled)
                                 {
-                                    @Html.ActionLink("Disable", "DisableUser", new { userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                    if (canDisableUsers)
+                                    {
+                                        @Html.ActionLink("Disable", "DisableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                    }
+                                }
+                                else
+                                {
+                                    if (canEnableUsers)
+                                    {
+                                        @Html.ActionLink("Enable", "EnableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                    }
                                 }
                             }
-                            else
-                            {
-                                if (canEnableUsers)
-                                {
-                                    @Html.ActionLink("Enable", "EnableUser", new { userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                                }
-                            }
-                        }
-
+                        </div>
                     </td>
                 </tr>
             }

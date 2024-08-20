@@ -80,9 +80,9 @@
         <AdditionalFiles Include="Areas\Admin\Views\Kits\Index.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Kits\ListItemsForComponents.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Kits\_KitDetailsPartial.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\User\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\User\ManageUserClaims.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\User\ManageUserRoles.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Users\Index.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserClaims.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserRoles.cshtml"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -121,6 +121,10 @@
         <UpToDateCheckInput Remove="Views\Categories\Delete.cshtml"/>
         <UpToDateCheckInput Remove="Views\Categories\Edit.cshtml"/>
         <UpToDateCheckInput Remove="Views\Categories\Index.cshtml"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Remove="Areas\Admin\Views\Kits\_KitDetailsPartial.cshtml"/>
     </ItemGroup>
 
 </Project>
