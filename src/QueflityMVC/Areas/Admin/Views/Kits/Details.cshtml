@@ -13,8 +13,11 @@
 
 @if (canListEntities)
 {
-    <div>
-        <a asp-action="Index">Back to List</a>
+    <div class="mb-3">
+        <a asp-action="Index" asp-controller="Kits" asp-area="Admin" class="btn btn-primary">
+            &#8592;
+            Back to List
+        </a>
     </div>
 }
 
@@ -81,12 +84,12 @@
             <td>
                 @if (canEditEntities)
                 {
-                    @Html.ActionLink("Edit", "EditComponent", new { itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
+                    @Html.ActionLink("Edit", "EditComponent", new { area = "Admin", mitemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
                 }
 
                 @if (canCreateEntities)
                 {
-                    @Html.ActionLink("Delete", "DeleteComponent", new { itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
+                    @Html.ActionLink("Delete", "DeleteComponent", new { area = "Admin", itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
                 }
             </td>
         </tr>

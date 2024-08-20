@@ -66,7 +66,10 @@
                         Manage users and permissions.
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Index", "User")" class="btn btn-light">Go to Users</a>
+                        <a href="@Url.Action("Index", "Users", new { area = "Admin" })" class="btn btn-light">
+                            Go to
+                            Users
+                        </a>
                     </div>
                 </div>
             </div>
@@ -82,7 +85,10 @@
                         Manage items, add components.
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Index", "Items")" class="btn btn-light">Go to Items</a>
+                        <a href="@Url.Action("Index", "Items", new { area = "Admin" })" class="btn btn-light">
+                            Go to
+                            Items
+                        </a>
                     </div>
                 </div>
             </div>
@@ -95,7 +101,10 @@
                         Manage item categories.
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Index", "Categories")" class="btn btn-light">Go to Categories</a>
+                        <a href="@Url.Action("Index", "Categories", new { area = "Admin" })" class="btn btn-light">
+                            Go to
+                            Categories
+                        </a>
                     </div>
                 </div>
             </div>
@@ -108,7 +117,10 @@
                         Manage components - the things Items are made of.
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Index", "Components")" class="btn btn-light">Go to Components</a>
+                        <a href="@Url.Action("Index", "Components", new { area = "Admin" })" class="btn btn-light">
+                            Go to
+                            Components
+                        </a>
                     </div>
                 </div>
             </div>
@@ -120,7 +132,10 @@
                         Manage kits - multiple items in one element.
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Index", "Kits")" class="btn btn-light">Go to Kits</a>
+                        <a href="@Url.Action("Index", "Kits", new { area = "Admin" })" class="btn btn-light">
+                            Go to
+                            Kits
+                        </a>
                     </div>
                 </div>
             </div>
@@ -136,7 +151,10 @@
                         Reorder Products on the main page.
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="btn btn-light">Go to Dashboard</a>
+                        <a href="@Url.Action("Index", "Dashboard", new { area = "Admin" })" class="btn btn-light">
+                            Go to
+                            Dashboard
+                        </a>
                     </div>
                 </div>
             </div>

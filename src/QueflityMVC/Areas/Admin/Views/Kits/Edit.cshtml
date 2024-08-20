@@ -14,7 +14,7 @@
 <h4>Change your awesome kit!</h4>
 <hr/>
 <div class="row">
-    <form asp-action="Edit" enctype="multipart/form-data">
+    <form asp-action="Edit" asp-controller="Kits" asp-area="Admin" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"/>
         <input type="hidden" asp-for="Id" value="@Model.Id"/>
         <partial name="_ImageEditPartial" for="Image"/>
@@ -62,7 +62,7 @@
             <button type="submit" class="btn btn-primary" formaction="Edit">Edit</button>
             @if (canListEntities)
             {
-                @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-outline-secondary" })
+                @Html.ActionLink("Back to List", "Index", "Kits", new { area = "Admin" }, new { @class = "btn btn-outline-secondary" })
             }
         </div>
     </form>

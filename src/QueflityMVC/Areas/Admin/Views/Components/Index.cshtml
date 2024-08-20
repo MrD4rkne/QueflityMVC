@@ -16,11 +16,11 @@
 @if (canCreateEntities)
 {
     <p>
-        <a class="btn btn-primary" asp-action="Create">Create New</a>
+        <a class="btn btn-primary" asp-action="Create" asp-controller="Components" asp-area="Admin">Create New</a>
     </p>
 }
 
-<form asp-action="Index" asp-controller="Components" method="post">
+<form asp-action="Index" asp-controller="Components" asp-area="Admin" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter"/>

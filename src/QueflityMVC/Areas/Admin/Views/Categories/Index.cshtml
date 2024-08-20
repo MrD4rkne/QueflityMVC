@@ -16,11 +16,11 @@
 <p>
     @if (canCreateEntities)
     {
-        <a class="btn btn-primary" asp-action="Create">Create New</a>
+        <a class="btn btn-primary" asp-action="Create" asp-controller="Categories" asp-area="Admin">Create New</a>
     }
 </p>
 
-<form asp-action="Index" asp-controller="Categories" method="post">
+<form asp-action="Index" asp-controller="Categories" asp-area="Admin" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter"/>
@@ -70,15 +70,17 @@
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
-                        @if (canEditEntities)
-                        {
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                            @Html.ActionLink("View items", "ViewItems", new { id = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
-                        }
-                        @if (canCreateEntities)
-                        {
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                        }
+                        <div class="btn-group" role="group" aria-label="Manage category">
+                            @if (canEditEntities)
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                @Html.ActionLink("View items", "ViewItems", new { id = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
+                            }
+                            @if (canCreateEntities)
+                            {
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                            }
+                        </div>
                     </td>
                 </tr>
             }

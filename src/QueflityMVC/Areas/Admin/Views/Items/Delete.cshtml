@@ -12,6 +12,6 @@
     <hr/>
 </div>
 <div>
-    @Html.ActionLink("View kits with this item", "Index", "Kits", new { itemId = Model.ItemId }) |
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("View kits with this item", "Index", "Kits", new { area = "Admin", itemId = Model.ItemId }) |
+    <a asp-action="Index" asp-controller="Items" asp-area="Admin">Back to List</a>
 </div>

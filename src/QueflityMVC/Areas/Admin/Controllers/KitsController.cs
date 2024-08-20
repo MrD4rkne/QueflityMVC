@@ -14,6 +14,7 @@ using QueflityMVC.Web.Exceptions;
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Route("Admin/Kits")]
 public class KitsController : Controller
 {
     private readonly IValidator<ElementVm> _elemValidator;
@@ -168,7 +169,11 @@ public class KitsController : Controller
             return View(getFilteredComponentsResult.Value);
         }
 
-        throw new UnexpectedApplicationException();
+        return getFilteredComponentsResult.Error.Code switch
+        {
+            ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [Route("ListItemsForComponent")]

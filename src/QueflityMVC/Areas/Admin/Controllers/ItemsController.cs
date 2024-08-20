@@ -51,7 +51,6 @@ public class ItemsController : Controller
         return View(listVm);
     }
 
-    [Route("Create")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(int? categoryId)
@@ -69,7 +68,6 @@ public class ItemsController : Controller
         };
     }
 
-    [Route("Create")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
@@ -88,7 +86,6 @@ public class ItemsController : Controller
         return RedirectToAction("Index");
     }
 
-    [Route("Edit")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
@@ -97,7 +94,6 @@ public class ItemsController : Controller
         return View(itemForEdit);
     }
 
-    [Route("Edit")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
@@ -114,7 +110,6 @@ public class ItemsController : Controller
         return RedirectToAction("Index");
     }
 
-    [Route("Delete")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Delete(int id)
@@ -136,7 +131,6 @@ public class ItemsController : Controller
         };
     }
 
-    [Route("Components")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Components(int id)
@@ -155,21 +149,18 @@ public class ItemsController : Controller
         return View(componentsViewModel);
     }
 
-    [Route("NoComponents")]
     [HttpGet]
     public IActionResult NoComponents()
     {
         return View();
     }
 
-    [Route("NoCategories")]
     [HttpGet]
     public IActionResult NoCategories()
     {
         return View();
     }
 
-    [Route("Components")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
