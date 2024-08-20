@@ -12,6 +12,14 @@ See: [Configuration in C#](https://learn.microsoft.com/en-us/dotnet/core/extensi
 
 Here you can find what to configure. It is in format as it should be when using `appsetting.json` file.
 
+### Brand
+```json
+  "Brand":
+  {
+    "Name": "Your brand's name"
+  },
+```
+
 ### `Database` section
 
 This section holds settings for connection with database for main logic.
@@ -50,7 +58,8 @@ Here's configuration for sending emails using SMTP protocol.
     "Port": some integer goes here,
     "Username": "username for smtp client",
     "Password": "password for smtp client",
-    "Email": "sender's email"
+    "Email": "sender's email",
+    "Name": "Name displayed as sender in emails"
 }
 ```
 
