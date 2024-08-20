@@ -71,7 +71,6 @@
         <AdditionalFiles Include="Areas\Admin\Views\Items\Index.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Items\NoCategories.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Items\NoComponents.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\_ItemDetailsPartial.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Kits\AddComponent.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Kits\Create.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Kits\Details.cshtml"/>
@@ -79,7 +78,6 @@
         <AdditionalFiles Include="Areas\Admin\Views\Kits\EditComponent.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Kits\Index.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Kits\ListItemsForComponents.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\_KitDetailsPartial.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Users\Index.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserClaims.cshtml"/>
         <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserRoles.cshtml"/>
