@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using QueflityMVC.Application.Mapping;
+﻿using QueflityMVC.Application.Mapping;
+using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Application.ViewModels.Other;
 
-public record RoleForSelectionVm : IMapFrom<IdentityRole>
+public record RoleForSelectionVm : IMapFrom<ApplicationRole>
 {
     public required string Id { get; set; }
 
@@ -13,7 +13,7 @@ public record RoleForSelectionVm : IMapFrom<IdentityRole>
 
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<IdentityRole, RoleForSelectionVm>()
+        profile.CreateMap<ApplicationRole, RoleForSelectionVm>()
             .ReverseMap();
     }
 }
