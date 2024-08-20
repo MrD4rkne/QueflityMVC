@@ -10,7 +10,7 @@ using QueflityMVC.Domain.Interfaces;
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class UserController(IUserService userService, IUserContext userContext) : Controller
+public class UsersController(IUserService userService, IUserContext userContext) : Controller
 {
     [HttpGet]
     [Authorize(Policy = Policies.USERS_LIST)]
@@ -39,7 +39,6 @@ public class UserController(IUserService userService, IUserContext userContext) 
     }
 
     [HttpGet]
-    [Route("DisableUser")]
     [Authorize(Policy = Policies.USER_DISABLE)]
     public async Task<IActionResult> DisableUser(Guid userId)
     {
@@ -59,7 +58,6 @@ public class UserController(IUserService userService, IUserContext userContext) 
     }
 
     [HttpGet]
-    [Route("EnableUser")]
     [Authorize(Policy = Policies.USER_ENABLE)]
     public async Task<IActionResult> EnableUser(Guid userId)
     {
@@ -79,7 +77,6 @@ public class UserController(IUserService userService, IUserContext userContext) 
     }
 
     [HttpGet]
-    [Route("ManageUserRoles")]
     [Authorize(Policy = Policies.USER_ROLES_VIEW)]
     public async Task<IActionResult> ManageUserRoles(Guid userId)
     {
@@ -89,7 +86,6 @@ public class UserController(IUserService userService, IUserContext userContext) 
     }
 
     [HttpPost]
-    [Route("ManageUserRoles")]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.USER_ROLES_MANAGE)]
     public async Task<IActionResult> ManageUserRoles(UserRolesVm userRolesVm)
@@ -106,7 +102,6 @@ public class UserController(IUserService userService, IUserContext userContext) 
     }
 
     [HttpGet]
-    [Route("ManageUserClaims")]
     [Authorize(Policy = Policies.USER_CLAIMS_VIEW)]
     public async Task<IActionResult> ManageUserClaims(Guid userId)
     {
@@ -117,7 +112,6 @@ public class UserController(IUserService userService, IUserContext userContext) 
     }
 
     [HttpPost]
-    [Route("ManageUserClaims")]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.USER_CLAIMS_MANAGE)]
     public async Task<IActionResult> ManageUserClaims(UserClaimsVm userClaimsVm)

@@ -1,18 +1,21 @@
-﻿@inject IAuthorizationService AuthorizationService
-@using Microsoft.AspNetCore.Authorization
+﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
-@model QueflityMVC.Application.ViewModels.User.UserClaimsVm
+@model QueflityMVC.Application.ViewModels.User.UserRolesVm
+@inject IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = $"{Model.Username} - claims";
+    ViewData["Title"] = $"{Model.Username} - roles";
     bool canListUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USERS_LIST)).Succeeded;
 }
 
 @if (canListUsers)
 {
-    <div>
-        <a asp-action="Index">Back to Users</a>
+    <div class="mb-3">
+        <a asp-action="Index" asp-controller="Users" asp-area="Admin" class="btn btn-primary">
+            &#8592;
+            Back to Users
+        </a>
     </div>
 }
 
@@ -28,10 +31,10 @@
     }
 </h2>
 
-<form asp-action="ManageUserClaims" asp-controller="User">
+<form asp-action="ManageUserRoles" asp-controller="Users" asp-area="Admin">
     <div class="row">
         <div class="col-auto">
-            <h4>Manage their's claims</h4>
+            <h4>Manage their's roles</h4>
         </div>
         @if (Model.CanCallerManage)
         {
@@ -54,23 +57,23 @@
             </tr>
             </thead>
             <tbody>
-            @for (var i = 0; i < Model.AllClaims.Count; i++)
+            @for (var i = 0; i < Model.AllRoles.Count; i++)
             {
-                var role = Model.AllClaims[i];
-                role.IsSelected = Model.AssignedClaimsIds.Contains(role.Id);
+                var role = Model.AllRoles[i];
+                role.IsSelected = Model.AssignedRolesNames.Contains(role.Name);
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => role.Id)
+                        @Html.DisplayFor(modelItem => role.Name)
                     </td>
                     <td>
-                        @Html.HiddenFor(vm => vm.AllClaims[i].Id)
+                        @Html.HiddenFor(vm => vm.AllRoles[i].Id)
                         @if (Model.CanCallerManage)
                         {
-                            @Html.CheckBoxFor(vm => vm.AllClaims[i].IsSelected)
+                            @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected)
                         }
                         else
                         {
-                            @Html.CheckBoxFor(vm => vm.AllClaims[i].IsSelected, new { disabled = "" })
+                            @Html.CheckBoxFor(vm => vm.AllRoles[i].IsSelected, new { disabled = "" })
                         }
                     </td>
                 </tr>

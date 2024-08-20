@@ -28,7 +28,7 @@
     </p>
 }
 
-<form asp-action="Index" asp-controller="Items" method="post">
+<form asp-action="Index" asp-controller="Items" asp-area="Admin" method="post">
     @Html.HiddenFor(model => model.CategoryId)
 
     <ul class="nav gap-1">
@@ -95,18 +95,20 @@
                         </div>
                     </td>
                     <td>
-                        @if (canEditEntities)
-                        {
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                        }
-                        @if (canListEntities)
-                        {
-                            @Html.ActionLink("Components", "Components", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
-                        }
-                        @if (canCreateEntities)
-                        {
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                        }
+                        <div class="btn-group" role="group" aria-label="Manage item">
+                            @if (canEditEntities)
+                            {
+                                @Html.ActionLink("Edit", "Edit", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                            }
+                            @if (canListEntities)
+                            {
+                                @Html.ActionLink("Components", "Components", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
+                            }
+                            @if (canCreateEntities)
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                            }
+                        </div>
                     </td>
                 </tr>
             }

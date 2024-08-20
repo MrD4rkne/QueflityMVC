@@ -87,10 +87,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
+app.MapAreaControllerRoute(
+    "area",
     "Admin",
-    "Admin/{controller}/{action}/{id?}",
-    new { area = "Admin", controller = "Home", action = "Index" });
+    "Admin/{controller=Home}/{action=Index}/{id?}");
 
 app.MapDefaultControllerRoute();
 

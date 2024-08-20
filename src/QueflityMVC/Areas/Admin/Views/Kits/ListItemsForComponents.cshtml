@@ -20,7 +20,7 @@
 <h4>Items</h4>
 <h7>Below you can see all available items</h7>
 
-<form asp-action="ListItemsForComponents" asp-controller="Kits" method="post">
+<form asp-action="ListItemsForComponents" asp-controller="Kits" asp-area="Admin" method="post">
     <ul class="nav gap-1">
         <li class="nav-item">
             <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter"/>
@@ -72,16 +72,16 @@
                     <td>
                         @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
                         {
-                            @Html.ActionLink("Edit membership", "EditComponent", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
+                            @Html.ActionLink("Edit membership", "EditComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
                             ;
                             @if (canCreateEntities)
                             {
-                                @Html.ActionLink("Delete", "DeleteComponent", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
+                                @Html.ActionLink("Delete", "DeleteComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
                             }
                         }
                         else
                         {
-                            @Html.ActionLink("Add to set", "AddComponent", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
+                            @Html.ActionLink("Add to set", "AddComponent", "Kits", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
                             ;
                         }
                     </td>

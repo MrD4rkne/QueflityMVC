@@ -1,0 +1,48 @@
+﻿@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@model QueflityMVC.Application.ViewModels.Item.ItemVm
+
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img class="img-fluid rounded-start" src="@Model.Image?.FileUrl" alt="@Model.Image?.AltDescription" style="max-height: 400px; object-fit: cover;"/>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h4 class="card-title">@Html.DisplayFor(model => model.Name)</h4>
+                <div class="row">
+                    <div class="col-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">
+                                @Html.DisplayNameFor(model => model.Price)
+                            </dt>
+                            <dd class="col-sm-8">
+                                @Html.DisplayFor(model => model.Price)
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">
+                                Visibility
+                            </dt>
+                            <dd class="col-sm-8">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" @(Model.ShouldBeShown ? "checked" : null) disabled/>
+                                    <label class="form-check-label">
+                                        @(Model.ShouldBeShown ? "Visible" : "Hidden")
+                                    </label>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                @if ((await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded)
+                {
+                    <a class="btn btn-primary" href="@Url.Action("Edit", "Kits", new { id = Model.Id })">Edit</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

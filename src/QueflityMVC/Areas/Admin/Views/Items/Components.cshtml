@@ -8,7 +8,7 @@
     ViewData["Title"] = "Components";
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
-<form asp-action="Components" enctype="multipart/form-data">
+<form asp-action="Components" asp-controller="Items" asp-area="Admin" enctype="multipart/form-data">
     <h1>Item</h1>
     <input type="hidden" asp-for="Item.Id" value="@Model.Item.Id"/>
     <div class="card" style="width: 18rem;">

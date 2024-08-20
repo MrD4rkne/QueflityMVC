@@ -14,7 +14,7 @@
 <h4>Below you can see & edit item's properties</h4>
 <hr/>
 <div class="row">
-    <form asp-action="Edit" enctype="multipart/form-data">
+    <form asp-action="Edit" asp-controller="Items" asp-area="Admin" enctype="multipart/form-data">
         <input type="hidden" asp-for="ItemVm.Id" value="@Model.ItemVm.Id"/>
         <partial name="_ImageEditPartial" for="ItemVm.Image"/>
         <div class="container">
@@ -71,11 +71,11 @@
                 {
                     @if (ViewData["categoryId"] is int categoryId)
                     {
-                        @Html.ActionLink("Back to List", "Index", new { categoryId }, new { @class = "btn btn-info" })
+                        @Html.ActionLink("Back to List", "Index", new { area = "Admin", categoryId }, new { @class = "btn btn-info" })
                     }
                     else
                     {
-                        <a class="btn btn-info" asp-action="Index"> Back to List</a>
+                        <a class="btn btn-info" asp-action="Index" asp-controller="Items" asp-area="Admin"> Back to List</a>
                     }
                 }
             </div>

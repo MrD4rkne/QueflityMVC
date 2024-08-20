@@ -13,20 +13,20 @@
 }
 
 <h1>Kits</h1>
-<h2>Below you can list and filtr your kits.</h2>
+<h2>Below you can list and filter your kits.</h2>
 
 @if (canCreateEntities)
 {
     <p>
-        <a class="btn btn-primary" asp-action="Create">Create New</a>
+        @Html.ActionLink("Create New", "Create", "Kits", new { area = "Admin" }, new { @class = "btn btn-primary" })
     </p>
 }
 
-<form asp-action="Index" asp-controller="Kits" method="post" data="@Model.Pagination.Info">
+<form asp-action="Index" asp-controller="Kits" asp-area="Admin" method="post" data="@Model.Pagination.Info">
     @if (Model.ItemId.HasValue)
     {
         <p>
-            Curretnly you see sets that have item of id @Model.ItemId as a part of them
+            Currently, you see sets that have item of id @Model.ItemId as a part of them
             <a href="#" onclick="RemoveItemFilter()">Click here to remove item filter</a>
         </p>
     }
@@ -54,63 +54,75 @@
             </select>
         </li>
     </ul>
-    <table class="table">
-        <thead>
-        <tr>
-            <th></th>
-            <th>
-                Name
-            </th>
-            <th>
-                Visibility
-            </th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Pagination.Entities)
+    <div class="row container-fluid mt-1">
+        @if (Model.Pagination.Entities is { Count: > 0 })
         {
-            <tr>
-                <td>
-                    @if (item.Image != null)
-                    {
-                        <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" checked="@(item.ShouldBeShown ? "checked" : null)" disabled>
-                        @if (item.ShouldBeShown)
-                        {
-                            <label class="form-check-label">Visible</label>
-                        }
-                        else
-                        {
-                            <label class="form-check-label">Hidden</label>
-                        }
-                    </div>
-                </td>
-                <td>
-                    @if (canEditEntities)
-                    {
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                    }
-                    @if (canListEntities)
-                    {
-                        @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
-                    }
-                    @if (canCreateEntities)
-                    {
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                    }
-                </td>
-            </tr>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Visibility
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Pagination.Entities)
+                {
+                    <tr>
+                        <td>
+                            @if (item.Image != null)
+                            {
+                                <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox"
+                                       checked="@(item.ShouldBeShown ? "checked" : null)" disabled>
+                                @if (item.ShouldBeShown)
+                                {
+                                    <label class="form-check-label">Visible</label>
+                                }
+                                else
+                                {
+                                    <label class="form-check-label">Hidden</label>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            @if (canEditEntities)
+                            {
+                                @Html.ActionLink("Edit", "Edit", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                            }
+                            @if (canListEntities)
+                            {
+                                @Html.ActionLink("Details", "Details", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
+                            }
+                            @if (canCreateEntities)
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
         }
-        </tbody>
-    </table>
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                Sorry! Nothing to be shown here.
+            </div>
+        }
+    </div>
     @Html.HiddenFor(model => model.ItemId)
     <div class="row">
         <partial name="_PaginationPartial" for="Pagination.Info"/>

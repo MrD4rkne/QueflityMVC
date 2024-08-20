@@ -12,6 +12,7 @@
     <hr/>
 </div>
 <div>
-    @Html.ActionLink("View items with this category", "ViewItems", new { id = Model.CategoryId }) |
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("View items with this category", "ViewItems", "Categories", new { area = "Admin", id = Model.CategoryId })
+    |
+    <a asp-action="Index" asp-controller="Categories" asp-area="Admin">Back to List</a>
 </div>

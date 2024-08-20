@@ -46,7 +46,6 @@ public class CategoriesController : Controller
         return View(listVm);
     }
 
-    [Route("Create")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public IActionResult Create()
@@ -54,7 +53,6 @@ public class CategoriesController : Controller
         return View();
     }
 
-    [Route("Create")]
     [HttpPost]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     [ValidateAntiForgeryToken]
@@ -73,7 +71,6 @@ public class CategoriesController : Controller
         return RedirectToAction("Index");
     }
 
-    [Route("Edit")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
@@ -82,7 +79,6 @@ public class CategoriesController : Controller
         return View(vmForEdit);
     }
 
-    [Route("Edit")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
@@ -100,7 +96,6 @@ public class CategoriesController : Controller
         return RedirectToAction("Index");
     }
 
-    [Route("Delete")]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Delete(int id)
     {
@@ -122,7 +117,6 @@ public class CategoriesController : Controller
         return RedirectToAction("Index");
     }
 
-    [Route("ViewItems")]
     public IActionResult ViewItems(int id)
     {
         return RedirectToAction("Index", "Items", new { categoryId = id });

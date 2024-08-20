@@ -123,6 +123,8 @@ public class KitService : IKitService
             return Result<ListItemsForComponentsVm>.Failure(kitDetailsResult.Error);
         }
 
+        itemsForComponentsVm.KitDetailsVm = kitDetailsResult.Value;
+
         var allItems =
             _itemRepository.GetFilteredItems(itemsForComponentsVm.NameFilter, itemsForComponentsVm.CategoryId);
         itemsForComponentsVm.Pagination =
@@ -132,7 +134,7 @@ public class KitService : IKitService
 
     public async Task<ElementVm> GetVmForAddingElementAsync(int kitId, int itemId)
     {
-        var kit = await _kitRepository.GetByIdAsync(kitId) ??
+        var kit = await _kitRepository.GetFullKitWithMembershipsByIdAsync(kitId) ??
                   throw new EntityNotFoundException(entityName: nameof(Kit));
         var item = await _itemRepository.GetByIdAsync(itemId) ??
                    throw new EntityNotFoundException(entityName: nameof(Item));

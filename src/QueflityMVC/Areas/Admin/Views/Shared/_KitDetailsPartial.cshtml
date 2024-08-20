@@ -1,0 +1,58 @@
+﻿@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Authorization
+@using QueflityMVC.Application.Constants
+@model QueflityMVC.Application.ViewModels.Kit.KitDetailsVm
+
+<div class="card mb-3">
+    <div class="row g-0 d-flex">
+        <!-- Image Section -->
+        <div class="col-md-auto d-flex align-items-center">
+            <img class="img-fluid rounded-start" src="@Model.Image.FileUrl" alt="@Model.Image?.AltDescription"
+                 style="max-height: 200px; object-fit: cover; width: 100%;"/>
+        </div>
+        <!-- Details Section -->
+        <div class="col-md d-flex flex-column">
+            <div class="card-body flex-grow-1">
+                <h4 class="card-title">@Html.DisplayFor(model => model.Name)</h4>
+                <div class="row">
+                    <!-- Price Information -->
+                    <div class="col-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">
+                                @Html.DisplayNameFor(model => model.Price)
+                            </dt>
+                            <dd class="col-sm-8">
+                                @Html.DisplayFor(model => model.Price)
+                            </dd>
+                        </dl>
+                    </div>
+                    <!-- Visibility Information -->
+                    <div class="col-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">
+                                Visibility
+                            </dt>
+                            <dd class="col-sm-8">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           @(Model.ShouldBeShown ? "checked" : null) disabled/>
+                                    <label class="form-check-label">
+                                        @(Model.ShouldBeShown ? "Visible" : "Hidden")
+                                    </label>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <!-- Edit Button (Conditional) -->
+                @if ((await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded)
+                {
+                    <a class="btn btn-primary mt-3"
+                       href="@Url.Action("Edit", "Kits", new { area = "Admin", id = Model.Id })">
+                        Edit
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
