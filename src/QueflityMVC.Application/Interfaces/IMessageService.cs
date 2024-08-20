@@ -25,5 +25,5 @@ public interface IMessageService
 
     Task<bool> CanAccessConversation(int conversationId);
 
-    Task<Result<ProductForCardVm>> GetProductForDashboardVmAsync(int productId);
+    Task<Result<ProductShortVm>> GetProductForContactVmAsync(int productId);
 }

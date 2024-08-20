@@ -18,7 +18,9 @@
                     if (itemNo >= Model.Products.Count)
                         break;
 
-                    <partial name="_ProductCardPartial" model="Model.Products[itemNo]"/>
+                    <div class="col-sm-6 col-md-3 h100">
+                        <partial name="_ProductCardPartial" model="Model.Products[itemNo]"/>
+                    </div>
                 }
             </div>
         }

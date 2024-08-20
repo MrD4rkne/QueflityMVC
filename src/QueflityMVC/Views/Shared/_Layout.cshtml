@@ -1,7 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Options
 @using QueflityMVC.Application.Constants
+@using QueflityMVC.Web.Setup.Other
 @inject IAuthorizationService AuthorizationService
+@inject IOptions<BrandOptions> BrandOptions
 
 @{
     bool canSeeAdminPage = (await AuthorizationService.AuthorizeAsync(User, Policies.SEE_ADMIN_PANEL)).Succeeded;
@@ -12,7 +15,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Queflity</title>
+    <title>@ViewData["Title"] - @BrandOptions.Value.Name</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 
     <!-- Custom CSS -->
@@ -25,7 +28,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "" })">Queflity</a>
+        <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "" })">@BrandOptions.Value.Name</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -59,7 +62,7 @@
 </div>
 
 <footer class="bg-dark text-white text-center py-3">
-    <p>&copy; @DateTime.Now.Year - QueflityMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+    <p>&copy; @DateTime.Now.Year - @BrandOptions.Value.Name - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
 </footer>
 
 <!-- Scripts -->

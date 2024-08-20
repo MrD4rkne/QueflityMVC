@@ -40,7 +40,7 @@ public class MessageService(
 
         FirstMessageInConversationVm firstMessageInConversationVm = new()
         {
-            Product = mapper.Map<ProductForCardVm>(purchasable),
+            Product = mapper.Map<ProductShortVm>(purchasable),
             Email = await userRepository.GetEmailForUserAsync(userContext.UserId)
         };
         return Result<FirstMessageInConversationVm>.Success(firstMessageInConversationVm);
@@ -53,7 +53,7 @@ public class MessageService(
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
         }
 
-        var productResult = await GetProductForDashboardVmAsync(firstMessageInConversationVm.Product.Id);
+        var productResult = await GetProductForContactVmAsync(firstMessageInConversationVm.Product.Id);
         if (productResult.IsFailure)
         {
             return Result.Failure(productResult.Error);
@@ -94,37 +94,29 @@ public class MessageService(
 
     public Task<Result<UserConversationsVm>> GetUsersConversationsAsync()
     {
-        UserConversationsVm userConversationsVm = new()
-        {
-            PaginatedConversations = PaginationFactory.Default<ConversationShortVm>()
-        };
+        UserConversationsVm userConversationsVm = new();
         return GetUsersConversationsAsync(userConversationsVm);
     }
 
     public async Task<Result<UserConversationsVm>> GetUsersConversationsAsync(UserConversationsVm userConversationsVm)
     {
         var conversations = conversationRepository.GetUsersConversations(userContext.UserId);
-        userConversationsVm.PaginatedConversations =
-            await conversations.Paginate(userConversationsVm.PaginatedConversations,
-                mapper.ConfigurationProvider);
+
+        userConversationsVm = await GetConversationsPaginatedAsync(conversations, userConversationsVm);
         return Result<UserConversationsVm>.Success(userConversationsVm);
     }
 
     public Task<Result<UserConversationsVm>> GetAllConversationsAsync()
     {
-        UserConversationsVm userConversationsVm = new()
-        {
-            PaginatedConversations = PaginationFactory.Default<ConversationShortVm>()
-        };
+        UserConversationsVm userConversationsVm = new();
         return GetAllConversationsAsync(userConversationsVm);
     }
 
     public async Task<Result<UserConversationsVm>> GetAllConversationsAsync(UserConversationsVm userConversationsVm)
     {
-        var conversations = conversationRepository.GetAll();
-        userConversationsVm.PaginatedConversations =
-            await conversations.Paginate(userConversationsVm.PaginatedConversations,
-                mapper.ConfigurationProvider);
+        var conversations = conversationRepository.GetAllConversations();
+
+        userConversationsVm = await GetConversationsPaginatedAsync(conversations, userConversationsVm);
         return Result<UserConversationsVm>.Success(userConversationsVm);
     }
 
@@ -164,15 +156,15 @@ public class MessageService(
         return Result<MessageVm>.Success(mapper.Map<MessageVm>(message));
     }
 
-    public async Task<Result<ProductForCardVm>> GetProductForDashboardVmAsync(int productId)
+    public async Task<Result<ProductShortVm>> GetProductForContactVmAsync(int productId)
     {
         var product = await purchasableRepository.GetByIdAsync(productId);
         if (product is null)
         {
-            return Result<ProductForCardVm>.Failure(Errors.Product.DoesNotExist);
+            return Result<ProductShortVm>.Failure(Errors.Product.DoesNotExist);
         }
 
-        return Result<ProductForCardVm>.Success(mapper.Map<ProductForCardVm>(product));
+        return Result<ProductShortVm>.Success(mapper.Map<ProductShortVm>(product));
     }
 
     public async Task<bool> CanAccessConversation(int conversationId)
@@ -184,6 +176,26 @@ public class MessageService(
         }
 
         return await CanRespondToConversations(userContext.UserId);
+    }
+
+    private async Task<UserConversationsVm> GetConversationsPaginatedAsync(IQueryable<Conversation> conversations,
+        UserConversationsVm userConversationsVm)
+    {
+        if (userConversationsVm.ShouldSortFromTheLatest)
+        {
+            conversations = conversations.OrderByDescending(convo => convo.Messages
+                .Max(message => message.SentAt));
+        }
+        else
+        {
+            conversations = conversations.OrderBy(convo => convo.Messages
+                .Max(message => message.SentAt));
+        }
+
+        userConversationsVm =
+            await conversations.Paginate<Conversation, ConversationShortVm, UserConversationsVm>(userConversationsVm,
+                mapper.ConfigurationProvider);
+        return userConversationsVm;
     }
 
     private Task<bool> CanRespondToConversations(Guid userContextUserId)

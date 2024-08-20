@@ -2,7 +2,12 @@
 
 namespace QueflityMVC.Application.ViewModels.Message;
 
-public record UserConversationsVm
+public record UserConversationsVm : PaginationVm<ConversationShortVm>
 {
-    public PaginationVm<ConversationShortVm> PaginatedConversations { get; set; }
+    public UserConversationsVm()
+    {
+        ShouldSortFromTheLatest = true;
+    }
+
+    public bool ShouldSortFromTheLatest { get; set; }
 }

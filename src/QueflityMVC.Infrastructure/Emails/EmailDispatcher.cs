@@ -29,7 +29,7 @@ public class EmailDispatcher(IOptions<SmtpConfig> smtpOptions) : IEmailDispatche
     private MimeMessage CreateEmailMessage(Mail mail)
     {
         var mailMessage = new MimeMessage();
-        mailMessage.From.Add(new MailboxAddress("Queflity", config.Email));
+        mailMessage.From.Add(new MailboxAddress(config.Name, config.Email));
         mailMessage.To.Add(new MailboxAddress(mail.RecipientName, mail.RecipientEmail));
         mailMessage.Subject = mail.Subject;
         mailMessage.Body = new TextPart("plain")

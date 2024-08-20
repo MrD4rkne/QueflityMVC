@@ -32,9 +32,7 @@ public class UserRepository(
 
     public Task<ApplicationUser?> GetUserByIdAsync(Guid userId)
     {
-        return userManager.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == userId);
+        return userManager.FindByIdAsync(userId.ToString());
     }
 
     public async Task<bool> DoesUserExistAsync(Guid userId)
@@ -115,7 +113,7 @@ public class UserRepository(
 
     public async Task<string?> GetEmailForUserAsync(Guid userId)
     {
-        var user = await userManager.Users.FirstAsync(user => user.Id == userId) ??
+        var user = await GetUserByIdAsync(userId) ??
                    throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
 
         return user.Email;

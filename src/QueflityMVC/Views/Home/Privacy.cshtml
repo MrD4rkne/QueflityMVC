@@ -3,4 +3,18 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@section Styles {
+    <link rel="stylesheet" href="@Url.Content("~/privacy.css")" asp-append-version="true"/>
+}
+
+<div id="privacy">
+
+</div>
+
+@section Scripts {
+    <script>
+    $(function () {
+        $("#privacy").load("@Url.Content("~/privacy.html")");
+    });
+</script>
+}

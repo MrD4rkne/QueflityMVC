@@ -4,7 +4,7 @@ namespace QueflityMVC.Application.ViewModels.Other;
 
 public record FirstMessageInConversationVm
 {
-    public required ProductForCardVm Product { get; init; }
+    public required ProductShortVm Product { get; init; }
 
     public string? Message { get; init; }
 
