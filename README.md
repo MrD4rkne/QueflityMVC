@@ -1,67 +1,88 @@
 # Queflity
 
-Queflity is an application designed for crafting and showcasing your list of services. With Queflity, you have the
-ability to generate items and kits, each comprising a diverse array of components, all while efficiently managing them.
-Additionally, you can specify ingredients for each item, allocate categories, and utilize a straightforward permissions
-module for seamless access control.
+**Queflity** is a versatile application designed for creating and managing a list of services. It allows users to
+generate items and kits, each composed of a variety of components. With Queflity, you can efficiently manage these
+components, categorize them, specify ingredients, and control access through a simple yet powerful permissions module.
 
-## Features:
+## Features
 
-- **Items**: Easily create fundamental service entities, assigning them names, prices, and accompanying images.
-- **Kits**: Construct kits comprising items with specified quantities and pieces, conveniently presented with images.
-- **Categories**: Employ simple tags to categorize items for better organization and navigation.
-- **Ingredients**: Compile a list of non-purchasable components used in crafting items, such as food ingredients,
-  enhancing transparency and clarity.
-- **Admin Panel**: Access a comprehensive administrative interface to efficiently manage user roles and their
-  permissions, ensuring smooth operation and security. There also a enabling/disabling users feature.
-- **OAuth** - users can login via Google OAuth 2.0.
-- **Dashboard** - main view with details for products.
-- **Emails** - user can send message about chosen purchasable.
+- **Items**: Create and manage service entities with names, prices, and images.
+- **Kits**: Build kits from items, specifying quantities and pieces, all presented with images.
+- **Categories**: Organize items using simple tags for better navigation.
+- **Ingredients**: Compile lists of non-purchasable components (e.g., food ingredients) used in crafting items for
+  enhanced transparency.
+- **Admin Panel**: Access a comprehensive interface to manage user roles, permissions, and the ability to enable/disable
+  users.
+- **OAuth**: Support for Google OAuth 2.0 login.
+- **Dashboard**: Main view displaying detailed information about products.
+- **Messaging Module**: Users can initiate a conversation about a product, creating a live chat session, with a copy of
+  the message sent to their email.
 
 ## Tech Stack
 
-- **.Net MVC**: The application adheres to the Model-View-Controller (MVC) pattern, facilitating structured development
-  and separation of concerns.
-- **Docker**: Leveraging Docker as the runtime environment for the application and its associated database ensures
-  consistency and portability across different platforms.
-- **Clean Architecture**: Following the principles of clean architecture, the application employs a repository-service
-  pattern, enhancing maintainability, and testability.
-- **FluentValidation**: Utilized for both frontend and backend validation, FluentValidation simplifies the validation
-  process, ensuring data integrity and user experience.
-- **Bogus**: Employed for seeding data during development, Bogus streamlines the process of generating test data,
-  enabling efficient testing and debugging.
-- **EF Core**: Utilized as the Object-Relational Mapping (ORM) tool, Entity Framework Core facilitates database
-  interaction, simplifying data access and manipulation within the application.
-- **Custom pagination**: A custom, reusable pagination module has been developed, featuring a factory and partial view
-  for enhanced usability and flexibility. This module streamlines pagination implementation across various sections of
-  the application, offering a seamless user experience and reducing development overhead.
-- **Quartz & Mailkit**: sending emails via SMTP and one-off jobs.
+- **.NET MVC**: Adheres to the Model-View-Controller (MVC) pattern, ensuring structured development and separation of
+  concerns.
+- **Docker**: Utilized as the runtime environment, ensuring consistency and portability across different platforms.
+- **Clean Architecture**: Employs a repository-service pattern, enhancing maintainability and testability.
+- **FluentValidation**: Used for both frontend and backend validation, simplifying the process and ensuring data
+  integrity.
+- **Bogus**: Streamlines test data generation during development, aiding efficient testing and debugging.
+- **EF Core**: Entity Framework Core is used as the Object-Relational Mapping (ORM) tool, simplifying database
+  interaction.
+- **Custom Pagination**: A reusable pagination module featuring a factory and partial view, providing enhanced usability
+  and flexibility across the application.
+- **SignalR**: Facilitates real-time messaging between users, enhancing the user experience.
+- **Quartz & Mailkit**: Facilitates sending emails via SMTP and managing one-off jobs.
 
 ## Installation
 
-### Installation by IDE
+### Installation via IDE
 
-- clone repo onto your desktop
-- open solution
-- install Docker
-- configure app (see: [Configuration](./docs/CONFIGURATION.md))
-- launch app
-    - make sure ports **5000**, **5001** are not used by any other process
-    - in debug there will be seeded data
-- navigate to app in browser
-    - [localhost:5001](https://localhost:5001) for https connection
-    - [localhost:5000](https://localhost:5000) for http connection
-- default admin user credentials are:
-    - login: *admin@queflity.mvc*
-    - password: *Password1#*
-    - you cannot remove this account, only change it's password
+1. Clone the repository to your desktop.
+2. Open the solution in your preferred IDE.
+3. Install Docker.
+4. Configure the app (see: [Configuration](./docs/CONFIGURATION.md)).
+5. Launch the app:
+
+- Ensure that ports **5000** and **5001** are not used by any other process.
+- Debug mode will seed the database with initial data.
+
+6. Navigate to the app in your browser:
+
+- [https://localhost:5001](https://localhost:5001) for the HTTPS connection.
+- [http://localhost:5000](http://localhost:5000) for the HTTP connection.
+
+7. Default admin user credentials:
+
+- **Login**: `admin@queflity.mvc`
+- **Password**: `Password1#`
+- Note: This account cannot be removed but the password can be changed.
 
 ## Screenshots
 
-<img src="./docs/images/listItems.png" width="500" alt="List items">
-<img src="./docs/images/kitDetails.png" width="500" alt="Kit's details">
-<img src="./docs/images/itemIngredients.png" width="500" alt="Item's ingredients">
-<img src="./docs/images/editKit.png" width="500" alt="Edit kit">
+![Home page](./docs/images/homePage.png)
+*Home page - what clients see when then first open the app.*
+
+![Ask a question](./docs/images/askAboutProduct.png)
+*View to ask about product and start chat about it.*
+
+![Live chat](./docs/images/liveChat.png)
+*Page for your users to chat about product.*
+
+![Admin panel](./docs/images/adminPanel.png)
+*Admin panel - where you can manage users, products and answer to questions.*
+
+![List of chats](./docs/images/conversationsList.png)
+*List of all chats.*
+
+![Kit's details](./docs/images/kitDetails.png)
+*Details of a kit.*
+
+![Manage permissions](./docs/images/claimsManage.png)
+*Manage user's permissions.*
+
+![Reorder products](./docs/images/dashboardOrder.png)
+*Reorder products on the home page.*
 
 ## Authors
 
@@ -69,9 +90,10 @@ module for seamless access control.
 
 ## Acknowledgements
 
-- App developed as a part of course [Become an .Asp Net programmer](https://szkoladotneta.pl/)
-- Thanks to everyone, who gave me great advice [discord](https://discord.com/servers/szkola-dotneta-822236190149050389)
+- This app was developed as part of the course [Become an ASP.NET Programmer](https://szkoladotneta.pl/).
+- Special thanks to everyone who provided valuable advice in
+  the [Szkola Dotneta Discord community](https://discord.com/servers/szkola-dotneta-822236190149050389).
 
 ## License
 
-[MIT](./LICENSE.txt)
+This project is licensed under the [MIT License](./LICENSE.txt).

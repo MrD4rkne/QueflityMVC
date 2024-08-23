@@ -13,10 +13,11 @@ See: [Configuration in C#](https://learn.microsoft.com/en-us/dotnet/core/extensi
 Here you can find what to configure. It is in format as it should be when using `appsetting.json` file.
 
 ### Brand
+
 ```json
 "Brand":
-  {
-    "Name": "Your brand's name"
+{
+"Name": "Your brand's name"
 }
 ```
 
@@ -27,8 +28,8 @@ This section holds settings for connection with database for main logic.
 ```json
 "Database":
 {
-    "ConnectionString": "your connection string goes here",
-    "ShouldRetry": "if app should retry completinng query after failure. true or false"
+"ConnectionString": "your connection string goes here",
+"ShouldRetry": "if app should retry completinng query after failure. true or false"
 }
 ```
 
@@ -42,8 +43,8 @@ Return url: *[app's adress]/sign-in-google*, for instance: *https://localhost:50
 ```json
 "GoogleOAuth":
 {
-    "ClientId": "client_id",
-    "ClientSecret": "client_secret"
+"ClientId": "client_id",
+"ClientSecret": "client_secret"
 }
 ```
 
@@ -54,12 +55,12 @@ Here's configuration for sending emails using SMTP protocol.
 ```json
 "Smtp":
 {
-    "Host": "smtp's host",
-    "Port": some integer goes here,
-    "Username": "username for smtp client",
-    "Password": "password for smtp client",
-    "Email": "sender's email",
-    "Name": "Name displayed as sender in emails"
+"Host": "smtp's host",
+"Port": some integer goes here,
+"Username": "username for smtp client",
+"Password": "password for smtp client",
+"Email": "sender's email",
+"Name": "Name displayed as sender in emails"
 }
 ```
 
@@ -72,10 +73,10 @@ See: [Scripts for databases](https://github.com/quartznet/quartznet/tree/main/da
 ```json
 "Jobs":
 {
-    "UseDatabase": *should use database to save jobs, true/false*,
-    "ConnectionString": *optional, only when UseDatabase is true*,
-    "WaitForJobsToComplete": *should app waits for all jobs to complete on shutdown",
-    "MaxConcurrency": *optional, default: 10, maximum number of jobs being invoked at the same type*
+"UseDatabase": *should use database to save jobs, true/false*,
+"ConnectionString": *optional, only when UseDatabase is true*,
+"WaitForJobsToComplete": *should app waits for all jobs to complete on shutdown",
+"MaxConcurrency": *optional, default: 10, maximum number of jobs being invoked at the same type*
 }
 ```
 
