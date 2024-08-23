@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Application.ViewModels.Item;
 
-public record CrEdItemVm
+public record ManageItemVm
 {
     public ItemVm? ItemVm { get; set; }
 

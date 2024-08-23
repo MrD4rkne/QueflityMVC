@@ -71,18 +71,18 @@ public class ItemsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Create(CrEdItemVm crEdObjItem)
+    public async Task<IActionResult> Create(ManageItemVm manageObjItem)
     {
-        var result = await _itemValidator.ValidateAsync(crEdObjItem.ItemVm);
+        var result = await _itemValidator.ValidateAsync(manageObjItem.ItemVm);
 
         if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
-            crEdObjItem.Categories ??= await _itemService.GetCategoriesForSelectVmAsync();
-            return View("Create", crEdObjItem);
+            manageObjItem.Categories ??= await _itemService.GetCategoriesForSelectVmAsync();
+            return View("Create", manageObjItem);
         }
 
-        _ = await _itemService.CreateItemAsync(crEdObjItem.ItemVm);
+        _ = await _itemService.CreateItemAsync(manageObjItem.ItemVm);
         return RedirectToAction("Index");
     }
 
@@ -97,7 +97,7 @@ public class ItemsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
-    public async Task<IActionResult> Edit(CrEdItemVm editItemVm)
+    public async Task<IActionResult> Edit(ManageItemVm editItemVm)
     {
         var result = await _itemValidator.ValidateAsync(editItemVm.ItemVm);
         if (!result.IsValid)
