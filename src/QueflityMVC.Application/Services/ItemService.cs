@@ -72,17 +72,17 @@ public class ItemService(
         return listItemsVm;
     }
 
-    public async Task<CrEdItemVm?> GetForEditAsync(int id)
+    public async Task<ManageItemVm?> GetForEditAsync(int id)
     {
         var item = await itemRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
 
-        CrEdItemVm crEdObjItemVm = new()
+        ManageItemVm manageObjItemVm = new()
         {
             ItemVm = mapper.Map<ItemVm>(item),
             Categories = await categoryRepository.GetAll()
                 .ProjectTo<CategoryForSelectVm>(mapper.ConfigurationProvider).ToListAsync()
         };
-        return crEdObjItemVm;
+        return manageObjItemVm;
     }
 
     public async Task UpdateItemAsync(ItemVm? updateItemVm)
@@ -108,9 +108,9 @@ public class ItemService(
         _ = await itemRepository.UpdateAsync(item);
     }
 
-    public async Task<Result<CrEdItemVm>> GetItemVmForAddingAsync(int? categoryId)
+    public async Task<Result<ManageItemVm>> GetItemVmForAddingAsync(int? categoryId)
     {
-        var crEdObjItem = new CrEdItemVm
+        var crEdObjItem = new ManageItemVm
         {
             Categories = await GetCategoriesForSelectVmAsync(),
             ItemVm = new ItemVm
@@ -121,10 +121,10 @@ public class ItemService(
 
         if (crEdObjItem.Categories.Count == 0)
         {
-            return Result<CrEdItemVm>.Failure(Errors.Items.NoCategories);
+            return Result<ManageItemVm>.Failure(Errors.Items.NoCategories);
         }
 
-        return Result<CrEdItemVm>.Success(crEdObjItem);
+        return Result<ManageItemVm>.Success(crEdObjItem);
     }
 
     public Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync()
