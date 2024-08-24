@@ -21,10 +21,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install dependencies 📂
-        run: dotnet restore QueflityMVC
+        run: dotnet restore ./src/QueflityMVC.sln
 
       - name: Build 🧱
-        run: dotnet build QueflityMVC --configuration Release --no-restore
+        run: dotnet build ./src/QueflityMVC.sln --configuration Release --no-restore
 
       - name: Test 🧪
-        run: dotnet test QueflityMVC --configuration Release --no-build
+        run: dotnet test ./src/QueflityMVC.sln --configuration Release --no-build
