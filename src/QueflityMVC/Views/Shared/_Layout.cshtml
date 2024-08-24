@@ -16,10 +16,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - @BrandOptions.Value.Name</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <!-- CSS Librarier -->
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
+
+    <!-- Custom style-->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 
     @await RenderSectionAsync("Styles", false)
@@ -65,9 +66,11 @@
     <p>&copy; @DateTime.Now.Year - @BrandOptions.Value.Name - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
 </footer>
 
-<!-- Scripts -->
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Client libraries -->
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom Scripts -->
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", false)
 </body>
