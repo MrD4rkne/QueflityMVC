@@ -73,7 +73,7 @@ components, categorize them, specify ingredients, and control access through a s
 *Admin panel - where you can manage users, products and answer to questions.*
 
 ![List of chats](./docs/images/conversationsList.png)
-*List of all chats.*
+*List of all conversations.*
 
 ![Kit's details](./docs/images/kitDetails.png)
 *Details of a kit.*
