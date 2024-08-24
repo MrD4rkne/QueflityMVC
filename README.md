@@ -92,7 +92,7 @@ components, categorize them, specify ingredients, and control access through a s
 
 - This app was developed as part of the course [Become an ASP.NET Programmer](https://szkoladotneta.pl/).
 - Special thanks to everyone who provided valuable advice in
-  the [Szkola Dotneta Discord community](https://discord.com/servers/szkola-dotneta-822236190149050389).
+  the [Szkola Dotneta Discord community](https://discord.com/invite/Q2gFDvpKVs).
 
 ## License
 
