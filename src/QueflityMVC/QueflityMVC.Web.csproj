@@ -11,118 +11,130 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="bootstrap" Version="5.3.3"/>
-        <PackageReference Include="Hangfire.Core" Version="1.8.14"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.7"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.7"/>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.7"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.7"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.7"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7"/>
+        <PackageReference Include="bootstrap" Version="5.3.3" />
+        <PackageReference Include="Hangfire.Core" Version="1.8.14" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0"/>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3"/>
-        <PackageReference Include="Serilog" Version="4.0.0"/>
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1"/>
-        <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0"/>
-        <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0"/>
-        <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0"/>
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2"/>
-        <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3" />
+        <PackageReference Include="Serilog" Version="4.0.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+        <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+        <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
+        <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\QueflityMVC.Application\QueflityMVC.Application.csproj"/>
-        <ProjectReference Include="..\QueflityMVC.Infrastructure\QueflityMVC.Infrastructure.csproj"/>
-        <ProjectReference Include="..\QueflityMVC.Persistence\QueflityMVC.Persistence.csproj"/>
+        <ProjectReference Include="..\QueflityMVC.Application\QueflityMVC.Application.csproj" />
+        <ProjectReference Include="..\QueflityMVC.Infrastructure\QueflityMVC.Infrastructure.csproj" />
+        <ProjectReference Include="..\QueflityMVC.Persistence\QueflityMVC.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Areas\Admin\Data\"/>
-        <Folder Include="Areas\Admin\Models\"/>
-        <Folder Include="wwwroot\"/>
+        <Folder Include="Areas\Admin\Data\" />
+        <Folder Include="Areas\Admin\Models\" />
+        <Folder Include="wwwroot\" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Properties\serviceDependencies.json"/>
-        <None Remove="Properties\serviceDependencies.local.json"/>
+        <None Remove="Properties\serviceDependencies.json" />
+        <None Remove="Properties\serviceDependencies.local.json" />
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Create.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Delete.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Edit.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Categories\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Components\Create.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Components\Edit.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Components\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Conversations\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\UpdateFailed.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Components.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Create.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Delete.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Edit.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\NoCategories.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Items\NoComponents.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\AddComponent.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Create.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Details.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Edit.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\EditComponent.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Kits\ListItemsForComponents.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Users\Index.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserClaims.cshtml"/>
-        <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserRoles.cshtml"/>
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Create.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Delete.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Edit.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Categories\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Components\Create.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Components\Edit.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Components\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Conversations\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Dashboard\UpdateFailed.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Components.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Create.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Delete.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Edit.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Items\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Items\NoCategories.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Items\NoComponents.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\AddComponent.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Create.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Details.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Edit.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\EditComponent.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Kits\ListItemsForComponents.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Users\Index.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserClaims.cshtml" />
+        <AdditionalFiles Include="Areas\Admin\Views\Users\ManageUserRoles.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="Views\Categories\Create.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Categories\Delete.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Categories\Edit.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Categories\Index.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Components\Create.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Components\Edit.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Components\Index.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Dashboard\Index.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Dashboard\UpdateFailed.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\Components.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\Create.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\Delete.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\Edit.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\Index.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\NoCategories.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\NoComponents.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Items\_ItemDetailsPartial.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\AddComponent.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\Create.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\Details.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\Edit.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\EditComponent.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\Index.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\ListItemsForComponents.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\Kits\_KitDetailsPartial.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\User\Index.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\User\ManageUserClaims.cshtml"/>
-        <_ContentIncludedByDefault Remove="Views\User\ManageUserRoles.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Categories\Create.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Categories\Delete.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Categories\Edit.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Categories\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Components\Create.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Components\Edit.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Components\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Dashboard\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Dashboard\UpdateFailed.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\Components.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\Create.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\Delete.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\Edit.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\NoCategories.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\NoComponents.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Items\_ItemDetailsPartial.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\AddComponent.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\Create.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\Details.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\Edit.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\EditComponent.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\ListItemsForComponents.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Kits\_KitDetailsPartial.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\User\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\User\ManageUserClaims.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\User\ManageUserRoles.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
-        <UpToDateCheckInput Remove="Views\Categories\Create.cshtml"/>
-        <UpToDateCheckInput Remove="Views\Categories\Delete.cshtml"/>
-        <UpToDateCheckInput Remove="Views\Categories\Edit.cshtml"/>
-        <UpToDateCheckInput Remove="Views\Categories\Index.cshtml"/>
+        <UpToDateCheckInput Remove="Views\Categories\Create.cshtml" />
+        <UpToDateCheckInput Remove="Views\Categories\Delete.cshtml" />
+        <UpToDateCheckInput Remove="Views\Categories\Edit.cshtml" />
+        <UpToDateCheckInput Remove="Views\Categories\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Remove="Areas\Admin\Views\Kits\_KitDetailsPartial.cshtml"/>
+        <Content Remove="Areas\Admin\Views\Kits\_KitDetailsPartial.cshtml" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.bundle.js" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.bundle.js.map" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.bundle.min.js" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.bundle.min.js.map" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.esm.js" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.esm.js.map" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.esm.min.js" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.esm.min.js.map" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.js" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.js.map" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.min.js" />
+        <Content Remove="C:\Users\marci\.nuget\packages\bootstrap\5.3.3\contentFiles\any\any\wwwroot\js\bootstrap.min.js.map" />
     </ItemGroup>
 
 </Project>
