@@ -17,34 +17,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - @BrandOptions.Value.Name</title>
 
-    <!-- CSS Librarier -->
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 
-    <!-- Custom style-->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
+    <!-- Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        .admin-button {
+            background-color: #ff6600; /* Admin button color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-button .icon-admin {
+            margin-right: 8px;
+            /* Use a relevant icon from your icon library */
+        }
+
+        .admin-button:hover {
+            background-color: #e65c00; /* Darker shade on hover */
+        }
+
+        .admin-button:active {
+            background-color: #cc5200; /* Even darker shade when active */
+        }
+
+    </style>
 
     @await RenderSectionAsync("Styles", false)
 </head>
 <body>
 <!-- Navbar -->
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand" asp-action="Index" asp-controller="Home" asp-area="">@BrandOptions.Value.Name</a>
+        <a class="navbar-brand d-flex align-items-center" asp-action="Index" asp-controller="Home" asp-area="">
+            @BrandOptions.Value.Name
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-            <!-- Left-aligned links -->
-            <ul class="navbar-nav me-auto">
-            </ul>
-
             <!-- Centered links -->
             <ul class="navbar-nav mx-auto">
                 @if (canSeeAdminPage)
                 {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a>
-                    </li>
+                    <a class="nav-link admin-button text-light fw-bold" asp-action="Index" asp-controller="Home"
+                       asp-area="Admin">
+                        <i class="fas fa-cog me-1"></i> Admin
+                    </a>
                 }
             </ul>
 
@@ -58,19 +91,19 @@
     </div>
 </nav>
 
-<div class="main-content">
+<div class="container-fluid px-5 py-1">
     @RenderBody()
 </div>
 
-<footer class="bg-dark text-white text-center py-3">
-    <p>&copy; @DateTime.Now.Year - @BrandOptions.Value.Name - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+<footer class="text-center py-4 mt-auto shadow-lg">
+    <div class="container">
+        <p>&copy; @DateTime.Now.Year - @BrandOptions.Value.Name</p>
+    </div>
 </footer>
 
-<!-- Client libraries -->
-<script src="~/lib/jquery/jquery.min.js"></script>
-<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Custom Scripts -->
+<!-- Scripts -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", false)
 </body>

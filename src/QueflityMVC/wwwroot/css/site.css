@@ -5,6 +5,16 @@ html, body {
     flex-direction: column;
 }
 
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
 .main-content {
     flex: 1;
     padding: 15px;
@@ -15,4 +25,10 @@ footer {
     position: sticky;
     top: 100vh;
     margin-top: auto;
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+footer p {
+    margin-bottom: 0;
 }
