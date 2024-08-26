@@ -1,0 +1,14 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
+@model QueflityMVC.Web.Areas.Identity.Pages.Account.Manage.DownloadPersonalDataModel
+@{
+    ViewData["Title"] = "Download Your Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
