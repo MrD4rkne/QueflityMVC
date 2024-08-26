@@ -58,6 +58,12 @@
     </style>
 
     @await RenderSectionAsync("Styles", false)
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", false)
 </head>
 <body>
 <!-- Navbar -->
@@ -91,7 +97,7 @@
     </div>
 </nav>
 
-<div class="container-fluid px-5 py-1">
+<div class="main-content">
     @RenderBody()
 </div>
 
@@ -100,11 +106,5 @@
         <p>&copy; @DateTime.Now.Year - @BrandOptions.Value.Name</p>
     </div>
 </footer>
-
-<!-- Scripts -->
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

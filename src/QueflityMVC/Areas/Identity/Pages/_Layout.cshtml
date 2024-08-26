@@ -1,0 +1,79 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Options
+@using QueflityMVC.Web.Setup.Other
+@inject IAuthorizationService AuthorizationService
+@inject IOptions<BrandOptions> BrandOptions
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+    .identity-wrapper {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    .left-panel {
+        background-image: url(@Url.Content(BrandOptions.Value.IdentityPage.BackgroundImageUrl));
+        background-size: cover;
+        background-position: center;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+        box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.5); /* Dark overlay for better text visibility */
+        color: white;
+    }
+
+    .right-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 2rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: auto 10px;
+        max-width: 500px;
+    }
+
+    @
+
+    @media (max-width: 768px) {
+        .left-panel {
+            display: none;
+        }
+
+        .right-panel {
+            max-width: 100%;
+            margin: 1rem;
+        }
+    }
+
+    @await RenderSectionAsync("Styles", false)
+    @await RenderSectionAsync("Scripts", false)
+</style>
+}
+
+<div class="identity-wrapper">
+    <div class="row container-fluid p-0 m-0">
+        <!-- Left Panel with Image -->
+        <div class="col-md-6 left-panel">
+            <div>
+                <h1>@BrandOptions.Value.IdentityPage.Header</h1>
+                <p>@BrandOptions.Value.IdentityPage.Subheader</p>
+            </div>
+        </div>
+
+        <!-- Right Panel with Login Form -->
+        <div class="col-md-6 right-panel">
+            @RenderBody()
+        </div>
+    </div>
+</div>

@@ -17,7 +17,6 @@ body {
 
 .main-content {
     flex: 1;
-    padding: 15px;
 }
 
 /* Footer sticks to the bottom when there's little content */
