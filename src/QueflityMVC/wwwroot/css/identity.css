@@ -1,0 +1,43 @@
+﻿.identity-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.left-panel {
+    background-size: cover;
+    background-position: center;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.5); /* Dark overlay for better text visibility */
+    color: white;
+}
+
+.right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: auto 10px;
+    max-width: 500px;
+}
+
+
+@media (max-width: 768px) {
+    .left-panel {
+        display: none;
+    }
+
+    .right-panel {
+        max-width: 100%;
+        margin: 1rem;
+    }
+}
