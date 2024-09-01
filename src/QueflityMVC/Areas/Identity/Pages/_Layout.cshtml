@@ -40,6 +40,12 @@
 
         <!-- Right Panel with Login Form -->
         <div class="col-md-6 right-panel">
+            <div class="row mb-5">
+                <a asp-controller="Home" asp-action="Index" asp-area="" class="btn btn-outline-primary w-auto">
+                    <i class="fa-solid fa-house me-1"></i> Home
+                </a>
+            </div>
+
             @if (popUpMessage is not null)
             {
                 <partial name="_PopUp" model="popUpMessage"/>

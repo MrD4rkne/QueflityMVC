@@ -89,12 +89,12 @@ else
     app.UseHsts();
 }
 
-app.UseCookiePolicy();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+
+app.UseCookiePolicy();
 
 app.UseAuthentication();
 app.UseAuthorization();

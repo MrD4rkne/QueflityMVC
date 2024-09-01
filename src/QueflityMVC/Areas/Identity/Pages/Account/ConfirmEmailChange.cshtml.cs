@@ -26,7 +26,7 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [TempData]
-        public string PopUpVm { get; set; }
+        public string PopupVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string userId, string email, string code)
         {
@@ -79,7 +79,7 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
 
         private void SetPopUpVm(PopUpViewModel popUpViewModel)
         {
-            PopUpVm = JsonConvert.SerializeObject(popUpViewModel);
+            PopupVm = JsonConvert.SerializeObject(popUpViewModel);
         }
 
         private static PopUpViewModel GetErrorViewModel()
