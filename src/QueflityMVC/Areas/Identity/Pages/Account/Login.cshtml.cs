@@ -88,6 +88,18 @@ public class LoginModel : PageModel
                 return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
             }
 
+            if (result is MySignInResult { IsDisabled: true })
+            {
+                ModelState.AddModelError(string.Empty, "User account is disabled.");
+                return Page();
+            }
+
+            if (result is MySignInResult { DoesRequireEmailConfirmation: true })
+            {
+                TempData["StatusMessage"] = "Please confirm your email to log in.";
+                return Page();
+            }
+
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User account locked out.");
@@ -96,7 +108,8 @@ public class LoginModel : PageModel
 
             if (result.IsNotAllowed)
             {
-                ModelState.AddModelError(string.Empty, "User account is disabled.");
+                ModelState.AddModelError(string.Empty,
+                    "User account is not allowed to log-in. Please contact administrator for further details.");
                 return Page();
             }
 

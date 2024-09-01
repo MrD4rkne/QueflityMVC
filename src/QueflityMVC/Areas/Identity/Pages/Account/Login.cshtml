@@ -135,9 +135,9 @@
             </div>
         </form>
     </section>
-    <section class="mt-4">
-        @if (Model.ExternalLogins is { Count: > 0 })
-        {
+    @if (Model.ExternalLogins is { Count: > 0 })
+    {
+        <section class="mt-4">
             <h3><i class="fas fa-external-link-alt"></i> Use another service to log in.</h3>
 
             <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post"
@@ -154,6 +154,6 @@
                     </p>
                 </div>
             </form>
-        }
-    </section>
+        </section>
+    }
 </div>
