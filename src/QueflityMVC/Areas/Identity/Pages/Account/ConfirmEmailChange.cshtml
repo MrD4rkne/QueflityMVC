@@ -1,9 +1,5 @@
 ﻿@page
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model QueflityMVC.Web.Areas.Identity.Pages.Account.ConfirmEmailChangeModel
 @{
-    ViewData["Title"] = "Confirm email change";
+    Response.Redirect(Url.Page("/Account/Login"));
 }
-
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage"/>

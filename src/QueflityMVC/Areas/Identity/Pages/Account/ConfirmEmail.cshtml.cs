@@ -8,25 +8,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account
 {
-    public class ConfirmEmailModel : PageModel
+    public class ConfirmEmailModel(UserManager<ApplicationUser> userManager, ILogger<ConfirmEmailChangeModel> logger)
+        : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
-        {
-            _userManager = userManager;
-        }
-
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [TempData]
-        public string StatusMessage { get; set; }
+        public string PopupVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string userId, string code)
         {
@@ -35,15 +30,34 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
                 return RedirectToPage("/Index");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{userId}'.");
+                logger.LogError("Unable to load user with ID '{userId}'.", userId);
             }
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            var result = await userManager.ConfirmEmailAsync(user, code);
+            if (!result.Succeeded)
+            {
+                logger.LogError("Error confirming email for user with ID '{userId}': {errors}", userId, result.Errors);
+                PopupVm = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Error confirming your email",
+                    Message = "Please try again.",
+                    Type = PopUpType.Error
+                });
+            }
+            else
+            {
+                PopupVm = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Email confirmed",
+                    Message = "Thank you for confirming your email.",
+                    Type = PopUpType.Success
+                });
+            }
+
             return Page();
         }
     }

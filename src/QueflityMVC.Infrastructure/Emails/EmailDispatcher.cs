@@ -32,7 +32,7 @@ public class EmailDispatcher(IOptions<SmtpConfig> smtpOptions) : IEmailDispatche
         mailMessage.From.Add(new MailboxAddress(config.Name, config.Email));
         mailMessage.To.Add(new MailboxAddress(mail.RecipientName, mail.RecipientEmail));
         mailMessage.Subject = mail.Subject;
-        mailMessage.Body = new TextPart("plain")
+        mailMessage.Body = new TextPart("html")
         {
             Text = mail.Body
         };
