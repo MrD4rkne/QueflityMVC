@@ -1,11 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Microsoft.Extensions.Options
+@using Newtonsoft.Json
+@using QueflityMVC.Web.Areas.Identity.Pages.Account
 @using QueflityMVC.Web.Setup.Other
 @inject IAuthorizationService AuthorizationService
 @inject IOptions<BrandOptions> BrandOptions
 
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
+    var popUpMessage = JsonConvert.DeserializeObject<PopUpViewModel>(TempData["PopupVm"] as string ?? string.Empty);
 }
 
 @section Styles{
@@ -16,7 +20,12 @@
     </style>
     <link rel="stylesheet" href="~/css/identity.css"/>
     @await RenderSectionAsync("Styles", false)
+}
+
+@section Scripts
+{
     @await RenderSectionAsync("Scripts", false)
+    <partial name="_ValidationScriptsPartial"/>
 }
 
 <div class="identity-wrapper">
@@ -31,7 +40,14 @@
 
         <!-- Right Panel with Login Form -->
         <div class="col-md-6 right-panel">
-            @RenderBody()
+            @if (popUpMessage is not null)
+            {
+                <partial name="_PopUp" model="popUpMessage"/>
+            }
+
+            <div class="content">
+                @RenderBody()
+            </div>
         </div>
     </div>
 </div>

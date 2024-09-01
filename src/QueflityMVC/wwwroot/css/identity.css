@@ -22,14 +22,46 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin: auto 10px;
+    max-width: 500px;
     padding: 2rem;
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: auto 10px;
-    max-width: 500px;
 }
 
+.back-button {
+    text-decoration: none;
+    display: flex;
+    height: 3em;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: lightcoral;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: all 0.2s linear;
+    cursor: pointer;
+    border: none;
+    color: white;
+}
+
+.back-button > .arrow {
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 20px;
+    transition: all 0.15s ease-in;
+}
+
+.back-button:hover > .arrow {
+    font-size: 1.2em;
+    transform: translateX(-5px);
+}
+
+.back-button:hover {
+    box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+    transform: translateY(-2px);
+}
 
 @media (max-width: 768px) {
     .left-panel {
