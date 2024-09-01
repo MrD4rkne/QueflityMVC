@@ -3,9 +3,11 @@
 
 #nullable disable
 
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
@@ -82,8 +84,93 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.ForgetTwoFactorClientAsync();
-            StatusMessage =
-                "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.";
+
+            TempData["PopUpVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Two Factor Authentication",
+                Message =
+                    "The current browser has been forgotten. When you login again from this browser you will be prompted for your two-factor authentication code.",
+                Type = PopUpType.Success
+            });
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostAcceptPoliciesAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                _logger.LogError("Unable to load user with ID '{userId}'.", _userManager.GetUserId(User));
+                TempData["PopUpVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Privacy Policy",
+                    Message = "An error occurred while accepting the Privacy Policy. Please try again.",
+                    Type = PopUpType.Error
+                });
+                return RedirectToPage();
+            }
+
+            if (HttpContext.Features.Get<ITrackingConsentFeature>() is not ITrackingConsentFeature
+                trackingConsentFeature)
+            {
+                _logger.LogError("Unable to load ITrackingConsentFeature.");
+                TempData["PopUpVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Privacy Policy",
+                    Message = "An error occurred while accepting the Privacy Policy. Please try again.",
+                    Type = PopUpType.Error
+                });
+                return RedirectToPage();
+            }
+
+            trackingConsentFeature.GrantConsent();
+            await _userManager.UpdateAsync(user);
+
+            TempData["PopUpVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Privacy Policy",
+                Message = "You have accepted the Privacy Policy.",
+                Type = PopUpType.Success
+            });
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostEnable2FAAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                _logger.LogError("Unable to load user with ID '{userId}'.", _userManager.GetUserId(User));
+                TempData["PopUpVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Two Factor Authentication",
+                    Message = "An error occurred while enabling Two Factor Authentication. Please try again.",
+                    Type = PopUpType.Error
+                });
+                return RedirectToPage();
+            }
+
+            var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
+            if (!result.Succeeded)
+            {
+                _logger.LogError("An error occurred while enabling Two Factor Authentication for {userId}: {errors}.",
+                    user.Id, result.Errors);
+                TempData["PopUpVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Two Factor Authentication",
+                    Message = "An error occurred while enabling Two Factor Authentication.",
+                    Type = PopUpType.Error
+                });
+                return RedirectToPage();
+            }
+
+            TempData["PopUpVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Two Factor Authentication",
+                Message =
+                    "Two Factor Authentication has been enabled successfully. Due to this change, you have been logged out. Please login again.",
+                Type = PopUpType.Success
+            });
             return RedirectToPage();
         }
     }
