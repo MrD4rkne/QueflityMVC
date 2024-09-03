@@ -49,9 +49,12 @@
     .conversations-card { background-color: #9b59b6; }
     .dashboard-card { background-color: #e67e22; }
     .categories-card { background-color: #34495e; }
+
+    .card-icon {
+        font-size: 2rem;
+    }
 </style>
 }
-
 
 <div class="container my-5">
     <h1 class="text-center mb-4">Admin Navigation Panel</h1>
@@ -61,14 +64,16 @@
             <!-- Users Card -->
             <div class="col-md-4 mb-4">
                 <div class="card users-card">
-                    <div class="card-header text-center">Users</div>
+                    <div class="card-header text-center">
+                        <i class="fas fa-users card-icon"></i>
+                        Users
+                    </div>
                     <div class="card-body text-center">
                         Manage users and permissions.
                     </div>
                     <div class="card-footer text-center">
                         <a href="@Url.Action("Index", "Users", new { area = "Admin" })" class="btn btn-light">
-                            Go to
-                            Users
+                            Go to Users
                         </a>
                     </div>
                 </div>
@@ -80,14 +85,16 @@
             <!-- Items Card -->
             <div class="col-md-4 mb-4">
                 <div class="card items-card">
-                    <div class="card-header text-center">Items</div>
+                    <div class="card-header text-center">
+                        <i class="fas fa-box card-icon"></i>
+                        Items
+                    </div>
                     <div class="card-body text-center">
                         Manage items, add components.
                     </div>
                     <div class="card-footer text-center">
                         <a href="@Url.Action("Index", "Items", new { area = "Admin" })" class="btn btn-light">
-                            Go to
-                            Items
+                            Go to Items
                         </a>
                     </div>
                 </div>
@@ -96,14 +103,16 @@
             <!-- Categories Card -->
             <div class="col-md-4 mb-4 mx-auto">
                 <div class="card categories-card">
-                    <div class="card-header text-center">Categories</div>
+                    <div class="card-header text-center">
+                        <i class="fas fa-tags card-icon"></i>
+                        Categories
+                    </div>
                     <div class="card-body text-center">
                         Manage item categories.
                     </div>
                     <div class="card-footer text-center">
                         <a href="@Url.Action("Index", "Categories", new { area = "Admin" })" class="btn btn-light">
-                            Go to
-                            Categories
+                            Go to Categories
                         </a>
                     </div>
                 </div>
@@ -112,14 +121,16 @@
             <!-- Components Card -->
             <div class="col-md-4 mb-4">
                 <div class="card components-card">
-                    <div class="card-header text-center">Components</div>
+                    <div class="card-header text-center">
+                        <i class="fas fa-cogs card-icon"></i>
+                        Components
+                    </div>
                     <div class="card-body text-center">
                         Manage components - the things Items are made of.
                     </div>
                     <div class="card-footer text-center">
                         <a href="@Url.Action("Index", "Components", new { area = "Admin" })" class="btn btn-light">
-                            Go to
-                            Components
+                            Go to Components
                         </a>
                     </div>
                 </div>
@@ -127,14 +138,16 @@
             <!-- Kits Card -->
             <div class="col-md-4 mb-4">
                 <div class="card kits-card">
-                    <div class="card-header text-center">Kits</div>
+                    <div class="card-header text-center">
+                        <i class="fas fa-boxes card-icon"></i>
+                        Kits
+                    </div>
                     <div class="card-body text-center">
                         Manage kits - multiple items in one element.
                     </div>
                     <div class="card-footer text-center">
                         <a href="@Url.Action("Index", "Kits", new { area = "Admin" })" class="btn btn-light">
-                            Go to
-                            Kits
+                            Go to Kits
                         </a>
                     </div>
                 </div>
@@ -146,14 +159,16 @@
             <!-- Dashboard Card -->
             <div class="col-md-4 mb-4">
                 <div class="card dashboard-card">
-                    <div class="card-header text-center">Dashboard</div>
+                    <div class="card-header text-center">
+                        <i class="fas fa-tachometer-alt card-icon"></i>
+                        Dashboard
+                    </div>
                     <div class="card-body text-center">
                         Reorder Products on the main page.
                     </div>
                     <div class="card-footer text-center">
                         <a href="@Url.Action("Index", "Dashboard", new { area = "Admin" })" class="btn btn-light">
-                            Go to
-                            Dashboard
+                            Go to Dashboard
                         </a>
                     </div>
                 </div>
@@ -165,12 +180,17 @@
             <!-- Conversations Card -->
             <div class="col-md-4 mb-4">
                 <div class="card conversations-card">
-                    <div class="card-header text-center">Conversations</div>
+                    <div class="card-header text-center">
+                        <i class="fas fa-comments card-icon"></i>
+                        Conversations
+                    </div>
                     <div class="card-body text-center">
                         List of all conversations and respond to your users' questions.
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Index", "Conversations", new { area = "Admin" })" class="btn btn-light">Go to Conversations</a>
+                        <a href="@Url.Action("Index", "Conversations", new { area = "Admin" })" class="btn btn-light">
+                            Go to Conversations
+                        </a>
                     </div>
                 </div>
             </div>
