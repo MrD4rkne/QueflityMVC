@@ -2,6 +2,7 @@
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Component;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -19,11 +20,17 @@ public class ComponentService : IComponentService
         _mapper = mapper;
     }
 
-    public async Task<int> CreateComponentAsync(ComponentVm componentToCreateVm)
+    public async Task<Result> CreateComponentAsync(ComponentVm componentToCreateVm)
     {
+        if (await DoesComponentWithNameExistAsync(componentToCreateVm.Name))
+        {
+            return Result.Failure(Errors.Components.DuplicatedName);
+        }
+
         var componentToCreate = _mapper.Map<Component>(componentToCreateVm);
         await _componentRepository.AddAsync(componentToCreate);
-        return componentToCreate.Id;
+
+        return Result.Success();
     }
 
     public Task DeleteComponentAsync(int id)
@@ -34,7 +41,8 @@ public class ComponentService : IComponentService
     public async Task<ListComponentsVm> GetFilteredListAsync(ListComponentsVm listComponentsVm)
     {
         var matchingComponents =
-            _componentRepository.GetComponentsForPagination(listComponentsVm.ItemId, listComponentsVm.NameFilter);
+            _componentRepository.GetComponentsForPagination(listComponentsVm.ItemId, listComponentsVm.NameFilter)
+                .OrderBy(component => component.Id);
         listComponentsVm.Pagination =
             await matchingComponents.Paginate(listComponentsVm.Pagination, _mapper.ConfigurationProvider);
         return listComponentsVm;
@@ -46,9 +54,26 @@ public class ComponentService : IComponentService
         return _mapper.Map<ComponentVm>(componentEntity);
     }
 
-    public async Task UpdateComponentAsync(ComponentVm componentToEditVm)
+    public async Task<Result> UpdateComponentAsync(ComponentVm componentToEditVm)
     {
-        var category = _mapper.Map<Component>(componentToEditVm);
-        _ = await _componentRepository.UpdateAsync(category);
+        if (!await _componentRepository.ExistsAsync(componentToEditVm.Id))
+        {
+            return Result.Failure(Errors.Components.DoesNotExist);
+        }
+
+        if (await DoesComponentWithNameExistAsync(componentToEditVm.Name))
+        {
+            return Result.Failure(Errors.Components.DuplicatedName);
+        }
+
+        var component = _mapper.Map<Component>(componentToEditVm);
+        _ = await _componentRepository.UpdateAsync(component);
+
+        return Result.Success();
+    }
+
+    private Task<bool> DoesComponentWithNameExistAsync(string name)
+    {
+        return _componentRepository.DoesComponentWithNameExistAsync(name);
     }
 }

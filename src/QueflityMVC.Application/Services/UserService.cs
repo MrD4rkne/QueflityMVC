@@ -53,7 +53,8 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
 
     public async Task<ListUsersVm> GetFilteredListAsync(ListUsersVm listUsersVm)
     {
-        var matchingUsers = userRepository.GetFilteredUsers(listUsersVm.UserNameFilter);
+        var matchingUsers = userRepository.GetFilteredUsers(listUsersVm.UserNameFilter)
+            .OrderBy(user => user.Id);
         listUsersVm.Pagination = await matchingUsers.Paginate(listUsersVm.Pagination, mapper.ConfigurationProvider);
 
         return listUsersVm;

@@ -8,7 +8,7 @@ using QueflityMVC.Persistence;
 
 #nullable disable
 
-namespace QueflityMVC.Infrastructure.Migrations
+namespace QueflityMVC.Persistence.Migrations
 {
     [DbContext(typeof(Context))]
     partial class ContextModelSnapshot : ModelSnapshot
@@ -144,43 +144,6 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Common.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<int?>("ImageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("OrderNo")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("ShouldBeShown")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImageId");
-
-                    b.ToTable("Product");
-
-                    b.HasDiscriminator().HasValue("Product");
-
-                    b.UseTphMappingStrategy();
-                });
-
             modelBuilder.Entity("QueflityMVC.Domain.Models.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -288,9 +251,12 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Categories");
 
@@ -298,7 +264,7 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Toys"
+                            Name = "Books"
                         },
                         new
                         {
@@ -308,17 +274,17 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            Name = "Music"
+                            Name = "Kids"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Sports"
+                            Name = "Beauty"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Outdoors"
+                            Name = "Electronics"
                         });
                 });
 
@@ -332,9 +298,12 @@ namespace QueflityMVC.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Components");
 
@@ -342,12 +311,12 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Soft"
+                            Name = "Rubber"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Granite"
+                            Name = "Metal"
                         },
                         new
                         {
@@ -357,87 +326,37 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            Name = "Rubber"
+                            Name = "Frozen"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Rubber"
+                            Name = "Wooden"
                         },
                         new
                         {
                             Id = 6,
-                            Name = "Cotton"
+                            Name = "Concrete"
                         },
                         new
                         {
                             Id = 7,
-                            Name = "Soft"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Cotton"
-                        },
-                        new
-                        {
-                            Id = 9,
                             Name = "Fresh"
                         },
                         new
                         {
+                            Id = 8,
+                            Name = "Steel"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Soft"
+                        },
+                        new
+                        {
                             Id = 10,
-                            Name = "Frozen"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Wooden"
-                        },
-                        new
-                        {
-                            Id = 12,
                             Name = "Cotton"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Name = "Plastic"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Name = "Granite"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Name = "Granite"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Name = "Granite"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Name = "Wooden"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Name = "Frozen"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Name = "Frozen"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Name = "Plastic"
                         });
                 });
 
@@ -504,122 +423,122 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            ItemId = 1,
-                            ItemsAmount = 1L,
-                            KitId = 15,
-                            PricePerItem = 85.11m
+                            ItemId = 6,
+                            ItemsAmount = 4L,
+                            KitId = 14,
+                            PricePerItem = 6.52m
                         },
                         new
                         {
                             Id = 2,
-                            ItemId = 8,
-                            ItemsAmount = 6L,
-                            KitId = 15,
-                            PricePerItem = 41.69m
+                            ItemId = 1,
+                            ItemsAmount = 7L,
+                            KitId = 16,
+                            PricePerItem = 35.46m
                         },
                         new
                         {
                             Id = 3,
-                            ItemId = 8,
+                            ItemId = 4,
                             ItemsAmount = 9L,
-                            KitId = 13,
-                            PricePerItem = 26.82m
+                            KitId = 11,
+                            PricePerItem = 3.57m
                         },
                         new
                         {
                             Id = 4,
-                            ItemId = 2,
-                            ItemsAmount = 3L,
-                            KitId = 15,
-                            PricePerItem = 109.46m
+                            ItemId = 10,
+                            ItemsAmount = 9L,
+                            KitId = 13,
+                            PricePerItem = 52.58m
                         },
                         new
                         {
                             Id = 5,
-                            ItemId = 7,
-                            ItemsAmount = 1L,
-                            KitId = 17,
-                            PricePerItem = 159.32m
+                            ItemId = 8,
+                            ItemsAmount = 3L,
+                            KitId = 12,
+                            PricePerItem = 10.68m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ItemId = 1,
+                            ItemsAmount = 9L,
+                            KitId = 20,
+                            PricePerItem = 45.29m
                         },
                         new
                         {
                             Id = 7,
-                            ItemId = 7,
+                            ItemId = 10,
                             ItemsAmount = 6L,
-                            KitId = 16,
-                            PricePerItem = 4.10m
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ItemId = 5,
-                            ItemsAmount = 2L,
-                            KitId = 12,
-                            PricePerItem = 29.04m
+                            KitId = 19,
+                            PricePerItem = 25.58m
                         },
                         new
                         {
                             Id = 9,
                             ItemId = 8,
-                            ItemsAmount = 7L,
-                            KitId = 17,
-                            PricePerItem = 19.69m
+                            ItemsAmount = 6L,
+                            KitId = 15,
+                            PricePerItem = 159.77m
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ItemId = 10,
+                            ItemsAmount = 2L,
+                            KitId = 12,
+                            PricePerItem = 198.25m
                         },
                         new
                         {
                             Id = 11,
                             ItemId = 6,
-                            ItemsAmount = 5L,
-                            KitId = 13,
-                            PricePerItem = 8.66m
-                        },
-                        new
-                        {
-                            Id = 12,
-                            ItemId = 4,
-                            ItemsAmount = 10L,
-                            KitId = 13,
-                            PricePerItem = 141.48m
+                            ItemsAmount = 4L,
+                            KitId = 19,
+                            PricePerItem = 14.14m
                         },
                         new
                         {
                             Id = 13,
-                            ItemId = 3,
-                            ItemsAmount = 8L,
-                            KitId = 11,
-                            PricePerItem = 43.92m
+                            ItemId = 7,
+                            ItemsAmount = 2L,
+                            KitId = 13,
+                            PricePerItem = 15.70m
                         },
                         new
                         {
                             Id = 14,
-                            ItemId = 4,
+                            ItemId = 9,
                             ItemsAmount = 9L,
-                            KitId = 18,
-                            PricePerItem = 10.30m
+                            KitId = 14,
+                            PricePerItem = 29.35m
                         },
                         new
                         {
                             Id = 15,
                             ItemId = 7,
-                            ItemsAmount = 4L,
-                            KitId = 18,
-                            PricePerItem = 29.48m
+                            ItemsAmount = 6L,
+                            KitId = 17,
+                            PricePerItem = 121.91m
                         },
                         new
                         {
                             Id = 16,
                             ItemId = 3,
-                            ItemsAmount = 5L,
-                            KitId = 12,
-                            PricePerItem = 37.82m
+                            ItemsAmount = 2L,
+                            KitId = 20,
+                            PricePerItem = 87.43m
                         },
                         new
                         {
                             Id = 17,
-                            ItemId = 4,
-                            ItemsAmount = 2L,
-                            KitId = 11,
-                            PricePerItem = 85.25m
+                            ItemId = 5,
+                            ItemsAmount = 4L,
+                            KitId = 13,
+                            PricePerItem = 81.68m
                         });
                 });
 
@@ -647,122 +566,122 @@ namespace QueflityMVC.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            AltDescription = "et",
-                            FileUrl = "https://picsum.photos/640/480/?image=85"
+                            AltDescription = "aut",
+                            FileUrl = "https://picsum.photos/640/480/?image=491"
                         },
                         new
                         {
                             Id = 2,
-                            AltDescription = "sunt",
-                            FileUrl = "https://picsum.photos/640/480/?image=673"
+                            AltDescription = "quam",
+                            FileUrl = "https://picsum.photos/640/480/?image=251"
                         },
                         new
                         {
                             Id = 3,
-                            AltDescription = "occaecati",
-                            FileUrl = "https://picsum.photos/640/480/?image=301"
+                            AltDescription = "quam",
+                            FileUrl = "https://picsum.photos/640/480/?image=13"
                         },
                         new
                         {
                             Id = 4,
-                            AltDescription = "perferendis",
-                            FileUrl = "https://picsum.photos/640/480/?image=322"
+                            AltDescription = "voluptatem",
+                            FileUrl = "https://picsum.photos/640/480/?image=674"
                         },
                         new
                         {
                             Id = 5,
-                            AltDescription = "ipsa",
-                            FileUrl = "https://picsum.photos/640/480/?image=860"
+                            AltDescription = "nulla",
+                            FileUrl = "https://picsum.photos/640/480/?image=186"
                         },
                         new
                         {
                             Id = 6,
-                            AltDescription = "ex",
-                            FileUrl = "https://picsum.photos/640/480/?image=691"
+                            AltDescription = "voluptatibus",
+                            FileUrl = "https://picsum.photos/640/480/?image=748"
                         },
                         new
                         {
                             Id = 7,
-                            AltDescription = "sint",
-                            FileUrl = "https://picsum.photos/640/480/?image=737"
+                            AltDescription = "aut",
+                            FileUrl = "https://picsum.photos/640/480/?image=95"
                         },
                         new
                         {
                             Id = 8,
-                            AltDescription = "ex",
-                            FileUrl = "https://picsum.photos/640/480/?image=1069"
+                            AltDescription = "quis",
+                            FileUrl = "https://picsum.photos/640/480/?image=854"
                         },
                         new
                         {
                             Id = 9,
-                            AltDescription = "facilis",
-                            FileUrl = "https://picsum.photos/640/480/?image=929"
+                            AltDescription = "eius",
+                            FileUrl = "https://picsum.photos/640/480/?image=868"
                         },
                         new
                         {
                             Id = 10,
-                            AltDescription = "et",
-                            FileUrl = "https://picsum.photos/640/480/?image=1066"
+                            AltDescription = "eum",
+                            FileUrl = "https://picsum.photos/640/480/?image=970"
                         },
                         new
                         {
                             Id = 11,
-                            AltDescription = "adipisci",
-                            FileUrl = "https://picsum.photos/640/480/?image=356"
+                            AltDescription = "rerum",
+                            FileUrl = "https://picsum.photos/640/480/?image=367"
                         },
                         new
                         {
                             Id = 12,
-                            AltDescription = "quo",
-                            FileUrl = "https://picsum.photos/640/480/?image=332"
+                            AltDescription = "rem",
+                            FileUrl = "https://picsum.photos/640/480/?image=659"
                         },
                         new
                         {
                             Id = 13,
-                            AltDescription = "quo",
-                            FileUrl = "https://picsum.photos/640/480/?image=869"
+                            AltDescription = "et",
+                            FileUrl = "https://picsum.photos/640/480/?image=822"
                         },
                         new
                         {
                             Id = 14,
-                            AltDescription = "at",
-                            FileUrl = "https://picsum.photos/640/480/?image=425"
+                            AltDescription = "molestiae",
+                            FileUrl = "https://picsum.photos/640/480/?image=732"
                         },
                         new
                         {
                             Id = 15,
-                            AltDescription = "ea",
-                            FileUrl = "https://picsum.photos/640/480/?image=172"
+                            AltDescription = "aut",
+                            FileUrl = "https://picsum.photos/640/480/?image=715"
                         },
                         new
                         {
                             Id = 16,
-                            AltDescription = "quam",
-                            FileUrl = "https://picsum.photos/640/480/?image=864"
+                            AltDescription = "rerum",
+                            FileUrl = "https://picsum.photos/640/480/?image=113"
                         },
                         new
                         {
                             Id = 17,
-                            AltDescription = "sapiente",
-                            FileUrl = "https://picsum.photos/640/480/?image=1084"
+                            AltDescription = "alias",
+                            FileUrl = "https://picsum.photos/640/480/?image=537"
                         },
                         new
                         {
                             Id = 18,
-                            AltDescription = "qui",
-                            FileUrl = "https://picsum.photos/640/480/?image=224"
+                            AltDescription = "sit",
+                            FileUrl = "https://picsum.photos/640/480/?image=3"
                         },
                         new
                         {
                             Id = 19,
-                            AltDescription = "quo",
-                            FileUrl = "https://picsum.photos/640/480/?image=746"
+                            AltDescription = "accusamus",
+                            FileUrl = "https://picsum.photos/640/480/?image=990"
                         },
                         new
                         {
                             Id = 20,
-                            AltDescription = "alias",
-                            FileUrl = "https://picsum.photos/640/480/?image=314"
+                            AltDescription = "dicta",
+                            FileUrl = "https://picsum.photos/640/480/?image=838"
                         });
                 });
 
@@ -796,9 +715,46 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("OrderNo")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("ShouldBeShown")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImageId");
+
+                    b.ToTable("Product");
+
+                    b.HasDiscriminator().HasValue("Product");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>
                 {
-                    b.HasBaseType("QueflityMVC.Domain.Common.Product");
+                    b.HasBaseType("QueflityMVC.Domain.Models.Product");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -815,101 +771,102 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 1,
                             ImageId = 1,
-                            Name = "Handmade Concrete Bike",
-                            OrderNo = 7L,
+                            Name = "Practical Metal Cheese",
+                            OrderNo = 8L,
                             ShouldBeShown = true,
-                            CategoryId = 3,
-                            Price = 24.93m
+                            CategoryId = 4,
+                            Price = 47.19m
                         },
                         new
                         {
                             Id = 2,
                             ImageId = 2,
-                            Name = "Intelligent Frozen Soap",
-                            ShouldBeShown = false,
-                            CategoryId = 1,
-                            Price = 29.69m
+                            Name = "Incredible Rubber Hat",
+                            OrderNo = 7L,
+                            ShouldBeShown = true,
+                            CategoryId = 5,
+                            Price = 47.33m
                         },
                         new
                         {
                             Id = 3,
                             ImageId = 3,
-                            Name = "Licensed Plastic Hat",
+                            Name = "Awesome Wooden Gloves",
                             ShouldBeShown = false,
                             CategoryId = 4,
-                            Price = 98.13m
+                            Price = 2.38m
                         },
                         new
                         {
                             Id = 4,
                             ImageId = 4,
-                            Name = "Fantastic Rubber Car",
+                            Name = "Practical Plastic Cheese",
                             ShouldBeShown = false,
-                            CategoryId = 1,
-                            Price = 56.64m
+                            CategoryId = 5,
+                            Price = 77.42m
                         },
                         new
                         {
                             Id = 5,
                             ImageId = 5,
-                            Name = "Practical Steel Salad",
-                            OrderNo = 6L,
+                            Name = "Incredible Fresh Chips",
+                            OrderNo = 4L,
                             ShouldBeShown = true,
-                            CategoryId = 1,
-                            Price = 5.76m
+                            CategoryId = 5,
+                            Price = 29.71m
                         },
                         new
                         {
                             Id = 6,
                             ImageId = 6,
-                            Name = "Handcrafted Soft Hat",
+                            Name = "Rustic Plastic Shoes",
                             ShouldBeShown = false,
                             CategoryId = 5,
-                            Price = 30.09m
+                            Price = 3.17m
                         },
                         new
                         {
                             Id = 7,
                             ImageId = 7,
-                            Name = "Handmade Soft Salad",
+                            Name = "Incredible Concrete Chips",
                             ShouldBeShown = false,
-                            CategoryId = 1,
-                            Price = 13.07m
+                            CategoryId = 2,
+                            Price = 25.32m
                         },
                         new
                         {
                             Id = 8,
                             ImageId = 8,
-                            Name = "Gorgeous Steel Fish",
-                            OrderNo = 1L,
+                            Name = "Intelligent Frozen Hat",
+                            OrderNo = 6L,
                             ShouldBeShown = true,
-                            CategoryId = 4,
-                            Price = 13.12m
+                            CategoryId = 2,
+                            Price = 38.57m
                         },
                         new
                         {
                             Id = 9,
                             ImageId = 9,
-                            Name = "Incredible Metal Cheese",
-                            OrderNo = 5L,
-                            ShouldBeShown = true,
+                            Name = "Handmade Cotton Bike",
+                            ShouldBeShown = false,
                             CategoryId = 4,
-                            Price = 12.99m
+                            Price = 15.80m
                         },
                         new
                         {
                             Id = 10,
                             ImageId = 10,
-                            Name = "Incredible Cotton Shirt",
-                            ShouldBeShown = false,
-                            CategoryId = 1,
-                            Price = 36.99m
+                            Name = "Ergonomic Granite Bike",
+                            OrderNo = 2L,
+                            ShouldBeShown = true,
+                            CategoryId = 4,
+                            Price = 4.73m
                         });
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Kit", b =>
                 {
-                    b.HasBaseType("QueflityMVC.Domain.Common.Product");
+                    b.HasBaseType("QueflityMVC.Domain.Models.Product");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -926,87 +883,85 @@ namespace QueflityMVC.Infrastructure.Migrations
                         {
                             Id = 11,
                             ImageId = 11,
-                            Name = "Gorgeous Soft Gloves",
-                            OrderNo = 0L,
+                            Name = "Awesome Metal Towels",
+                            OrderNo = 5L,
                             ShouldBeShown = true,
-                            Description = "Quibusdam dolores quibusdam."
+                            Description = "Nostrum sint aut autem placeat temporibus eum."
                         },
                         new
                         {
                             Id = 12,
                             ImageId = 12,
-                            Name = "Sleek Plastic Shirt",
+                            Name = "Rustic Metal Sausages",
                             ShouldBeShown = false,
-                            Description = "Hic quia perspiciatis voluptas repudiandae et id mollitia voluptas."
+                            Description = "Animi reprehenderit illo velit molestiae qui inventore fugit non."
                         },
                         new
                         {
                             Id = 13,
                             ImageId = 13,
-                            Name = "Fantastic Metal Soap",
-                            ShouldBeShown = false,
-                            Description = "Voluptatem expedita consectetur sit officia maxime reiciendis accusantium odit alias."
+                            Name = "Awesome Steel Ball",
+                            OrderNo = 9L,
+                            ShouldBeShown = true,
+                            Description = "Est saepe expedita nam."
                         },
                         new
                         {
                             Id = 14,
                             ImageId = 14,
-                            Name = "Fantastic Frozen Cheese",
-                            OrderNo = 8L,
-                            ShouldBeShown = true,
-                            Description = "In unde consequatur magnam et molestias dolores est optio et."
+                            Name = "Refined Concrete Fish",
+                            ShouldBeShown = false,
+                            Description = "Omnis velit ut natus minus voluptatem voluptas omnis minima."
                         },
                         new
                         {
                             Id = 15,
                             ImageId = 15,
-                            Name = "Sleek Frozen Chips",
-                            OrderNo = 3L,
-                            ShouldBeShown = true,
-                            Description = "Dolorem est sit porro fuga qui quibusdam sit sapiente labore."
+                            Name = "Sleek Frozen Pizza",
+                            ShouldBeShown = false,
+                            Description = "Voluptate qui quis."
                         },
                         new
                         {
                             Id = 16,
                             ImageId = 16,
-                            Name = "Small Plastic Shirt",
-                            OrderNo = 4L,
-                            ShouldBeShown = true,
-                            Description = "Possimus qui consequatur omnis voluptas illum in itaque similique ratione."
+                            Name = "Generic Metal Bike",
+                            ShouldBeShown = false,
+                            Description = "Repudiandae dolorum porro officiis suscipit voluptates nulla ut."
                         },
                         new
                         {
                             Id = 17,
                             ImageId = 17,
-                            Name = "Sleek Granite Chair",
-                            OrderNo = 9L,
+                            Name = "Awesome Steel Soap",
+                            OrderNo = 1L,
                             ShouldBeShown = true,
-                            Description = "Voluptas similique architecto placeat."
+                            Description = "Dicta placeat a porro magnam ad aut ullam accusamus."
                         },
                         new
                         {
                             Id = 18,
                             ImageId = 18,
-                            Name = "Handcrafted Plastic Hat",
+                            Name = "Generic Soft Keyboard",
                             ShouldBeShown = false,
-                            Description = "Laudantium omnis voluptas voluptate optio aspernatur error."
+                            Description = "Officiis sint aut est."
                         },
                         new
                         {
                             Id = 19,
                             ImageId = 19,
-                            Name = "Handmade Rubber Chicken",
-                            OrderNo = 2L,
+                            Name = "Handcrafted Steel Tuna",
+                            OrderNo = 0L,
                             ShouldBeShown = true,
-                            Description = "Velit earum accusantium vitae quia dolores quae et."
+                            Description = "Molestiae reiciendis sit blanditiis molestias possimus beatae."
                         },
                         new
                         {
                             Id = 20,
                             ImageId = 20,
-                            Name = "Incredible Plastic Towels",
+                            Name = "Incredible Rubber Pizza",
                             ShouldBeShown = false,
-                            Description = "Voluptatem quia impedit ab voluptatibus error numquam."
+                            Description = "Aperiam sint sequi animi velit."
                         });
                 });
 
@@ -1076,18 +1031,9 @@ namespace QueflityMVC.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QueflityMVC.Domain.Common.Product", b =>
-                {
-                    b.HasOne("QueflityMVC.Domain.Models.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
-                    b.Navigation("Image");
-                });
-
             modelBuilder.Entity("QueflityMVC.Domain.Models.Conversation", b =>
                 {
-                    b.HasOne("QueflityMVC.Domain.Common.Product", "Product")
+                    b.HasOne("QueflityMVC.Domain.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1140,6 +1086,15 @@ namespace QueflityMVC.Infrastructure.Migrations
                     b.Navigation("Conversation");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("QueflityMVC.Domain.Models.Product", b =>
+                {
+                    b.HasOne("QueflityMVC.Domain.Models.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("QueflityMVC.Domain.Models.Item", b =>

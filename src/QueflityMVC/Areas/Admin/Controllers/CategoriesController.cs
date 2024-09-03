@@ -5,22 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class CategoriesController : Controller
+public class CategoriesController(ICategoryService categoryService, IValidator<CategoryVm> categoryValidator)
+    : Controller
 {
-    private readonly ICategoryService _categoryService;
-    private readonly IValidator<CategoryVm> _categoryValidator;
-
-    public CategoriesController(ICategoryService categoryService, IValidator<CategoryVm> categoryValidator)
-    {
-        _categoryService = categoryService;
-        _categoryValidator = categoryValidator;
-    }
-
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index()
     {
@@ -42,7 +35,7 @@ public class CategoriesController : Controller
 
         listCategoriesVm.NameFilter ??= string.Empty;
 
-        var listVm = await _categoryService.GetFilteredListAsync(listCategoriesVm);
+        var listVm = await categoryService.GetFilteredListAsync(listCategoriesVm);
         return View(listVm);
     }
 
@@ -58,25 +51,44 @@ public class CategoriesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CategoryVm createCategoryVm)
     {
-        var result = await _categoryValidator.ValidateAsync(createCategoryVm);
+        var validationResult = await categoryValidator.ValidateAsync(createCategoryVm);
 
-        if (!result.IsValid)
+        if (!validationResult.IsValid)
         {
-            result.AddToModelState(ModelState);
+            validationResult.AddToModelState(ModelState);
             return View("Create", createCategoryVm);
         }
 
-        _ = await _categoryService.CreateCategoryAsync(createCategoryVm);
-
-        return RedirectToAction("Index");
+        var result = await categoryService.CreateCategoryAsync(createCategoryVm);
+        switch (result)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { IsFailure: true, Error: { Code: ErrorCodes.Categories.DOES_NOT_EXIST } }:
+                return NotFound();
+            case { IsFailure: true, Error: { Code: ErrorCodes.Categories.DUPLICATED_NAME } }:
+                ModelState.AddModelError(nameof(CategoryVm.Name), "Category with this name already exists.");
+                return View();
+            default:
+                return RedirectToAction("Error", "Home", new { area = "" });
+        }
     }
 
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        var vmForEdit = await _categoryService.GetVmForEditAsync(id);
-        return View(vmForEdit);
+        var vmForEdit = await categoryService.GetVmForEditAsync(id);
+        if (vmForEdit.IsSuccess)
+        {
+            return View(vmForEdit.Value);
+        }
+
+        return vmForEdit.Error.Code switch
+        {
+            ErrorCodes.Categories.DOES_NOT_EXIST => NotFound(),
+            _ => BadRequest()
+        };
     }
 
     [HttpPost]
@@ -84,16 +96,27 @@ public class CategoriesController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(CategoryVm createCategoryVm)
     {
-        var result = await _categoryValidator.ValidateAsync(createCategoryVm);
+        var validationResult = await categoryValidator.ValidateAsync(createCategoryVm);
 
-        if (!result.IsValid)
+        if (!validationResult.IsValid)
         {
-            result.AddToModelState(ModelState);
+            validationResult.AddToModelState(ModelState);
             return View("Edit", createCategoryVm);
         }
 
-        _ = await _categoryService.UpdateCategoryAsync(createCategoryVm);
-        return RedirectToAction("Index");
+        var result = await categoryService.UpdateCategoryAsync(createCategoryVm);
+        switch (result)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { IsFailure: true, Error: { Code: ErrorCodes.Categories.DOES_NOT_EXIST } }:
+                return NotFound();
+            case { IsFailure: true, Error: { Code: ErrorCodes.Categories.DUPLICATED_NAME } }:
+                ModelState.AddModelError(nameof(CategoryVm.Name), "Category with this name already exists.");
+                return View();
+            default:
+                return RedirectToAction("Error", "Home", new { area = "" });
+        }
     }
 
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
@@ -101,7 +124,7 @@ public class CategoriesController : Controller
     {
         try
         {
-            await _categoryService.DeleteCategoryAsync(id);
+            await categoryService.DeleteCategoryAsync(id);
         }
         catch (InvalidOperationException invOpEx)
         {

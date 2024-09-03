@@ -55,4 +55,22 @@ public static class Errors
         public static readonly Error AlreadyExists = new(
             ErrorCodes.Conversation.ALREADY_EXISTS, "Conversation already exists");
     }
+
+    public static class Components
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Components.DOES_NOT_EXIST, "Component does not exist");
+
+        public static readonly Error DuplicatedName = new(
+            ErrorCodes.Components.DUPLICATED_NAME, "Component with this name already exists");
+    }
+
+    public static class Categories
+    {
+        public static readonly Error DuplicatedName = new(
+            ErrorCodes.Categories.DUPLICATED_NAME, "Category with this name already exists");
+
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Categories.DOES_NOT_EXIST, "Category does not exist");
+    }
 }
