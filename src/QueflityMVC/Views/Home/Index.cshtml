@@ -2,31 +2,57 @@
 @model QueflityMVC.Application.ViewModels.Product.DashboardVm
 @{
     ViewData["Title"] = "Home Page";
-    const int itemsPerRow = 4;
-    var rowsCount = (int)Math.Ceiling((double)Model.Products.Count / itemsPerRow);
 }
 
-<div class="section itemsLayout m-2">
+<style>
+    .section {
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    .itemsLayout {
+        margin: 0 auto;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .centered-box-with-text {
+        text-align: center;
+        padding: 20px;
+        font-size: 1.2rem;
+        color: #6c757d;
+    }
+</style>
+
+<div class="section itemsLayout">
     @if (Model.Products is { Count: > 0 })
     {
-        @for (var row = 0; row < rowsCount; row++)
-        {
-            <div class="row gx-sm-1">
-                @for (var column = 0; column < itemsPerRow; column++)
-                {
-                    int itemNo = row * itemsPerRow + column;
-                    if (itemNo >= Model.Products.Count)
-                        break;
-
-                    <div class="col-sm-6 col-md-3 h100">
-                        <partial name="_ProductCardPartial" model="Model.Products[itemNo]"/>
+        <div class="row gx-4 gy-4">
+            @foreach (var product in Model.Products)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100">
+                        <partial name="_ProductCardPartial" model="product"/>
                     </div>
-                }
-            </div>
-        }
+                </div>
+            }
+        </div>
     }
     else
     {
-        <div class="centered-box-with-text">No products to show.</div>
+        <div class="centered-box-with-text">
+            <i class="fas fa-box-open fa-3x"></i>
+            <div>No products to show.</div>
+        </div>
     }
 </div>

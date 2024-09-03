@@ -2,11 +2,26 @@
 
 <style>
     .rectangle {
-        padding: 20px;
+        padding: 15px;
         color: white;
         text-align: center;
         margin: 5px;
         border-radius: 5px;
+    }
+
+    .card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-img-top {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .modal-header {
+        border-bottom: none;
     }
 </style>
 
@@ -19,7 +34,7 @@
             <!-- Product name-->
             <h5 class="fw-bolder">@Model.Name</h5>
             <!-- Product price-->
-            <p class="text-success font-italic color">@Model.Price</p>
+            <p class="text-success font-italic">@Model.Price</p>
             <!-- Product category-->
             <p class="fst-italic">@Model.Category.Name</p>
         </div>
@@ -27,20 +42,19 @@
     <!-- Product actions-->
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
         <div class="row">
-            <div class="col">
-                <button type="button" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal" data-bs-target="@($"#itemComponents{Model.Id}")">
-                    Components
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal"
+                        data-bs-target="@($"#itemComponents{Model.Id}")">
+                    <i class="fas fa-cogs"></i> Components
                 </button>
-            </div>
-            <div class="col-auto">
-                @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-outline-primary" })
             </div>
         </div>
     </div>
 
     <!-- Modal -->
     <div class="modal fade" id="@($"itemComponents{Model.Id}")" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modalLabel">Components of @Model.Name</h1>
@@ -53,14 +67,16 @@
                             <div class="d-flex flex-wrap">
                                 @foreach (var component in Model.Components)
                                 {
-                                    <div class="rectangle">@component.Name</div>
+                                    <div class="rectangle">
+                                        <i class="fas fa-puzzle-piece"></i> @component.Name
+                                    </div>
                                 }
                             </div>
                         </div>
                     }
                     else
                     {
-                        <div class="centered-box-with-text">No components found</div>
+                        <div class="text-center">No components found</div>
                     }
                 </div>
                 <div class="modal-footer">

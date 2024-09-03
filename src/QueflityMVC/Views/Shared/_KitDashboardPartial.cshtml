@@ -1,5 +1,31 @@
 ﻿@model QueflityMVC.Application.ViewModels.Product.KitForCardVm
 
+<style>
+    .card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-img-top {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .modal-header {
+        border-bottom: none;
+    }
+
+    .modal-body img {
+        max-width: 100px;
+        border-radius: 5px;
+    }
+
+    .text-info-emphasis {
+        color: #17a2b8;
+    }
+</style>
+
 <div class="card h-100 w-100">
     <!-- Product image-->
     <img class="card-img-top" src="@Model.Image.FileUrl" alt="@Model.Image.AltDescription">
@@ -9,27 +35,25 @@
             <!-- Product name-->
             <h5 class="fw-bolder">@Model.Name</h5>
             <!-- Product price-->
-            <p class="text-success font-italic color">@Model.Price</p>
+            <p class="text-success font-italic">@Model.Price</p>
             <p class="text-info-emphasis text-wrap">@Model.Description</p>
         </div>
     </div>
     <!-- Product actions-->
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
         <div class="row">
-            <div class="col">
+            <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal" data-bs-target="@($"#kitItems{Model.Id}")">
-                    View items
+                    <i class="fas fa-box"></i> View items
                 </button>
-            </div>
-            <div class="col-auto">
-                @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Contact about", "Contact", "Home", new { id = Model.Id }, new { @class = "btn btn-outline-primary" })
             </div>
         </div>
     </div>
 
     <!-- Modal -->
     <div class="modal fade" id="@($"kitItems{Model.Id}")" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modalLabel">Items of @Model.Name</h1>
@@ -38,24 +62,14 @@
                 <div class="modal-body">
                     @if (Model.Elements is { Count: > 0 })
                     {
-                        <table class="table">
-
+                        <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th></th>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Amount
-                                </th>
-                                <th>
-                                    Price per item
-                                </th>
-                                <th>
-                                    Overall price
-                                </th>
-                                <th></th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <th>Price per Item</th>
+                                <th>Overall Price</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -65,7 +79,7 @@
                                     <td>
                                         @{
                                             var thumbnail = element.Item.Image;
-                                            <img src="@thumbnail.FileUrl" alt="@thumbnail.AltDescription" style="height:30px"/>
+                                            <img src="@thumbnail.FileUrl" alt="@thumbnail.AltDescription"/>
                                         }
                                     </td>
                                     <td>
@@ -78,7 +92,7 @@
                                         @Html.DisplayFor(modelItem => element.PricePerItem)
                                     </td>
                                     <td>
-                                        <p>@(element.PricePerItem * element.ItemsAmount)</p>
+                                        @(element.PricePerItem * element.ItemsAmount)
                                     </td>
                                 </tr>
                             }
@@ -87,7 +101,7 @@
                     }
                     else
                     {
-                        <div class="centered-box-with-text">No items found</div>
+                        <div class="text-center">No items found</div>
                     }
                 </div>
                 <div class="modal-footer">
