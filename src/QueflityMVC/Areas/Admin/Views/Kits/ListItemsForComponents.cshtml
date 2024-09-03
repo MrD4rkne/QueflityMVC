@@ -7,94 +7,110 @@
 @{
     ViewData["Title"] = "List";
     bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
-    int[] options = [2, 5, 10, 25, 50, 100];
+    int[] options = { 2, 5, 10, 25, 50, 100 }; // Correct array initialization
 }
 
-@if (Model.KitDetailsVm is not null)
-{
-    <partial name="_KitDetailsPartial" model="@Model.KitDetailsVm"/>
-}
+<div class="container-fluid p-4">
 
-<hr/>
+    @if (Model.KitDetailsVm != null)
+    {
+        <partial name="_KitDetailsPartial" model="@Model.KitDetailsVm"/>
+    }
 
-<h4>Items</h4>
-<h7>Below you can see all available items</h7>
+    <hr/>
 
-<form asp-action="ListItemsForComponents" asp-controller="Kits" asp-area="Admin" method="post">
-    <ul class="nav gap-1">
-        <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter"/>
-        </li>
-        <li class="nav-item">
-            <button type="submit" class="btn btn-secondary">Search</button>
-        </li>
-        <li class="nav-item">
-            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (int i in options)
-                {
-                    @if (i == Model.Pagination.Info.PageSize)
-                    {
-                        <option value="@i" selected>@i</option>
-                    }
-                    else
-                    {
-                        <option value="@i">@i</option>
-                    }
-                }
-            </select>
-        </li>
-    </ul>
-    @Html.HiddenFor(x => x.KitId)
-    <div class="row">
-        <table class="table">
-            <thead>
-            <tr>
-                <th></th>
-                <th>
-                    Name
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Pagination.Entities)
-            {
-                <tr>
-                    <td>
-                        @if (item.Image != null)
+    <h4><i class="fas fa-boxes"></i> Items</h4>
+    <p class="text-muted">Below you can see all available items</p>
+
+    <form asp-action="ListItemsForComponents" asp-controller="Kits" asp-area="Admin" method="post">
+        <div class="row align-items-center mb-3">
+            <!-- Search Input -->
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search..." asp-for="NameFilter"
+                           id="nameFilter"/>
+                </div>
+            </div>
+            <!-- Search Button -->
+            <div class="col-md-2 mb-2 mb-md-0">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Search
+                </button>
+            </div>
+            <!-- Page Size Selector -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <label class="input-group-text bg-primary text-white" for="pageSizeSelect">
+                        <i class="fas fa-list"></i>
+                    </label>
+                    <select class="form-select" asp-for="Pagination.Info.PageSize" id="pageSizeSelect"
+                            onchange="PageSizeSelected()">
+                        @foreach (int i in options)
                         {
-                            <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
-                        }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @if (Model.KitComponentsIds is not null && Model.KitComponentsIds.Contains(item.Id))
-                        {
-                            @Html.ActionLink("Edit membership", "EditComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
-                            ;
-                            @if (canCreateEntities)
+                            if (i == Model.Pagination.Info.PageSize)
                             {
-                                @Html.ActionLink("Delete", "DeleteComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
                             }
                         }
-                        else
-                        {
-                            @Html.ActionLink("Add to set", "AddComponent", "Kits", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
-                            ;
-                        }
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+                    </select>
+                </div>
+            </div>
+        </div>
 
-    </div>
-    <div class="row">
-        <partial name="_PaginationPartial" for="Pagination.Info"/>
-    </div>
-</form>
+        @Html.HiddenFor(x => x.KitId)
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Pagination.Entities)
+                {
+                    <tr>
+                        <td>
+                            @if (item.Image != null)
+                            {
+                                <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>
+                            @if (Model.KitComponentsIds != null && Model.KitComponentsIds.Contains(item.Id))
+                            {
+                                @Html.ActionLink("Edit Membership", "EditComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                @if (canCreateEntities)
+                                {
+                                    @Html.ActionLink("Delete", "DeleteComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm ms-2" })
+                                }
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Add to Set", "AddComponent", "Kits", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-3">
+            <partial name="_PaginationPartial" for="Pagination.Info"/>
+        </div>
+    </form>
+</div>
 
 @section Scripts
 {

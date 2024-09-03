@@ -40,6 +40,14 @@
     <form asp-action="Index" asp-controller="Items" asp-area="Admin" method="post">
         @Html.HiddenFor(model => model.CategoryId)
 
+        <div class="alert alert-info fade show mb-3" role="alert">
+            <strong>Item Filter Applied:</strong> Currently, you see kits that include item with ID @Model.CategoryId as
+            a part of them.
+            <button type="button" class="btn btn-outline-primary" aria-label="Close" onclick="RemoveCategoryFilter()">
+                Clear Filter
+            </button>
+        </div>
+
         <div class="row align-items-center mb-3">
             <!-- Search Input -->
             <div class="col-md-4 mb-2 mb-md-0">
@@ -144,6 +152,11 @@
 {
     <script type="text/javascript">
     function PageSizeSelected() {
+        SubmitPagination();
+    }
+
+    function RemoveCategoryFilter() {
+        document.getElementById("@Html.IdFor(x => x.CategoryId)").value = "";
         SubmitPagination();
     }
 </script>

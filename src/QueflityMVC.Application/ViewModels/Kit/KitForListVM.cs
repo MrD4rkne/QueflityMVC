@@ -9,6 +9,8 @@ public record KitForListVm : IMapFrom<Domain.Models.Item>
 
     public required string Name { get; set; }
 
+    public required decimal Price { get; set; }
+
     public bool ShouldBeShown { get; set; }
 
     public ImageForListVm? Image { get; set; }

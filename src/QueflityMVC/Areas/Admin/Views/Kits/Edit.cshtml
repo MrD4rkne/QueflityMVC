@@ -9,78 +9,90 @@
     bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h2>Edit</h2>
+<div class="container mt-4">
+    @if (canListEntities)
+    {
+        <div class="btn-group mb-3" role="group" aria-label="Navigate">
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-controller="Kits" asp-area="Admin">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+            <a class="btn btn-outline-success"
+               href="@Url.ActionLink("Details", "Kits", new { area = "Admin", id = Model.Id })">
+                Details
+            </a>
+        </div>
+    }
 
-<h4>Change your awesome kit!</h4>
-<hr/>
-<div class="row">
+    <h2 class="mb-4"><i class="fas fa-box-open"></i> Edit Kit</h2>
+    <h4 class="mb-4"><i class="fas fa-pencil-alt"></i> Update Your Awesome Kit!</h4>
+    <hr/>
+
     <form asp-action="Edit" asp-controller="Kits" asp-area="Admin" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"/>
-        <input type="hidden" asp-for="Id" value="@Model.Id"/>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"/>
+
+        <input type="hidden" asp-for="Id"/>
+
         <partial name="_ImageEditPartial" for="Image"/>
 
         <div class="container">
-            <div class="row">
+            <!-- Visibility Toggle -->
+            <div class="row mb-3 align-items-center">
                 <div class="col-md-auto">
-                    <h5>Set</h5>
+                    <h5><i class="fas fa-eye"></i> Visibility</h5>
                 </div>
                 <div class="col-md-auto">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" asp-for="ShouldBeShown" type="checkbox" checked="@(Model.ShouldBeShown ? "checked" : null)" onchange="VisibilityChanged()">
-                        @if (Model.ShouldBeShown)
-                        {
-                            <label id="visibility-label" class="form-check-label">Visible</label>
-                        }
-                        else
-                        {
-                            <label id="visibility-label" class="form-check-label">Hidden</label>
-                        }
+                        <input class="form-check-input" asp-for="ShouldBeShown" type="checkbox"
+                               onchange="VisibilityChanged()" id="ShouldBeShown">
+                        <label id="visibility-label" class="form-check-label" for="ShouldBeShown">
+                            @(Model.ShouldBeShown ? "Visible" : "Hidden")
+                        </label>
                     </div>
                 </div>
                 <div class="col-md-auto">
                     <span asp-validation-for="ShouldBeShown" class="text-danger"></span>
                 </div>
             </div>
-            <div class="row">
+
+            <!-- Kit Details -->
+            <div class="row mb-3">
                 <div class="col-md">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" value="@Model.Name"/>
+                    <label asp-for="Name" class="form-label"><i class="fas fa-tag"></i> Name</label>
+                    <input asp-for="Name" class="form-control"/>
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="col-md-auto">
-                    <label class="control-label">Price</label>
+                    <label class="form-label"><i class="fas fa-dollar-sign"></i> Price</label>
                     <input type="number" readonly class="form-control" value="@Model.Price"/>
                 </div>
             </div>
-            <div class="row">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="5" value="@Model.Description"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+
+            <div class="row mb-3">
+                <div class="col-md">
+                    <label asp-for="Description" class="form-label">
+                        <i class="fas fa-info-circle"></i>
+                        Description
+                    </label>
+                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
             </div>
         </div>
-        <div class="container" style="display:flex">
-            <button type="submit" class="btn btn-primary" formaction="Edit">Edit</button>
-            @if (canListEntities)
-            {
-                @Html.ActionLink("Back to List", "Index", "Kits", new { area = "Admin" }, new { @class = "btn btn-outline-secondary" })
-            }
+
+        <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
         </div>
     </form>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
     <script type="text/javascript">
         function VisibilityChanged() {
             var label = document.getElementById("visibility-label");
-            if (label.innerText == "Visible") {
-                label.innerText = "Hidden";
-            }
-            else {
-                label.innerText = "Visible";
-            }
+            var checkbox = document.getElementById("ShouldBeShown");
+            label.innerText = checkbox.checked ? "Visible" : "Hidden";
         }
     </script>
 }
