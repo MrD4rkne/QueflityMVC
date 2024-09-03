@@ -2,17 +2,28 @@
 @model QueflityMVC.Application.ViewModels.Category.DeleteFailedCategoryVm
 
 @{
-    ViewData["Title"] = "Deletion failed";
+    ViewData["Title"] = "Deletion Failed";
 }
 
-<h1>Delete</h1>
+<div class="container mt-5">
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <div>
+            <h4 class="alert-heading">Deletion Failed</h4>
+            <p>@Model.Message</p>
+        </div>
+    </div>
 
-<div>
-    <h4>@Model.Message</h4>
     <hr/>
-</div>
-<div>
-    @Html.ActionLink("View items with this category", "ViewItems", "Categories", new { area = "Admin", id = Model.CategoryId })
-    |
-    <a asp-action="Index" asp-controller="Categories" asp-area="Admin">Back to List</a>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("ViewItems", "Categories", new { area = "Admin", id = Model.CategoryId })"
+           class="btn btn-warning">
+            <i class="fas fa-eye"></i> View Items with this Category
+        </a>
+        |
+        <a asp-action="Index" asp-controller="Categories" asp-area="Admin" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
 </div>

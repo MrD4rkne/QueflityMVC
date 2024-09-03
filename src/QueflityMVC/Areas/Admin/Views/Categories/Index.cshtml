@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = "List Categories";
-    int[] options = { 2, 5, 10, 25, 50, 100 };
+    int[] options = [2, 5, 10, 25, 50, 100];
     bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
