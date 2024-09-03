@@ -61,56 +61,65 @@
         </div>
 
         <div class="row">
-            <table class="table table-striped">
-                <thead class="table">
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Email</th>
-                    <th scope="col" class="text-end">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model.Pagination.Entities)
-                {
+            @if (Model.Pagination.Entities is { Count: > 0 })
+            {
+                <table class="table table-striped">
+                    <thead class="table">
                     <tr>
-                        <td>@item.Id</td>
-                        <td>@item.UserName</td>
-                        <td>@item.Email</td>
-                        <td class="text-end">
-                            <div class="btn-group" role="group" aria-label="Manage user actions">
-                                @if (canSeeUserRoles)
-                                {
-                                    @Html.ActionLink("Roles", "ManageUserRoles", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-info btn-sm" })
-                                }
-                                @if (canSeeUserClaims)
-                                {
-                                    @Html.ActionLink("Claims", "ManageUserClaims", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
-                                }
-
-                                @if (item.Id != UserContext.UserId)
-                                {
-                                    if (item.IsEnabled)
-                                    {
-                                        if (canDisableUsers)
-                                        {
-                                            @Html.ActionLink("Disable", "DisableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (canEnableUsers)
-                                        {
-                                            @Html.ActionLink("Enable", "EnableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-warning btn-sm" })
-                                        }
-                                    }
-                                }
-                            </div>
-                        </td>
+                        <th scope="col">Id</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col" class="text-end">Actions</th>
                     </tr>
-                }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Pagination.Entities)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.UserName</td>
+                            <td>@item.Email</td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group" aria-label="Manage user actions">
+                                    @if (canSeeUserRoles)
+                                    {
+                                        @Html.ActionLink("Roles", "ManageUserRoles", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-info btn-sm" })
+                                    }
+                                    @if (canSeeUserClaims)
+                                    {
+                                        @Html.ActionLink("Claims", "ManageUserClaims", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
+                                    }
+
+                                    @if (item.Id != UserContext.UserId)
+                                    {
+                                        if (item.IsEnabled)
+                                        {
+                                            if (canDisableUsers)
+                                            {
+                                                @Html.ActionLink("Disable", "DisableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (canEnableUsers)
+                                            {
+                                                @Html.ActionLink("Enable", "EnableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-warning btn-sm" })
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i> Sorry! Nothing to be shown here.
+                </div>
+            }
         </div>
 
         <div class="row">

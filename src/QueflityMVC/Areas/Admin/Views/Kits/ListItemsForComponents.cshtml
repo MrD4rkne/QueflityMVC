@@ -66,45 +66,54 @@
 
         @Html.HiddenFor(x => x.KitId)
 
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model.Pagination.Entities)
-                {
+        @if (Model.Pagination.Entities is { Count: > 0 })
+        {
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td>
-                            @if (item.Image != null)
-                            {
-                                <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                        <td>
-                            @if (Model.KitComponentsIds != null && Model.KitComponentsIds.Contains(item.Id))
-                            {
-                                @Html.ActionLink("Edit Membership", "EditComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
-                                @if (canCreateEntities)
-                                {
-                                    @Html.ActionLink("Delete", "DeleteComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm ms-2" })
-                                }
-                            }
-                            else
-                            {
-                                @Html.ActionLink("Add to Set", "AddComponent", "Kits", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
-                            }
-                        </td>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Actions</th>
                     </tr>
-                }
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Pagination.Entities)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.Image != null)
+                                {
+                                    <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>
+                                @if (Model.KitComponentsIds != null && Model.KitComponentsIds.Contains(item.Id))
+                                {
+                                    @Html.ActionLink("Edit Membership", "EditComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                    @if (canCreateEntities)
+                                    {
+                                        @Html.ActionLink("Delete", "DeleteComponent", "Kits", new { itemId = item.Id, kitId = Model.KitId }, new { @class = "btn btn-outline-danger btn-sm ms-2" })
+                                    }
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Add to Set", "AddComponent", "Kits", new { kitId = Model.KitId, itemId = item.Id }, new { @class = "btn btn-outline-primary btn-sm" })
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle"></i> Sorry! Nothing to be shown here.
+            </div>
+        }
 
         <div class="row mt-3">
             <partial name="_PaginationPartial" for="Pagination.Info"/>

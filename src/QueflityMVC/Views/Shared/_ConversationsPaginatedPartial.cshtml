@@ -129,37 +129,50 @@
     </div>
 </div>
 <div class="row">
-    @foreach (var conversationVm in Model.Entities)
+    @if (Model.Entities is { Count: > 0 })
     {
-        <div class="conversation-wrapper">
-            <div class="row partial-view">
-                <div class="col">
-                    <img src="@conversationVm.Product.Image.FileUrl" alt="@conversationVm.Product.Image.AltDescription" class="img-thumbnail"/>
-                </div>
-                <div class="col">
-                    <h5 class="text-break">@conversationVm.Title</h5>
-                    <h7>About: <strong>@conversationVm.Product.Name</strong></h7>
-                    <div class="product-price">Price: $@conversationVm.Product.Price</div>
-                    <div class="user-info">
-                        @if (conversationVm.Messages.LastOrDefault() is { } lastMessageVm)
-                        {
-                            <p class="last-message-time">Last message: @lastMessageVm.SentAt.ToShortDateString()</p>
-                        }
-                        else
-                        {
-                            <p class="last-message-time">No messages yet</p>
-                        }
+        @foreach (var conversationVm in Model.Entities)
+        {
+            <div class="conversation-wrapper">
+                <div class="row partial-view">
+                    <div class="col">
+                        <img src="@conversationVm.Product.Image.FileUrl" alt="@conversationVm.Product.Image.AltDescription"
+                             class="img-thumbnail"/>
                     </div>
-                    <a class="arrow-link" asp-area="" asp-controller="Conversations" asp-action="Details" asp-route-id="@conversationVm.Id">&rarr;</a>
+                    <div class="col">
+                        <h5 class="text-break">@conversationVm.Title</h5>
+                        <h7>About: <strong>@conversationVm.Product.Name</strong></h7>
+                        <div class="product-price">Price: $@conversationVm.Product.Price</div>
+                        <div class="user-info">
+                            @if (conversationVm.Messages.LastOrDefault() is { } lastMessageVm)
+                            {
+                                <p class="last-message-time">Last message: @lastMessageVm.SentAt.ToShortDateString()</p>
+                            }
+                            else
+                            {
+                                <p class="last-message-time">No messages yet</p>
+                            }
+                        </div>
+                        <a class="arrow-link" asp-area="" asp-controller="Conversations" asp-action="Details"
+                           asp-route-id="@conversationVm.Id">
+                            &rarr;
+                        </a>
+                    </div>
+                </div>
+                <div class="messages-view">
+                    @{
+                        var containerId = $"messagesList{conversationVm.Id}";
+                    }
+                    <div class="messages-container" id="@containerId">
+                    </div>
                 </div>
             </div>
-            <div class="messages-view">
-                @{
-                    var containerId = $"messagesList{conversationVm.Id}";
-                }
-                <div class="messages-container" id="@containerId">
-                </div>
-            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i> Sorry! Nothing to be shown here.
         </div>
     }
 </div>
