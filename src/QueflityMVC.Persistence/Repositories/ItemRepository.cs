@@ -70,8 +70,6 @@ public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbC
                                  .FirstOrDefaultAsync(Item => Item.Id == entityToUpdate.Id)
                              ?? throw new ResourceNotFoundException(entityName: nameof(Item));
 
-        uint? oldOrderNo = originalEntity.OrderNo;
-
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
         originalEntity.SetPrice(entityToUpdate.Price);

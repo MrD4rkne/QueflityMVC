@@ -31,7 +31,9 @@ public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbCon
 
     public IQueryable<Kit> GetFilteredKits(string? searchName = default, int? itemId = null)
     {
-        var itemsSource = GetAll();
+        var itemsSource = GetAll()
+            .Include(kit => kit.Elements)
+            .AsQueryable();
         if (itemId.HasValue)
         {
             itemsSource = itemsSource.Where(x => x.Elements.Any(y => y.ItemId == itemId));

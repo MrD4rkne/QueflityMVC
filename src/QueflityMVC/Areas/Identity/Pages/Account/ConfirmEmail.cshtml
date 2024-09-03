@@ -1,0 +1,7 @@
+﻿@page
+@model QueflityMVC.Web.Areas.Identity.Pages.Account.ConfirmEmailModel
+@inject IUrlHelper Url
+
+@{
+    Response.Redirect(Url.Page("/Account/Login"));
+}

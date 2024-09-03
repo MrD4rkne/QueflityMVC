@@ -1,0 +1,193 @@
+﻿@page
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
+@model QueflityMVC.Web.Areas.Identity.Pages.Account.Manage.TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "Two-Factor Authentication (2FA)";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+@section Styles {
+    <style>
+    .custom-header {
+        font-size: 1.5rem;
+        color: #007bff;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .alert-container {
+        margin-bottom: 20px;
+    }
+    .alert-container .alert {
+        border-radius: 0.25rem;
+    }
+    .btn-custom {
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem;
+    }
+    .btn-warning-custom {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+    }
+    .btn-danger-custom {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+    }
+    .btn-secondary-custom {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: #fff;
+    }
+    .alert-link-custom {
+        color: #007bff;
+    }
+    .section-header {
+        font-size: 1.25rem;
+        color: #343a40;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .section {
+        padding: 15px;
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+</style>
+}
+
+<div class="container custom-container">
+    <h3 class="custom-header">
+        <i class="fas fa-shield-alt"></i> @ViewData["Title"]
+    </h3>
+
+    @if (HttpContext.Features.Get<ITrackingConsentFeature>()?.CanTrack ?? true)
+    {
+        @if (Model.Is2faEnabled)
+        {
+            <div class="alert-container">
+                @switch (Model.RecoveryCodesLeft)
+                {
+                    case 0:
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>No recovery codes left!</strong>
+                            <p>You must <a asp-page="./GenerateRecoveryCodes" class="alert-link-custom">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        break;
+                    case 1:
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>1 recovery code left!</strong>
+                            <p>You can <a asp-page="./GenerateRecoveryCodes" class="alert-link-custom">generate a new set of recovery codes</a>.</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        break;
+                    case <= 3:
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <strong>@Model.RecoveryCodesLeft recovery codes left!</strong>
+                            <p>You should <a asp-page="./GenerateRecoveryCodes" class="alert-link-custom">generate a new set of recovery codes</a>.</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        break;
+                }
+            </div>
+
+            @if (Model.IsMachineRemembered)
+            {
+                <div class="section">
+                    <h4 class="section-header">
+                        <i class="fas fa-info-circle me-2"></i> Browser Trust Status
+                    </h4>
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Browser Trusted</strong>
+                        <p>If you want to undo trust for this browser, click the button below.</p>
+                        <form method="post" class="d-inline">
+                            <button type="submit" class="btn btn-warning btn-custom btn-warning-custom">
+                                <i class="fas fa-arrow-left me-1"></i> Forget This Browser
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+
+            <div class="section mt-3">
+                <h4 class="section-header">
+                    <i class="fas fa-tools"></i> Manage 2FA Settings
+                </h4>
+                <div class="d-flex flex-wrap">
+                    <a asp-page="./Disable2fa" class="btn btn-danger btn-custom btn-danger-custom me-2">
+                        <i class="fas fa-times me-1"></i> Disable 2FA
+                    </a>
+                    <a asp-page="./GenerateRecoveryCodes" class="btn btn-secondary btn-custom btn-secondary-custom">
+                        <i class="fas fa-sync-alt me-1"></i> Reset Recovery Codes
+                    </a>
+                </div>
+            </div>
+
+            <div class="section mt-3">
+                <h4 class="section-header">
+                    <i class="fas fa-cogs"></i> Authenticator App
+                </h4>
+                <div class="mt-2 d-flex flex-wrap">
+                    @if (!Model.HasAuthenticator)
+                    {
+                        <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary btn-custom me-2">
+                            <i class="fas fa-plus me-1"></i> Add Authenticator App
+                        </a>
+                    }
+                    else
+                    {
+                        <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary btn-custom me-2">
+                            <i class="fas fa-edit me-1"></i> Set Up Authenticator App
+                        </a>
+                        <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-warning btn-custom">
+                            <i class="fas fa-redo me-1"></i> Reset Authenticator App
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="section">
+                <h4 class="section-header">
+                    <i class="fas fa-cogs"></i> Enable Two-Factor Authentication
+                </h4>
+                <div class="alert alert-info fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Two-Factor Authentication is not enabled.</strong>
+                    <p>To enable 2FA, click the button below and follow the setup instructions.</p>
+                    <form method="post" asp-page-handler="Enable2FA" class="mb-0">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-lock me-1"></i> Enable Two-Factor Authentication
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-danger fade show" role="alert">
+            <i class="fas fa-shield-alt me-2"></i>
+            <strong>Privacy and cookie policy have not been accepted.</strong>
+            <p>You must accept the policy before you can enable two-factor authentication.</p>
+            <div class="d-flex align-items-center">
+                <a href="/Home/Privacy" target="_blank" class="btn btn-info me-2">Privacy Policy</a>
+                <partial name="_CookieFooterPartial"/>
+            </div>
+        </div>
+    }
+</div>

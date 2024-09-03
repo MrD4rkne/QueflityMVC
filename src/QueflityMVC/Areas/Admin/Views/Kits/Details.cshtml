@@ -11,88 +11,86 @@
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 
-@if (canListEntities)
-{
-    <div class="mb-3">
-        <a asp-action="Index" asp-controller="Kits" asp-area="Admin" class="btn btn-primary">
-            &#8592;
-            Back to List
-        </a>
-    </div>
-}
-
-<h4>Your set's details</h4>
-
-<partial name="_KitDetailsPartial" model="@Model"/>
-
-<hr/>
-
-<h4>Items</h4>
-<div class="row">
-    <div class="col-auto">
-        <h7>Below you can see set's composition</h7>
-    </div>
-    @if (canCreateEntities)
+<div class="container mt-4">
+    @if (canListEntities)
     {
-        <div class="col-auto">
-            @Html.ActionLink("Add new component", "ListItemsForComponents", new { kitId = Model.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+        <div class="mb-3">
+            <a asp-action="Index" asp-controller="Kits" asp-area="Admin" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
         </div>
     }
-</div>
-<table class="table">
-    <thead>
-    <tr>
-        <th></th>
-        <th>
-            Name
-        </th>
-        <th>
-            Amount
-        </th>
-        <th>
-            Price per item
-        </th>
-        <th>
-            Overall price
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var itemMembership in Model.ItemMemberships)
-    {
-        <tr>
-            <td>
-                @if (itemMembership.Item.Image is not null)
-                {
-                    var thumbnail = itemMembership.Item.Image;
-                    <img src="@thumbnail.FileUrl" alt="@thumbnail.AltDescription" style="height:30px"/>
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => itemMembership.Item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => itemMembership.ItemsAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => itemMembership.PricePerItem)
-            </td>
-            <td>
-                <p>@(itemMembership.PricePerItem * itemMembership.ItemsAmount)</p>
-            </td>
-            <td>
-                @if (canEditEntities)
-                {
-                    @Html.ActionLink("Edit", "EditComponent", new { area = "Admin", mitemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-secondary btn-sm" })
-                }
 
-                @if (canCreateEntities)
-                {
-                    @Html.ActionLink("Delete", "DeleteComponent", new { area = "Admin", itemId = itemMembership.Item.Id, kitId = itemMembership.KitId }, new { @class = "btn btn-outline-danger btn-sm" })
-                }
-            </td>
+    <h4 class="mb-4"><i class="fas fa-info-circle"></i> Your Set's Details</h4>
+
+    <partial name="_KitDetailsPartial" model="@Model"/>
+
+    <hr/>
+
+    <h4 class="mb-4"><i class="fas fa-boxes"></i> Items</h4>
+    <div class="row mb-3">
+        <div class="col-auto">
+            <small class="text-muted">Below you can see the kit's composition.</small>
+        </div>
+        @if (canCreateEntities)
+        {
+            <div class="col-auto ms-auto">
+                <a asp-action="ListItemsForComponents" asp-route-kitId="@Model.Id" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-plus-circle"></i> Add New Component
+                </a>
+            </div>
+        }
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Price per Item</th>
+            <th>Overall Price</th>
+            <th>Actions</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var itemMembership in Model.ItemMemberships)
+        {
+            <tr>
+                <td>
+                    @if (itemMembership.Item.Image != null)
+                    {
+                        <img src="@itemMembership.Item.Image.FileUrl" alt="@itemMembership.Item.Image.AltDescription"
+                             style="height:30px"/>
+                    }
+                </td>
+                <td>@Html.DisplayFor(modelItem => itemMembership.Item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => itemMembership.ItemsAmount)</td>
+                <td>@Html.DisplayFor(modelItem => itemMembership.PricePerItem)</td>
+                <td>
+                    <p>@(itemMembership.PricePerItem * itemMembership.ItemsAmount)</p>
+                </td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Manage membership">
+                        @if (canEditEntities)
+                        {
+                            <a asp-action="EditComponent" asp-route-area="Admin" asp-route-mitemId="@itemMembership.Item.Id"
+                               asp-route-kitId="@itemMembership.KitId" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        }
+
+                        @if (canCreateEntities)
+                        {
+                            <a asp-action="DeleteComponent" asp-route-area="Admin" asp-route-itemId="@itemMembership.Item.Id"
+                               asp-route-kitId="@itemMembership.KitId" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

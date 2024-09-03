@@ -1,0 +1,24 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model QueflityMVC.Web.Areas.Identity.Pages.Account.ResendEmailConfirmationModel
+@{
+    ViewData["Title"] = "Resend confirmation";
+}
+
+<div class="resend-email-container">
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <h4 class="text-center">Provide your email to resend confirmation</h4>
+    <hr class="my-4"/>
+    <form method="post">
+        <div asp-validation-summary="All" class="text-danger mb-3" role="alert"></div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true"
+                   placeholder="name@example.com"/>
+            <label asp-for="Input.Email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Resend Confirmation</button>
+    </form>
+</div>

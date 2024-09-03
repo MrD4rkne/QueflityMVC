@@ -1,17 +1,23 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model QueflityMVC.Application.ViewModels.Product.UpdateOrderFailedVm
+﻿@model QueflityMVC.Application.ViewModels.Product.UpdateOrderFailedVm
 
 @{
     ViewData["Title"] = "Update failed";
 }
 
-<h1>Updating order failed</h1>
+<h1>Updating Order Failed</h1>
 
-<div>
-    <h4>@Model.Message</h4>
-    <hr/>
-</div>
-<div>
-    @Html.ActionLink("Retry", "Index", "Dashboard", new { area = "Admin" }) |
-    <a asp-action="Index">Back to Home</a>
+<div class="container mt-4">
+    <!-- Alert box for error message -->
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Error!</h4>
+        <p>@Model.Message</p>
+        <hr/>
+        <p class="mb-0">
+            <a class="btn btn-primary" href="@Url.Action("Index", "Dashboard", new { area = "Admin" })">Retry</a> |
+            <a class="btn btn-secondary" href="@Url.Action("Index", "Home", new { area = "Admin" })">
+                Back to Admin
+                Panel
+            </a>
+        </p>
+    </div>
 </div>

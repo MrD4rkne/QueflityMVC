@@ -1,13 +1,44 @@
 html, body {
     height: 100%;
+    width: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
 }
 
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Brand Logo */
+.navbar-brand {
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #f8f9fa; /* Light color for hover effect */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+
+.nav-link.btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-link.btn:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+    color: #ffffff; /* Light text color for contrast */
+}
+
+/* Toggler Button */
+.navbar-toggler:hover .navbar-toggler-icon {
+    background-color: rgba(255, 255, 255, 0.5); /* Light color on hover */
+}
+
 .main-content {
     flex: 1;
-    padding: 15px;
+    overflow-y: auto;
 }
 
 /* Footer sticks to the bottom when there's little content */
@@ -15,4 +46,13 @@ footer {
     position: sticky;
     top: 100vh;
     margin-top: auto;
+    background-color: #343a40;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+footer p {
+    margin-bottom: 0;
 }

@@ -1,14 +1,15 @@
-﻿@inject IAuthorizationService AuthorizationService
-@inject IUserContext UserContext
-@using Microsoft.AspNetCore.Authorization
+﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
 @using QueflityMVC.Domain.Interfaces
 @model QueflityMVC.Application.ViewModels.User.ListUsersVm
 
+@inject IAuthorizationService AuthorizationService
+@inject IUserContext UserContext
+
 @{
     ViewData["Title"] = "Users";
-    int[] options = [2, 5, 10, 25, 50, 100];
+    int[] options = { 2, 5, 10, 25, 50, 100 };
 
     bool canSeeUserClaims = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_CLAIMS_VIEW)).Succeeded;
     bool canSeeUserRoles = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ROLES_VIEW)).Succeeded;
@@ -16,99 +17,116 @@
     bool canEnableUsers = (await AuthorizationService.AuthorizeAsync(User, Policies.USER_ENABLE)).Succeeded;
 }
 
-<form asp-action="Index" asp-controller="Users" asp-area="Admin" method="post">
-    <ul class="nav gap-1">
-        <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="UserNameFilter"/>
-        </li>
-        <li class="nav-item">
-            <button type="submit" class="btn btn-secondary">Search</button>
-        </li>
-        <li class="nav-item">
-            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (int i in options)
-                {
-                    @if (i == Model.Pagination.Info.PageSize)
-                    {
-                        <option value="@i" selected>@i</option>
-                    }
-                    else
-                    {
-                        <option value="@i">@i</option>
-                    }
-                }
-            </select>
-        </li>
-    </ul>
-    <div class="row">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>
-                    Id
-                </th>
-                <th>
-                    Username
-                </th>
-                <th>
-                    Email
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Pagination.Entities)
+<div class="container mt-4">
+    <form asp-action="Index" asp-controller="Users" asp-area="Admin" method="post">
+        <div class="row align-items-center mb-3">
+            <!-- Search Input -->
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search..." asp-for="UserNameFilter"
+                           id="nameFilter"/>
+                </div>
+            </div>
+            <!-- Search Button -->
+            <div class="col-md-2 mb-2 mb-md-0">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Search
+                </button>
+            </div>
+            <!-- Page Size Selector -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <label class="input-group-text bg-primary text-white" for="pageSizeSelect">
+                        <i class="fas fa-list"></i>
+                    </label>
+                    <select class="form-select" asp-for="Pagination.Info.PageSize" id="pageSizeSelect"
+                            onchange="PageSizeSelected()">
+                        @foreach (int i in options)
+                        {
+                            if (i == Model.Pagination.Info.PageSize)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            @if (Model.Pagination.Entities is { Count: > 0 })
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UserName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Manage users">
-                            @if (canSeeUserRoles)
-                            {
-                                @Html.ActionLink("Roles", "ManageUserRoles", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-info btn-sm" })
-                            }
-                            @if (canSeeUserClaims)
-                            {
-                                @Html.ActionLink("Claims", "ManageUserClaims", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
-                            }
-
-
-                            @if (item.Id != UserContext.UserId)
-                            {
-                                @if (item.IsEnabled)
-                                {
-                                    if (canDisableUsers)
+                <table class="table table-striped">
+                    <thead class="table">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col" class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Pagination.Entities)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.UserName</td>
+                            <td>@item.Email</td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group" aria-label="Manage user actions">
+                                    @if (canSeeUserRoles)
                                     {
-                                        @Html.ActionLink("Disable", "DisableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                        @Html.ActionLink("Roles", "ManageUserRoles", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-info btn-sm" })
                                     }
-                                }
-                                else
-                                {
-                                    if (canEnableUsers)
+                                    @if (canSeeUserClaims)
                                     {
-                                        @Html.ActionLink("Enable", "EnableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                        @Html.ActionLink("Claims", "ManageUserClaims", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
                                     }
-                                }
-                            }
-                        </div>
-                    </td>
-                </tr>
+
+                                    @if (item.Id != UserContext.UserId)
+                                    {
+                                        if (item.IsEnabled)
+                                        {
+                                            if (canDisableUsers)
+                                            {
+                                                @Html.ActionLink("Disable", "DisableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (canEnableUsers)
+                                            {
+                                                @Html.ActionLink("Enable", "EnableUser", "Users", new { area = "Admin", userId = item.Id }, new { @class = "btn btn-outline-warning btn-sm" })
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             }
-            </tbody>
-        </table>
-    </div>
-    <div class="row">
-        <partial name="_PaginationPartial" for="Pagination.Info"/>
-    </div>
-</form>
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i> Sorry! Nothing to be shown here.
+                </div>
+            }
+        </div>
+
+        <div class="row">
+            <partial name="_PaginationPartial" for="Pagination.Info"/>
+        </div>
+    </form>
+</div>
 
 @section Scripts
 {

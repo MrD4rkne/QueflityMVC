@@ -2,32 +2,38 @@
 @model QueflityMVC.Application.ViewModels.Category.CategoryVm
 
 @{
-    ViewData["Title"] = "Edit category";
+    ViewData["Title"] = "Edit Category";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center"><i class="fas fa-edit"></i> Edit Category</h1>
+            <h4 class="text-center mb-4">Edit your category</h4>
+            <hr/>
 
-<h4>Edit your category</h4>
-<hr/>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" asp-controller="Categories" asp-area="Admin">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control"/>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group" style="margin: 5px">
-                <input type="submit" value="Save" class="btn btn-primary"/>
-            </div>
-            @Html.HiddenFor(model => model.Id)
-        </form>
+            <form asp-action="Edit" asp-controller="Categories" asp-area="Admin">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"><i class="fas fa-tag"></i> Category Name</label>
+                    <input asp-for="Name" class="form-control"/>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+                @Html.HiddenFor(model => model.Id)
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="text-center mt-4">
+        <a asp-action="Index" asp-controller="Categories" asp-area="Admin" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
 </div>
 
 @section Scripts {

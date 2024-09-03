@@ -4,9 +4,19 @@
 
 @{
     ViewData["Title"] = "Conversations";
-    int[] options = [2, 5, 10, 25, 50, 100];
 }
 
-<form asp-action="Index" asp-controller="Conversations" method="post">
-    <partial name="_ConversationsPaginatedPartial" for="@Model"/>
-</form>
+<div class="container-fluid p-4">
+    <h1 class="mb-2">
+        <i class="fas fa-tags card-icon"></i>
+        Conversations
+    </h1>
+
+    <h4 class="mb-4">
+        Here you can respond to your conversations.
+    </h4>
+
+    <form asp-action="Index" asp-controller="Conversations" method="post">
+        <partial name="_ConversationsPaginatedPartial" for="@Model"/>
+    </form>
+</div>

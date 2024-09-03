@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Http.Features
+@{
+    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
+    bool hasConsent = consentFeature?.CanTrack ?? false;
+    string? cookieString = consentFeature?.CreateConsentCookie();
+}
+
+<!-- Modal Structure -->
+<div id="cookieConsent" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="cookieConsentLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="cookieConsentLabel">
+                    <i class="fas fa-cookie-bite"></i> Cookies Policy
+                </h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>
+                    <i class="fas fa-info-circle"></i> We use cookies to ensure that we give you the best experience on
+                    our website. They are necessary for the website's proper functionalities.
+                </p>
+                <p>
+                    <i class="fas fa-file-alt"></i> You can read about our policy
+                    <a
+                        href="@Url.Action("Privacy", "Home", new { area = "" })" class="text-primary">
+                        here
+                    </a>.
+                </p>
+                <p><i class="fas fa-check-circle"></i> By clicking "Accept," you consent to the use of cookies.</p>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button class="btn btn-danger deny-policy" id="cookiesDenyButton" type="button" data-bs-dismiss="modal"
+                        aria-label="Deny cookies" onclick="denyCookies()">
+                    <i class="fa-solid fa-x"></i> Deny
+                </button>
+                <button class="btn btn-primary accept-policy" id="cookiesAcceptButton" type="button"
+                        data-bs-dismiss="modal" aria-label="Accept cookies" data-cookie-string="@cookieString"
+                        onclick="acceptCookies(this)">
+                    <i class="fas fa-check"></i> Accept
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    @if (!hasConsent)
+    {
+        <text>;
+    $(document).ready(function () {
+        $("#cookieConsent").modal('show');
+    });
+    setPolicyButtons(false);
+    </text>
+    }
+    else
+    {
+        <text>;
+    setPolicyButtons(true);
+    </text>
+    };
+
+    function setPolicyButtons(hasConsent) {
+        document.getElementById("cookiesAcceptButton").disabled = hasConsent;
+        document.getElementById("cookiesDenyButton").disabled = !hasConsent;
+    }
+
+    function acceptCookies(button) {
+        document.cookie = button.dataset.cookieString;
+        setPolicyButtons(true);
+    }
+
+    function denyCookies() {
+        document.cookie = ".AspNet.Consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        setPolicyButtons(false);
+    }
+
+</script>

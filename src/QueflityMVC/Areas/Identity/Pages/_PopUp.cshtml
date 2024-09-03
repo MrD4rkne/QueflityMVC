@@ -1,0 +1,21 @@
+﻿@using QueflityMVC.Web.Areas.Identity.Pages.Account
+@model QueflityMVC.Web.Areas.Identity.Pages.Account.PopUpViewModel
+
+@{
+    string statusMessageClass = Model.Type switch
+    {
+        PopUpType.Success => "success",
+        PopUpType.Error => "danger",
+        PopUpType.Info => "info",
+        PopUpType.Warning => "warning",
+        _ => "info"
+    };
+}
+<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    @if (!string.IsNullOrEmpty(Model.Title))
+    {
+        <h4 class="alert-heading">@Model.Title</h4>
+    }
+    <p>@Model.Message</p>
+</div>

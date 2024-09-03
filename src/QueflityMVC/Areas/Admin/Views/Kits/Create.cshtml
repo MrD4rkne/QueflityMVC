@@ -9,62 +9,80 @@
     bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
 
-<h4>Add your precious kit!</h4>
-<hr/>
-<div class="row">
-    <form asp-action="Create" asp-controller="Kits" asp-area="Admin" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="card">
-            <div class="card-header">
-                Image
+    @if (canListEntities)
+    {
+        <div class="mb-4">
+            <a asp-action="Index" asp-controller="Kits" asp-area="Admin" class="btn btn-info">
+                <i class="fa fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    }
+
+    <h1 class="mb-4"><i class="fas fa-box-open"></i> Create Kit</h1>
+
+    <h4>Add your precious kit!</h4>
+    <hr/>
+
+    <div class="row">
+        <form asp-action="Create" asp-controller="Kits" asp-area="Admin" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Image Upload Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-image"></i> Kit Image
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="mb-3">
+                            <label for="ImageUpload" class="form-label"><i class="fas fa-upload"></i> Upload Image</label>
+                            <input class="form-control" asp-for="Image!.FormFile" type="file" id="ImageUpload">
+                            <span asp-validation-for="Image.FormFile" class="text-danger"></span>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="mb-3">
+                            <label asp-for="Image!.AltDescription" class="form-label">
+                                <i class="fas fa-info-circle"></i>
+                                Alternative Description
+                            </label>
+                            <input asp-for="Image!.AltDescription" class="form-control"/>
+                            <span asp-validation-for="Image!.AltDescription" class="text-danger"></span>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <div class="mb-3">
-                        <input class="form-control" asp-for="Image!.FormFile" type="file">
-                        <span asp-validation-for="Image.FormFile" class="text-danger"></span>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="mb-3">
-                        <label asp-for="Image!.AltDescription" class="control-label">Alternative description</label>
-                        <input asp-for="Image!.AltDescription" class="form-control"/>
-                        <span asp-validation-for="Image!.AltDescription" class="text-danger"></span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="form-group">
-            <label asp-for="Name" class="control-label"></label>
-            <input asp-for="Name" class="form-control"/>
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
 
+            <!-- Kit Name Section -->
+            <div class="form-group mb-4">
+                <label asp-for="Name" class="form-label"><i class="fas fa-tag"></i> Kit Name</label>
+                <input asp-for="Name" class="form-control"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
 
-        <div class="btn-group" role="group" aria-label="Submit form">
-            <button type="submit" class="btn btn-outline-primary" formaction="Create">Create</button>
-            <button type="submit" class="btn btn-outline-primary" formaction="?shouldRouteToDetails=True">& add items</button>
-        </div>
-    </form>
-</div>
-
-@if (canListEntities)
-{
-    <div>
-        <a asp-action="Index" asp-controller="Kits" asp-area="Admin">Back to List</a>
+            <!-- Submit Buttons -->
+            <div class="btn-group" role="group" aria-label="Submit form">
+                <button type="submit" class="btn btn-outline-primary" formaction="Create">
+                    <i class="fas fa-plus-circle"></i> Create
+                </button>
+                <button type="submit" class="btn btn-outline-secondary" formaction="?shouldRouteToDetails=True">
+                    <i class="fas fa-plus"></i> Create & Add Items
+                </button>
+            </div>
+        </form>
     </div>
-}
+</div>
 
 @section Scripts {
     <script type="text/javascript">
-        function AccessChange(className, isDisabled) {
-            console.log(className);
-            const inputs = document.querySelectorAll('input#' + className);
-            inputs.forEach(input => input.disabled = isDisabled);
-        }
-    </script>
+    function AccessChange(className, isDisabled) {
+        console.log(className);
+        const inputs = document.querySelectorAll('input#' + className);
+        inputs.forEach(input => input.disabled = isDisabled);
+    }
+</script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

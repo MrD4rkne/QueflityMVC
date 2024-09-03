@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account;
@@ -88,19 +89,57 @@ public class LoginModel : PageModel
                 return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
             }
 
+            if (result is MySignInResult { IsDisabled: true })
+            {
+                TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Account disabled",
+                    Message = "Your account has been disabled. Please contact administrator for further details.",
+                    Type = PopUpType.Error
+                });
+                return Page();
+            }
+
+            if (result is MySignInResult { DoesRequireEmailConfirmation: true })
+            {
+                TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Email confirmation required",
+                    Message = "Please confirm your email before logging in.",
+                    Type = PopUpType.Info
+                });
+                return Page();
+            }
+
             if (result.IsLockedOut)
             {
+                TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Account locked out",
+                    Message = "Your account has been locked out. Please try again later.",
+                    Type = PopUpType.Error
+                });
                 _logger.LogWarning("User account locked out.");
                 return RedirectToPage("./Lockout");
             }
 
             if (result.IsNotAllowed)
             {
-                ModelState.AddModelError(string.Empty, "User account is disabled.");
+                TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                {
+                    Title = "Account not allowed",
+                    Message = "Your account is not allowed to login. Please contact administrator for further details.",
+                    Type = PopUpType.Error
+                });
                 return Page();
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Login failed",
+                Message = "Invalid login attempt. Please try again.",
+                Type = PopUpType.Error
+            });
             return Page();
         }
 

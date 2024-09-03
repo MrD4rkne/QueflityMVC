@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+}
+
+<div class="manage-wrapper">
+    <section class="manage-nav">
+        <partial name="_ManageNav"/>
+    </section>
+    <hr/>
+    <section class="manage-content">
+        @RenderBody()
+    </section>
+</div>
+
+@section Scripts{
+    @await RenderSectionAsync("Scripts", false)
+}
+
+@section Styles{
+    <style>
+    .manage-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch; /* Allow sections to stretch horizontally */
+        justify-content: flex-start;
+        margin-top: 50px;
+        width: 100%; /* Ensure the wrapper takes full width */
+        height: 100%;
+    }
+
+    .manage-nav, .manage-content {
+        width: 100%; /* Sections take full width of the wrapper */
+        max-width: 1200px; /* Optional: Limit max-width for better readability */
+        margin: 0 auto; /* Center the content within the sections */
+        box-sizing: border-box; /* Ensure padding doesn't affect the width */
+    }
+
+    hr {
+        width: 100%; /* Make sure the horizontal rule spans full width */
+        margin: 20px 0;
+    }
+</style>
+    @await RenderSectionAsync("Styles", false)
+}

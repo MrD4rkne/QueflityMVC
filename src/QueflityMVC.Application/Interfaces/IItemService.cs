@@ -12,7 +12,7 @@ public interface IItemService
 
     Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm);
 
-    Task<ManageItemVm?> GetForEditAsync(int id);
+    Task<Result<ManageItemVm>> GetForEditAsync(int id);
 
     Task<Result<ManageItemVm>> GetItemVmForAddingAsync(int? categoryId);
 
@@ -20,7 +20,7 @@ public interface IItemService
 
     Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync();
 
-    Task<ItemComponentsSelectionVm?> GetComponentsForSelectionVmAsync(int id);
+    Task<Result<ItemComponentsSelectionVm>> GetComponentsForSelectionVmAsync(int id);
 
     Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm);
 }

@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Options
+@using Newtonsoft.Json
+@using QueflityMVC.Web.Areas.Identity.Pages.Account
+@using QueflityMVC.Web.Setup.Other
+@inject IAuthorizationService AuthorizationService
+@inject IOptions<BrandOptions> BrandOptions
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    var popUpMessage = JsonConvert.DeserializeObject<PopUpViewModel>(TempData["PopupVm"] as string ?? string.Empty);
+}
+
+@section Styles{
+    <style>
+        .left-panel {
+            background-image: url(@Url.Content(BrandOptions.Value.IdentityPage.BackgroundImageUrl));
+        }
+    </style>
+    <link rel="stylesheet" href="~/css/identity.css"/>
+    @await RenderSectionAsync("Styles", false)
+}
+
+@section Scripts
+{
+    @await RenderSectionAsync("Scripts", false)
+    <partial name="_ValidationScriptsPartial"/>
+}
+
+<div class="identity-wrapper">
+    <div class="row container-fluid p-0 m-0">
+        <!-- Left Panel with Image -->
+        <div class="col-md-6 left-panel">
+            <div>
+                <h1>@BrandOptions.Value.IdentityPage.Header</h1>
+                <p>@BrandOptions.Value.IdentityPage.Subheader</p>
+            </div>
+        </div>
+
+        <!-- Right Panel with Login Form -->
+        <div class="col-md-6 right-panel">
+            <div class="row mb-5">
+                <a asp-controller="Home" asp-action="Index" asp-area="" class="btn btn-outline-primary w-auto">
+                    <i class="fa-solid fa-house me-1"></i> Home
+                </a>
+            </div>
+
+            @if (popUpMessage is not null)
+            {
+                <partial name="_PopUp" model="popUpMessage"/>
+            }
+
+            <div class="content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>

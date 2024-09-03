@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using QueflityMVC.Application;
@@ -8,6 +9,7 @@ using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
 using QueflityMVC.Persistence.Setup;
 using QueflityMVC.Web.Chat;
+using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.Other;
@@ -63,9 +65,16 @@ builder.AddAuthenticationWithOAuths();
 builder.Services.AddAuthorization(options =>
     options.AddPolicies());
 
+builder.Services.AddTransient<IEmailSender, IdentityEmailSender>();
 builder.Services.ConfigureIdentity();
 
 builder.Services.AddSignalR();
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
 
 var app = builder.Build();
 
@@ -83,6 +92,9 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+
+app.UseCookiePolicy();
 
 app.UseAuthentication();
 app.UseAuthorization();

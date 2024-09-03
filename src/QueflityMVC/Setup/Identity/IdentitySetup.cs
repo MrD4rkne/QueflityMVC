@@ -22,7 +22,7 @@ public static class IdentitySetup
             options.Password.RequiredLength = 8;
             options.Password.RequireUppercase = true;
             options.Password.RequiredUniqueChars = 0;
-            options.SignIn.RequireConfirmedEmail = false;
+            options.SignIn.RequireConfirmedEmail = true;
             options.User.RequireUniqueEmail = false;
         });
 

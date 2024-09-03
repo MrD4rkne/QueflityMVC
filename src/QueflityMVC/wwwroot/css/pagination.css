@@ -1,0 +1,28 @@
+﻿/* General pagination bar styles */
+.pagination-bar {
+    background-color: #f8f9fa; /* Light background for the navigation bar */
+    padding: 10px; /* Padding around the items */
+}
+
+/* Nav items inside pagination-bar */
+.pagination-bar .nav-item {
+    background-color: #ffffff; /* White background for individual items */
+    border-radius: 5px; /* Rounded corners for each item */
+    padding: 5px; /* Padding inside each item */
+}
+
+/* Input groups, buttons, and selects inside pagination-bar */
+.pagination-bar .input-group,
+.pagination-bar .btn,
+.pagination-bar .form-select {
+    background-color: #ffffff; /* White background for input groups, buttons, and select */
+    border: 1px solid #ced4da; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+}
+
+/* Input group text and buttons inside pagination-bar */
+.pagination-bar .input-group-text,
+.pagination-bar .btn {
+    background-color: #007bff; /* Primary color for input group text and button */
+    color: #ffffff; /* White text color */
+}

@@ -6,126 +6,170 @@
 
 @{
     ViewData["Title"] = "List";
-    int[] options = [2, 5, 10, 25, 50, 100];
+    int[] options = { 2, 5, 10, 25, 50, 100 }; // Correct array initialization
     bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
     bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h1>Items</h1>
+<div class="container-fluid p-4">
+    <h1 class="mb-4">
+        <i class="fas fa-box card-icon"></i>
+        Items
+    </h1>
 
-@if (canCreateEntities)
-{
-    <p>
+    @if (canCreateEntities)
+    {
+        <p>
+            @if (Model.CategoryId.HasValue)
+            {
+                <a class="btn btn-primary"
+                   href="@Url.Action("Create", "Items", new { area = "Admin", categoryId = Model.CategoryId.Value })">
+                    <i class="fas fa-plus-circle"></i> Create New with this category
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="fas fa-plus-circle"></i> Create New
+                </a>
+            }
+        </p>
+    }
+
+    <form asp-action="Index" asp-controller="Items" asp-area="Admin" method="post">
+        @Html.HiddenFor(model => model.CategoryId)
+
         @if (Model.CategoryId.HasValue)
         {
-            @Html.ActionLink("Create New with this category", "Create", new { categoryId = Model.CategoryId.Value }, new { @class = "btn btn-primary" })
+            <div class="alert alert-info fade show mb-3" role="alert">
+                <strong>Item Filter Applied:</strong> Currently, you see items with category ID @Model.CategoryId as
+                a part of them.
+                <button type="button" class="btn btn-outline-primary" aria-label="Close" onclick="RemoveCategoryFilter()">
+                    Clear Filter
+                </button>
+            </div>
         }
-        else
-        {
-            <a class="btn btn-primary" asp-action="Create">Create New</a>
-        }
-    </p>
-}
 
-<form asp-action="Index" asp-controller="Items" asp-area="Admin" method="post">
-    @Html.HiddenFor(model => model.CategoryId)
-
-    <ul class="nav gap-1">
-        <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter" name="nameFilter" id="nameFilter"/>
-        </li>
-        <li class="nav-item">
-            <button type="submit" class="btn btn-secondary">Search</button>
-        </li>
-        <li class="nav-item">
-            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (int i in options)
-                {
-                    @if (i == Model.Pagination.Info.PageSize)
-                    {
-                        <option value="@i" selected>@i</option>
-                    }
-                    else
-                    {
-                        <option value="@i">@i</option>
-                    }
-                }
-            </select>
-        </li>
-    </ul>
-    <div class="row">
-        <table class="table">
-            <thead>
-            <tr>
-                <th></th>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Visibility
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Pagination.Entities)
-            {
-                <tr>
-                    <td>
-                        @if (item.Image != null)
+        <div class="row align-items-center mb-3">
+            <!-- Search Input -->
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search..." asp-for="NameFilter"
+                           id="nameFilter"/>
+                </div>
+            </div>
+            <!-- Search Button -->
+            <div class="col-md-2 mb-2 mb-md-0">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Search
+                </button>
+            </div>
+            <!-- Page Size Selector -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <label class="input-group-text bg-primary text-white" for="pageSizeSelect">
+                        <i class="fas fa-list"></i>
+                    </label>
+                    <select class="form-select" asp-for="Pagination.Info.PageSize" id="pageSizeSelect"
+                            onchange="PageSizeSelected()">
+                        @foreach (int i in options)
                         {
-                            <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
-                        }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" checked="@(item.ShouldBeShown ? "checked" : null)" disabled>
-                            @if (item.ShouldBeShown)
+                            if (i == Model.Pagination.Info.PageSize)
                             {
-                                <label class="form-check-label">Visible</label>
+                                <option value="@i" selected>@i</option>
                             }
                             else
                             {
-                                <label class="form-check-label">Hidden</label>
+                                <option value="@i">@i</option>
                             }
-                        </div>
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Manage item">
-                            @if (canEditEntities)
-                            {
-                                @Html.ActionLink("Edit", "Edit", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                            }
-                            @if (canListEntities)
-                            {
-                                @Html.ActionLink("Components", "Components", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
-                            }
-                            @if (canCreateEntities)
-                            {
-                                @Html.ActionLink("Delete", "Delete", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                            }
-                        </div>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
 
-    </div>
-    <div class="row">
-        <partial name="_PaginationPartial" for="Pagination.Info"/>
-    </div>
-</form>
+        <div class="row">
+            @if (Model.Pagination.Entities is { Count: > 0 })
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Visibility</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Pagination.Entities)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.Image != null)
+                                {
+                                    <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" @(item.ShouldBeShown ? "checked" : "")
+                                           disabled>
+                                    <label class="form-check-label">@(item.ShouldBeShown ? "Visible" : "Hidden")</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Manage item">
+                                    @if (canEditEntities)
+                                    {
+                                        @Html.ActionLink("Edit", "Edit", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                    }
+                                    @if (canListEntities)
+                                    {
+                                        @Html.ActionLink("Components", "Components", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
+                                    }
+                                    @if (canCreateEntities)
+                                    {
+                                        @Html.ActionLink("Delete", "Delete", "Items", new { area = "Admin", id = item.Id, categoryId = Model.CategoryId }, new { @class = "btn btn-outline-danger btn-sm" })
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i> Sorry! Nothing to be shown here.
+                </div>
+            }
+        </div>
+        <div class="row">
+            <partial name="_PaginationPartial" for="Pagination.Info"/>
+        </div>
+    </form>
+</div>
 
 @section Scripts
 {
     <script type="text/javascript">
-        function PageSizeSelected() {
-            SubmitPagination();
-        }
-    </script>
+    function PageSizeSelected() {
+        SubmitPagination();
+    }
+
+    function RemoveCategoryFilter() {
+        document.getElementById("@Html.IdFor(x => x.CategoryId)").value = "";
+        SubmitPagination();
+    }
+</script>
 }

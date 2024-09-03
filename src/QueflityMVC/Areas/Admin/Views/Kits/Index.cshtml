@@ -1,144 +1,171 @@
 ﻿@inject IAuthorizationService AuthorizationService
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using QueflityMVC.Application.Constants
 @model QueflityMVC.Application.ViewModels.Kit.ListKitsVm
 
 @{
     ViewData["Title"] = "Index";
-    int[] options = [2, 5, 10, 25, 50, 100];
+    int[] options = { 2, 5, 10, 25, 50, 100 };
     bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
     bool canListEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_LIST)).Succeeded;
 }
 
-<h1>Kits</h1>
-<h2>Below you can list and filter your kits.</h2>
+<div class="container-fluid p-4">
+    <h1 class="mb-4">
+        <i class="fas fa-boxes"></i> Kits
+    </h1>
 
-@if (canCreateEntities)
-{
-    <p>
-        @Html.ActionLink("Create New", "Create", "Kits", new { area = "Admin" }, new { @class = "btn btn-primary" })
-    </p>
-}
-
-<form asp-action="Index" asp-controller="Kits" asp-area="Admin" method="post" data="@Model.Pagination.Info">
-    @if (Model.ItemId.HasValue)
+    @if (canCreateEntities)
     {
         <p>
-            Currently, you see sets that have item of id @Model.ItemId as a part of them
-            <a href="#" onclick="RemoveItemFilter()">Click here to remove item filter</a>
+            <a class="btn btn-primary" asp-action="Create" asp-controller="Kits" asp-area="Admin">
+                <i class="fas fa-plus-circle"></i> Create New
+            </a>
         </p>
     }
 
-    <ul class="nav gap-1">
-        <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter"/>
-        </li>
-        <li class="nav-item">
-            <button type="submit" class="btn btn-secondary">Search</button>
-        </li>
-        <li class="nav-item">
-            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (int i in options)
-                {
-                    @if (i == Model.Pagination.Info.PageSize)
-                    {
-                        <option value="@i" selected>@i</option>
-                    }
-                    else
-                    {
-                        <option value="@i">@i</option>
-                    }
-                }
-            </select>
-        </li>
-    </ul>
-    <div class="row container-fluid mt-1">
-        @if (Model.Pagination.Entities is { Count: > 0 })
+    <form asp-action="Index" asp-controller="Kits" asp-area="Admin" method="post"
+          data-filter-info="@Model.Pagination.Info">
+        @if (Model.ItemId.HasValue)
         {
-            <table class="table">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Visibility
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model.Pagination.Entities)
-                {
-                    <tr>
-                        <td>
-                            @if (item.Image != null)
-                            {
-                                <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
-                            }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox"
-                                       checked="@(item.ShouldBeShown ? "checked" : null)" disabled>
-                                @if (item.ShouldBeShown)
-                                {
-                                    <label class="form-check-label">Visible</label>
-                                }
-                                else
-                                {
-                                    <label class="form-check-label">Hidden</label>
-                                }
-                            </div>
-                        </td>
-                        <td>
-                            @if (canEditEntities)
-                            {
-                                @Html.ActionLink("Edit", "Edit", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                            }
-                            @if (canListEntities)
-                            {
-                                @Html.ActionLink("Details", "Details", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
-                            }
-                            @if (canCreateEntities)
-                            {
-                                @Html.ActionLink("Delete", "Delete", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                            }
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <div class="alert alert-info" role="alert">
-                Sorry! Nothing to be shown here.
+            <div class="alert alert-info fade show mb-3" role="alert">
+                <strong>Item Filter Applied:</strong> Currently, you see kits that include item with ID @Model.ItemId as a
+                part of them.
+                <button type="button" class="btn btn-outline-primary" aria-label="Close" onclick="RemoveItemFilter()">
+                    Clear Filter
+                </button>
             </div>
         }
-    </div>
-    @Html.HiddenFor(model => model.ItemId)
-    <div class="row">
-        <partial name="_PaginationPartial" for="Pagination.Info"/>
-    </div>
-</form>
 
-@section Scripts
-{
+
+        <div class="row align-items-center mb-3">
+            <!-- Search Input -->
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search..." asp-for="NameFilter"
+                           id="nameFilter"/>
+                </div>
+            </div>
+            <!-- Search Button -->
+            <div class="col-md-2 mb-2 mb-md-0">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Search
+                </button>
+            </div>
+            <!-- Page Size Selector -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <label class="input-group-text bg-primary text-white" for="pageSizeSelect">
+                        <i class="fas fa-list"></i>
+                    </label>
+                    <select class="form-select" asp-for="Pagination.Info.PageSize" id="pageSizeSelect"
+                            onchange="PageSizeSelected()">
+                        @foreach (int i in options)
+                        {
+                            if (i == Model.Pagination.Info.PageSize)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            @if (Model.Pagination.Entities is { Count: > 0 })
+            {
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Visibility</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var kit in Model.Pagination.Entities)
+                    {
+                        <tr>
+                            <td>
+                                @if (kit.Image != null)
+                                {
+                                    <img src="@kit.Image.FileUrl" alt="@kit.Image.AltDescription" style="height:30px"/>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => kit.Name)</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => kit.Price)
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox"
+                                           @(kit.ShouldBeShown ? "checked" : "")
+                                           disabled/>
+                                    <label class="form-check-label">@(kit.ShouldBeShown ? "Visible" : "Hidden")</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Manage kit">
+                                    @if (canEditEntities)
+                                    {
+                                        @Html.ActionLink("Edit", "Edit", "Kits", new { area = "Admin", id = kit.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                    }
+                                    @if (canListEntities)
+                                    {
+                                        @Html.ActionLink("Details", "Details", "Kits", new { area = "Admin", id = kit.Id }, new { @class = "btn btn-outline-success btn-sm" })
+                                    }
+                                    @if (canCreateEntities)
+                                    {
+                                        @Html.ActionLink("Delete", "Delete", "Kits", new { area = "Admin", id = kit.Id, itemId = Model.ItemId }, new { @class = "btn btn-outline-danger btn-sm" })
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i> Sorry! Nothing to be shown here.
+                </div>
+            }
+        </div>
+
+        @Html.HiddenFor(model => model.ItemId)
+
+        <div class="row">
+            <partial name="_PaginationPartial" for="Pagination.Info"/>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
     <script type="text/javascript">
-        function PageSizeSelected() {
-            SubmitPagination();
-        }
+    function PageSizeSelected() {
+        SubmitPagination();
+    }
 
-        function RemoveItemFilter() {
-            document.getElementById("@Html.IdFor(x => x.ItemId)").value = "";
-            document.forms[1].submit();
-        }
-    </script>
+    function RemoveItemFilter() {
+        document.getElementById("@Html.IdFor(x => x.ItemId)").value = "";
+        SubmitPagination();
+    }
+
+    function SubmitPagination() {
+        // Assuming this function submits the form or reloads the page with updated pagination settings.
+        document.querySelector('form').submit();
+    }
+</script>
 }

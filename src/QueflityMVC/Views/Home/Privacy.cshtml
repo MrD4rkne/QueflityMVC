@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="@Url.Content("~/privacy.css")" asp-append-version="true"/>
 }
 
-<div id="privacy">
+<div id="privacy-policy-container">
 
 </div>
 
 @section Scripts {
     <script>
     $(function () {
-        $("#privacy").load("@Url.Content("~/privacy.html")");
+        $("#privacy-policy-container").load("@Url.Content("~/privacy.html")");
     });
 </script>
 }

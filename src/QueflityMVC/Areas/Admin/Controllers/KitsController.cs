@@ -143,12 +143,12 @@ public class KitsController : Controller
     [Route("Delete")]
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, int? itemId)
     {
         var results = await _kitService.DeleteKitAsync(id);
         if (results.IsSuccess)
         {
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { itemId });
         }
 
         return results.Error.Code switch

@@ -1,0 +1,113 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
+@model QueflityMVC.Web.Areas.Identity.Pages.Account.Manage.ExternalLoginsModel
+@{
+    ViewData["Title"] = "Manage Your External Logins";
+    ViewData["ActivePage"] = ManageNavPages.ExternalLogins;
+}
+
+@section Styles {
+    <style>
+    .section-title {
+        font-size: 1.5rem;
+        color: #007bff;
+        margin-bottom: 1rem;
+    }
+
+    .btn-custom {
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        margin: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-primary-custom {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+    }
+
+    .btn-danger-custom {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+    }
+
+    .icon {
+        margin-right: 0.5rem;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-custom i {
+        margin-right: 0.5rem;
+    }
+</style>
+}
+
+<div class="container-custom">
+    @if (Model.CurrentLogins?.Count > 0)
+    {
+        <h3 class="section-title"><i class="fas fa-link icon"></i> Registered Logins</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Provider</th>
+                @if (Model.ShowRemoveButton)
+                {
+                    <th>Actions</th>
+                }
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var login in Model.CurrentLogins)
+            {
+                <tr>
+                    <td id="@($"login-provider-{login.LoginProvider}")">@login.ProviderDisplayName</td>
+                    <td>
+                        @if (Model.ShowRemoveButton)
+                        {
+                            <form id="@($"remove-login-{login.LoginProvider}")" asp-page-handler="RemoveLogin" method="post"
+                                  class="d-inline">
+                                <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden"/>
+                                <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden"/>
+                                <button type="submit" class="btn btn-danger btn-sm btn-custom btn-danger-custom"
+                                        title="Remove this @login.ProviderDisplayName login from your account">
+                                    <i class="fas fa-trash-alt icon"></i> Remove
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.OtherLogins?.Count > 0)
+    {
+        <h4 class="section-title"><i class="fas fa-plus-circle icon"></i> Add Another Service to Log In</h4>
+        <form id="link-login-form" asp-page-handler="LinkLogin" method="post">
+            <div id="socialLoginList" class="d-flex flex-wrap gap-2">
+                @foreach (var provider in Model.OtherLogins)
+                {
+                    <button id="@($"link-login-button-{provider.Name}")" type="submit"
+                            class="btn btn-primary btn-lg btn-custom btn-primary-custom"
+                            name="provider" value="@provider.Name"
+                            title="Log in using your @provider.DisplayName account">
+                        @provider.DisplayName
+                    </button>
+                }
+            </div>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

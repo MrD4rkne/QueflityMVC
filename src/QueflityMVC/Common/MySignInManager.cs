@@ -20,7 +20,12 @@ public class MySignInManager : SignInManager<ApplicationUser>
     {
         if (!IsUserEnabled(user))
         {
-            return Task.FromResult(SignInResult.NotAllowed);
+            return Task.FromResult(MySignInResult.Disabled);
+        }
+
+        if (!user.EmailConfirmed)
+        {
+            return Task.FromResult(MySignInResult.RequiresEmailConfirmation);
         }
 
         return base.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure);

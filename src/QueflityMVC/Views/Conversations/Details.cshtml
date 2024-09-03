@@ -21,6 +21,10 @@
         border-bottom: 1px solid #dee2e6;
     }
 
+    .top-bar h4 {
+        margin-left: 20px;
+    }
+
     .main-content {
         display: flex;
         flex: 1;
@@ -241,6 +245,16 @@
         const messages = JSON.parse(messagesData);
         const currentUserId = "@UserContext.UserId";
         renderMessages(messages, currentUserId);
+
+        try {
+            connectToServer();
+        } catch (error) {
+            console.error("Error connecting to server");
+            console.error(error.toString());
+            setConnectionStatus(ConnectionStatus.CannotConnect);
+            $('#cannotConnectModal').modal('show');
+            toggleMessageInput(false);
+        }
         });
 
     // Function to render messages from JSON data
@@ -250,17 +264,6 @@
             $('#messagesList').append(messageDiv);
         });
         $('.message-space').scrollTop = $('.message-space').scrollHeight;
-    }
-    
-    
-    try {
-        connectToServer();
-    } catch (error) {
-        console.error("Error connecting to server");
-        console.error(error.toString());
-        setConnectionStatus(ConnectionStatus.CannotConnect);
-        $('#cannotConnectModal').modal('show');
-        toggleMessageInput(false);
     }
 
         // Function to set the connection status

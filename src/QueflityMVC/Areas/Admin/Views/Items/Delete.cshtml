@@ -2,16 +2,23 @@
 @model QueflityMVC.Application.ViewModels.Item.DeleteFailedItemVm
 
 @{
-    ViewData["Title"] = "Deletion failed";
+    ViewData["Title"] = "Deletion Failed";
 }
 
-<h1>Delete</h1>
+<div class="container mt-4">
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">
+            <i class="fa fa-exclamation-triangle"></i> Deletion Failed
+        </h4>
+        <p>@Model.Message</p>
+    </div>
 
-<div>
-    <h4>@Model.Message</h4>
-    <hr/>
-</div>
-<div>
-    @Html.ActionLink("View kits with this item", "Index", "Kits", new { area = "Admin", itemId = Model.ItemId }) |
-    <a asp-action="Index" asp-controller="Items" asp-area="Admin">Back to List</a>
+    <div class="mt-4">
+        <a href="@Url.ActionLink("Index", "Kits", new { area = "Admin", itemId = Model.ItemId })" class="btn btn-info">
+            <i class="fa fa-box"></i> View Kits with this Item
+        </a>
+        <a asp-action="Index" asp-controller="Items" asp-area="Admin" class="btn btn-secondary ms-2">
+            <i class="fa fa-arrow-left"></i> Back to List
+        </a>
+    </div>
 </div>

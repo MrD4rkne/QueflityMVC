@@ -17,38 +17,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - @BrandOptions.Value.Name</title>
 
-    <!-- CSS Librarier -->
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 
-    <!-- Custom style-->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
+    <!-- Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
     @await RenderSectionAsync("Styles", false)
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", false)
 </head>
 <body>
 <!-- Navbar -->
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm main-navbar">
     <div class="container-fluid">
-        <a class="navbar-brand" asp-action="Index" asp-controller="Home" asp-area="">@BrandOptions.Value.Name</a>
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center" asp-action="Index" asp-controller="Home" asp-area="">
+            <img src="your-logo-url.png" alt="Brand Logo" style="height: 40px; width: auto;"/>
+            <span class="ms-2">@BrandOptions.Value.Name</span>
+        </a>
+
+        <!-- Toggler Button -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-            <!-- Left-aligned links -->
-            <ul class="navbar-nav me-auto">
-            </ul>
 
-            <!-- Centered links -->
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 @if (canSeeAdminPage)
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a>
+                        <a class="nav-link btn text-light fw-bold" asp-action="Index" asp-controller="Home"
+                           asp-area="Admin">
+                            <i class="fas fa-cog me-1"></i> Admin
+                        </a>
                     </li>
                 }
             </ul>
 
-            <!-- Right-aligned login partial -->
+            <!-- Right-aligned Login Partial -->
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <partial name="_LoginPartial"/>
@@ -62,16 +80,14 @@
     @RenderBody()
 </div>
 
-<footer class="bg-dark text-white text-center py-3">
-    <p>&copy; @DateTime.Now.Year - @BrandOptions.Value.Name - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+<partial name="_CookieConsentPartial"/>
+
+<footer class="text-center py-4 mt-auto shadow-lg">
+    <div class="d-flex align-items-center">
+        <p class="me-3">&copy; @DateTime.Now.Year - @BrandOptions.Value.Name</p>
+        <partial name="_CookieFooterPartial"/>
+    </div>
 </footer>
 
-<!-- Client libraries -->
-<script src="~/lib/jquery/jquery.min.js"></script>
-<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Custom Scripts -->
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

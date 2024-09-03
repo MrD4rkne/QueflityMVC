@@ -91,7 +91,16 @@ public class ItemsController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var itemForEdit = await _itemService.GetForEditAsync(id);
-        return View(itemForEdit);
+        if (itemForEdit.IsSuccess)
+        {
+            return View(itemForEdit.Value);
+        }
+
+        return itemForEdit.Error.Code switch
+        {
+            ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
+            _ => RedirectToAction("Error", "Home", new { area = "" })
+        };
     }
 
     [HttpPost]
@@ -112,11 +121,16 @@ public class ItemsController : Controller
 
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, int? categoryId)
     {
         var results = await _itemService.DeleteItemAsync(id);
         if (results.IsSuccess)
         {
+            if (categoryId.HasValue)
+            {
+                return RedirectToAction("Index", new { categoryId });
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -125,7 +139,7 @@ public class ItemsController : Controller
             ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
             ErrorCodes.Items.IS_PART_OF_KIT => View(new DeleteFailedItemVm
             {
-                ItemId = id, Message = "Item is part of a kit and cannot be deleted."
+                ItemId = id, Message = "Item is part of a kit and cannot be deleted.", CategoryId = categoryId
             }),
             _ => throw new UnexpectedApplicationException()
         };
@@ -136,17 +150,21 @@ public class ItemsController : Controller
     public async Task<IActionResult> Components(int id)
     {
         var componentsViewModel = await _itemService.GetComponentsForSelectionVmAsync(id);
-        if (componentsViewModel is null)
+        if (componentsViewModel.IsSuccess)
         {
-            return NotFound();
+            if (componentsViewModel.Value.AllComponents.Count == 0)
+            {
+                return RedirectToAction("NoComponents");
+            }
+
+            return View(componentsViewModel.Value);
         }
 
-        if (componentsViewModel.AllComponents.Count == 0)
+        return componentsViewModel.Error.Code switch
         {
-            return RedirectToAction("NoComponents");
-        }
-
-        return View(componentsViewModel);
+            ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [HttpGet]
