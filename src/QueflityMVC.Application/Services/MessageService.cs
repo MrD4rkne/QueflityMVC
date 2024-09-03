@@ -32,6 +32,12 @@ public class MessageService(
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
         }
 
+        var existingConversation = await GetConversationIdByProductAsync(purchasableId, userContext.UserId);
+        if (existingConversation.IsSuccess)
+        {
+            return Result<FirstMessageInConversationVm>.Failure(Errors.Conversation.AlreadyExists);
+        }
+
         var purchasable = await purchasableRepository.GetByIdAsync(purchasableId);
         if (purchasable is null)
         {
@@ -46,23 +52,28 @@ public class MessageService(
         return Result<FirstMessageInConversationVm>.Success(firstMessageInConversationVm);
     }
 
-    public async Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm)
+    public Task<Result<int>> GetConversationIdByProductAsync(int purchasableId)
+    {
+        return GetConversationIdByProductAsync(purchasableId, userContext.UserId);
+    }
+
+    public async Task<Result<int>> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm)
     {
         if (!await userRepository.HasVerifiedEmail(userContext.UserId))
         {
-            return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
+            return Result<int>.Failure(Errors.User.EmailNotVerified);
         }
 
         var productResult = await GetProductForContactVmAsync(firstMessageInConversationVm.Product.Id);
         if (productResult.IsFailure)
         {
-            return Result.Failure(productResult.Error);
+            return Result<int>.Failure(productResult.Error);
         }
 
         string? email = await userRepository.GetEmailForUserAsync(userContext.UserId);
         if (string.IsNullOrWhiteSpace(email))
         {
-            return Result.Failure(Errors.User.EmailNotVerified);
+            return Result<int>.Failure(Errors.User.EmailNotVerified);
         }
 
         firstMessageInConversationVm = firstMessageInConversationVm with
@@ -78,18 +89,32 @@ public class MessageService(
             Content = firstMessageInConversationVm.Message
         };
 
-        Conversation conversation = new()
+        var existingConversationId = await GetConversationIdByProductAsync(firstMessageInConversationVm.Product.Id);
+
+        Conversation conversation = null;
+
+        if (existingConversationId.IsSuccess)
         {
-            ProductId = firstMessageInConversationVm.Product.Id,
-            UserId = userContext.UserId,
-            Title = firstMessageInConversationVm.Title,
-            IsClosed = false,
-            Messages = [message]
-        };
-        _ = await conversationRepository.AddAsync(conversation);
+            message.ConversationId = existingConversationId.Value;
+            _ = await conversationRepository.AddMessageAsync(message);
+        }
+        else
+        {
+            conversation = new Conversation
+            {
+                ProductId = firstMessageInConversationVm.Product.Id,
+                UserId = userContext.UserId,
+                Title = firstMessageInConversationVm.Title,
+                IsClosed = false,
+                Messages = [message]
+            };
+
+            _ = await conversationRepository.AddAsync(conversation);
+        }
+
         SentCopyEmail(firstMessageInConversationVm);
 
-        return Result.Success();
+        return Result<int>.Success(conversation.Id);
     }
 
     public Task<Result<UserConversationsVm>> GetUsersConversationsAsync()
@@ -183,6 +208,17 @@ public class MessageService(
         }
 
         return await CanRespondToConversations(userContext.UserId);
+    }
+
+    private async Task<Result<int>> GetConversationIdByProductAsync(int purchasableId, Guid userId)
+    {
+        var conversation = await conversationRepository.GetConversationByProductAndUserAsync(purchasableId, userId);
+        if (conversation is not null)
+        {
+            return Result<int>.Success(conversation.Id);
+        }
+
+        return Result<int>.Failure(Errors.Conversation.DoesNotExist);
     }
 
     private async Task<UserConversationsVm> GetConversationsPaginatedAsync(IQueryable<Conversation> conversations,

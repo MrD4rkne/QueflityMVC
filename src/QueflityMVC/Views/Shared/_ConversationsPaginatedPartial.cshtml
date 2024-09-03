@@ -59,10 +59,6 @@
         margin-top: auto;
     }
 
-    .arrow-link:hover {
-        text-decoration: underline;
-    }
-
     .messages-view {
         height: 100%;
         width: 100%; /* Adjust width to fit within the conversation-wrapper */
@@ -138,6 +134,11 @@
                     <div class="col">
                         <img src="@conversationVm.Product.Image.FileUrl" alt="@conversationVm.Product.Image.AltDescription"
                              class="img-thumbnail"/>
+                        <a class="btn btn-outline-primary" asp-area="" asp-controller="Conversations"
+                           asp-action="Details"
+                           asp-route-id="@conversationVm.Id">
+                            <i class="fas fa-arrow-right"></i> View
+                        </a>
                     </div>
                     <div class="col">
                         <h5 class="text-break">@conversationVm.Title</h5>
@@ -153,10 +154,6 @@
                                 <p class="last-message-time">No messages yet</p>
                             }
                         </div>
-                        <a class="arrow-link" asp-area="" asp-controller="Conversations" asp-action="Details"
-                           asp-route-id="@conversationVm.Id">
-                            &rarr;
-                        </a>
                     </div>
                 </div>
                 <div class="messages-view">
