@@ -40,5 +40,12 @@ public static class ErrorCodes
     public static class Components
     {
         public const string DUPLICATED_NAME = "Component.DuplicatedName";
+        public const string DOES_NOT_EXIST = "Component.DoesNotExist";
+    }
+
+    public static class Categories
+    {
+        public const string DUPLICATED_NAME = "Categories.DuplicatedName";
+        public const string DOES_NOT_EXIST = "Categories.DoesNotExist";
     }
 }

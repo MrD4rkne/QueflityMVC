@@ -22,4 +22,14 @@ public class CategoryRepository(Context dbContext) : BaseRepository<Category>(db
 
         return filteredCategories;
     }
+
+    public Task<bool> DoesCategoryWithNameExistAsync(string name)
+    {
+        return DbContext.Categories.AnyAsync(x => x.Name == name);
+    }
+
+    public Task<bool> DoesCategoryWithNameButNotIdExistAsync(int id, string name)
+    {
+        return DbContext.Categories.AnyAsync(x => x.Name == name && x.Id != id);
+    }
 }

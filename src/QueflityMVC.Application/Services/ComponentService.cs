@@ -41,7 +41,8 @@ public class ComponentService : IComponentService
     public async Task<ListComponentsVm> GetFilteredListAsync(ListComponentsVm listComponentsVm)
     {
         var matchingComponents =
-            _componentRepository.GetComponentsForPagination(listComponentsVm.ItemId, listComponentsVm.NameFilter);
+            _componentRepository.GetComponentsForPagination(listComponentsVm.ItemId, listComponentsVm.NameFilter)
+                .OrderBy(component => component.Id);
         listComponentsVm.Pagination =
             await matchingComponents.Paginate(listComponentsVm.Pagination, _mapper.ConfigurationProvider);
         return listComponentsVm;
@@ -55,6 +56,11 @@ public class ComponentService : IComponentService
 
     public async Task<Result> UpdateComponentAsync(ComponentVm componentToEditVm)
     {
+        if (!await _componentRepository.ExistsAsync(componentToEditVm.Id))
+        {
+            return Result.Failure(Errors.Components.DoesNotExist);
+        }
+
         if (await DoesComponentWithNameExistAsync(componentToEditVm.Name))
         {
             return Result.Failure(Errors.Components.DuplicatedName);

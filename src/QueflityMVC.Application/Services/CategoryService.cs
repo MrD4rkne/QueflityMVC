@@ -1,58 +1,85 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Application.Services;
 
-public class CategoryService : ICategoryService
+public class CategoryService(ICategoryRepository repository, IMapper mapper) : ICategoryService
 {
-    private readonly ICategoryRepository _categoriesRepository;
-    private readonly IMapper _mapper;
-
-    public CategoryService(ICategoryRepository repository, IMapper mapper)
+    public async Task<Result> CreateCategoryAsync(CategoryVm createCategoryVm)
     {
-        _categoriesRepository = repository;
-        _mapper = mapper;
-    }
+        if (await DoesCategoryWithNameExistAsync(createCategoryVm.Name))
+        {
+            return Result.Failure(Errors.Categories.DuplicatedName);
+        }
 
-    public async Task<int> CreateCategoryAsync(CategoryVm createCategoryVm)
-    {
-        var categoryToCreate = _mapper.Map<Category>(createCategoryVm);
-        return await _categoriesRepository.AddAsync(categoryToCreate);
+        var categoryToCreate = mapper.Map<Category>(createCategoryVm);
+        _ = await repository.AddAsync(categoryToCreate);
+
+        return Result.Success();
     }
 
     public async Task DeleteCategoryAsync(int id)
     {
-        if (!await _categoriesRepository.IsAnyItemWithCategory(id))
+        if (!await repository.IsAnyItemWithCategory(id))
         {
             throw new InvalidOperationException("First, remove or change category for items!");
         }
 
-        await _categoriesRepository.DeleteAsync(id);
+        await repository.DeleteAsync(id);
     }
 
     public async Task<ListCategoriesVm> GetFilteredListAsync(ListCategoriesVm listCategoriesVm)
     {
-        var matchingCategories = _categoriesRepository.GetFiltered(listCategoriesVm.NameFilter);
+        var matchingCategories = repository.GetFiltered(listCategoriesVm.NameFilter)
+            .OrderBy(category => category.Id);
         listCategoriesVm.Pagination =
-            await matchingCategories.Paginate(listCategoriesVm.Pagination, _mapper.ConfigurationProvider);
+            await matchingCategories.Paginate(listCategoriesVm.Pagination, mapper.ConfigurationProvider);
         return listCategoriesVm;
     }
 
-    public async Task<CategoryVm?> GetVmForEditAsync(int id)
+    public async Task<Result<CategoryVm>> GetVmForEditAsync(int id)
     {
-        var category = await _categoriesRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
-        return _mapper.Map<CategoryVm>(category);
+        var category = await repository.GetByIdAsync(id);
+
+        if (category is null)
+        {
+            return Result<CategoryVm>.Failure(Errors.Categories.DoesNotExist);
+        }
+
+        var categoryVm = mapper.Map<CategoryVm>(category);
+        return Result<CategoryVm>.Success(categoryVm);
     }
 
-    public async Task<CategoryVm> UpdateCategoryAsync(CategoryVm createCategoryVm)
+    public async Task<Result> UpdateCategoryAsync(CategoryVm updateCategpryVm)
     {
-        var category = _mapper.Map<Category>(createCategoryVm);
-        var updatedcategory = await _categoriesRepository.UpdateAsync(category);
-        return _mapper.Map<CategoryVm>(updatedcategory);
+        if (!await repository.ExistsAsync(updateCategpryVm.Id))
+        {
+            return Result.Failure(Errors.Categories.DoesNotExist);
+        }
+
+        if (await DoesCategoryWithNameExistAsync(updateCategpryVm.Id, updateCategpryVm.Name))
+        {
+            return Result.Failure(Errors.Categories.DuplicatedName);
+        }
+
+        var category = mapper.Map<Category>(updateCategpryVm);
+        _ = await repository.UpdateAsync(category);
+
+        return Result.Success();
+    }
+
+    private Task<bool> DoesCategoryWithNameExistAsync(string name)
+    {
+        return repository.DoesCategoryWithNameExistAsync(name);
+    }
+
+    private Task<bool> DoesCategoryWithNameExistAsync(int id, string name)
+    {
+        return repository.DoesCategoryWithNameButNotIdExistAsync(id, name);
     }
 }

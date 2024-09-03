@@ -12,4 +12,8 @@ public interface ICategoryRepository : IBaseRepository<Category>
     Task<bool> IsAnyItemWithCategory(int categoryId);
 
     IQueryable<Category> GetFiltered(string? nameFilter);
+
+    Task<bool> DoesCategoryWithNameExistAsync(string name);
+
+    Task<bool> DoesCategoryWithNameButNotIdExistAsync(int id, string name);
 }

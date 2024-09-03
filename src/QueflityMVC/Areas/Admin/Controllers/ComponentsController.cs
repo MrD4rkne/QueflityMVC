@@ -115,13 +115,15 @@ public class ComponentsController : Controller
         {
             case { IsSuccess: true }:
                 return RedirectToAction("Index");
-            case { IsSuccess: false, Error.Code: ErrorCodes.Components.DUPLICATED_NAME }:
+            case { IsFailure: true, Error.Code: ErrorCodes.Components.DUPLICATED_NAME }:
                 ModelState.AddModelError(nameof(ComponentVm.Name),
                     "Component with this name already exists. Name must be unique.");
                 return View();
+            case { IsFailure: true, Error.Code: ErrorCodes.Components.DOES_NOT_EXIST }:
+                return NotFound();
+            default:
+                return RedirectToAction("Error", "Home", new { area = "" });
         }
-
-        return RedirectToAction("Error", "Home", new { area = "" });
     }
 
     [Route("Delete")]
