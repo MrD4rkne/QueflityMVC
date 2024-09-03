@@ -29,34 +29,6 @@
     <!-- Google Fonts for better typography -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <style>
-        .admin-button {
-            background-color: #ff6600; /* Admin button color */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .admin-button .icon-admin {
-            margin-right: 8px;
-            /* Use a relevant icon from your icon library */
-        }
-
-        .admin-button:hover {
-            background-color: #e65c00; /* Darker shade on hover */
-        }
-
-        .admin-button:active {
-            background-color: #cc5200; /* Even darker shade when active */
-        }
-
-    </style>
-
     @await RenderSectionAsync("Styles", false)
 
     <!-- Scripts -->
@@ -69,25 +41,32 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm">
     <div class="container-fluid">
+        <!-- Brand -->
         <a class="navbar-brand d-flex align-items-center" asp-action="Index" asp-controller="Home" asp-area="">
-            @BrandOptions.Value.Name
+            <img src="your-logo-url.png" alt="Brand Logo" style="height: 40px; width: auto;"/>
+            <span class="ms-2">@BrandOptions.Value.Name</span>
         </a>
+
+        <!-- Toggler Button -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-            <!-- Centered links -->
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 @if (canSeeAdminPage)
                 {
-                    <a class="nav-link admin-button text-light fw-bold" asp-action="Index" asp-controller="Home"
-                       asp-area="Admin">
-                        <i class="fas fa-cog me-1"></i> Admin
-                    </a>
+                    <li class="nav-item">
+                        <a class="nav-link btn text-light fw-bold" asp-action="Index" asp-controller="Home"
+                           asp-area="Admin">
+                            <i class="fas fa-cog me-1"></i> Admin
+                        </a>
+                    </li>
                 }
             </ul>
 
-            <!-- Right-aligned login partial -->
+            <!-- Right-aligned Login Partial -->
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <partial name="_LoginPartial"/>

@@ -10,10 +10,31 @@ body {
     background-color: #f8f9fa;
 }
 
+/* Brand Logo */
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
+
+.navbar-brand:hover {
+    color: #f8f9fa; /* Light color for hover effect */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Admin Button */
+.nav-link.btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-link.btn:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+    color: #ffffff; /* Light text color for contrast */
+}
+
+/* Toggler Button */
+.navbar-toggler:hover .navbar-toggler-icon {
+    background-color: rgba(255, 255, 255, 0.5); /* Light color on hover */
+}
+
 
 .main-content {
     flex: 1;
