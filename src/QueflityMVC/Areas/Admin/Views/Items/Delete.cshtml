@@ -14,7 +14,7 @@
     </div>
 
     <div class="mt-4">
-        <a asp-action="Index" asp-controller="Kits" asp-area="Admin" class="btn btn-info">
+        <a href="@Url.ActionLink("Index", "Kits", new { area = "Admin", itemId = Model.ItemId })" class="btn btn-info">
             <i class="fa fa-box"></i> View Kits with this Item
         </a>
         <a asp-action="Index" asp-controller="Items" asp-area="Admin" class="btn btn-secondary ms-2">

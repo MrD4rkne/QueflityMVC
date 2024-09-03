@@ -12,7 +12,7 @@ public interface IItemService
 
     Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm);
 
-    Task<ManageItemVm?> GetForEditAsync(int id);
+    Task<Result<ManageItemVm>> GetForEditAsync(int id);
 
     Task<Result<ManageItemVm>> GetItemVmForAddingAsync(int? categoryId);
 

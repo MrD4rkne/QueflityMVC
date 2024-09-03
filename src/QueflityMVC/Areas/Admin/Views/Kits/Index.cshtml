@@ -94,39 +94,40 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach (var item in Model.Pagination.Entities)
+                    @foreach (var kit in Model.Pagination.Entities)
                     {
                         <tr>
                             <td>
-                                @if (item.Image != null)
+                                @if (kit.Image != null)
                                 {
-                                    <img src="@item.Image.FileUrl" alt="@item.Image.AltDescription" style="height:30px"/>
+                                    <img src="@kit.Image.FileUrl" alt="@kit.Image.AltDescription" style="height:30px"/>
                                 }
                             </td>
-                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => kit.Name)</td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Price)
+                                @Html.DisplayFor(modelItem => kit.Price)
                             </td>
                             <td>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" @(item.ShouldBeShown ? "checked" : "")
+                                    <input class="form-check-input" type="checkbox"
+                                           @(kit.ShouldBeShown ? "checked" : "")
                                            disabled/>
-                                    <label class="form-check-label">@(item.ShouldBeShown ? "Visible" : "Hidden")</label>
+                                    <label class="form-check-label">@(kit.ShouldBeShown ? "Visible" : "Hidden")</label>
                                 </div>
                             </td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Manage kit">
                                     @if (canEditEntities)
                                     {
-                                        @Html.ActionLink("Edit", "Edit", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                        @Html.ActionLink("Edit", "Edit", "Kits", new { area = "Admin", id = kit.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
                                     }
                                     @if (canListEntities)
                                     {
-                                        @Html.ActionLink("Details", "Details", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-success btn-sm" })
+                                        @Html.ActionLink("Details", "Details", "Kits", new { area = "Admin", id = kit.Id }, new { @class = "btn btn-outline-success btn-sm" })
                                     }
                                     @if (canCreateEntities)
                                     {
-                                        @Html.ActionLink("Delete", "Delete", "Kits", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                        @Html.ActionLink("Delete", "Delete", "Kits", new { area = "Admin", id = kit.Id, itemId = Model.ItemId }, new { @class = "btn btn-outline-danger btn-sm" })
                                     }
                                 </div>
                             </td>

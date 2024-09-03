@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
@@ -72,9 +71,13 @@ public class ItemService(
         return listItemsVm;
     }
 
-    public async Task<ManageItemVm?> GetForEditAsync(int id)
+    public async Task<Result<ManageItemVm>> GetForEditAsync(int id)
     {
-        var item = await itemRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
+        var item = await itemRepository.GetByIdAsync(id);
+        if (item is null)
+        {
+            return Result<ManageItemVm>.Failure(Errors.Items.DoesNotExit);
+        }
 
         ManageItemVm manageObjItemVm = new()
         {
@@ -82,7 +85,7 @@ public class ItemService(
             Categories = await categoryRepository.GetAll()
                 .ProjectTo<CategoryForSelectVm>(mapper.ConfigurationProvider).ToListAsync()
         };
-        return manageObjItemVm;
+        return Result<ManageItemVm>.Success(manageObjItemVm);
     }
 
     public async Task UpdateItemAsync(ItemVm? updateItemVm)

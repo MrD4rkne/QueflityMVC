@@ -136,7 +136,7 @@
                                 }
                                 @if (canCreateEntities)
                                 {
-                                    @Html.ActionLink("Delete", "Delete", "Items", new { area = "Admin", id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                                    @Html.ActionLink("Delete", "Delete", "Items", new { area = "Admin", id = item.Id, categoryId = Model.CategoryId }, new { @class = "btn btn-outline-danger btn-sm" })
                                 }
                             </div>
                         </td>

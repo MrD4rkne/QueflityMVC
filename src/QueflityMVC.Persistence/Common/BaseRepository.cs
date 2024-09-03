@@ -46,7 +46,7 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
         }
 
         DbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
-        await DbContext.SaveChangesAsync();
+        _ = await DbContext.SaveChangesAsync();
         return await GetByIdAsync(entityToUpdate.Id);
     }
 

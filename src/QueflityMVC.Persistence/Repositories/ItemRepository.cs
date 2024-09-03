@@ -65,13 +65,10 @@ public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbC
     public override async Task<Item> UpdateAsync(Item entityToUpdate)
     {
         var originalEntity = await dbContext.Items
-                                 .AsNoTracking()
                                  .Include(Item => Item.Image)
                                  .Include(Item => Item.Components)
                                  .FirstOrDefaultAsync(Item => Item.Id == entityToUpdate.Id)
                              ?? throw new ResourceNotFoundException(entityName: nameof(Item));
-
-        uint? oldOrderNo = originalEntity.OrderNo;
 
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.CategoryId = entityToUpdate.CategoryId;
