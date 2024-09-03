@@ -13,7 +13,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using QueflityMVC.Domain.Models;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account;
 
@@ -106,14 +108,49 @@ public class ExternalLoginModel : PageModel
             return LocalRedirect(returnUrl);
         }
 
-        if (result.IsNotAllowed)
+        if (result is MySignInResult { IsDisabled: true })
         {
-            return RedirectToPage("./Disabled");
+            TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Account disabled",
+                Message = "Your account has been disabled. Please contact administrator for further details.",
+                Type = PopUpType.Error
+            });
+            return RedirectToPage("./Login");
+        }
+
+        if (result is MySignInResult { DoesRequireEmailConfirmation: true })
+        {
+            TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Email confirmation required",
+                Message = "Please confirm your email before logging in.",
+                Type = PopUpType.Info
+            });
+            return RedirectToPage("./Login");
         }
 
         if (result.IsLockedOut)
         {
-            return RedirectToPage("./Lockout");
+            TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Account locked out",
+                Message = "Your account has been locked out. Please try again later.",
+                Type = PopUpType.Error
+            });
+            _logger.LogWarning("User account locked out.");
+            return RedirectToPage("./Login");
+        }
+
+        if (result.IsNotAllowed)
+        {
+            TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Account not allowed",
+                Message = "Your account is not allowed to login. Please contact administrator for further details.",
+                Type = PopUpType.Error
+            });
+            return RedirectToPage("./Login");
         }
 
         // If the user does not have an account, then ask the user to create an account.
