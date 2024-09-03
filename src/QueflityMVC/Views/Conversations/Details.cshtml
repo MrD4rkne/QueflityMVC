@@ -241,6 +241,16 @@
     var connection = undefined;
     
     document.addEventListener("DOMContentLoaded", () => {
+        // Bind ENTER key to send message
+        const messageInput = document.getElementById("newMessageContent");
+        messageInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("sendMessageButton").click();
+            }
+        }); 
+    
+    
         const messagesData = document.getElementById("messagesData").value;
         const messages = JSON.parse(messagesData);
         const currentUserId = "@UserContext.UserId";
