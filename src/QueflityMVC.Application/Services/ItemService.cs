@@ -134,9 +134,13 @@ public class ItemService(
             .ToListAsync();
     }
 
-    public async Task<ItemComponentsSelectionVm?> GetComponentsForSelectionVmAsync(int id)
+    public async Task<Result<ItemComponentsSelectionVm>> GetComponentsForSelectionVmAsync(int id)
     {
-        var item = await itemRepository.GetItemWithComponentsByIdAsync(id) ?? throw new EntityNotFoundException();
+        var item = await itemRepository.GetItemWithComponentsByIdAsync(id);
+        if (item is null)
+        {
+            return Result<ItemComponentsSelectionVm>.Failure(Errors.Items.DoesNotExit);
+        }
 
         var allComponents = componentRepository.GetAll();
         var allComponentsVMs = await allComponents.ProjectTo<ComponentForSelection>(mapper.ConfigurationProvider)
@@ -150,7 +154,7 @@ public class ItemService(
             AllComponents = allComponentsVMs,
             SelectedComponentsIds = selectedComponentsIds
         };
-        return selectionVm;
+        return Result<ItemComponentsSelectionVm>.Success(selectionVm);
     }
 
     public Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)

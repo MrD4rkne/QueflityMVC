@@ -136,17 +136,21 @@ public class ItemsController : Controller
     public async Task<IActionResult> Components(int id)
     {
         var componentsViewModel = await _itemService.GetComponentsForSelectionVmAsync(id);
-        if (componentsViewModel is null)
+        if (componentsViewModel.IsSuccess)
         {
-            return NotFound();
+            if (componentsViewModel.Value.AllComponents.Count == 0)
+            {
+                return RedirectToAction("NoComponents");
+            }
+
+            return View(componentsViewModel.Value);
         }
 
-        if (componentsViewModel.AllComponents.Count == 0)
+        return componentsViewModel.Error.Code switch
         {
-            return RedirectToAction("NoComponents");
-        }
-
-        return View(componentsViewModel);
+            ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     [HttpGet]

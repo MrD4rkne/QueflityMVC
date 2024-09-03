@@ -20,7 +20,7 @@ public interface IItemService
 
     Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync();
 
-    Task<ItemComponentsSelectionVm?> GetComponentsForSelectionVmAsync(int id);
+    Task<Result<ItemComponentsSelectionVm>> GetComponentsForSelectionVmAsync(int id);
 
     Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm);
 }
