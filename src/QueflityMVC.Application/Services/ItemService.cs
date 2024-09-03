@@ -67,6 +67,8 @@ public class ItemService(
     public async Task<ListItemsVm> GetFilteredListAsync(ListItemsVm listItemsVm)
     {
         var matchingItems = itemRepository.GetFilteredItems(listItemsVm.NameFilter, listItemsVm.CategoryId);
+        matchingItems = matchingItems.OrderBy(item => item.Id);
+
         listItemsVm.Pagination = await matchingItems.Paginate(listItemsVm.Pagination, mapper.ConfigurationProvider);
         return listItemsVm;
     }
@@ -133,6 +135,7 @@ public class ItemService(
     public Task<List<CategoryForSelectVm>> GetCategoriesForSelectVmAsync()
     {
         return categoryRepository.GetAll()
+            .OrderBy(c => c.Name)
             .ProjectTo<CategoryForSelectVm>(mapper.ConfigurationProvider)
             .ToListAsync();
     }
@@ -145,7 +148,9 @@ public class ItemService(
             return Result<ItemComponentsSelectionVm>.Failure(Errors.Items.DoesNotExit);
         }
 
-        var allComponents = componentRepository.GetAll();
+        var allComponents = componentRepository.GetAll()
+            .OrderBy(component => component.Id);
+
         var allComponentsVMs = await allComponents.ProjectTo<ComponentForSelection>(mapper.ConfigurationProvider)
             .ToListAsync();
         var selectedComponentsIds = item.Components!

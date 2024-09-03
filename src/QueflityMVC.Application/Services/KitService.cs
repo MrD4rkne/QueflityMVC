@@ -76,8 +76,10 @@ public class KitService : IKitService
 
     public async Task<ListKitsVm> GetFilteredListAsync(ListKitsVm listKitsVm)
     {
-        var matchingSets = _kitRepository.GetFilteredKits(listKitsVm.NameFilter, listKitsVm.ItemId);
-        var pagination = await matchingSets.Paginate(listKitsVm.Pagination, _mapper.ConfigurationProvider);
+        var matchingKits = _kitRepository.GetFilteredKits(listKitsVm.NameFilter, listKitsVm.ItemId);
+        matchingKits = matchingKits.OrderBy(kit => kit.Id);
+
+        var pagination = await matchingKits.Paginate(listKitsVm.Pagination, _mapper.ConfigurationProvider);
 
         var listItemVm = listKitsVm with { Pagination = pagination };
         return listItemVm;
@@ -126,7 +128,9 @@ public class KitService : IKitService
         itemsForComponentsVm.KitDetailsVm = kitDetailsResult.Value;
 
         var allItems =
-            _itemRepository.GetFilteredItems(itemsForComponentsVm.NameFilter, itemsForComponentsVm.CategoryId);
+            _itemRepository.GetFilteredItems(itemsForComponentsVm.NameFilter, itemsForComponentsVm.CategoryId)
+                .OrderBy(item => item.Id);
+
         itemsForComponentsVm.Pagination =
             await allItems.Paginate(itemsForComponentsVm.Pagination, _mapper.ConfigurationProvider);
         return Result<ListItemsForComponentsVm>.Success(itemsForComponentsVm);
