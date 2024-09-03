@@ -186,9 +186,7 @@
             <p>You must accept the policy before you can enable two-factor authentication.</p>
             <div class="d-flex align-items-center">
                 <a href="/Home/Privacy" target="_blank" class="btn btn-info me-2">Privacy Policy</a>
-                <form method="post" asp-page-handler="AcceptPolicies" class="mb-0">
-                    <button type="submit" class="btn btn-primary">Accept Policies</button>
-                </form>
+                <partial name="_CookieFooterPartial"/>
             </div>
         </div>
     }
