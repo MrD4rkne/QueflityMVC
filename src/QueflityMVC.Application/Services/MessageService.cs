@@ -106,15 +106,22 @@ public class MessageService(
         return Result<UserConversationsVm>.Success(userConversationsVm);
     }
 
-    public Task<Result<UserConversationsVm>> GetAllConversationsAsync()
+    public Task<Result<UserConversationsVm>> GetAllButCurrentUserConversationsAsync()
     {
         UserConversationsVm userConversationsVm = new();
-        return GetAllConversationsAsync(userConversationsVm);
+        return GetAllButCurrentUserConversationsAsync(userConversationsVm);
     }
 
-    public async Task<Result<UserConversationsVm>> GetAllConversationsAsync(UserConversationsVm userConversationsVm)
+    public async Task<Result<UserConversationsVm>> GetAllButCurrentUserConversationsAsync(
+        UserConversationsVm userConversationsVm)
     {
         var conversations = conversationRepository.GetAllConversations();
+
+        // If user is authenticated, filter out conversations that belong to the user
+        if (userContext.IsAuthenticated)
+        {
+            conversations = conversations.Where(conv => conv.UserId != userContext.UserId);
+        }
 
         userConversationsVm = await GetConversationsPaginatedAsync(conversations, userConversationsVm);
         return Result<UserConversationsVm>.Success(userConversationsVm);

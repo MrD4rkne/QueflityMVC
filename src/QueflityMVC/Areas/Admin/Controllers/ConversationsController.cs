@@ -14,7 +14,7 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var usersConversations = await messageService.GetAllConversationsAsync();
+        var usersConversations = await messageService.GetAllButCurrentUserConversationsAsync();
         if (usersConversations.IsFailure)
         {
             return RedirectToAction("Index", "Home");
@@ -31,7 +31,7 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
             return BadRequest();
         }
 
-        var usersConversations = await messageService.GetAllConversationsAsync(userConversationsVm);
+        var usersConversations = await messageService.GetAllButCurrentUserConversationsAsync(userConversationsVm);
         if (usersConversations.IsFailure)
         {
             return RedirectToAction("Index", "Home");

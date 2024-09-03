@@ -82,38 +82,52 @@
 @* ReSharper disable once Html.AttributesQuotes *@
 <input type="hidden" id="conversationsData" value='@Json.Serialize(Model.Entities)'/>
 
-<ul class="nav gap-1 mb-1">
-    <li class="nav-item">
-        <select class="form-select" asp-for="Info.PageSize" onchange="PageSizeSelected()">
-            @foreach (int i in options)
-            {
-                @if (i == Model.Info.PageSize)
+<div class="row align-items-center mb-3">
+    <!-- Page Size Selector -->
+    <div class="col-md-3">
+        <div class="input-group">
+            <label class="input-group-text bg-primary text-white" for="pageSizeSelect">
+                <i class="fas fa-list"></i>
+            </label>
+            <select class="form-select" asp-for="Info.PageSize" id="pageSizeSelect"
+                    onchange="PageSizeSelected()">
+                @foreach (int i in options)
                 {
-                    <option value="@i" selected>@i</option>
+                    if (i == Model.Info.PageSize)
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <!-- Sort Order Selector -->
+    <div class="col-md-4 mb-3 mb-md-0">
+        <div class="input-group">
+            <label class="input-group-text bg-primary text-white" for="sortOrderSelect">
+                <i class="fas fa-sort"></i>
+                <span class="ms-2">Sort Order</span>
+            </label>
+            <select class="form-select" asp-for="ShouldSortFromTheLatest" id="sortOrderSelect"
+                    onchange="PageSizeSelected()">
+                @if (Model.ShouldSortFromTheLatest)
+                {
+                    <option value="true" selected>Sort from the latest</option>
+                    <option value="false">Sort from the oldest</option>
                 }
                 else
                 {
-                    <option value="@i">@i</option>
+                    <option value="true">Sort from the latest</option>
+                    <option value="false" selected>Sort from the oldest</option>
                 }
-            }
-        </select>
-    </li>
-    <li class="nav-item">
-        <select class="form-select" asp-for="ShouldSortFromTheLatest" onchange="PageSizeSelected()">
-            @if (Model.ShouldSortFromTheLatest)
-            {
-                <option value="true" selected>Sort from the latest</option>
-                <option value="false">Sort from the oldest</option>
-            }
-            else
-            {
-                <option value="true">Sort from the latest</option>
-                <option value="false" selected>Sort from the oldest</option>
-            }
-        </select>
-    </li>
-</ul>
-
+            </select>
+        </div>
+    </div>
+</div>
 <div class="row">
     @foreach (var conversationVm in Model.Entities)
     {

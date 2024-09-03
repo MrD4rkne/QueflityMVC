@@ -3,9 +3,19 @@
 @inject IUserContext UserContext
 
 @{
-    ViewData["Title"] = "Messages";
+    ViewData["Title"] = "Respond to conversations";
 }
+<div class="container-fluid p-4">
+    <h1 class="mb-2">
+        <i class="fas fa-tags card-icon"></i>
+        Conversations
+    </h1>
 
-<form asp-action="Index" asp-controller="Conversations" asp-area="Admin" method="post">
-    <partial name="_ConversationsPaginatedPartial" for="@Model"/>
-</form>
+    <h4 class="mb-4">
+        Here you can respond to all (but not yours) conversations.
+    </h4>
+
+    <form asp-action="Index" asp-controller="Conversations" asp-area="Admin" method="post">
+        <partial name="_ConversationsPaginatedPartial" for="@Model"/>
+    </form>
+</div>
