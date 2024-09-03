@@ -5,87 +5,110 @@
 @model QueflityMVC.Application.ViewModels.Component.ListComponentsVm
 
 @{
-    ViewData["Title"] = "List components";
-    int[] options = [2, 5, 10, 25, 50, 100];
+    ViewData["Title"] = "List Components";
+    int[] options = { 2, 5, 10, 25, 50, 100 };
     bool canCreateEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_CREATE)).Succeeded;
     bool canEditEntities = (await AuthorizationService.AuthorizeAsync(User, Policies.ENTITIES_EDIT)).Succeeded;
 }
 
-<h1>Components</h1>
-
-@if (canCreateEntities)
-{
-    <p>
-        <a class="btn btn-primary" asp-action="Create" asp-controller="Components" asp-area="Admin">Create New</a>
-    </p>
+@section Styles{
+    <link rel="stylesheet" href="/css/pagination.css"/>
 }
 
-<form asp-action="Index" asp-controller="Components" asp-area="Admin" method="post">
-    <ul class="nav gap-1">
-        <li class="nav-item">
-            <input type="text" class="form-control" placeholder="Search Phrase" asp-for="NameFilter"/>
-        </li>
-        <li class="nav-item">
-            <button type="submit" class="btn btn-secondary">Search</button>
-        </li>
-        <li class="nav-item">
-            <select class="form-select" asp-for="Pagination.Info.PageSize" onchange="javascript:PageSizeSelected()">
-                @foreach (int i in options)
-                {
-                    @if (i == Model.Pagination.Info.PageSize)
-                    {
-                        <option value="@i" selected>@i</option>
-                    }
-                    else
-                    {
-                        <option value="@i">@i</option>
-                    }
-                }
-            </select>
-        </li>
-    </ul>
-    <div class="row">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>
-                    Id
-                </th>
-                <th>
-                    Name
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Pagination.Entities)
-            {
+<div class="container-fluid p-4">
+    <h1 class="mb-4"><i class="fas fa-cogs"></i> Components</h1>
+
+    @if (canCreateEntities)
+    {
+        <p class="mb-4">
+            <a class="btn btn-primary" asp-action="Create" asp-controller="Components" asp-area="Admin">
+                <i class="fas fa-plus"></i> Create New
+            </a>
+        </p>
+    }
+
+    <form asp-action="Index" asp-controller="Components" asp-area="Admin" method="post">
+        <div class="row align-items-center mb-3">
+            <!-- Search Input -->
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search..." asp-for="NameFilter"
+                           name="nameFilter" id="nameFilter"/>
+                </div>
+            </div>
+            <!-- Search Button -->
+            <div class="col-md-2 mb-2 mb-md-0">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Search
+                </button>
+            </div>
+            <!-- Page Size Selector -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <label class="input-group-text bg-primary text-white" for="pageSizeSelect">
+                        <i class="fas fa-list"></i>
+                    </label>
+                    <select class="form-select" asp-for="Pagination.Info.PageSize" id="pageSizeSelect"
+                            onchange="PageSizeSelected()">
+                        @foreach (int i in options)
+                        {
+                            if (i == Model.Pagination.Info.PageSize)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @if (canEditEntities)
-                        {
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
-                        }
-                        @if (canCreateEntities)
-                        {
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
-                        }
-                    </td>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Actions</th>
                 </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-    <div class="row">
-        <partial name="_PaginationPartial" for="Pagination.Info"/>
-    </div>
-</form>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Pagination.Entities)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Manage component">
+                                @if (canEditEntities)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                }
+                                @if (canCreateEntities)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <partial name="_PaginationPartial" for="Pagination.Info"/>
+        </div>
+    </form>
+</div>
 
 @section Scripts
 {
