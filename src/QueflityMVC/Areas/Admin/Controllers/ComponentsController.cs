@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Component;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
@@ -68,8 +69,18 @@ public class ComponentsController : Controller
             return View("Create", componentToAddVm);
         }
 
-        await _componentService.CreateComponentAsync(componentToAddVm);
-        return RedirectToAction("Index");
+        var result = await _componentService.CreateComponentAsync(componentToAddVm);
+        switch (result)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { IsSuccess: false, Error.Code: ErrorCodes.Components.DUPLICATED_NAME }:
+                ModelState.AddModelError(nameof(ComponentVm.Name),
+                    "Component with this name already exists. Name must be unique.");
+                return View();
+        }
+
+        return RedirectToAction("Error", "Home", new { area = "" });
     }
 
     [Route("Edit")]
@@ -99,8 +110,18 @@ public class ComponentsController : Controller
             return View("Edit", componentToEditVm);
         }
 
-        await _componentService.UpdateComponentAsync(componentToEditVm);
-        return RedirectToAction("Index");
+        var result = await _componentService.UpdateComponentAsync(componentToEditVm);
+        switch (result)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { IsSuccess: false, Error.Code: ErrorCodes.Components.DUPLICATED_NAME }:
+                ModelState.AddModelError(nameof(ComponentVm.Name),
+                    "Component with this name already exists. Name must be unique.");
+                return View();
+        }
+
+        return RedirectToAction("Error", "Home", new { area = "" });
     }
 
     [Route("Delete")]

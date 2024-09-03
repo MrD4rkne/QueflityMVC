@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using QueflityMVC.Domain.Models;
+using Serilog;
 
 namespace QueflityMVC.Persistence.Seeding;
 
@@ -8,7 +9,7 @@ public class EntitySeeder
     private const string FAKER_LOCALE = "en";
     private const int CATEGORIES_COUNT = 5;
     private const int ITEMS_COUNT = 10;
-    private const int COMPONENTS_COUNT = 20;
+    private const int COMPONENTS_COUNT = 10;
     private const int KITS_COUNT = 10;
     private const int IMAGES_COUNT = ITEMS_COUNT + KITS_COUNT;
     private const int ELEMENTS_COUNT = 15;
@@ -19,11 +20,18 @@ public class EntitySeeder
 
     public EntitySeeder()
     {
+        Log.Information("Seeding data");
+        Log.Information("Generating categories");
         Categories = GenerateCategories();
+        Log.Information("Generating components");
         Components = GenerateComponents();
+        Log.Information("Generating images");
         Images = GenerateImages();
+        Log.Information("Generating items");
         Items = GenerateItems();
+        Log.Information("Generating elements");
         Elements = GenerateElements();
+        Log.Information("Generating kits");
         Kits = GenerateKits();
     }
 
@@ -41,17 +49,42 @@ public class EntitySeeder
 
     private IReadOnlyCollection<Category> GenerateCategories()
     {
+        var usedCategoryNames = new HashSet<string>();
+
         var categoryFaker = new Faker<Category>(FAKER_LOCALE)
             .RuleFor(ctg => ctg.Id, f => f.GetPositiveIndexFaker())
-            .RuleFor(ctg => ctg.Name, f => f.Commerce.Categories(1)[0]);
+            .RuleFor(ctg => ctg.Name, f =>
+            {
+                var uniqueName = "";
+                do
+                {
+                    string[]? categories = f.Commerce.Categories(1);
+                    uniqueName = categories[0];
+                } while (!usedCategoryNames.Add(uniqueName)); // Loop until a unique name is found
+
+                return uniqueName;
+            });
+
         return categoryFaker.Generate(CATEGORIES_COUNT);
     }
 
     private IReadOnlyCollection<Component> GenerateComponents()
     {
+        var usedNames = new HashSet<string>();
         var componentFaker = new Faker<Component>(FAKER_LOCALE)
             .RuleFor(ing => ing.Id, f => f.GetPositiveIndexFaker())
-            .RuleFor(ing => ing.Name, f => f.Commerce.ProductMaterial());
+            .RuleFor(ing => ing.Name, f =>
+            {
+                string uniqueName;
+                do
+                {
+                    uniqueName = f.Commerce.ProductMaterial();
+                    Log.Information("Generated name: {0}", uniqueName);
+                } while (!usedNames.Add(uniqueName)); // Loop until a unique name is found
+
+                return uniqueName;
+            });
+
         return componentFaker.Generate(COMPONENTS_COUNT);
     }
 
