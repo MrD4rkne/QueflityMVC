@@ -29,7 +29,7 @@
                         <i class="fas fa-save"></i> Save
                     </button>
                 </div>
-                <input type="hidden" asp-for="Id" value="@Model.Id"/>
+                @Html.HiddenFor(model => model.Id)
             </form>
         </div>
     </div>

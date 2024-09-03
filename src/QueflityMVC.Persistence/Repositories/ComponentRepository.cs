@@ -1,4 +1,5 @@
-﻿using QueflityMVC.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Common;
 
@@ -26,5 +27,11 @@ public class ComponentRepository(Context dbContext) : BaseRepository<Component>(
         }
 
         return matchingComponents;
+    }
+
+    public Task<bool> DoesComponentWithNameExistAsync(string name)
+    {
+        return DbContext.Components
+            .AnyAsync(component => component.Name == name);
     }
 }

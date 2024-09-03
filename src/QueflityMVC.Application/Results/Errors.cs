@@ -55,4 +55,10 @@ public static class Errors
         public static readonly Error AlreadyExists = new(
             ErrorCodes.Conversation.ALREADY_EXISTS, "Conversation already exists");
     }
+
+    public static class Components
+    {
+        public static readonly Error DuplicatedName = new(
+            ErrorCodes.Components.DUPLICATED_NAME, "Component with this name already exists");
+    }
 }
