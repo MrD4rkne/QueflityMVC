@@ -9,7 +9,7 @@ public interface IMessageService
 {
     Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int id);
 
-    Task<Result> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm);
+    Task<Result<int>> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm);
 
     Task<Result<UserConversationsVm>> GetUsersConversationsAsync();
 
@@ -26,4 +26,6 @@ public interface IMessageService
     Task<bool> CanAccessConversation(int conversationId);
 
     Task<Result<ProductShortVm>> GetProductForContactVmAsync(int productId);
+
+    Task<Result<int>> GetConversationIdByProductAsync(int id);
 }

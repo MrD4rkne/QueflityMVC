@@ -34,5 +34,6 @@ public static class ErrorCodes
     {
         public const string DOES_NOT_EXIST = "Conversation.DoesNotExist";
         public const string DOES_NOT_BELONG_TO_USER = "Conversation.DoesNotBelongToUser";
+        public const string ALREADY_EXISTS = "Conversation.AlreadyExists";
     }
 }

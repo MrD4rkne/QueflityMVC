@@ -64,4 +64,11 @@ public class ConversationRepository(Context dbContext)
             .Include(convo => convo.Product)
             .ThenInclude(product => product.Image);
     }
+
+    public Task<Conversation> GetConversationByProductAndUserAsync(int purchasableId, Guid userId)
+    {
+        return DbContext.Conversations
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.ProductId == purchasableId && c.UserId == userId);
+    }
 }

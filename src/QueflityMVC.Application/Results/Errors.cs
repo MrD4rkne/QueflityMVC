@@ -51,5 +51,8 @@ public static class Errors
 
         public static readonly Error DoesNotBelongToUser = new(
             ErrorCodes.Conversation.DOES_NOT_BELONG_TO_USER, "Conversation does not belong to user");
+
+        public static readonly Error AlreadyExists = new(
+            ErrorCodes.Conversation.ALREADY_EXISTS, "Conversation already exists");
     }
 }

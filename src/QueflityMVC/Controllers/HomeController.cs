@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Other;
+using QueflityMVC.Web.Exceptions;
 using QueflityMVC.Web.Models;
 
 namespace QueflityMVC.Web.Controllers;
@@ -37,12 +38,24 @@ public class HomeController(
             return View(contactVmResult.Value);
         }
 
-        return contactVmResult.Error.Code switch
+        if (contactVmResult.Error.Code != ErrorCodes.Conversation.ALREADY_EXISTS)
         {
-            ErrorCodes.User.EMAIL_NOT_VERIFIED => RedirectToPage("RegisterConfirmation",
-                new { email = User.FindFirstValue(ClaimTypes.Email) }),
-            ErrorCodes.Product.DOES_NOT_EXIST => RedirectToAction("ProductNotFound", "Home")
-        };
+            return contactVmResult.Error.Code switch
+            {
+                ErrorCodes.User.EMAIL_NOT_VERIFIED => RedirectToPage("RegisterConfirmation",
+                    new { email = User.FindFirstValue(ClaimTypes.Email) }),
+                ErrorCodes.Product.DOES_NOT_EXIST => RedirectToAction("ProductNotFound", "Home")
+            };
+        }
+
+        var conversationId = await messageService.GetConversationIdByProductAsync(id);
+        if (conversationId.IsSuccess)
+        {
+            return RedirectToAction("Details", "Conversations", new { id = conversationId.Value });
+        }
+
+        _logger.LogError("Conversation already exists but could not get conversation id");
+        throw new UnexpectedApplicationException();
     }
 
 
@@ -59,7 +72,11 @@ public class HomeController(
         var productResult = await messageService.GetProductForContactVmAsync(firstMessageInConversationVm.Product.Id);
         if (productResult.IsFailure)
         {
-            return RedirectToAction("ProductNotFound", "Home");
+            return productResult.Error.Code switch
+            {
+                ErrorCodes.Product.DOES_NOT_EXIST => RedirectToAction("ProductNotFound", "Home"),
+                _ => throw new UnexpectedApplicationException()
+            };
         }
 
         firstMessageInConversationVm = firstMessageInConversationVm with { Product = productResult.Value };
@@ -71,8 +88,19 @@ public class HomeController(
             return View(firstMessageInConversationVm);
         }
 
-        await messageService.StartConversationAsync(firstMessageInConversationVm);
-        return RedirectToAction("Index", "Home", new { area = "" });
+        var result = await messageService.StartConversationAsync(firstMessageInConversationVm);
+        if (result.IsSuccess)
+        {
+            return RedirectToAction("Details", "Conversations", new { area = "", id = result.Value });
+        }
+
+        return result.Error.Code switch
+        {
+            ErrorCodes.User.EMAIL_NOT_VERIFIED => RedirectToPage("RegisterConfirmation",
+                new { email = User.FindFirstValue(ClaimTypes.Email) }),
+            ErrorCodes.Product.DOES_NOT_EXIST => RedirectToAction("ProductNotFound", "Home"),
+            _ => throw new UnexpectedApplicationException()
+        };
     }
 
     public IActionResult Privacy()
