@@ -26,6 +26,9 @@ footer {
     margin-top: auto;
     background-color: #343a40;
     color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 footer p {

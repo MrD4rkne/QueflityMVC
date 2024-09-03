@@ -101,9 +101,12 @@
     @RenderBody()
 </div>
 
+<partial name="_CookieConsentPartial"/>
+
 <footer class="text-center py-4 mt-auto shadow-lg">
-    <div class="container">
-        <p>&copy; @DateTime.Now.Year - @BrandOptions.Value.Name</p>
+    <div class="d-flex align-items-center">
+        <p class="me-3">&copy; @DateTime.Now.Year - @BrandOptions.Value.Name</p>
+        <partial name="_CookieFooterPartial"/>
     </div>
 </footer>
 

@@ -1,12 +1,12 @@
-﻿h1, h2 {
+﻿#privacy-policy-container h1, h2 {
     color: #333;
 }
 
-p {
+#privacy-policy-container p {
     margin: 10px 0;
 }
 
-.container {
+#privacy-policy-container {
     max-width: 800px;
     margin: 0 auto;
     background: #fff;
