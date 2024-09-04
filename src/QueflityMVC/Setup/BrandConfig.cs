@@ -9,6 +9,8 @@ public class BrandOptions
 
     [Required] public string Name { get; set; }
 
+    [Required] public string LogoUrl { get; set; }
+
     [Required] public LoginPageOptions IdentityPage { get; set; }
 
     public class LoginPageOptions
