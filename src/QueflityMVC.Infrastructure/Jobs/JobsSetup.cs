@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Quartz;
-using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 using QueflityMVC.Infrastructure.Emails;
 
 namespace QueflityMVC.Infrastructure.Jobs;
@@ -10,7 +9,6 @@ internal static class JobsSetup
 {
     internal static IServiceCollection AddBackgroundJobs(this IServiceCollection services)
     {
-        services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
         services.Configure<QuartzOptions>(options =>
         {
             options.AddJob<SendEmailJob>(opts => opts.WithIdentity(SendEmailJob.Key).StoreDurably());

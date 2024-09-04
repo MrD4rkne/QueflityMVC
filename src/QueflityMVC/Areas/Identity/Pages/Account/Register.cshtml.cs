@@ -8,17 +8,18 @@ using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
+using QueflityMVC.Application.Emails;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account;
 
 public class RegisterModel : PageModel
 {
-    private readonly IEmailSender _emailSender;
+    private readonly IEmailService _emailSender;
     private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly ILogger<RegisterModel> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -30,7 +31,7 @@ public class RegisterModel : PageModel
         IUserStore<ApplicationUser> userStore,
         SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger,
-        IEmailSender emailSender)
+        IEmailService emailSender)
     {
         _userManager = userManager;
         _userStore = userStore;
@@ -91,8 +92,25 @@ public class RegisterModel : PageModel
                     new { area = "Identity", userId, code, returnUrl },
                     Request.Scheme);
 
-                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                EmailConfirmation emailConfirmationEmail = new EmailConfirmation
+                {
+                    Email = Input.Email,
+                    User = user,
+                    Url = HtmlEncoder.Default.Encode(callbackUrl)
+                };
+                var emailResult = await _emailSender.SendEmailConfirmationAsync(emailConfirmationEmail);
+                if (emailResult.IsFailure)
+                {
+                    PopUpViewModel popUpViewModel = new PopUpViewModel
+                    {
+                        Title = "Error",
+                        Message =
+                            "An error occurred while sending the email confirmation. Try to resend the email confirmation later.",
+                        Type = PopUpType.Error
+                    };
+                    TempData["PopUpVm"] = JsonConvert.SerializeObject(popUpViewModel);
+                    return RedirectToPage("Login");
+                }
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {

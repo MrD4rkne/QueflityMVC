@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Application.ViewModels.Message;
 
-public class MessageVm : IMapFrom<Domain.Models.Message>
+public class MessageVm : IMapFrom<Domain.Conversations.Message>
 {
     public int Id { get; set; }
 
@@ -14,7 +14,7 @@ public class MessageVm : IMapFrom<Domain.Models.Message>
 
     public void Mapping(MappingProfile profile)
     {
-        profile.CreateMap<Domain.Models.Message, MessageVm>()
+        profile.CreateMap<Domain.Conversations.Message, MessageVm>()
             .ReverseMap();
     }
 }

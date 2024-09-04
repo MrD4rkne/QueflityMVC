@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using QueflityMVC.Domain.Models;
-using QueflityMVC.Web.Setup.Other;
+using QueflityMVC.Web.Setup;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
 {

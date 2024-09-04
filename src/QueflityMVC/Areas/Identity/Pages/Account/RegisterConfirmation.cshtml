@@ -1,13 +1,5 @@
 ﻿@page
-@using Newtonsoft.Json
-@using QueflityMVC.Web.Areas.Identity.Pages.Account
 @model QueflityMVC.Web.Areas.Identity.Pages.Account.RegisterConfirmationModel
 @{
-    TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
-    {
-        Title = "Register confirmation",
-        Message = "Please check your email to confirm your account.",
-        Type = PopUpType.Info
-    });
     Response.Redirect(Url.Page("/Account/Login"));
 }

@@ -9,20 +9,20 @@ using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Web.Common;
+using IEmailService = QueflityMVC.Application.Emails.IEmailService;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account;
 
 [AllowAnonymous]
 public class ExternalLoginModel : PageModel
 {
-    private readonly IEmailSender _emailSender;
+    private readonly IEmailService _emailService;
     private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly ILogger<ExternalLoginModel> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -34,14 +34,14 @@ public class ExternalLoginModel : PageModel
         UserManager<ApplicationUser> userManager,
         IUserStore<ApplicationUser> userStore,
         ILogger<ExternalLoginModel> logger,
-        IEmailSender emailSender)
+        IEmailService emailService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _userStore = userStore;
         _emailStore = GetEmailStore();
         _logger = logger;
-        _emailSender = emailSender;
+        _emailService = emailService;
     }
 
     /// <summary>
@@ -203,10 +203,31 @@ public class ExternalLoginModel : PageModel
                         new { area = "Identity", userId, code },
                         Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var emailConfirmation = new EmailConfirmation
+                    {
+                        Email = Input.Email,
+                        User = user,
+                        Url = HtmlEncoder.Default.Encode(callbackUrl)
+                    };
+                    var sendResult = await _emailService.SendEmailConfirmationAsync(emailConfirmation);
+                    if (sendResult.IsFailure)
+                    {
+                        TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                        {
+                            Title = "Email confirmation failed",
+                            Message = "Failed to send email confirmation. Please try again later.",
+                            Type = PopUpType.Error
+                        });
+                        return RedirectToPage("./Login");
+                    }
 
-                    // If account confirmation is required, we need to show the link if we don't have a real email sender
+                    TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+                    {
+                        Title = "Email confirmation sent",
+                        Message = "Please check your email to confirm your account.",
+                        Type = PopUpType.Info
+                    });
+
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("./RegisterConfirmation", new { Input.Email });

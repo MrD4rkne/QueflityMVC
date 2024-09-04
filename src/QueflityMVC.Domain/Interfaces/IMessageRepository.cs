@@ -1,4 +1,4 @@
-﻿using QueflityMVC.Domain.Models;
+﻿using QueflityMVC.Domain.Conversations;
 
 namespace QueflityMVC.Domain.Interfaces;
 

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using QueflityMVC.Application;
@@ -9,11 +8,11 @@ using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
 using QueflityMVC.Persistence.Setup;
 using QueflityMVC.Web.Chat;
-using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.Other;
 using Serilog;
+using BrandOptionsValidator = QueflityMVC.Web.Setup.BrandOptionsValidator;
 using JobsOptionsValidator = QueflityMVC.Web.Setup.JobsOptionsValidator;
 using SmtpOptionsValidator = QueflityMVC.Web.Setup.SmtpOptionsValidator;
 
@@ -44,6 +43,13 @@ builder.Services
     .Configure<JobsOptions>(config.GetSection(JobsOptions.SECTION_NAME));
 builder.Services.AddSingleton<IValidateOptions<JobsOptions>, JobsOptionsValidator>();
 
+builder.Services
+    .Configure<EmailsOptions>(config.GetSection(EmailsOptions.SECTION_NAME));
+builder.Services.AddSingleton<IValidateOptions<EmailsOptions>, EmailsOptionsValidator>();
+builder.Services.AddTransient<IConfigureOptions<QuestionAskedConfig>, ConfigureEmails>();
+builder.Services.AddTransient<IConfigureOptions<PasswordResetEmailConfig>, ConfigureEmails>();
+builder.Services.AddTransient<IConfigureOptions<EmailConfirmationConfig>, ConfigureEmails>();
+
 builder.Services.AddTransient<IConfigureOptions<SmtpConfig>, ConfigureSmtp>();
 builder.Services.AddTransient<IConfigureOptions<JobsConfig>, ConfigureJobs>();
 builder.Services.AddInfrastructure();
@@ -65,7 +71,6 @@ builder.AddAuthenticationWithOAuths();
 builder.Services.AddAuthorization(options =>
     options.AddPolicies());
 
-builder.Services.AddTransient<IEmailSender, IdentityEmailSender>();
 builder.Services.ConfigureIdentity();
 
 builder.Services.AddSignalR();

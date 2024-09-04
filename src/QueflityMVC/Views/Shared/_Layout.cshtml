@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Microsoft.Extensions.Options
 @using QueflityMVC.Application.Constants
-@using QueflityMVC.Web.Setup.Other
+@using QueflityMVC.Web.Setup
 @inject IAuthorizationService AuthorizationService
 @inject IOptions<BrandOptions> BrandOptions
 
@@ -43,7 +43,7 @@
     <div class="container-fluid">
         <!-- Brand -->
         <a class="navbar-brand d-flex align-items-center" asp-action="Index" asp-controller="Home" asp-area="">
-            <img src="your-logo-url.png" alt="Brand Logo" style="height: 40px; width: auto;"/>
+            <img src="@BrandOptions.Value.LogoUrl" style="height: 40px; width: auto;" alt="Logo :)"/>
             <span class="ms-2">@BrandOptions.Value.Name</span>
         </a>
 

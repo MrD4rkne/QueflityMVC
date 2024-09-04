@@ -1,6 +1,7 @@
 ﻿using QueflityMVC.Domain.Common;
+using QueflityMVC.Domain.Models;
 
-namespace QueflityMVC.Domain.Models;
+namespace QueflityMVC.Domain.Conversations;
 
 public class Message : BaseEntity
 {

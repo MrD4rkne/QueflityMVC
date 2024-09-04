@@ -7,25 +7,19 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
+using QueflityMVC.Application.Emails;
 using QueflityMVC.Domain.Models;
+using IEmailService = QueflityMVC.Application.Emails.IEmailService;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account
 {
-    public class ForgotPasswordModel : PageModel
+    public class ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailService emailSender)
+        : PageModel
     {
-        private readonly IEmailSender _emailSender;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
-        {
-            _userManager = userManager;
-            _emailSender = emailSender;
-        }
-
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -37,8 +31,8 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                var user = await userManager.FindByEmailAsync(Input.Email);
+                if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return RedirectToPage("./ForgotPasswordConfirmation");
@@ -46,7 +40,7 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
 
                 // For more information on how to enable account confirmation and password reset please
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var code = await userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
@@ -54,10 +48,25 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                ResetPasswordEmail resetPasswordEmail = new ResetPasswordEmail
+                {
+                    Email = Input.Email,
+                    User = user,
+                    Url = HtmlEncoder.Default.Encode(callbackUrl)
+                };
+
+                var result = await emailSender.SendResetPasswordEmail(resetPasswordEmail);
+                if (result.IsFailure)
+                {
+                    PopUpViewModel popUpViewModel = new PopUpViewModel
+                    {
+                        Title = "Error",
+                        Message = "An error occurred while sending the email. Please try again.",
+                        Type = PopUpType.Error
+                    };
+                    TempData["PopUpVm"] = JsonConvert.SerializeObject(popUpViewModel);
+                    return Page();
+                }
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
