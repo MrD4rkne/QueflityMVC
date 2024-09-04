@@ -47,5 +47,6 @@ public static class ErrorCodes
     {
         public const string DUPLICATED_NAME = "Categories.DuplicatedName";
         public const string DOES_NOT_EXIST = "Categories.DoesNotExist";
+        public const string HAS_ITEMS = "Categories.HasItems";
     }
 }

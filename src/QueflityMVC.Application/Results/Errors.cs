@@ -72,5 +72,8 @@ public static class Errors
 
         public static readonly Error DoesNotExist = new(
             ErrorCodes.Categories.DOES_NOT_EXIST, "Category does not exist");
+
+        public static readonly Error HasItems = new(
+            ErrorCodes.Categories.HAS_ITEMS, "Category has items");
     }
 }

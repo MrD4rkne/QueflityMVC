@@ -23,14 +23,21 @@ public class CategoryService(ICategoryRepository repository, IMapper mapper) : I
         return Result.Success();
     }
 
-    public async Task DeleteCategoryAsync(int id)
+    public async Task<Result> DeleteCategoryAsync(int id)
     {
-        if (!await repository.IsAnyItemWithCategory(id))
+        if (!await repository.ExistsAsync(id))
         {
-            throw new InvalidOperationException("First, remove or change category for items!");
+            return Result.Failure(Errors.Categories.DoesNotExist);
+        }
+
+        if (await repository.IsAnyItemWithCategory(id))
+        {
+            return Result.Failure(Errors.Categories.HasItems);
         }
 
         await repository.DeleteAsync(id);
+
+        return Result.Success();
     }
 
     public async Task<ListCategoriesVm> GetFilteredListAsync(ListCategoriesVm listCategoriesVm)
@@ -55,22 +62,23 @@ public class CategoryService(ICategoryRepository repository, IMapper mapper) : I
         return Result<CategoryVm>.Success(categoryVm);
     }
 
-    public async Task<Result> UpdateCategoryAsync(CategoryVm updateCategpryVm)
+    public async Task<Result<CategoryVm>> UpdateCategoryAsync(CategoryVm updateCategoryVm)
     {
-        if (!await repository.ExistsAsync(updateCategpryVm.Id))
+        if (!await repository.ExistsAsync(updateCategoryVm.Id))
         {
-            return Result.Failure(Errors.Categories.DoesNotExist);
+            return Result<CategoryVm>.Failure(Errors.Categories.DoesNotExist);
         }
 
-        if (await DoesCategoryWithNameExistAsync(updateCategpryVm.Id, updateCategpryVm.Name))
+        if (await DoesCategoryWithNameExistAsync(updateCategoryVm.Id, updateCategoryVm.Name))
         {
-            return Result.Failure(Errors.Categories.DuplicatedName);
+            return Result<CategoryVm>.Failure(Errors.Categories.DuplicatedName);
         }
 
-        var category = mapper.Map<Category>(updateCategpryVm);
-        _ = await repository.UpdateAsync(category);
+        var category = mapper.Map<Category>(updateCategoryVm);
+        var updatedCategory = await repository.UpdateAsync(category);
 
-        return Result.Success();
+        var updatedCategoryVm = mapper.Map<CategoryVm>(updatedCategory);
+        return Result<CategoryVm>.Success(updatedCategoryVm);
     }
 
     private Task<bool> DoesCategoryWithNameExistAsync(string name)

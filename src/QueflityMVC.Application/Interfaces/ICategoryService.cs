@@ -7,11 +7,11 @@ public interface ICategoryService
 {
     Task<Result> CreateCategoryAsync(CategoryVm createCategoryVm);
 
-    Task DeleteCategoryAsync(int id);
+    Task<Result> DeleteCategoryAsync(int id);
 
     Task<ListCategoriesVm> GetFilteredListAsync(ListCategoriesVm listCategoriesVm);
 
     Task<Result<CategoryVm>> GetVmForEditAsync(int id);
 
-    Task<Result> UpdateCategoryAsync(CategoryVm updateCategpryVm);
+    Task<Result<CategoryVm>> UpdateCategoryAsync(CategoryVm updateCategpryVm);
 }
