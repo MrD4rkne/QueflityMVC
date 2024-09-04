@@ -84,6 +84,15 @@ components, categorize them, specify ingredients, and control access through a s
 ![Reorder products](./docs/images/dashboardOrder.png)
 *Reorder products on the home page.*
 
+![Cookie policy consent popup](./docs/images/cookiesPopup.png)
+*Popup for cookie policy consent.*
+
+![Account personal data](./docs/images/accountPersonalData.png)
+*Download all data for user.*
+
+![Edit category](./docs/images/editCategory.png)
+*Edit category.*
+
 ## Authors
 
 - [Marcin Szopa (@MrD4rkne)](https://github.com/MrD4rkne)
