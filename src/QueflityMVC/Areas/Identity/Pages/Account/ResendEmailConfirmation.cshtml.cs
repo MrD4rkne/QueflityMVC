@@ -8,11 +8,11 @@ using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using QueflityMVC.Application.Emails;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account
@@ -20,10 +20,10 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ResendEmailConfirmationModel : PageModel
     {
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailService _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailService emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -58,10 +58,26 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
                     null,
                     new { userId, code },
                     Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                EmailConfirmation emailConfirmationEmail = new EmailConfirmation
+                {
+                    Email = Input.Email,
+                    User = user,
+                    Url = HtmlEncoder.Default.Encode(callbackUrl)
+                };
+                var result = await _emailSender.SendEmailConfirmationAsync(emailConfirmationEmail);
+                if (result.IsFailure)
+                {
+                    var popUp = new PopUpViewModel
+                    {
+                        Title = "Error",
+                        Message = "An error occurred while sending the email.",
+                        Type = PopUpType.Error
+                    };
+                    TempData["PopupVm"] = JsonConvert.SerializeObject(popUp);
+
+                    return RedirectToPage("Login");
+                }
             }
 
             var popUpViewModel = new PopUpViewModel

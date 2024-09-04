@@ -62,6 +62,13 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
+                PopUpViewModel popUpVm = new PopUpViewModel
+                {
+                    Title = "Reset Password",
+                    Message = "Your password has been reset successfully.",
+                    Type = PopUpType.Success
+                };
+
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 

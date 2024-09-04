@@ -7,24 +7,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
+using QueflityMVC.Application.Emails;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailService _emailSender;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public EmailModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailService emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -107,12 +108,34 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                EmailConfirmation emailConfirmationEmail = new EmailConfirmation
+                {
+                    Email = Input.NewEmail,
+                    User = user,
+                    Url = HtmlEncoder.Default.Encode(callbackUrl)
+                };
+                var result = await _emailSender.SendEmailConfirmationAsync(emailConfirmationEmail);
+                if (result.IsFailure)
+                {
+                    var popUpViewModel = new PopUpViewModel
+                    {
+                        Title = "Error",
+                        Message = "An error occurred while sending the email.",
+                        Type = PopUpType.Error
+                    };
+                    TempData["PopupVm"] = JsonConvert.SerializeObject(popUpViewModel);
+                    return RedirectToPage();
+                }
+
+                var popUpVm = new PopUpViewModel
+                {
+                    Title = "Verification email",
+                    Message = "Please check your email.",
+                    Type = PopUpType.Info
+                };
+                TempData["PopupVm"] = JsonConvert.SerializeObject(popUpVm);
+
                 return RedirectToPage();
             }
 
@@ -143,10 +166,16 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            EmailConfirmation emailConfirmationEmail = new EmailConfirmation
+            {
+                Email = email,
+                User = user,
+                Url = HtmlEncoder.Default.Encode(callbackUrl)
+            };
+            await _emailSender.SendEmailConfirmationAsync(emailConfirmationEmail);
+
+            StatusMessage = "Confirmation link to change email sent. Please check your email.";
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();

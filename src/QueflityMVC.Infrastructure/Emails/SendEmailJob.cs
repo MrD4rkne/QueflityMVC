@@ -1,20 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using Quartz;
-using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Abstraction.Interfaces;
+using QueflityMVC.Application.Emails;
 
 namespace QueflityMVC.Infrastructure.Emails;
 
 public class SendEmailJob(
     ILogger<SendEmailJob> logger,
-    IBackgroundJobScheduler backgroundJobScheduler,
-    IEmailDispatcher emailDispatcher)
+    IEmailSender emailSender)
     : IJob
 {
     public const string DATA_KEY = "Mail";
     public static readonly JobKey Key = new("send-copy-of-message", "email");
-
-    private readonly IBackgroundJobScheduler _backgroundJobScheduler = backgroundJobScheduler;
 
     public Task Execute(IJobExecutionContext context)
     {
@@ -27,7 +23,7 @@ public class SendEmailJob(
 
         try
         {
-            return emailDispatcher.SendEmailAsync(mail!);
+            return emailSender.SendMailAsync(mail!);
         }
         catch (Exception ex)
         {
@@ -36,12 +32,12 @@ public class SendEmailJob(
         }
     }
 
-    private bool TryParseMessage(IJobExecutionContext context, out Mail? mail)
+    private bool TryParseMessage(IJobExecutionContext context, out Email? mail)
     {
         var dataMap = context.Trigger.JobDataMap;
         if (dataMap.TryGetValue(DATA_KEY, out object value))
         {
-            if (value is Mail mailFromDataMap)
+            if (value is Email mailFromDataMap)
             {
                 mail = mailFromDataMap;
                 return true;

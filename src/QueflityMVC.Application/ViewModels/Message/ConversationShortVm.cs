@@ -1,6 +1,6 @@
 ﻿using QueflityMVC.Application.Mapping;
 using QueflityMVC.Application.ViewModels.Product;
-using QueflityMVC.Domain.Models;
+using QueflityMVC.Domain.Conversations;
 
 namespace QueflityMVC.Application.ViewModels.Message;
 

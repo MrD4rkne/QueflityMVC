@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using QueflityMVC.Domain.Conversations;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Seeding;
 using QueflityMVC.Persistence.Setup;

@@ -1,26 +1,24 @@
-﻿using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
+using QueflityMVC.Application.Notifications;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Message;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Product;
+using QueflityMVC.Domain.Conversations;
 using QueflityMVC.Domain.Interfaces;
-using QueflityMVC.Domain.Models;
-using QueflityMVC.Infrastructure.Abstraction.Interfaces;
 
 namespace QueflityMVC.Application.Services;
 
 public class MessageService(
     IProductRepository purchasableRepository,
     IUserRepository userRepository,
-    IMessageRepository messageRepository,
+    INotificationsService notificationsService,
     IConversationRepository conversationRepository,
-    IBackgroundJobScheduler backgroundJobScheduler,
     IMapper mapper,
     IUserContext userContext)
     : IMessageService
@@ -112,7 +110,12 @@ public class MessageService(
             _ = await conversationRepository.AddAsync(conversation);
         }
 
-        SentCopyEmail(firstMessageInConversationVm);
+        await notificationsService.NotifyOfQuestionAskedAsync(new QuestionAskedNotification
+        {
+            Conversation = conversation,
+            Message = message,
+            User = await userRepository.GetUserByIdAsync(userContext.UserId)
+        });
 
         return Result<int>.Success(conversation.Id);
     }
@@ -245,30 +248,5 @@ public class MessageService(
     {
         return userRepository.HasClaimAsync(userContextUserId, Claims.CONVERSATIONS_RESPOND,
             Claims.CONVERSATIONS_RESPOND);
-    }
-
-    private void SentCopyEmail(FirstMessageInConversationVm firstMessageInConversationVm)
-    {
-        string mailBody = BuildEmailBody(firstMessageInConversationVm);
-        var subject = $"COPY: Your message about {firstMessageInConversationVm.Product.Name} on {DateTime.Now}";
-        backgroundJobScheduler.ScheduleSendMessageJob(new Mail
-        {
-            Body = mailBody,
-            RecipientName = firstMessageInConversationVm.Email,
-            RecipientEmail = firstMessageInConversationVm.Email,
-            Subject = subject
-        });
-    }
-
-    private static string BuildEmailBody(FirstMessageInConversationVm firstMessageInConversationVm)
-    {
-        StringBuilder sb = new();
-        sb.AppendLine(
-            $"This is a copy of the message you sent about {firstMessageInConversationVm.Product.Name} on {DateTime.Now}");
-        sb.AppendLine();
-        sb.AppendLine(firstMessageInConversationVm.Message);
-        sb.AppendLine(
-            "Please do not reply to this email. If you have any questions, please contact us at our website.");
-        return sb.ToString();
     }
 }

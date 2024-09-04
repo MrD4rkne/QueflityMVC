@@ -1,5 +1,5 @@
-﻿using QueflityMVC.Domain.Interfaces;
-using QueflityMVC.Domain.Models;
+﻿using QueflityMVC.Domain.Conversations;
+using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QueflityMVC.Domain.Conversations;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
 using QueflityMVC.Persistence.Common;

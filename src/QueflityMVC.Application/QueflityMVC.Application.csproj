@@ -24,11 +24,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\QueflityMVC.Domain\QueflityMVC.Domain.csproj"/>
-        <ProjectReference Include="..\QueflityMVC.Infrastructure.Abstraction\QueflityMVC.Infrastructure.Abstraction.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Identity\"/>
     </ItemGroup>
 
 </Project>

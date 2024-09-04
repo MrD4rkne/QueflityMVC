@@ -5,9 +5,10 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
+using QueflityMVC.Application.Emails;
 using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Web.Areas.Identity.Pages.Account
@@ -15,10 +16,10 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterConfirmationModel : PageModel
     {
-        private readonly IEmailSender _sender;
+        private readonly IEmailService _sender;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender sender)
+        public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, IEmailService sender)
         {
             _userManager = userManager;
             _sender = sender;
@@ -58,8 +59,14 @@ namespace QueflityMVC.Web.Areas.Identity.Pages.Account
             }
 
             Email = email;
+            TempData["PopupVm"] = JsonConvert.SerializeObject(new PopUpViewModel
+            {
+                Title = "Register confirmation",
+                Message = "Please check your email to confirm your account.",
+                Type = PopUpType.Info
+            });
 
-            return Page();
+            return RedirectToPage("Login", new { returnUrl });
         }
     }
 }
