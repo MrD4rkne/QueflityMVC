@@ -18,6 +18,12 @@ Here you can find what to configure. It is in format as it should be when using 
 "Brand":
 {
 "Name": "Your brand's name"
+"LogoUrl": "paht to your logo",
+"IdentityPage": {
+"Header": "header",
+"Subheader": "subheader",
+"BackgroundImageUrl": "image url"
+}
 }
 ```
 
@@ -61,6 +67,44 @@ Here's configuration for sending emails using SMTP protocol.
 "Password": "password for smtp client",
 "Email": "sender's email",
 "Name": "Name displayed as sender in emails"
+}
+```
+
+### `Emails` section
+
+Configuration for emails. You can set up templates for emails sent by app.
+
+- QuestionAskedOptions - email sent when user asks a question and creates a conversation
+  - {userName} - user's name
+  - {sentAt} - date and time when message was sent
+  - {conversationTitle} - title of conversation
+  - {messageContent} - content of message
+- EmailConfirmationOptions - email sent when user registers and needs to confirm email / change email
+  - {userName} - user's name
+  - {email} - user's email to be confirmed
+  - {confirmationLink} - link to confirm email
+- PasswordResetOptions - email sent when user requests password reset
+  - {userName} - user's name
+  - {email} - user's email
+  - {resetLink} - link to reset password
+
+You can use placeholders in both subject and email body. They will be replaced with actual values when email is sent.
+
+```json
+"Emails":
+{
+"QuestionAskedOptions": {
+"Subject": "subject",
+"Body": "body"
+},
+"EmailConfirmationOptions": {
+"Subject": "Email Confirmation",
+"Body": "body"
+},
+"PasswordResetOptions": {
+"Subject": "Password Reset",
+"Body": "body"
+}
 }
 ```
 
