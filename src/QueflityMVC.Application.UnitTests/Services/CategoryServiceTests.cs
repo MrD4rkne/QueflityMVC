@@ -40,6 +40,7 @@ public class CategoryServiceTests
 
         // Assert
         Assert.True(result.IsSuccess);
+        repositoryMock.Verify(repository => repository.AddAsync(It.IsAny<Category>()), Times.Once);
     }
 
     [Fact]
@@ -74,6 +75,8 @@ public class CategoryServiceTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(Errors.Categories.DuplicatedName.Code, result.Error.Code);
+
+        repositoryMock.Verify(repository => repository.AddAsync(It.IsAny<Category>()), Times.Never);
     }
 
     [Fact]
@@ -81,12 +84,20 @@ public class CategoryServiceTests
     {
         // Arrange
         var id = 1;
+        int deletesCount = 0;
 
         var repositoryMock = new Mock<ICategoryRepository>();
         repositoryMock.Setup(repository => repository.IsAnyItemWithCategory(id))
             .ReturnsAsync(false);
+
+        // Calculate how many times the DeleteAsync method was called
         repositoryMock.Setup(repository => repository.DeleteAsync(It.IsAny<Category>()))
-            .Returns(Task.CompletedTask);
+            .Returns(Task.CompletedTask)
+            .Callback(() => deletesCount++);
+        repositoryMock.Setup(repository => repository.DeleteAsync(It.IsAny<int>()))
+            .Returns(Task.CompletedTask)
+            .Callback(() => deletesCount++);
+
         repositoryMock.Setup(repository => repository.ExistsAsync(id))
             .ReturnsAsync(true);
 
@@ -98,7 +109,8 @@ public class CategoryServiceTests
         var result = await categoryService.DeleteCategoryAsync(id);
 
         // Assert
-        Assert.True(result.IsSuccess);
+        result.IsSuccess.ShouldBeTrue();
+        deletesCount.ShouldBe(1);
     }
 
     [Fact]
@@ -124,6 +136,8 @@ public class CategoryServiceTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(Errors.Categories.HasItems.Code, result.Error.Code);
+
+        repositoryMock.Verify(repository => repository.DeleteAsync(It.IsAny<Category>()), Times.Never);
     }
 
     [Fact]
@@ -147,6 +161,8 @@ public class CategoryServiceTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(Errors.Categories.DoesNotExist.Code, result.Error.Code);
+
+        repositoryMock.Verify(repository => repository.DeleteAsync(It.IsAny<Category>()), Times.Never);
     }
 
     [Fact]
@@ -250,6 +266,8 @@ public class CategoryServiceTests
         Assert.True(result.IsSuccess);
         result.Value.Id.ShouldBe(id);
         result.Value.Name.ShouldBe(name);
+
+        repositoryMock.Verify(repository => repository.UpdateAsync(It.IsAny<Category>()), Times.Once);
     }
 
     [Fact]
@@ -278,6 +296,7 @@ public class CategoryServiceTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(Errors.Categories.DoesNotExist.Code, result.Error.Code);
+        repositoryMock.Verify(repository => repository.UpdateAsync(It.IsAny<Category>()), Times.Never);
     }
 
     [Fact]
@@ -308,5 +327,6 @@ public class CategoryServiceTests
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.Error.Code.ShouldBe(Errors.Categories.DuplicatedName.Code);
+        repositoryMock.Verify(repository => repository.UpdateAsync(It.IsAny<Category>()), Times.Never);
     }
 }
