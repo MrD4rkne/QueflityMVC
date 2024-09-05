@@ -76,4 +76,10 @@ public static class Errors
         public static readonly Error HasItems = new(
             ErrorCodes.Categories.HAS_ITEMS, "Category has items");
     }
+
+    public static class Emails
+    {
+        public static readonly Error CouldNotSentEmail = new(
+            ErrorCodes.Emails.COULD_NOT_SEND, "Could not send email");
+    }
 }

@@ -49,4 +49,9 @@ public static class ErrorCodes
         public const string DOES_NOT_EXIST = "Categories.DoesNotExist";
         public const string HAS_ITEMS = "Categories.HasItems";
     }
+
+    public static class Emails
+    {
+        public const string COULD_NOT_SEND = "Emails.CouldNotSend";
+    }
 }

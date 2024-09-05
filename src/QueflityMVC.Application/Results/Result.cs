@@ -29,6 +29,11 @@ public class Result
     {
         return new Result(false, error);
     }
+
+    public static Result Failure(string code, string message)
+    {
+        return Failure(new Error(code, message));
+    }
 }
 
 public class Result<T> : Result
@@ -48,5 +53,10 @@ public class Result<T> : Result
     public new static Result<T> Failure(Error error)
     {
         return new Result<T>(false, error, default);
+    }
+
+    public new static Result<T> Failure(string code, string message)
+    {
+        return Failure(new Error(code, message));
     }
 }
