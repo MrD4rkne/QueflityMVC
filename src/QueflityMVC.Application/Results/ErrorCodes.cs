@@ -9,6 +9,11 @@ public static class ErrorCodes
         public const string NO_CATEGORIES = "Item.NoCategories";
     }
 
+    public static class Files
+    {
+        public const string FILE_UPLOAD_FAILED = "Files.FileUploadFailed";
+    }
+
     public static class Kits
     {
         public const string DOES_NOT_EXIST = "Kit.DoesNotExist";

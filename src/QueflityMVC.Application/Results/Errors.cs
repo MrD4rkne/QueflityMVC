@@ -14,6 +14,12 @@ public static class Errors
             ErrorCodes.Items.NO_CATEGORIES, "No categories found");
     }
 
+    public static class Files
+    {
+        public static readonly Error FileUploadFailed = new(
+            ErrorCodes.Files.FILE_UPLOAD_FAILED, "File upload failed");
+    }
+
     public static class Kits
     {
         public static readonly Error DoesNotExit = new(

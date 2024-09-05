@@ -12,17 +12,12 @@ using QueflityMVC.Web.Exceptions;
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class ItemsController : Controller
+public class ItemsController(
+    IItemService itemService,
+    IValidator<ItemVm?> itemValidator,
+    ILogger<ItemsController> logger)
+    : Controller
 {
-    private readonly IItemService _itemService;
-    private readonly IValidator<ItemVm?> _itemValidator;
-
-    public ItemsController(IItemService itemService, IValidator<ItemVm?> itemValidator)
-    {
-        _itemService = itemService;
-        _itemValidator = itemValidator;
-    }
-
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index(int? categoryId)
@@ -47,7 +42,7 @@ public class ItemsController : Controller
 
         listItemsVm.NameFilter ??= string.Empty;
 
-        var listVm = await _itemService.GetFilteredListAsync(listItemsVm);
+        var listVm = await itemService.GetFilteredListAsync(listItemsVm);
         return View(listVm);
     }
 
@@ -55,7 +50,7 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(int? categoryId)
     {
-        var addingVm = await _itemService.GetItemVmForAddingAsync(categoryId);
+        var addingVm = await itemService.GetItemVmForAddingAsync(categoryId);
         if (addingVm.IsSuccess)
         {
             return View(addingVm.Value);
@@ -73,24 +68,40 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(ManageItemVm manageObjItem)
     {
-        var result = await _itemValidator.ValidateAsync(manageObjItem.ItemVm);
+        var result = await itemValidator.ValidateAsync(manageObjItem.ItemVm);
 
         if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
-            manageObjItem.Categories ??= await _itemService.GetCategoriesForSelectVmAsync();
+            manageObjItem.Categories ??= await itemService.GetCategoriesForSelectVmAsync();
             return View("Create", manageObjItem);
         }
 
-        _ = await _itemService.CreateItemAsync(manageObjItem.ItemVm);
-        return RedirectToAction("Index");
+        var addResult = await itemService.CreateItemAsync(manageObjItem.ItemVm);
+        switch (addResult)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { Error.Code: ErrorCodes.Categories.DOES_NOT_EXIST }:
+                ModelState.AddModelError(nameof(manageObjItem.ItemVm.CategoryId),
+                    "Category does not exist. Please select a valid category.");
+                return View("Create", manageObjItem);
+            case { Error.Code: ErrorCodes.Files.FILE_UPLOAD_FAILED }:
+                ModelState.AddModelError(nameof(ManageItemVm.ItemVm.Image.FormFile),
+                    "File upload failed. Please try again.");
+                return View("Create", manageObjItem);
+            default:
+                logger.LogError("Unexpected error occurred while creating item: {item} with error: {error}",
+                    manageObjItem.ItemVm, addResult.Error);
+                return RedirectToAction("Error", "Home", new { area = "" });
+        }
     }
 
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        var itemForEdit = await _itemService.GetForEditAsync(id);
+        var itemForEdit = await itemService.GetForEditAsync(id);
         if (itemForEdit.IsSuccess)
         {
             return View(itemForEdit.Value);
@@ -108,48 +119,59 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(ManageItemVm editItemVm)
     {
-        var result = await _itemValidator.ValidateAsync(editItemVm.ItemVm);
+        var result = await itemValidator.ValidateAsync(editItemVm.ItemVm);
         if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
             return View("Edit", editItemVm);
         }
 
-        await _itemService.UpdateItemAsync(editItemVm.ItemVm);
-        return RedirectToAction("Index");
+        var updateResult = await itemService.UpdateItemAsync(editItemVm.ItemVm);
+        switch (updateResult)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { Error: { Code: ErrorCodes.Items.DOES_NOT_EXIST } }:
+                return NotFound();
+            case { Error: { Code: ErrorCodes.Categories.DOES_NOT_EXIST } }:
+                ModelState.AddModelError(nameof(editItemVm.ItemVm.CategoryId),
+                    "Category does not exist. Please select a valid category.");
+                return View("Edit", editItemVm);
+            default:
+                logger.LogError("Unexpected error occurred while updating item: {item} with error: {error}",
+                    editItemVm.ItemVm, updateResult.Error);
+                return RedirectToAction("Error", "Home", new { area = "" });
+        }
     }
 
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Delete(int id, int? categoryId)
     {
-        var results = await _itemService.DeleteItemAsync(id);
-        if (results.IsSuccess)
+        var results = await itemService.DeleteItemAsync(id);
+        switch (results)
         {
-            if (categoryId.HasValue)
-            {
+            case { IsSuccess: true }:
                 return RedirectToAction("Index", new { categoryId });
-            }
-
-            return RedirectToAction("Index");
+            case { Error: { Code: ErrorCodes.Items.DOES_NOT_EXIST } }:
+                return NotFound();
+            case { Error: { Code: ErrorCodes.Items.IS_PART_OF_KIT } }:
+                return View(new DeleteFailedItemVm
+                {
+                    ItemId = id, Message = "Item is part of a kit and cannot be deleted.", CategoryId = categoryId
+                });
+            default:
+                logger.LogError("Unexpected error occurred while deleting item: {id} with error: {error}",
+                    id, results.Error);
+                return RedirectToAction("Error", "Home", new { area = "" });
         }
-
-        return results.Error.Code switch
-        {
-            ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
-            ErrorCodes.Items.IS_PART_OF_KIT => View(new DeleteFailedItemVm
-            {
-                ItemId = id, Message = "Item is part of a kit and cannot be deleted.", CategoryId = categoryId
-            }),
-            _ => throw new UnexpectedApplicationException()
-        };
     }
 
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Components(int id)
     {
-        var componentsViewModel = await _itemService.GetComponentsForSelectionVmAsync(id);
+        var componentsViewModel = await itemService.GetComponentsForSelectionVmAsync(id);
         if (componentsViewModel.IsSuccess)
         {
             if (componentsViewModel.Value.AllComponents.Count == 0)
@@ -184,7 +206,7 @@ public class ItemsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Components(ItemComponentsSelectionVm selectionVm)
     {
-        await _itemService.UpdateItemComponentsAsync(selectionVm);
+        await itemService.UpdateItemComponentsAsync(selectionVm);
         return RedirectToAction("Index");
     }
 }
