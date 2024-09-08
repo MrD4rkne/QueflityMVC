@@ -16,6 +16,41 @@ namespace QueflityMVC.Application.UnitTests.Services;
 
 public class ItemServiceTests
 {
+    private readonly Mock<ICategoryRepository> categoryRepository;
+    private readonly Mock<IComponentRepository> componentRepository;
+    private readonly Mock<IFileService> fileService;
+    private readonly Mock<IItemRepository> itemRepository;
+    private readonly ItemService itemService;
+    private readonly Mock<ILogger<ItemService>> logger;
+    private readonly Mock<IMapper> mapper;
+    private readonly Mock<IProductRepository> purchasableRepository;
+
+    public ItemServiceTests()
+    {
+        itemRepository = new Mock<IItemRepository>();
+
+        mapper = new Mock<IMapper>();
+        mapper.Setup(x => x.Map<Item>(It.IsAny<ItemVm>()))
+            .Returns((ItemVm itemVm) => MapItemFromVm(itemVm));
+        mapper.Setup(x => x.Map<ItemVm>(It.IsAny<Item>()))
+            .Returns((Item item) => MapItemToVm(item));
+
+        categoryRepository = new Mock<ICategoryRepository>();
+        componentRepository = new Mock<IComponentRepository>();
+        fileService = new Mock<IFileService>();
+        purchasableRepository = new Mock<IProductRepository>();
+        logger = new Mock<ILogger<ItemService>>();
+
+        itemService = new ItemService(
+            itemRepository.Object,
+            mapper.Object,
+            categoryRepository.Object,
+            componentRepository.Object,
+            fileService.Object,
+            purchasableRepository.Object,
+            logger.Object);
+    }
+
     [Fact]
     public async Task Create_CreateItemAsync_ReturnsItemId_AssignsOrderNo()
     {
@@ -43,59 +78,37 @@ public class ItemServiceTests
             CategoryId = categoryId
         };
 
-        var item = new Item
-        {
-            Name = name,
-            Image = new Image
-            {
-                AltDescription = altDescription
-            },
-            ShouldBeShown = true,
-            CategoryId = categoryId
-        };
-        item.SetPrice(price);
-
-        var itemRepository = new Mock<IItemRepository>();
-        itemRepository.Setup(x => x.AddAsync(item))
+        itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
             .ReturnsAsync(1);
 
-        var mapper = new Mock<IMapper>();
-        mapper.Setup(x => x.Map<Item>(itemVm))
-            .Returns(item);
-        mapper.Setup(x => x.Map<ItemVm>(item))
-            .Returns(itemVm);
-
-        var categoryRepository = new Mock<ICategoryRepository>();
-        categoryRepository.Setup(x => x.ExistsAsync(categoryId))
+        categoryRepository.Setup(x => x.ExistsAsync(1))
             .ReturnsAsync(true);
 
-        var componentRepository = new Mock<IComponentRepository>();
-
-        var fileService = new Mock<IFileService>();
+        string savedImageUrl = "https://www.example.com/image.jpg";
         fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
-            .ReturnsAsync("https://www.example.com/image.jpg");
+            .ReturnsAsync(savedImageUrl);
 
-        var purchasableRepository = new Mock<IProductRepository>();
+        int orderNo = 2;
         purchasableRepository.Setup(x => x.GetNextOrderNumberAsync())
-            .ReturnsAsync((uint)2);
-
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
+            .ReturnsAsync((uint)orderNo);
 
         // Act
         var result = await itemService.CreateItemAsync(itemVm);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        itemRepository.Verify(x => x.AddAsync(item), Times.Once);
+
+        itemRepository.Verify(x => x.AddAsync(It.Is<Item>((item) =>
+                item.Name == name &&
+                item.Price == price &&
+                item.ShouldBeShown &&
+                item.Image.FileUrl == savedImageUrl &&
+                item.Image.AltDescription == altDescription &&
+                item.CategoryId == categoryId &&
+                item.OrderNo == orderNo
+            ))
+            , Times.Once);
+
         categoryRepository.Verify(x => x.ExistsAsync(categoryId), Times.AtLeastOnce);
         purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Once);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
@@ -128,56 +141,21 @@ public class ItemServiceTests
             CategoryId = categoryId
         };
 
-        var item = new Item
-        {
-            Name = name,
-            Image = new Image
-            {
-                AltDescription = altDescription
-            },
-            CategoryId = categoryId
-        };
-        item.SetPrice(price);
-
-        var itemRepository = new Mock<IItemRepository>();
-        itemRepository.Setup(x => x.AddAsync(item))
+        itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
             .ReturnsAsync(1);
 
-        var mapper = new Mock<IMapper>();
-        mapper.Setup(x => x.Map<Item>(itemVm))
-            .Returns(item);
-        mapper.Setup(x => x.Map<ItemVm>(item))
-            .Returns(itemVm);
-
-        var categoryRepository = new Mock<ICategoryRepository>();
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(true);
 
-        var componentRepository = new Mock<IComponentRepository>();
-
-        var fileService = new Mock<IFileService>();
         fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
             .ReturnsAsync("https://www.example.com/image.jpg");
-
-        var purchasableRepository = new Mock<IProductRepository>();
-
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
-
         // Act
         var result = await itemService.CreateItemAsync(itemVm);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        itemRepository.Verify(x => x.AddAsync(item), Times.Once);
+        itemRepository.Verify(x => x.AddAsync(It.IsAny<Item>()), Times.Once);
+
         categoryRepository.Verify(x => x.ExistsAsync(categoryId), Times.AtLeastOnce);
         purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
@@ -209,43 +187,11 @@ public class ItemServiceTests
             }
         };
 
-        var item = new Item
-        {
-            Name = name,
-            Image = new Image
-            {
-                AltDescription = altDescription
-            },
-            CategoryId = categoryId
-        };
-        item.SetPrice(price);
-
-        var itemRepository = new Mock<IItemRepository>();
-        itemRepository.Setup(x => x.AddAsync(item))
+        itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
             .ReturnsAsync(1);
 
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(false);
-
-        var componentRepository = new Mock<IComponentRepository>();
-
-        var fileService = new Mock<IFileService>();
-        fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
-            .ReturnsAsync("https://www.example.com/image.jpg");
-
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.CreateItemAsync(itemVm);
@@ -253,7 +199,8 @@ public class ItemServiceTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(ErrorCodes.Categories.DOES_NOT_EXIST);
-        itemRepository.Verify(x => x.AddAsync(item), Times.Never);
+
+        itemRepository.Verify(x => x.AddAsync(It.IsAny<Item>()), Times.Never);
         categoryRepository.Verify(x => x.ExistsAsync(categoryId), Times.AtLeastOnce);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Never);
     }
@@ -284,43 +231,12 @@ public class ItemServiceTests
             }
         };
 
-        var item = new Item
-        {
-            Name = name,
-            Image = new Image
-            {
-                AltDescription = altDescription
-            },
-            CategoryId = categoryId
-        };
-        item.SetPrice(price);
-
-        var itemRepository = new Mock<IItemRepository>();
-        itemRepository.Setup(x => x.AddAsync(item))
+        itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
             .ReturnsAsync(1);
-
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(true);
-
-        var componentRepository = new Mock<IComponentRepository>();
-
-        var fileService = new Mock<IFileService>();
         fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
             .ThrowsAsync(new IOException());
-
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.CreateItemAsync(itemVm);
@@ -328,7 +244,8 @@ public class ItemServiceTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(ErrorCodes.Files.FILE_UPLOAD_FAILED);
-        itemRepository.Verify(x => x.AddAsync(item), Times.Never);
+
+        itemRepository.Verify(x => x.AddAsync(It.IsAny<Item>()), Times.Never);
         categoryRepository.Verify(x => x.ExistsAsync(categoryId), Times.AtLeastOnce);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
     }
@@ -339,30 +256,12 @@ public class ItemServiceTests
         // Arrange
         var itemId = 1;
 
-        var itemRepository = new Mock<IItemRepository>();
         itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync((Item)null);
         itemRepository.Setup(x => x.ExistsAsync(itemId))
             .ReturnsAsync(false);
 
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
-        var componentRepository = new Mock<IComponentRepository>();
-
-        var fileService = new Mock<IFileService>();
         fileService.Setup(x => x.DeleteImage(It.IsAny<string>()));
-
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.DeleteItemAsync(itemId);
@@ -370,8 +269,10 @@ public class ItemServiceTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(ErrorCodes.Items.DOES_NOT_EXIST);
+
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Never);
         itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
     }
 
@@ -389,7 +290,6 @@ public class ItemServiceTests
             OrderNo = orderNo
         };
 
-        var itemRepository = new Mock<IItemRepository>();
         itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync(item);
         itemRepository.Setup(x => x.ExistsAsync(itemId))
@@ -397,31 +297,17 @@ public class ItemServiceTests
         itemRepository.Setup(x => x.IsItemAPartOfAnyKitAsync(itemId))
             .ReturnsAsync(true);
 
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
-
         // Act
         var result = await itemService.DeleteItemAsync(itemId);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(ErrorCodes.Items.IS_PART_OF_KIT);
+
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Never);
         itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
         itemRepository.Verify(x => x.IsItemAPartOfAnyKitAsync(itemId), Times.Once);
+
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
     }
 
@@ -446,7 +332,6 @@ public class ItemServiceTests
             }
         };
 
-        var itemRepository = new Mock<IItemRepository>();
         itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync(item);
         itemRepository.Setup(x => x.ExistsAsync(itemId))
@@ -454,30 +339,16 @@ public class ItemServiceTests
         itemRepository.Setup(x => x.IsItemAPartOfAnyKitAsync(itemId))
             .ReturnsAsync(false);
 
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
-
         // Act
         var result = await itemService.DeleteItemAsync(itemId);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
+
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Once);
         itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Once);
         itemRepository.Verify(x => x.IsItemAPartOfAnyKitAsync(itemId), Times.Once);
+
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
     }
 
@@ -502,29 +373,12 @@ public class ItemServiceTests
             }
         };
 
-        var itemRepository = new Mock<IItemRepository>();
         itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync(item);
         itemRepository.Setup(x => x.ExistsAsync(itemId))
             .ReturnsAsync(true);
         itemRepository.Setup(x => x.IsItemAPartOfAnyKitAsync(itemId))
             .ReturnsAsync(false);
-
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.DeleteItemAsync(itemId);
@@ -535,6 +389,7 @@ public class ItemServiceTests
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Once);
         itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
         itemRepository.Verify(x => x.IsItemAPartOfAnyKitAsync(itemId), Times.Once);
+
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
     }
 
@@ -549,22 +404,6 @@ public class ItemServiceTests
             .ReturnsAsync((Item)null);
         itemRepository.Setup(x => x.ExistsAsync(itemId))
             .ReturnsAsync(false);
-
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.GetForEditAsync(itemId);
@@ -587,28 +426,11 @@ public class ItemServiceTests
             CategoryId = categoryId
         };
 
-        var itemRepository = new Mock<IItemRepository>();
         itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync((Item)null);
 
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(true);
-
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.UpdateItemAsync(itemVm);
@@ -616,7 +438,11 @@ public class ItemServiceTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(ErrorCodes.Items.DOES_NOT_EXIST);
+
         itemRepository.Verify(x => x.UpdateAsync(It.IsAny<Item>()), Times.Never);
+
+        fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
+        fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Never);
     }
 
     [Fact]
@@ -638,28 +464,11 @@ public class ItemServiceTests
             CategoryId = categoryId
         };
 
-        var itemRepository = new Mock<IItemRepository>();
         itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync(item);
 
-        var mapper = new Mock<IMapper>();
-        var categoryRepository = new Mock<ICategoryRepository>();
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(false);
-
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.UpdateItemAsync(itemVm);
@@ -667,149 +476,63 @@ public class ItemServiceTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(ErrorCodes.Categories.DOES_NOT_EXIST);
+
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Never);
-    }
 
-    [Fact]
-    public async Task Update_UpdateItemAsync_ImageNotChanged_VisibilityNotChanged_ReturnsSuccess()
-    {
-        // Arrange
-        var itemVm = new ItemVm
-        {
-            Id = 1,
-            CategoryId = 1,
-            Image = new ImageVm
-            {
-                FileUrl = "https://www.example.com/image.jpg",
-                AltDescription = "Test image"
-            },
-            ShouldBeShown = false
-        };
-
-        var item = new Item
-        {
-            Id = 1,
-            CategoryId = 2,
-            Image = new Image
-            {
-                FileUrl = "https://www.example.com/image.jpg",
-                AltDescription = "Test image2"
-            },
-            ShouldBeShown = false
-        };
-
-        var itemRepository = new Mock<IItemRepository>();
-        itemRepository.Setup(x => x.GetByIdAsync(itemVm.Id))
-            .ReturnsAsync(item);
-        itemRepository.Setup(x => x.ExistsAsync(itemVm.Id))
-            .ReturnsAsync(true);
-        itemRepository.Setup(x => x.UpdateAsync(item))
-            .ReturnsAsync((Item item) => item);
-
-        var mapper = new Mock<IMapper>();
-        mapper.Setup(x => x.Map<Item>(It.IsAny<ItemVm>()))
-            .Returns((ItemVm itVm) => MapItemFromVm(itVm));
-        mapper.Setup(x => x.Map<ItemVm>(It.IsAny<Item>()))
-            .Returns((Item it) => MapItemToVm(it));
-
-        var categoryRepository = new Mock<ICategoryRepository>();
-        categoryRepository.Setup(x => x.ExistsAsync(itemVm.Id))
-            .ReturnsAsync(true);
-
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
-
-        // Act
-        var result = await itemService.UpdateItemAsync(itemVm);
-
-        // Assert
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBeEquivalentTo(itemVm);
-        itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+        fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
+        fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Never);
     }
 
     [Fact]
     public async Task Update_UpdateItemAsync_ImageNotChanged_VisibilityTrueToFalse_ReturnsSuccess()
     {
         // Arrange
-        uint orderNo = 1;
+        const int itemId = 1;
+        const int originalCategoryId = 2;
+        const int updatedCategoryId = 1;
+        const string originalName = "OriginalName";
+        const string updatedName = "UpdatedName";
+        const string imageUrl = "https://www.example.com/image.jpg";
+        const string altDescription1 = "Test image";
+        const string altDescription2 = "Test image2";
+        const uint orderNo = 1;
 
         var itemVm = new ItemVm
         {
-            Id = 1,
-            CategoryId = 1,
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
             Image = new ImageVm
             {
-                FileUrl = "https://www.example.com/image.jpg",
-                AltDescription = "Test image"
+                FileUrl = imageUrl,
+                AltDescription = altDescription2
             },
             ShouldBeShown = false
         };
 
         var item = new Item
         {
-            Id = 1,
-            CategoryId = 2,
+            Id = itemId,
+            Name = originalName,
+            CategoryId = originalCategoryId,
             Image = new Image
             {
-                FileUrl = "https://www.example.com/image.jpg",
-                AltDescription = "Test image2"
+                FileUrl = imageUrl,
+                AltDescription = altDescription1
             },
             ShouldBeShown = true,
             OrderNo = orderNo
         };
 
-        var itemRepository = new Mock<IItemRepository>();
-        itemRepository.Setup(x => x.GetByIdAsync(itemVm.Id))
+        itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync(item);
-        itemRepository.Setup(x => x.ExistsAsync(itemVm.Id))
+        itemRepository.Setup(x => x.ExistsAsync(itemId))
             .ReturnsAsync(true);
         itemRepository.Setup(x => x.UpdateAsync(item))
-            .ReturnsAsync((Item item) => new Item
-            {
-                Id = item.Id,
-                CategoryId = item.CategoryId,
-                Image = item.Image,
-                ShouldBeShown = item.ShouldBeShown,
-                OrderNo = item.OrderNo
-            });
+            .ReturnsAsync((Item updatedItem) => updatedItem);
 
-        var mapper = new Mock<IMapper>();
-        mapper.Setup(x => x.Map<Item>(It.IsAny<ItemVm>()))
-            .Returns((ItemVm itemVm) => MapItemFromVm(itemVm));
-        mapper.Setup(x => x.Map<ItemVm>(It.IsAny<Item>()))
-            .Returns((Item item) => MapItemToVm(item));
-
-        var categoryRepository = new Mock<ICategoryRepository>();
-        categoryRepository.Setup(x => x.ExistsAsync(itemVm.Id))
+        categoryRepository.Setup(x => x.ExistsAsync(itemId))
             .ReturnsAsync(true);
-
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.UpdateItemAsync(itemVm);
@@ -817,90 +540,346 @@ public class ItemServiceTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBeEquivalentTo(itemVm);
+
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
         itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.AtLeastOnce);
+
         purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+
+        fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
+        fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Never);
     }
 
     [Fact]
     public async Task Update_UpdateItemAsync_ImageNotChanged_VisibilityFalseToTrue_ReturnsSuccess()
     {
         // Arrange
+        const int itemId = 1;
+        const int originalCategoryId = 2;
+        const int updatedCategoryId = 1;
+        const string originalName = "OriginalName";
+        const string updatedName = "UpdatedName";
+        const string imageUrl1 = "https://www.example.com/image1.jpg";
+        const string imageUrl2 = "https://www.example.com/image2.jpg";
+        const string altDescription1 = "Test image";
+        const string altDescription2 = "Test image2";
+
         var itemVm = new ItemVm
         {
-            Id = 1,
-            CategoryId = 1,
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
             Image = new ImageVm
             {
-                FileUrl = "https://www.example.com/image.jpg",
-                AltDescription = "Test image"
+                FileUrl = imageUrl2,
+                AltDescription = altDescription2
             },
             ShouldBeShown = true
         };
 
         var item = new Item
         {
-            Id = 1,
-            CategoryId = 2,
+            Id = itemId,
+            Name = originalName,
+            CategoryId = originalCategoryId,
             Image = new Image
             {
-                FileUrl = "https://www.example.com/image.jpg",
-                AltDescription = "Test image2"
+                FileUrl = imageUrl1,
+                AltDescription = altDescription1
             },
             ShouldBeShown = false
         };
 
-        var itemRepository = new Mock<IItemRepository>();
-        itemRepository.Setup(x => x.GetByIdAsync(itemVm.Id))
+        itemRepository.Setup(x => x.GetByIdAsync(itemId))
             .ReturnsAsync(item);
-        itemRepository.Setup(x => x.ExistsAsync(itemVm.Id))
+        itemRepository.Setup(x => x.ExistsAsync(itemId))
             .ReturnsAsync(true);
         itemRepository.Setup(x => x.UpdateAsync(item))
-            .ReturnsAsync((Item item) => new Item
-            {
-                Id = item.Id,
-                CategoryId = item.CategoryId,
-                Image = item.Image,
-                ShouldBeShown = item.ShouldBeShown,
-                OrderNo = item.OrderNo
-            });
+            .ReturnsAsync((Item updatedItem) => updatedItem);
 
-        var mapper = new Mock<IMapper>();
-        mapper.Setup(x => x.Map<Item>(It.IsAny<ItemVm>()))
-            .Returns((ItemVm itemVm) => MapItemFromVm(itemVm));
-        mapper.Setup(x => x.Map<ItemVm>(It.IsAny<Item>()))
-            .Returns((Item item) => MapItemToVm(item));
-
-        var categoryRepository = new Mock<ICategoryRepository>();
-        categoryRepository.Setup(x => x.ExistsAsync(itemVm.Id))
+        categoryRepository.Setup(x => x.ExistsAsync(itemId))
             .ReturnsAsync(true);
-
-        var componentRepository = new Mock<IComponentRepository>();
-        var fileService = new Mock<IFileService>();
-        var purchasableRepository = new Mock<IProductRepository>();
-        var logger = new Mock<ILogger<ItemService>>();
-
-        var itemService = new ItemService(
-            itemRepository.Object,
-            mapper.Object,
-            categoryRepository.Object,
-            componentRepository.Object,
-            fileService.Object,
-            purchasableRepository.Object,
-            logger.Object);
 
         // Act
         var result = await itemService.UpdateItemAsync(itemVm);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBeEquivalentTo(itemVm);
+        result.Value.ShouldBeEquivalentTo(itemVm with
+        {
+            Image = new ImageVm
+            {
+                FileUrl = imageUrl1,
+                AltDescription = altDescription2
+            }
+        });
+
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
         itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
         purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.AtLeastOnce);
+
+        fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
+        fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Never);
     }
 
-    // TODO: Add more tests for when image is changed
+    [Fact]
+    public async Task Update_UpdateItemAsync_ImageChanged_VisibilityNotChanged_ReturnsSuccess()
+    {
+        // Arrange
+        const int itemId = 1;
+        const int originalCategoryId = 2;
+        const int updatedCategoryId = 1;
+        const string originalName = "OriginalName";
+        const string updatedName = "UpdatedName";
+        const string imageUrl1 = "https://www.example.com/image1.jpg";
+        const string imageUrl2 = "https://www.example.com/image2.jpg";
+        const string altDescription1 = "Test image";
+        const string altDescription2 = "Test image2";
+
+        var itemVm = new ItemVm
+        {
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
+            Image = new ImageVm
+            {
+                FormFile = new FormFile(
+                    new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")),
+                    0,
+                    0,
+                    "Data",
+                    "dummy.txt"),
+                FileUrl = imageUrl1,
+                AltDescription = altDescription2
+            },
+            ShouldBeShown = false
+        };
+
+        var item = new Item
+        {
+            Id = itemId,
+            Name = originalName,
+            CategoryId = originalCategoryId,
+            Image = new Image
+            {
+                FileUrl = imageUrl1,
+                AltDescription = altDescription1
+            },
+            ShouldBeShown = false
+        };
+
+        itemRepository.Setup(x => x.GetByIdAsync(itemId))
+            .ReturnsAsync(item);
+        itemRepository.Setup(x => x.ExistsAsync(itemId))
+            .ReturnsAsync(true);
+        itemRepository.Setup(x => x.UpdateAsync(It.IsAny<Item>()))
+            .ReturnsAsync((Item updatedItem) => updatedItem);
+
+        categoryRepository.Setup(x => x.ExistsAsync(itemId))
+            .ReturnsAsync(true);
+
+        fileService.Setup(x => x.DeleteImage(It.IsAny<string>()));
+        fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
+            .ReturnsAsync(imageUrl2);
+
+        // Act
+        var result = await itemService.UpdateItemAsync(itemVm);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBeEquivalentTo(new ItemVm()
+        {
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
+            Image = new ImageVm
+            {
+                FileUrl = imageUrl2,
+                AltDescription = altDescription2
+            },
+            ShouldBeShown = false
+        });
+
+        itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
+        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+
+        fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
+        fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Update_UpdateItemAsync_ImageChanged_VisibilityTrueToFalse_ReturnsSuccess()
+    {
+        // Arrange
+        const int itemId = 1;
+        const int originalCategoryId = 2;
+        const int updatedCategoryId = 1;
+        const string originalName = "OriginalName";
+        const string updatedName = "UpdatedName";
+        const string imageUrl1 = "https://www.example.com/image1.jpg";
+        const string imageUrl2 = "https://www.example.com/image2.jpg";
+        const string altDescription1 = "Test image";
+        const string altDescription2 = "Test image2";
+
+        var itemVm = new ItemVm
+        {
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
+            Image = new ImageVm
+            {
+                FormFile = new FormFile(
+                    new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")),
+                    0,
+                    0,
+                    "Data",
+                    "dummy.txt"),
+                FileUrl = imageUrl1,
+                AltDescription = altDescription2
+            },
+            ShouldBeShown = false
+        };
+
+        var item = new Item
+        {
+            Id = itemId,
+            Name = originalName,
+            CategoryId = originalCategoryId,
+            Image = new Image
+            {
+                FileUrl = imageUrl1,
+                AltDescription = altDescription1
+            },
+            ShouldBeShown = false
+        };
+
+        itemRepository.Setup(x => x.GetByIdAsync(itemId))
+            .ReturnsAsync(item);
+        itemRepository.Setup(x => x.ExistsAsync(itemId))
+            .ReturnsAsync(true);
+        itemRepository.Setup(x => x.UpdateAsync(item))
+            .ReturnsAsync((Item item) => item);
+
+        categoryRepository.Setup(x => x.ExistsAsync(itemId))
+            .ReturnsAsync(true);
+
+        fileService.Setup(x => x.DeleteImage(It.IsAny<string>()));
+        fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
+            .ReturnsAsync(imageUrl2);
+
+        // Act
+        var result = await itemService.UpdateItemAsync(itemVm);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBeEquivalentTo(new ItemVm()
+        {
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
+            Image = new ImageVm
+            {
+                FileUrl = imageUrl2,
+                AltDescription = altDescription2
+            },
+            ShouldBeShown = false
+        });
+
+        itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
+        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+
+        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+
+        fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
+        fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Update_UpdateItemAsync_ImageChanged_VisibilityFalseToTrue_ReturnsSuccess()
+    {
+        // Arrange
+        const int itemId = 1;
+        const int originalCategoryId = 2;
+        const int updatedCategoryId = 1;
+        const string originalName = "OriginalName";
+        const string updatedName = "UpdatedName";
+        const string imageUrl1 = "https://www.example.com/image1.jpg";
+        const string imageUrl2 = "https://www.example.com/image2.jpg";
+        const string altDescription1 = "Test image";
+        const string altDescription2 = "Test image2";
+
+        var itemVm = new ItemVm
+        {
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
+            Image = new ImageVm
+            {
+                FormFile = new FormFile(
+                    new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")),
+                    0,
+                    0,
+                    "Data",
+                    "dummy.txt"),
+                FileUrl = imageUrl1,
+                AltDescription = altDescription2
+            },
+            ShouldBeShown = true,
+        };
+
+        var item = new Item
+        {
+            Id = itemId,
+            Name = originalName,
+            CategoryId = originalCategoryId,
+            Image = new Image
+            {
+                FileUrl = imageUrl1,
+                AltDescription = altDescription1
+            },
+            ShouldBeShown = false
+        };
+
+        itemRepository.Setup(x => x.GetByIdAsync(itemId))
+            .ReturnsAsync(item);
+        itemRepository.Setup(x => x.ExistsAsync(itemId))
+            .ReturnsAsync(true);
+        itemRepository.Setup(x => x.UpdateAsync(item))
+            .ReturnsAsync((Item item) => item);
+
+        categoryRepository.Setup(x => x.ExistsAsync(itemId))
+            .ReturnsAsync(true);
+
+        fileService.Setup(x => x.DeleteImage(It.IsAny<string>()));
+        fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
+            .ReturnsAsync(imageUrl2);
+
+        // Act
+        var result = await itemService.UpdateItemAsync(itemVm);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBeEquivalentTo(new ItemVm()
+        {
+            Id = itemId,
+            Name = updatedName,
+            CategoryId = updatedCategoryId,
+            Image = new ImageVm
+            {
+                FileUrl = imageUrl2,
+                AltDescription = altDescription2
+            },
+            ShouldBeShown = true
+        });
+
+        itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
+        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Once);
+
+        fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
+        fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
+    }
 
     private Item MapItemFromVm(ItemVm itemVm)
     {
