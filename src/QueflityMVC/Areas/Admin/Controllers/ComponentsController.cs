@@ -7,6 +7,7 @@ using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Component;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
@@ -80,7 +81,7 @@ public class ComponentsController : Controller
                 return View();
         }
 
-        return RedirectToAction("Error", "Home", new { area = "" });
+        return this.RedirectToError();
     }
 
     [Route("Edit")]
@@ -122,7 +123,7 @@ public class ComponentsController : Controller
             case { IsFailure: true, Error.Code: ErrorCodes.Components.DOES_NOT_EXIST }:
                 return NotFound();
             default:
-                return RedirectToAction("Error", "Home", new { area = "" });
+                return this.RedirectToError();
         }
     }
 
