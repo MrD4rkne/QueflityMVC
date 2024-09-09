@@ -7,7 +7,7 @@ using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Item;
-using QueflityMVC.Web.Exceptions;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
@@ -64,7 +64,7 @@ public class ItemsController : Controller
         return addingVm.Error.Code switch
         {
             ErrorCodes.Items.NO_CATEGORIES => RedirectToAction("NoCategories"),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 
@@ -99,7 +99,7 @@ public class ItemsController : Controller
         return itemForEdit.Error.Code switch
         {
             ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
-            _ => RedirectToAction("Error", "Home", new { area = "" })
+            _ => this.RedirectToError()
         };
     }
 
@@ -141,7 +141,7 @@ public class ItemsController : Controller
             {
                 ItemId = id, Message = "Item is part of a kit and cannot be deleted.", CategoryId = categoryId
             }),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 
@@ -163,7 +163,7 @@ public class ItemsController : Controller
         return componentsViewModel.Error.Code switch
         {
             ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 

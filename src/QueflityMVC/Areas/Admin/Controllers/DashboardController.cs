@@ -4,25 +4,18 @@ using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Product;
-using QueflityMVC.Web.Exceptions;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Policy = Policies.ENTITIES_ORDER)]
-public class DashboardController : Controller
+public class DashboardController(IProductEntityService purchasableEntityService) : Controller
 {
-    private readonly IProductEntityService _purchasableEntityService;
-
-    public DashboardController(IProductEntityService purchasableEntityService)
-    {
-        _purchasableEntityService = purchasableEntityService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var orderEditVm = await _purchasableEntityService.GetEntitiesOrderVm();
+        var orderEditVm = await purchasableEntityService.GetEntitiesOrderVm();
         return View(orderEditVm);
     }
 
@@ -34,7 +27,7 @@ public class DashboardController : Controller
             return BadRequest();
         }
 
-        var result = await _purchasableEntityService.UpdateOrderAsync(editOrderVm);
+        var result = await purchasableEntityService.UpdateOrderAsync(editOrderVm);
         if (result.IsSuccess)
         {
             return RedirectToAction(nameof(Index), "Home");
@@ -50,7 +43,7 @@ public class DashboardController : Controller
                 return RedirectToAction("UpdateFailed",
                     new UpdateOrderFailedVm { Message = "Product list was altered. Please try again." });
             default:
-                throw new UnexpectedApplicationException();
+                return this.RedirectToError();
         }
     }
 

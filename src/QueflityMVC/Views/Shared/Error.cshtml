@@ -1,14 +1,94 @@
 ﻿@model QueflityMVC.Web.Models.ErrorViewModel
+
 @{
     ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h3 class="text-danger">An error occurred while processing your request.</h3>
+<div class="container d-flex justify-content-center align-items-center error-wrapper">
+    <div class="text-center">
+        <h1><i class="fas fa-exclamation-triangle"></i> Error</h1>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
+        @switch (Model.ErrorCode)
+        {
+            case 400:
+                <p>
+                    <i class="fas fa-times-circle"></i> <strong>Bad Request:</strong> The server could not understand your
+                    request.
+                </p>
+                break;
+            case 401:
+                <p>
+                    <i class="fas fa-lock"></i> <strong>Unauthorized:</strong> You are not authorized to access this resource.
+                </p>
+                break;
+            case 403:
+                <p>
+                    <i class="fas fa-ban"></i> <strong>Forbidden:</strong> You do not have permission to access this resource.
+                </p>
+                break;
+            case 404:
+                <p>
+                    <i class="fas fa-search"></i> <strong>Not Found:</strong> The resource you are looking for could not be
+                    found.
+                </p>
+                break;
+            case 405:
+                <p>
+                    <i class="fas fa-hand-paper"></i> <strong>Method Not Allowed:</strong> The HTTP method used is not allowed
+                    for this resource.
+                </p>
+                break;
+            case >= 500:
+                <p><i class="fas fa-server"></i> There was an internal server error. Please try again later.</p>
+                break;
+            default:
+                <p><i class="fas fa-info-circle"></i> An unexpected error occurred. Please try again later.</p>
+                break;
+        }
+
+        @if (Model.ShowRequestId)
+        {
+            <p>
+                Request ID: <code>@Model.RequestId</code>
+            </p>
+        }
+    </div>
+</div>
+
+@section Styles{
+    <style>
+
+    .error-wrapper h1 {
+        color: #d9534f;
+        margin-bottom: 20px;
+        font-size: 3rem;
+    }
+
+    .error-wrapper p {
+        font-size: 1.25rem;
+        color: #5a5a5a;
+        margin-bottom: 15px;
+    }
+
+    .error-wrapper .fas {
+        margin-right: 10px;
+        color: #d9534f;
+    }
+
+    .error-wrapper code {
+        background-color: #f8f9fa;
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-size: 90%;
+        color: #333;
+    }
+
+    .error-wrapper {
+        max-width: 600px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
 }

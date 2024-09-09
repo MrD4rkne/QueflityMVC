@@ -8,6 +8,7 @@ using QueflityMVC.Infrastructure.Emails;
 using QueflityMVC.Persistence;
 using QueflityMVC.Persistence.Setup;
 using QueflityMVC.Web.Chat;
+using QueflityMVC.Web.Common;
 using QueflityMVC.Web.Setup;
 using QueflityMVC.Web.Setup.Identity;
 using QueflityMVC.Web.Setup.Other;
@@ -90,9 +91,11 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error");
     app.UseHsts();
+    app.UseExceptionHandler("/Error");
 }
+
+app.UseMiddleware<HttpErrorCodesMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
