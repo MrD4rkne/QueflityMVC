@@ -8,6 +8,7 @@ using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Web.Exceptions;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
@@ -110,7 +111,7 @@ public class ItemsController(
         return itemForEdit.Error.Code switch
         {
             ErrorCodes.Items.DOES_NOT_EXIST => NotFound(),
-            _ => RedirectToAction("Error", "Home", new { area = "" })
+            _ => this.RedirectToError()
         };
     }
 

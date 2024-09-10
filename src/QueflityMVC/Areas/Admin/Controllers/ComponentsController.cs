@@ -7,6 +7,7 @@ using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Component;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
@@ -75,7 +76,7 @@ public class ComponentsController(
                 return View();
         }
 
-        return RedirectToAction("Error", "Home", new { area = "" });
+        return this.RedirectToError();
     }
 
     [Route("Edit")]
@@ -92,7 +93,7 @@ public class ComponentsController(
                 return NotFound();
             default:
                 logger.LogError("Error while getting component with id {id}: {error}", id, result.Error);
-                return RedirectToAction("Error", "Home", new { area = "" });
+                return this.RedirectToError();
         }
     }
 
@@ -123,7 +124,7 @@ public class ComponentsController(
             default:
                 logger.LogError("Error while updating component with id {id}: {error}", componentToEditVm.Id,
                     result.Error);
-                return RedirectToAction("Error", "Home", new { area = "" });
+                return this.RedirectToError();
         }
     }
 
@@ -140,7 +141,7 @@ public class ComponentsController(
                 return NotFound();
             default:
                 logger.LogError("Error while deleting component with id {id}: {error}", id, result.Error);
-                return RedirectToAction("Error", "Home", new { area = "" });
+                return this.RedirectToError();
         }
     }
 }

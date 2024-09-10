@@ -7,6 +7,7 @@ using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Category;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
@@ -115,7 +116,7 @@ public class CategoriesController(ICategoryService categoryService, IValidator<C
                 ModelState.AddModelError(nameof(CategoryVm.Name), "Category with this name already exists.");
                 return View();
             default:
-                return RedirectToAction("Error", "Home", new { area = "" });
+                return this.RedirectToError();
         }
     }
 

@@ -6,6 +6,7 @@ using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.User;
 using QueflityMVC.Domain.Interfaces;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
@@ -53,7 +54,8 @@ public class UsersController(IUserService userService, IUserContext userContext)
         return result.Error.Code switch
         {
             ErrorCodes.User.CANNOT_MANAGE_SELF => Forbid(),
-            ErrorCodes.User.DOES_NOT_EXIST => NotFound()
+            ErrorCodes.User.DOES_NOT_EXIST => NotFound(),
+            _ => this.RedirectToError()
         };
     }
 
@@ -72,7 +74,8 @@ public class UsersController(IUserService userService, IUserContext userContext)
         return result.Error.Code switch
         {
             ErrorCodes.User.CANNOT_MANAGE_SELF => Forbid(),
-            ErrorCodes.User.DOES_NOT_EXIST => NotFound()
+            ErrorCodes.User.DOES_NOT_EXIST => NotFound(),
+            _ => this.RedirectToError()
         };
     }
 

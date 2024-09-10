@@ -9,7 +9,7 @@ using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
-using QueflityMVC.Web.Exceptions;
+using QueflityMVC.Web.Common;
 
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
@@ -95,7 +95,7 @@ public class KitsController : Controller
         return kitDetailsResult.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 
@@ -113,7 +113,7 @@ public class KitsController : Controller
         return kitToEditResult.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 
@@ -154,7 +154,7 @@ public class KitsController : Controller
         return results.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 
@@ -172,7 +172,7 @@ public class KitsController : Controller
         return getFilteredComponentsResult.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 
@@ -190,7 +190,7 @@ public class KitsController : Controller
         return filterComponentsResult.Error.Code switch
         {
             ErrorCodes.Kits.DOES_NOT_EXIST => NotFound(),
-            _ => throw new UnexpectedApplicationException()
+            _ => this.RedirectToError()
         };
     }
 
