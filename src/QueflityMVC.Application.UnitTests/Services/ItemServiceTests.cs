@@ -6,6 +6,7 @@ using Moq;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.Services;
+using QueflityMVC.Application.ViewModels.Component;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Domain.Interfaces;
@@ -879,6 +880,27 @@ public class ItemServiceTests
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Update_UpdateItemComponentsAsync_ItemDoesNotExist_ReturnsFailure()
+    {
+        // Arrange
+        var selectionVm = new ItemComponentsSelectionVm()
+        {
+            Item = new ItemVm { Id = 1 },
+            AllComponents = [],
+            SelectedComponentsIds = []
+        };
+        itemRepository.Setup(repo => repo.ExistsAsync(selectionVm.Item.Id))
+            .ReturnsAsync(false);
+
+        // Act
+        var result = await itemService.UpdateItemComponentsAsync(selectionVm);
+
+        // Assert
+        result.IsFailure.ShouldBeFalse();
+        result.Error.Code.ShouldBe(ErrorCodes.Items.DOES_NOT_EXIST);
     }
 
     private Item MapItemFromVm(ItemVm itemVm)
