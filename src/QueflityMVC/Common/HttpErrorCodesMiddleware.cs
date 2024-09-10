@@ -18,9 +18,7 @@ public class HttpErrorCodesMiddleware(
             // Ensure the response has not started, then redirect
             if (!context.Response.HasStarted)
             {
-                var urlHelper = context.RequestServices.GetRequiredService<IUrlHelper>();
-                string redirectUrl =
-                    urlHelper.Action("Error", "Home", new { area = "", id = context.Response.StatusCode });
+                string redirectUrl = $"/Home/Error?id={context.Response.StatusCode}";
                 context.Response.Redirect(redirectUrl);
             }
         }
