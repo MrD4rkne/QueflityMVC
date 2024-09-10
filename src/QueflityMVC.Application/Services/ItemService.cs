@@ -223,11 +223,18 @@ public class ItemService(
         return Result<ItemComponentsSelectionVm>.Success(selectionVm);
     }
 
-    public Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)
+    public async Task<Result> UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)
     {
+        if(await itemRepository.ExistsAsync(selectionVm.Item.Id))
+        {
+            return Result.Failure(Errors.Items.DoesNotExit);
+        }
+        
         var selectedComponents = mapper.Map<IEnumerable<Component>>(selectionVm.AllComponents.Where(x => x.IsSelected))
             .ToList();
-        return itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
+        await itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
+        
+        return Result.Success();
     }
 
     private bool ShouldSwitchImages(ItemVm? updatedItem)

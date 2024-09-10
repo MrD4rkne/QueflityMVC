@@ -207,7 +207,15 @@ public class ItemsController(
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Components(ItemComponentsSelectionVm selectionVm)
     {
-        await itemService.UpdateItemComponentsAsync(selectionVm);
-        return RedirectToAction("Index");
+        var result = await itemService.UpdateItemComponentsAsync(selectionVm);
+        switch (result)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { Error: { Code: ErrorCodes.Items.DOES_NOT_EXIST } }:
+                return NotFound();
+            default:
+                return this.RedirectToError();
+        }
     }
 }

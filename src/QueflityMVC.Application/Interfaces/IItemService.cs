@@ -22,5 +22,5 @@ public interface IItemService
 
     Task<Result<ItemComponentsSelectionVm>> GetComponentsForSelectionVmAsync(int id);
 
-    Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm);
+    Task<Result> UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm);
 }
