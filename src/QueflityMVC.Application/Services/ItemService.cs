@@ -225,13 +225,24 @@ public class ItemService(
 
     public async Task<Result> UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)
     {
-        if(await itemRepository.ExistsAsync(selectionVm.Item.Id))
+        if(!await itemRepository.ExistsAsync(selectionVm.Item.Id))
         {
             return Result.Failure(Errors.Items.DoesNotExit);
         }
         
-        var selectedComponents = mapper.Map<IEnumerable<Component>>(selectionVm.AllComponents.Where(x => x.IsSelected))
+        var selectedComponentsIds = selectionVm.AllComponents
+            .Where(x => x.IsSelected)
+            .Select(x => x.Id)
             .ToList();
+        var selectedComponents = await componentRepository.GetAll()
+            .Where(x => selectedComponentsIds.Contains(x.Id))
+            .ToListAsync();
+        
+        if(selectedComponents.Count != selectedComponentsIds.Count)
+        {
+            return Result.Failure(Errors.Components.DoesNotExist);
+        }
+        
         await itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
         
         return Result.Success();
