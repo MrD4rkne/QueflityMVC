@@ -905,7 +905,7 @@ public class ItemServiceTests
         var result = await itemService.UpdateItemComponentsAsync(selectionVm);
 
         // Assert
-        result.IsFailure.ShouldBeFalse();
+        result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(ErrorCodes.Items.DOES_NOT_EXIST);
     }
 
