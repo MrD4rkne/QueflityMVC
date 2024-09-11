@@ -537,6 +537,72 @@ public class KitServiceTests
         _kitRepository.Verify(x => x.UpdateAsync(It.IsAny<Kit>()), Times.Never);
         _productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
     }
+    
+    [Fact]
+    public async Task Edit_EditKitAsync_ImageChanged_VisibilityNotChanged_OnIFileServiceException_ReturnError()
+    {
+        // Arrange
+        string name = "Kit";
+        string description = "Description";
+        string altDescription = "AltDescription";
+        int id = 2;
+        var kitVm = new KitVm
+        {
+            Name = name,
+            Image = new ImageVm()
+            {
+                FormFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")),
+                    0,
+                    0,
+                    "Data",
+                    "dummy.txt"),
+                AltDescription = altDescription
+            },
+            Description = description,
+            ShouldBeShown = true,
+            Id = id
+        };
+        
+        string oldUrl = "oldUrl";
+        _fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
+            .ThrowsAsync(new Exception());
+
+        _kitRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+            .ReturnsAsync(new Kit()
+            {
+                Id = id,
+                Name = "OldName",
+                Description = "OldDescription",
+                Image = new Image
+                {
+                    FileUrl = oldUrl,
+                    AltDescription = "OldAltDescription"
+                },
+                ShouldBeShown = false
+            });
+        _kitRepository.Setup(x => x.UpdateAsync(It.IsAny<Kit>()))
+            .ReturnsAsync((Kit kit) => kit);
+        _kitRepository.Setup(x => x.ExistsAsync(kitVm.Id))
+            .ReturnsAsync(true);
+
+        uint orderNo = 2;
+        _productRepository.Setup(x => x.GetNextOrderNumberAsync())
+            .ReturnsAsync(orderNo);
+
+        // Act
+        var result = await _kitService.EditKitAsync(kitVm);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(Errors.Files.FileUploadFailed.Code);
+        
+        _fileService.Verify(x => x.DeleteImage(oldUrl), Times.Never);
+        _fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
+
+        _kitRepository.Verify(x => x.UpdateAsync(It.IsAny<Kit>()), Times.Never);
+        
+        _productRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
+    }
 
     private Kit MapKitFromVm(KitVm kitVm)
     {
