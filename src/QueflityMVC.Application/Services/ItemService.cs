@@ -139,12 +139,14 @@ public class ItemService(
         {
             try
             {
+                string newFileUrl = await fileService.UploadFileAsync(updateItemVm.Image.FormFile);
+
                 if (itemToUpdate.Image is not null)
                 {
                     fileService.DeleteImage(itemToUpdate.Image.FileUrl);
                 }
-
-                itemToUpdate.Image.FileUrl = await fileService.UploadFileAsync(updateItemVm.Image.FormFile);
+                
+                itemToUpdate.Image.FileUrl = newFileUrl;
             }
             catch (Exception ex)
             {

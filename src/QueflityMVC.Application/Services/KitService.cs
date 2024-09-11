@@ -59,12 +59,14 @@ public class KitService(
         {
             try
             {
+                string newUrl = await fileService.UploadFileAsync(editKitVm.Image.FormFile);
+                
                 if (kitToUpdate.Image is not null)
                 {
                     fileService.DeleteImage(kitToUpdate.Image.FileUrl);
                 }
-
-                kitToUpdate.Image.FileUrl = await fileService.UploadFileAsync(editKitVm.Image.FormFile);
+                
+                kitToUpdate.Image.FileUrl = newUrl;
             }
             catch (Exception ex)
             {
