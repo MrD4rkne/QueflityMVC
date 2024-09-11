@@ -14,5 +14,5 @@ public interface IConversationRepository : IBaseRepository<Conversation>
 
     IQueryable<Conversation> GetAllConversations(int lastMessageCount = 20);
 
-    Task<Conversation> GetConversationByProductAndUserAsync(int purchasableId, Guid userId);
+    Task<Conversation> GetConversationByProductAndUserAsync(int productId, Guid userId);
 }

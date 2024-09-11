@@ -15,7 +15,7 @@ public class ProductToTypeConvert : IValueConverter<Domain.Models.Product, Produ
                 return ProductType.Kit;
 
             default:
-                throw new InvalidOperationException("Unknown purchasable type");
+                throw new InvalidOperationException("Unknown product type");
         }
     }
 }

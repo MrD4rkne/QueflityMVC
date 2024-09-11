@@ -14,7 +14,7 @@ namespace QueflityMVC.Web.Controllers;
 
 public class HomeController(
     ILogger<HomeController> logger,
-    IProductEntityService purchasableEntityService,
+    IProductEntityService productEntityService,
     IMessageService messageService,
     IValidator<FirstMessageInConversationVm> messageValidator)
     : Controller
@@ -23,7 +23,7 @@ public class HomeController(
 
     public async Task<IActionResult> Index()
     {
-        var dashboardVm = await purchasableEntityService.GetDashboardVmAsync();
+        var dashboardVm = await productEntityService.GetDashboardVmAsync();
         return View(dashboardVm);
     }
 

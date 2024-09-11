@@ -10,12 +10,12 @@ namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Policy = Policies.ENTITIES_ORDER)]
-public class DashboardController(IProductEntityService purchasableEntityService) : Controller
+public class DashboardController(IProductEntityService productEntityService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var orderEditVm = await purchasableEntityService.GetEntitiesOrderVm();
+        var orderEditVm = await productEntityService.GetEntitiesOrderVm();
         return View(orderEditVm);
     }
 
@@ -27,7 +27,7 @@ public class DashboardController(IProductEntityService purchasableEntityService)
             return BadRequest();
         }
 
-        var result = await purchasableEntityService.UpdateOrderAsync(editOrderVm);
+        var result = await productEntityService.UpdateOrderAsync(editOrderVm);
         if (result.IsSuccess)
         {
             return RedirectToAction(nameof(Index), "Home");
@@ -39,7 +39,7 @@ public class DashboardController(IProductEntityService purchasableEntityService)
                 ModelState.AddModelError(string.Empty, "Order is not valid");
                 return View(editOrderVm);
 
-            case ErrorCodes.Product.PURCHASABLE_MISSING_IN_ORDER:
+            case ErrorCodes.Product.product_MISSING_IN_ORDER:
                 return RedirectToAction("UpdateFailed",
                     new UpdateOrderFailedVm { Message = "Product list was altered. Please try again." });
             default:

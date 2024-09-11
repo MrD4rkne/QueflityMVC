@@ -10,13 +10,13 @@ namespace QueflityMVC.Application.Services;
 
 public class ProductEntityService(
     IMapper mapper,
-    IProductRepository purchasableRepository,
+    IProductRepository productRepository,
     IUserRepository userRepository)
     : IProductEntityService
 {
     public async Task<EditOrderVm> GetEntitiesOrderVm()
     {
-        var models = await purchasableRepository.GetVisibleEntities()
+        var models = await productRepository.GetVisibleEntities()
             .OrderBy(x => x.OrderNo)
             .ToListAsync();
         var results = models.Select(x => mapper.Map<ProductVm>(x))
@@ -35,35 +35,35 @@ public class ProductEntityService(
             return Result.Failure(Errors.Product.InvalidOrder);
         }
 
-        var purchasableModels =
+        var productModels =
             editOrderVm.ProductsVMs.Select(p => mapper.Map<Product>(p)).ToList();
-        if (!await purchasableRepository.AreTheseAllVisibleProductsAsync(purchasableModels))
+        if (!await productRepository.AreTheseAllVisibleProductsAsync(productModels))
         {
             return Result.Failure(Errors.Product.ProductMissingInOrder);
         }
 
-        await purchasableRepository.UpdateProductsOrderAsync(purchasableModels);
+        await productRepository.UpdateProductsOrderAsync(productModels);
         return Result.Success();
     }
 
     public async Task<DashboardVm> GetDashboardVmAsync()
     {
-        var purchasables = purchasableRepository.GetVisibleProductsForDashboard();
+        var products = productRepository.GetVisibleProductsForDashboard();
         DashboardVm dashboard = new()
         {
-            Products = await purchasables.Select(x => mapper.Map<ProductForCardVm>(x)).ToListAsync()
+            Products = await products.Select(x => mapper.Map<ProductForCardVm>(x)).ToListAsync()
         };
         return dashboard;
     }
 
-    private static bool IsOrderValid(List<ProductVm> purchasables)
+    private static bool IsOrderValid(List<ProductVm> products)
     {
-        if (!purchasables.All(p => p.OrderNo >= 0))
+        if (!products.All(p => p.OrderNo >= 0))
         {
             return false;
         }
 
-        var orders = purchasables.Select(purchasable => purchasable.OrderNo).ToList();
+        var orders = products.Select(product => product.OrderNo).ToList();
         return IsOrderFull(orders);
     }
 

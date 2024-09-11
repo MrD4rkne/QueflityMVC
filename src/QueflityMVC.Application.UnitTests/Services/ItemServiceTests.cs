@@ -24,7 +24,7 @@ public class ItemServiceTests
     private readonly ItemService itemService;
     private readonly Mock<ILogger<ItemService>> logger;
     private readonly Mock<IMapper> mapper;
-    private readonly Mock<IProductRepository> purchasableRepository;
+    private readonly Mock<IProductRepository> productRepository;
 
     public ItemServiceTests()
     {
@@ -39,7 +39,7 @@ public class ItemServiceTests
         categoryRepository = new Mock<ICategoryRepository>();
         componentRepository = new Mock<IComponentRepository>();
         fileService = new Mock<IFileService>();
-        purchasableRepository = new Mock<IProductRepository>();
+        productRepository = new Mock<IProductRepository>();
         logger = new Mock<ILogger<ItemService>>();
 
         itemService = new ItemService(
@@ -48,7 +48,7 @@ public class ItemServiceTests
             categoryRepository.Object,
             componentRepository.Object,
             fileService.Object,
-            purchasableRepository.Object,
+            productRepository.Object,
             logger.Object);
     }
 
@@ -80,7 +80,7 @@ public class ItemServiceTests
         };
 
         itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
-            .ReturnsAsync(1);
+            .ReturnsAsync((Item item)=>item);
 
         categoryRepository.Setup(x => x.ExistsAsync(1))
             .ReturnsAsync(true);
@@ -90,7 +90,7 @@ public class ItemServiceTests
             .ReturnsAsync(savedImageUrl);
 
         int orderNo = 2;
-        purchasableRepository.Setup(x => x.GetNextOrderNumberAsync())
+        productRepository.Setup(x => x.GetNextOrderNumberAsync())
             .ReturnsAsync((uint)orderNo);
 
         // Act
@@ -111,7 +111,7 @@ public class ItemServiceTests
             , Times.Once);
 
         categoryRepository.Verify(x => x.ExistsAsync(categoryId), Times.AtLeastOnce);
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Once);
+        productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Once);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
     }
 
@@ -143,7 +143,7 @@ public class ItemServiceTests
         };
 
         itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
-            .ReturnsAsync(1);
+            .ReturnsAsync((Item item)=>item);
 
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(true);
@@ -158,7 +158,7 @@ public class ItemServiceTests
         itemRepository.Verify(x => x.AddAsync(It.IsAny<Item>()), Times.Once);
 
         categoryRepository.Verify(x => x.ExistsAsync(categoryId), Times.AtLeastOnce);
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+        productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
     }
 
@@ -189,7 +189,7 @@ public class ItemServiceTests
         };
 
         itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
-            .ReturnsAsync(1);
+            .ReturnsAsync((Item item)=>item);
 
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(false);
@@ -233,7 +233,7 @@ public class ItemServiceTests
         };
 
         itemRepository.Setup(x => x.AddAsync(It.IsAny<Item>()))
-            .ReturnsAsync(1);
+            .ReturnsAsync((Item item)=>item);
         categoryRepository.Setup(x => x.ExistsAsync(categoryId))
             .ReturnsAsync(true);
         fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
@@ -272,7 +272,7 @@ public class ItemServiceTests
         result.Error.Code.ShouldBe(ErrorCodes.Items.DOES_NOT_EXIST);
 
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Never);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
     }
@@ -306,8 +306,9 @@ public class ItemServiceTests
         result.Error.Code.ShouldBe(ErrorCodes.Items.IS_PART_OF_KIT);
 
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Never);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
         itemRepository.Verify(x => x.IsItemAPartOfAnyKitAsync(itemId), Times.Once);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
     }
@@ -347,10 +348,11 @@ public class ItemServiceTests
         result.IsSuccess.ShouldBeTrue();
 
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Once);
         itemRepository.Verify(x => x.IsItemAPartOfAnyKitAsync(itemId), Times.Once);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Once);
     }
 
     [Fact]
@@ -388,10 +390,11 @@ public class ItemServiceTests
         result.IsSuccess.ShouldBeTrue();
 
         itemRepository.Verify(x => x.DeleteAsync(itemId), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
         itemRepository.Verify(x => x.IsItemAPartOfAnyKitAsync(itemId), Times.Once);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
     }
 
     [Fact]
@@ -543,9 +546,9 @@ public class ItemServiceTests
         result.Value.ShouldBeEquivalentTo(itemVm);
 
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.AtLeastOnce);
-
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.AtLeastOnce);
+        productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Never);
@@ -616,8 +619,9 @@ public class ItemServiceTests
         });
 
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.AtLeastOnce);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+        productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.AtLeastOnce);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Never);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Never);
@@ -702,8 +706,9 @@ public class ItemServiceTests
         });
 
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+        productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
@@ -788,9 +793,9 @@ public class ItemServiceTests
         });
 
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
-
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+        productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
@@ -875,8 +880,9 @@ public class ItemServiceTests
         });
 
         itemRepository.Verify(x => x.UpdateAsync(item), Times.Once);
-        itemRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
-        purchasableRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Once);
+        
+        productRepository.Verify(x => x.BulkUpdateOrderAsync(It.IsAny<uint>()), Times.Never);
+        productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Once);
 
         fileService.Verify(x => x.DeleteImage(It.IsAny<string>()), Times.Once);
         fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);

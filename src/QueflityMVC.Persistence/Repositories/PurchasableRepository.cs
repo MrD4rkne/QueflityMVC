@@ -6,10 +6,10 @@ namespace QueflityMVC.Persistence.Repositories;
 
 public class ProductRepository(Context dbContext) : IProductRepository
 {
-    public async Task<bool> AreTheseAllVisibleProductsAsync(List<Product> purchasableModels)
+    public async Task<bool> AreTheseAllVisibleProductsAsync(List<Product> productModels)
     {
         bool isAnyNotInList = await dbContext.Set<Product>()
-            .Where(x => !purchasableModels.Contains(x))
+            .Where(x => !productModels.Contains(x))
             .AnyAsync(x => x.ShouldBeShown);
         return !isAnyNotInList;
     }
@@ -35,18 +35,18 @@ public class ProductRepository(Context dbContext) : IProductRepository
             .Include(x => (x as Kit).Elements);
     }
 
-    public async Task UpdateOrderNoAsync(Product purchasable)
+    public async Task UpdateOrderNoAsync(Product product)
     {
         uint orderNo = await GetNextOrderNumberAsync();
-        purchasable.OrderNo = orderNo;
-        dbContext.Update(purchasable);
+        product.OrderNo = orderNo;
+        dbContext.Update(product);
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateProductsOrderAsync(List<Product> purchasableModels)
+    public async Task UpdateProductsOrderAsync(List<Product> productModels)
     {
-        var entities = dbContext.Set<Product>().Where(x => purchasableModels.Contains(x));
-        await entities.ForEachAsync(x => x.OrderNo = purchasableModels.First(p => p.Id == x.Id).OrderNo);
+        var entities = dbContext.Set<Product>().Where(x => productModels.Contains(x));
+        await entities.ForEachAsync(x => x.OrderNo = productModels.First(p => p.Id == x.Id).OrderNo);
         await dbContext.SaveChangesAsync();
     }
 
@@ -72,6 +72,13 @@ public class ProductRepository(Context dbContext) : IProductRepository
             .Include(x => (x as Item).Category)
             .Include(x => (x as Item).Components)
             .Include(x => (x as Kit).Elements)
-            .FirstOrDefaultAsync(purchasable => purchasable.Id == id);
+            .FirstOrDefaultAsync(product => product.Id == id);
+    }
+
+    public Task BulkUpdateOrderAsync(uint orderNo)
+    {
+        return dbContext.Set<Product>()
+            .Where(x => x.OrderNo >= orderNo)
+            .ForEachAsync(x => x.OrderNo--);
     }
 }

@@ -10,12 +10,12 @@ public abstract class BaseRepository<T>(Context dbContext) : IBaseRepository<T>
 {
     protected readonly Context DbContext = dbContext;
 
-    public virtual async Task<int> AddAsync(T entityToAdd)
+    public virtual async Task<T> AddAsync(T entityToAdd)
     {
         DbContext.Set<T>().Add(entityToAdd);
         await DbContext.SaveChangesAsync();
 
-        return entityToAdd.Id;
+        return entityToAdd;
     }
 
     public virtual async Task DeleteAsync(int entityToDeleteId)

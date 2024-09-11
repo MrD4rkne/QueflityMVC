@@ -29,10 +29,10 @@ public static class Errors
     public static class Product
     {
         public static readonly Error InvalidOrder = new(
-            ErrorCodes.Product.INVALID_ORDER, "Order of purchasable is not valid");
+            ErrorCodes.Product.INVALID_ORDER, "Order of product is not valid");
 
         public static readonly Error ProductMissingInOrder = new(
-            ErrorCodes.Product.PURCHASABLE_MISSING_IN_ORDER, "Not every visible purchasable is in order");
+            ErrorCodes.Product.product_MISSING_IN_ORDER, "Not every visible product is in order");
 
         public static readonly Error DoesNotExist = new(
             ErrorCodes.Product.DOES_NOT_EXIST, "Product does not exist");

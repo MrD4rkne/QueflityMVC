@@ -23,7 +23,7 @@ public static class ErrorCodes
     {
         public const string DOES_NOT_EXIST = "Product.DoesNotExist";
         public const string INVALID_ORDER = "Product.NotValidOrder";
-        public const string PURCHASABLE_MISSING_IN_ORDER = "Product.ProductMissingInOrder";
+        public const string product_MISSING_IN_ORDER = "Product.ProductMissingInOrder";
     }
 
     public static class User

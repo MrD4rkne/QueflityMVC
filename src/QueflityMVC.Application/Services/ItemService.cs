@@ -20,7 +20,7 @@ public class ItemService(
     ICategoryRepository categoryRepository,
     IComponentRepository componentRepository,
     IFileService fileService,
-    IProductRepository purchasableRepository,
+    IProductRepository productRepository,
     ILogger<ItemService> logger)
     : IItemService
 {
@@ -45,7 +45,7 @@ public class ItemService(
 
         if (itemToCreate.ShouldBeShown)
         {
-            itemToCreate.OrderNo = await purchasableRepository.GetNextOrderNumberAsync();
+            itemToCreate.OrderNo = await productRepository.GetNextOrderNumberAsync();
         }
 
         await itemRepository.AddAsync(itemToCreate);
@@ -71,7 +71,7 @@ public class ItemService(
             await itemRepository.DeleteAsync(id);
             if (itemToDelete.ShouldBeShown)
             {
-                await itemRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
+                await productRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
             }
         }
         catch (ResourceNotFoundException)
@@ -156,13 +156,13 @@ public class ItemService(
         // If the item was not shown before, and now it should be, get the next order number
         if (itemToUpdate is { ShouldBeShown: true, OrderNo: null })
         {
-            itemToUpdate.OrderNo = await purchasableRepository.GetNextOrderNumberAsync();
+            itemToUpdate.OrderNo = await productRepository.GetNextOrderNumberAsync();
         }
 
         // If the item was shown before, and now it should not be, remove the order number
         if (itemToUpdate is { ShouldBeShown: false, OrderNo: not null })
         {
-            await itemRepository.BulkUpdateOrderAsync(itemToUpdate.OrderNo.Value);
+            await productRepository.BulkUpdateOrderAsync(itemToUpdate.OrderNo.Value);
             itemToUpdate.OrderNo = null;
         }
 

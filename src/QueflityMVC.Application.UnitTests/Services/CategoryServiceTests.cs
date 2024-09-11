@@ -24,7 +24,7 @@ public class CategoryServiceTests
 
         var repositoryMock = new Mock<ICategoryRepository>();
         repositoryMock.Setup(repository => repository.AddAsync(It.IsAny<Category>()))
-            .ReturnsAsync(1);
+            .ReturnsAsync((Category category) => category);
 
         var mapperMock = new Mock<IMapper>();
         mapperMock.Setup(mapper => mapper.Map<Category>(createCategoryVm))
@@ -58,7 +58,7 @@ public class CategoryServiceTests
         repositoryMock.Setup(repository => repository.DoesCategoryWithNameExistAsync(createCategoryVm.Name))
             .ReturnsAsync(true);
         repositoryMock.Setup(repository => repository.AddAsync(It.IsAny<Category>()))
-            .ReturnsAsync(1);
+            .ReturnsAsync((Category category) => category);
 
         var mapperMock = new Mock<IMapper>();
         mapperMock.Setup(mapper => mapper.Map<Category>(createCategoryVm))

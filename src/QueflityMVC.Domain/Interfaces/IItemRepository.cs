@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Domain.Interfaces;
 
-public interface IItemRepository : IBaseProductRepository<Item>
+public interface IItemRepository : IBaseRepository<Item>
 {
     IQueryable<Item> GetFilteredItems(string? nameFilter = default, int? categoryId = default);
 
@@ -11,6 +11,4 @@ public interface IItemRepository : IBaseProductRepository<Item>
     Task<bool> IsItemAPartOfAnyKitAsync(int id);
 
     Task UpdateComponentsAsync(int itemId, List<Component> components);
-
-    Task<uint?> GetOrderNoByIdAsync(int itemId);
 }

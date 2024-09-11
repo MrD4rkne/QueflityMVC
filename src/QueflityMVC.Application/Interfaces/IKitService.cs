@@ -9,7 +9,7 @@ public interface IKitService
 {
     Task AddElementAsync(ElementVm elementVm);
 
-    Task<int> CreateKitAsync(KitVm kitVm);
+    Task<Result<KitVm>> CreateKitAsync(KitVm kitVm);
 
     Task DeleteElementAsync(int kitId, int itemId);
 
@@ -17,7 +17,7 @@ public interface IKitService
 
     Task EditElementAsync(ElementVm elementVm);
 
-    Task<int> EditKitAsync(KitVm editKitVm);
+    Task<Result<KitVm>> EditKitAsync(KitVm editKitVm);
 
     Task<Result<KitDetailsVm>> GetDetailsVmAsync(int id);
 

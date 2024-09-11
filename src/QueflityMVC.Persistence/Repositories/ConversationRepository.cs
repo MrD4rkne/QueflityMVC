@@ -66,10 +66,10 @@ public class ConversationRepository(Context dbContext)
             .ThenInclude(product => product.Image);
     }
 
-    public Task<Conversation> GetConversationByProductAndUserAsync(int purchasableId, Guid userId)
+    public Task<Conversation> GetConversationByProductAndUserAsync(int productId, Guid userId)
     {
         return DbContext.Conversations
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.ProductId == purchasableId && c.UserId == userId);
+            .FirstOrDefaultAsync(c => c.ProductId == productId && c.UserId == userId);
     }
 }

@@ -15,7 +15,7 @@ using QueflityMVC.Domain.Interfaces;
 namespace QueflityMVC.Application.Services;
 
 public class MessageService(
-    IProductRepository purchasableRepository,
+    IProductRepository productRepository,
     IUserRepository userRepository,
     INotificationsService notificationsService,
     IConversationRepository conversationRepository,
@@ -23,36 +23,36 @@ public class MessageService(
     IUserContext userContext)
     : IMessageService
 {
-    public async Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int purchasableId)
+    public async Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int productId)
     {
         if (!await userRepository.HasVerifiedEmail(userContext.UserId))
         {
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
         }
 
-        var existingConversation = await GetConversationIdByProductAsync(purchasableId, userContext.UserId);
+        var existingConversation = await GetConversationIdByProductAsync(productId, userContext.UserId);
         if (existingConversation.IsSuccess)
         {
             return Result<FirstMessageInConversationVm>.Failure(Errors.Conversation.AlreadyExists);
         }
 
-        var purchasable = await purchasableRepository.GetByIdAsync(purchasableId);
-        if (purchasable is null)
+        var product = await productRepository.GetByIdAsync(productId);
+        if (product is null)
         {
             return Result<FirstMessageInConversationVm>.Failure(Errors.Product.DoesNotExist);
         }
 
         FirstMessageInConversationVm firstMessageInConversationVm = new()
         {
-            Product = mapper.Map<ProductShortVm>(purchasable),
+            Product = mapper.Map<ProductShortVm>(product),
             Email = await userRepository.GetEmailForUserAsync(userContext.UserId)
         };
         return Result<FirstMessageInConversationVm>.Success(firstMessageInConversationVm);
     }
 
-    public Task<Result<int>> GetConversationIdByProductAsync(int purchasableId)
+    public Task<Result<int>> GetConversationIdByProductAsync(int productId)
     {
-        return GetConversationIdByProductAsync(purchasableId, userContext.UserId);
+        return GetConversationIdByProductAsync(productId, userContext.UserId);
     }
 
     public async Task<Result<int>> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm)
@@ -193,7 +193,7 @@ public class MessageService(
 
     public async Task<Result<ProductShortVm>> GetProductForContactVmAsync(int productId)
     {
-        var product = await purchasableRepository.GetByIdAsync(productId);
+        var product = await productRepository.GetByIdAsync(productId);
         if (product is null)
         {
             return Result<ProductShortVm>.Failure(Errors.Product.DoesNotExist);
@@ -213,9 +213,9 @@ public class MessageService(
         return await CanRespondToConversations(userContext.UserId);
     }
 
-    private async Task<Result<int>> GetConversationIdByProductAsync(int purchasableId, Guid userId)
+    private async Task<Result<int>> GetConversationIdByProductAsync(int productId, Guid userId)
     {
-        var conversation = await conversationRepository.GetConversationByProductAndUserAsync(purchasableId, userId);
+        var conversation = await conversationRepository.GetConversationByProductAndUserAsync(productId, userId);
         if (conversation is not null)
         {
             return Result<int>.Success(conversation.Id);

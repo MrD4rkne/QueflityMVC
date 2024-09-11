@@ -13,7 +13,7 @@ public class EntitySeeder
     private const int KITS_COUNT = 10;
     private const int IMAGES_COUNT = ITEMS_COUNT + KITS_COUNT;
     private const int ELEMENTS_COUNT = 15;
-    private const int VISIBLE_PURCHASABLE = 10;
+    private const int VISIBLE_product = 10;
 
     private readonly HashSet<uint> _orderNumbers = [];
     private int _visibleProduct;
@@ -172,7 +172,7 @@ public class EntitySeeder
         uint orderNumber;
         do
         {
-            orderNumber = (uint)Random.Shared.Next(0, VISIBLE_PURCHASABLE);
+            orderNumber = (uint)Random.Shared.Next(0, VISIBLE_product);
         } while (_orderNumbers.Contains(orderNumber));
 
         _orderNumbers.Add(orderNumber);
@@ -181,7 +181,7 @@ public class EntitySeeder
 
     private bool GetVisibility()
     {
-        if (_visibleProduct >= VISIBLE_PURCHASABLE)
+        if (_visibleProduct >= VISIBLE_product)
         {
             return false;
         }

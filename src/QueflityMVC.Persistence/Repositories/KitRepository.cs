@@ -2,10 +2,11 @@
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
+using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;
 
-public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbContext), IKitRepository
+public class KitRepository(Context dbContext) : BaseRepository<Kit>(dbContext), IKitRepository
 {
     public override Task<Kit?> GetByIdAsync(int entityId)
     {
@@ -114,24 +115,13 @@ public class KitRepository(Context dbContext) : BaseProductRepository<Kit>(dbCon
                                  .Include(Kit => Kit.Image)
                                  .FirstOrDefaultAsync(kit => kit.Id == entityToUpdate.Id) ??
                              throw new ResourceNotFoundException(entityName: nameof(Kit));
-        uint? oldOrderNo = originalEntity.OrderNo;
-
         originalEntity.Name = entityToUpdate.Name;
         originalEntity.Description = entityToUpdate.Description;
         originalEntity.ShouldBeShown = entityToUpdate.ShouldBeShown;
         originalEntity.Image.AltDescription = entityToUpdate.Image.AltDescription;
         originalEntity.Image.FileUrl = entityToUpdate.Image.FileUrl;
 
-        var strategy = DbContext.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(async () =>
-        {
-            if (oldOrderNo.HasValue)
-            {
-                await BulkUpdateOrderAsync(oldOrderNo.Value);
-            }
-
-            await DbContext.SaveChangesAsync();
-        });
+        await DbContext.SaveChangesAsync();
         return originalEntity;
     }
 
