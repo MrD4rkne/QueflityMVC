@@ -7,7 +7,9 @@ using Moq;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.Services;
+using QueflityMVC.Application.ViewModels.Element;
 using QueflityMVC.Application.ViewModels.Image;
+using QueflityMVC.Application.ViewModels.Item;
 using QueflityMVC.Application.ViewModels.Kit;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
@@ -491,8 +493,8 @@ public class KitServiceTests
                                                                    kit.Image.FileUrl == fileUrl &&
                                                                    kit.Image.AltDescription == altDescription &&
                                                                    kit.ShouldBeShown == true &&
-                                                                   kit.OrderNo==orderNo)), Times.Once);
-        
+                                                                   kit.OrderNo == orderNo)), Times.Once);
+
         _productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Once);
         _productRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
     }
@@ -537,7 +539,7 @@ public class KitServiceTests
         _kitRepository.Verify(x => x.UpdateAsync(It.IsAny<Kit>()), Times.Never);
         _productRepository.Verify(x => x.GetNextOrderNumberAsync(), Times.Never);
     }
-    
+
     [Fact]
     public async Task Edit_EditKitAsync_ImageChanged_VisibilityNotChanged_OnIFileServiceException_ReturnError()
     {
@@ -562,7 +564,7 @@ public class KitServiceTests
             ShouldBeShown = true,
             Id = id
         };
-        
+
         string oldUrl = "oldUrl";
         _fileService.Setup(x => x.UploadFileAsync(It.IsAny<IFormFile>()))
             .ThrowsAsync(new Exception());
@@ -595,13 +597,322 @@ public class KitServiceTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe(Errors.Files.FileUploadFailed.Code);
-        
+
         _fileService.Verify(x => x.DeleteImage(oldUrl), Times.Never);
         _fileService.Verify(x => x.UploadFileAsync(It.IsAny<IFormFile>()), Times.Once);
 
         _kitRepository.Verify(x => x.UpdateAsync(It.IsAny<Kit>()), Times.Never);
-        
+
         _productRepository.Verify(x => x.BulkUpdateOrderAsync(orderNo), Times.Never);
+    }
+
+    [Fact]
+    public async Task Get_GetDetailsVmAsync_ReturnSuccess()
+    {
+        // Arrange
+        int kitId = 1;
+        string name = "Kit";
+        string description = "Description";
+        string altDescription = "AltDescription";
+        string fileUrl = "fileUrl";
+        bool shouldBeShown = true;
+        uint orderNo = 2;
+
+        int itemId = 1;
+        string itemName = "Item";
+        int itemCategoryId = 1;
+        string itemCategoryName = "Category";
+        string itemFileUrl = "itemFileUrl";
+        string itemAltDescription = "itemAltDescription";
+        decimal itemPrice = 3;
+        bool itemShouldBeShown = true;
+
+        Item item = new Item
+        {
+            Id = itemId,
+            Name = itemName,
+            CategoryId = itemCategoryId,
+            Category = new Category
+            {
+                Id = itemCategoryId,
+                Name = itemCategoryName
+            },
+            Image = new Image
+            {
+                FileUrl = itemFileUrl,
+                AltDescription = itemAltDescription
+            },
+            ShouldBeShown = itemShouldBeShown
+        };
+
+        item.SetPrice(itemPrice);
+
+        int elementId = 1;
+        uint itemsAmount = 2;
+        decimal pricePerItem = 3;
+
+        ICollection<Element> elements = new List<Element>
+        {
+            new Element
+            {
+                Id = elementId,
+                ItemsAmount = itemsAmount,
+                PricePerItem = pricePerItem,
+                KitId = kitId,
+                ItemId = itemId,
+                Item = item
+            }
+        };
+
+        decimal kitPrice = elements.Sum(e => e.ItemsAmount * e.PricePerItem);
+
+        Kit kit = new Kit()
+        {
+            Id = kitId,
+            Name = name,
+            Description = description,
+            Image = new Image
+            {
+                FileUrl = fileUrl,
+                AltDescription = altDescription
+            },
+            Elements = elements,
+            ShouldBeShown = shouldBeShown,
+            OrderNo = orderNo
+        };
+
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync(kit);
+
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(true);
+        _kitRepository.Setup(x => x.GetFullKitWithMembershipsByIdAsync(kitId))
+            .ReturnsAsync(kit);
+        
+        _mapper.Setup(x => x.Map<KitDetailsVm>(It.IsAny<Kit>()))
+            .Returns((Kit mappedKit)=>MapKitToDetailsVm(mappedKit));
+
+        // Act
+        var result = await _kitService.GetDetailsVmAsync(kitId);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBeEquivalentTo(new KitDetailsVm()
+        {
+            Id = kitId,
+            Name = name,
+            Image = new ImageVm()
+            {
+                FileUrl = fileUrl,
+                AltDescription = altDescription
+            },
+            Price = kitPrice,
+            ShouldBeShown = shouldBeShown,
+            ItemMemberships =
+            [
+                new()
+                {
+                    Id = elementId,
+                    ItemsAmount = itemsAmount,
+                    PricePerItem = pricePerItem,
+                    Item = new ItemVm()
+                    {
+                        Id = itemId,
+                        Name = itemName,
+                        ShouldBeShown = itemShouldBeShown,
+                        Price = itemPrice,
+                        CategoryId = itemCategoryId,
+                        Image = new ImageVm()
+                        {
+                            FileUrl = itemFileUrl,
+                            AltDescription = itemAltDescription
+                        }
+                    },
+                    KitId = kitId
+                }
+            ]
+        });
+    }
+
+    [Fact]
+    public async Task Get_GetDetailsVmAsync_OnNonExisting_ReturnError()
+    {
+        // Arrange
+        int kitId = 1;
+        
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync((Kit)null);
+        _kitRepository.Setup(x => x.GetFullKitWithMembershipsByIdAsync(kitId))
+            .ReturnsAsync((Kit)null);
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(false);
+        
+        // Act
+        var result = await _kitService.GetDetailsVmAsync(kitId);
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(Errors.Kits.DoesNotExit.Code);
+    }
+    
+    [Fact]
+    public async Task Get_GetKitVmForEditAsync_ReturnSuccess()
+    {
+        // Arrange
+        int kitId = 1;
+        string name = "Kit";
+        string description = "Description";
+        string altDescription = "AltDescription";
+        string fileUrl = "fileUrl";
+        bool shouldBeShown = true;
+        uint orderNo = 2;
+
+        int itemId = 1;
+        string itemName = "Item";
+        int itemCategoryId = 1;
+        string itemCategoryName = "Category";
+        string itemFileUrl = "itemFileUrl";
+        string itemAltDescription = "itemAltDescription";
+        decimal itemPrice = 3;
+        bool itemShouldBeShown = true;
+
+        Item item = new Item
+        {
+            Id = itemId,
+            Name = itemName,
+            CategoryId = itemCategoryId,
+            Category = new Category
+            {
+                Id = itemCategoryId,
+                Name = itemCategoryName
+            },
+            Image = new Image
+            {
+                FileUrl = itemFileUrl,
+                AltDescription = itemAltDescription
+            },
+            ShouldBeShown = itemShouldBeShown
+        };
+
+        item.SetPrice(itemPrice);
+
+        int elementId = 1;
+        uint itemsAmount = 2;
+        decimal pricePerItem = 3;
+
+        ICollection<Element> elements = new List<Element>
+        {
+            new Element
+            {
+                Id = elementId,
+                ItemsAmount = itemsAmount,
+                PricePerItem = pricePerItem,
+                KitId = kitId,
+                ItemId = itemId,
+                Item = item
+            }
+        };
+
+        decimal kitPrice = elements.Sum(e => e.ItemsAmount * e.PricePerItem);
+
+        Kit kit = new Kit()
+        {
+            Id = kitId,
+            Name = name,
+            Description = description,
+            Image = new Image
+            {
+                FileUrl = fileUrl,
+                AltDescription = altDescription
+            },
+            Elements = elements,
+            ShouldBeShown = shouldBeShown,
+            OrderNo = orderNo
+        };
+
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync(kit);
+
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(true);
+        _kitRepository.Setup(x => x.GetFullKitWithMembershipsByIdAsync(kitId))
+            .ReturnsAsync(kit);
+
+        // Act
+        var result = await _kitService.GetKitVmForEditAsync(kitId);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBeEquivalentTo(new KitVm()
+        {
+            Id = kitId,
+            Name = name,
+            Description = description,
+            Image = new ImageVm()
+            {
+                FileUrl = fileUrl,
+                AltDescription = altDescription
+            },
+            Price = kitPrice,
+            ShouldBeShown = shouldBeShown
+        });
+    }
+    
+    [Fact]
+    public async Task Get_GetKitVmForEditAsync_OnNonExisting_ReturnError()
+    {
+        // Arrange
+        int kitId = 1;
+        
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync((Kit)null);
+        _kitRepository.Setup(x => x.GetFullKitWithMembershipsByIdAsync(kitId))
+            .ReturnsAsync((Kit)null);
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(false);
+        
+        // Act
+        var result = await _kitService.GetKitVmForEditAsync(kitId);
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(Errors.Kits.DoesNotExit.Code);
+    }
+
+    private KitDetailsVm MapKitToDetailsVm(Kit kit)
+    {
+        return new KitDetailsVm()
+        {
+            Id = kit.Id,
+            Name = kit.Name,
+            Price = kit.Price,
+            Image = new ImageVm()
+            {
+                FileUrl = kit.Image.FileUrl,
+                AltDescription = kit.Image.AltDescription
+            },
+            ShouldBeShown = kit.ShouldBeShown,
+            ItemMemberships = kit.Elements.Select(e => new ElementForListVm()
+            {
+                Id = e.Id,
+                ItemsAmount = e.ItemsAmount,
+                PricePerItem = e.PricePerItem,
+                Item = new ItemVm()
+                {
+                    Id = e.Item.Id,
+                    Name = e.Item.Name,
+                    Price = e.Item.Price,
+                    ShouldBeShown = e.Item.ShouldBeShown,
+                    CategoryId = e.Item.CategoryId,
+                    Image = new ImageVm()
+                    {
+                        FileUrl = e.Item.Image.FileUrl,
+                        AltDescription = e.Item.Image.AltDescription
+                    }
+                },
+                KitId = e.KitId
+            }).ToList()
+        };
     }
 
     private Kit MapKitFromVm(KitVm kitVm)
@@ -633,7 +944,8 @@ public class KitServiceTests
                 FileUrl = kit.Image.FileUrl,
                 AltDescription = kit.Image.AltDescription
             },
-            ShouldBeShown = kit.ShouldBeShown
+            ShouldBeShown = kit.ShouldBeShown,
+            Price = kit.Price
         };
         return kitVm;
     }
