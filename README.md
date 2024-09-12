@@ -23,7 +23,7 @@ components, categorize them, specify ingredients, and control access through a s
 - **.NET MVC**: Adheres to the Model-View-Controller (MVC) pattern, ensuring structured development and separation of
   concerns.
 - **Docker**: Utilized as the runtime environment, ensuring consistency and portability across different platforms.
-- **Clean Architecture**: Employs a repository-service pattern, enhancing maintainability and testability.
+- **Onion Architecture**: Employs a repository-service pattern, enhancing maintainability and testability.
 - **FluentValidation**: Used for both frontend and backend validation, simplifying the process and ensuring data
   integrity.
 - **Bogus**: Streamlines test data generation during development, aiding efficient testing and debugging.
