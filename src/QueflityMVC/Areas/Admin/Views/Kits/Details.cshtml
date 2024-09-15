@@ -74,7 +74,7 @@
                     <div class="btn-group" role="group" aria-label="Manage membership">
                         @if (canEditEntities)
                         {
-                            <a asp-action="EditComponent" asp-route-area="Admin" asp-route-mitemId="@itemMembership.Item.Id"
+                            <a asp-action="EditComponent" asp-route-area="Admin" asp-route-itemId="@itemMembership.Item.Id"
                                asp-route-kitId="@itemMembership.KitId" class="btn btn-outline-secondary btn-sm">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
