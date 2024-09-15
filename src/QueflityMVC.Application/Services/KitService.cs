@@ -236,6 +236,18 @@ public class KitService(
         return Result<ElementVm>.Success(elementToEdit);
     }
 
+    public async Task<Result<int>> GetElementCount(int id)
+    {
+            var kit = await kitRepository.GetFullKitWithMembershipsByIdAsync(id);
+            if (kit is null)
+            {
+                return Result<int>.Failure(Errors.Elements.DoesNotExist);
+            }
+
+            var elementCount = kit.Elements.Count;
+            return Result<int>.Success(elementCount);
+    }
+
     public async Task<Result> EditElementAsync(ElementVm elementToEditVm)
     {
         var elementToEdit = await kitRepository.GetElementAsync(elementToEditVm.Id);
@@ -249,18 +261,6 @@ public class KitService(
         
         await kitRepository.UpdateElementAsync(elementToEdit);
         return Result.Success();
-    }
-
-    public async Task<Result<int>> GetElementCount(int kitId)
-    {
-        var kit = await kitRepository.GetFullKitWithMembershipsByIdAsync(kitId);
-        if (kit is null)
-        {
-            return Result<int>.Failure(Errors.Elements.DoesNotExist);
-        }
-        
-        var elementCount = kit.Elements.Count;
-        return Result<int>.Success(elementCount);
     }
 
     public async Task<Result> DeleteElementAsync(int kitId, int itemId)
