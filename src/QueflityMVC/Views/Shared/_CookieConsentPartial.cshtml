@@ -50,21 +50,20 @@
 </div>
 
 <script>
-    @if (!hasConsent)
-    {
-        <text>;
-    $(document).ready(function () {
-        $("#cookieConsent").modal('show');
-    });
-    setPolicyButtons(false);
-    </text>
-    }
-    else
-    {
-        <text>;
-    setPolicyButtons(true);
-    </text>
-    };
+        $(document).ready(function () {
+            @if (!hasConsent)
+            {
+                <text>
+                    $("#cookieConsent").modal('show');
+                    setPolicyButtons(false);
+                </text>
+            }
+            else{
+                <text>
+                    setPolicyButtons(true);
+                </text>
+            }
+        });
 
     function setPolicyButtons(hasConsent) {
         document.getElementById("cookiesAcceptButton").disabled = hasConsent;
@@ -80,5 +79,6 @@
         document.cookie = ".AspNet.Consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         setPolicyButtons(false);
     }
+
 
 </script>
