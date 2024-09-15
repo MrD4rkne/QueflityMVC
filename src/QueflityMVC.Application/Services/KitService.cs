@@ -169,12 +169,26 @@ public class KitService(
         return Result<ListItemsForComponentsVm>.Success(itemsForComponentsVm);
     }
 
-    public async Task<ElementVm> GetVmForAddingElementAsync(int kitId, int itemId)
+    public async Task<Result<ElementVm>> GetVmForAddingElementAsync(int kitId, int itemId)
     {
-        var kit = await kitRepository.GetFullKitWithMembershipsByIdAsync(kitId) ??
-                  throw new EntityNotFoundException(entityName: nameof(Kit));
-        var item = await itemRepository.GetByIdAsync(itemId) ??
-                   throw new EntityNotFoundException(entityName: nameof(Item));
+        var kit = await kitRepository.GetFullKitWithMembershipsByIdAsync(kitId);
+        if (kit is null)
+        {
+            return Result<ElementVm>.Failure(Errors.Kits.DoesNotExit);
+        }
+
+        var item = await itemRepository.GetByIdAsync(itemId);
+        if (item is null)
+        {
+            return Result<ElementVm>.Failure(Errors.Items.DoesNotExit);
+        }
+        
+        var element = await kitRepository.GetElementAsync(kitId, itemId);
+        if (element is not null)
+        {
+            return Result<ElementVm>.Failure(Errors.Elements.AlreadyExists);
+        }
+        
         ElementVm elementVm = new()
         {
             KitDetailsVm = mapper.Map<KitDetailsVm>(kit),
@@ -182,37 +196,83 @@ public class KitService(
             ItemsAmount = 1,
             PricePerItem = item.Price
         };
-        return elementVm;
+        return Result<ElementVm>.Success(elementVm);
     }
 
-    public async Task AddElementAsync(ElementVm elementToCreate)
+    public async Task<Result> AddElementAsync(ElementVm elementToCreateVm)
     {
-        var componentToCreate = mapper.Map<Element>(elementToCreate);
-        await kitRepository.AddComponentAsync(componentToCreate);
+        var elementToCreate = mapper.Map<Element>(elementToCreateVm);
+        
+        // Check if element already exists.
+        if(await kitRepository.GetElementAsync(elementToCreate.KitId, elementToCreate.ItemId) is not null)
+        {
+            return Result.Failure(Errors.Elements.AlreadyExists);
+        }
+        
+        // Check if kit and item exist.
+        if(!await kitRepository.ExistsAsync(elementToCreate.KitId))
+        {
+            return Result.Failure(Errors.Kits.DoesNotExit);
+        }
+        
+        if(!await itemRepository.ExistsAsync(elementToCreate.ItemId))
+        {
+            return Result.Failure(Errors.Items.DoesNotExit);
+        }
+        
+        await kitRepository.AddComponentAsync(elementToCreate);
+        return Result.Success();
     }
-
-    public Task EditElementAsync(ElementVm elementToEdit)
+    
+    public async Task<Result<ElementVm>> GetVmForEditingElementAsync(int kitId, int itemId)
     {
-        var componentToEdit = mapper.Map<Element>(elementToEdit);
-        return kitRepository.UpdateElementAsync(componentToEdit);
-    }
-
-    public async Task<ElementVm> GetVmForEditingElementAsync(int kitId, int itemId)
-    {
-        var element = await kitRepository.GetElementAsync(kitId, itemId) ??
-                      throw new EntityNotFoundException(entityName: nameof(Element));
+        var element = await kitRepository.GetElementAsync(kitId, itemId);
+        if (element is null)
+        {
+            return Result<ElementVm>.Failure(Errors.Elements.DoesNotExist);
+        }
+        
         var elementToEdit = mapper.Map<ElementVm>(element);
-        return elementToEdit;
+        return Result<ElementVm>.Success(elementToEdit);
     }
 
-    public Task<int> GetElementCount(int id)
+    public async Task<Result> EditElementAsync(ElementVm elementToEditVm)
     {
-        return kitRepository.GetElementCount(id);
+        var elementToEdit = await kitRepository.GetElementAsync(elementToEditVm.Id);
+        if (elementToEdit is null)
+        {
+            return Result.Failure(Errors.Elements.DoesNotExist);
+        }
+        
+        elementToEdit.ItemsAmount = elementToEditVm.ItemsAmount;
+        elementToEdit.PricePerItem = elementToEditVm.PricePerItem;
+        
+        await kitRepository.UpdateElementAsync(elementToEdit);
+        return Result.Success();
     }
 
-    public async Task DeleteElementAsync(int kitId, int itemId)
+    public async Task<Result<int>> GetElementCount(int kitId)
     {
-        await kitRepository.DeleteElementAsync(kitId, itemId);
+        var kit = await kitRepository.GetFullKitWithMembershipsByIdAsync(kitId);
+        if (kit is null)
+        {
+            return Result<int>.Failure(Errors.Elements.DoesNotExist);
+        }
+        
+        var elementCount = kit.Elements.Count;
+        return Result<int>.Success(elementCount);
+    }
+
+    public async Task<Result> DeleteElementAsync(int kitId, int itemId)
+    {
+        var elementToDelete = await kitRepository.GetElementAsync(kitId, itemId);
+        if (elementToDelete is null)
+        {
+            return Result.Failure(Errors.Elements.DoesNotExist);
+        }
+        
+        await kitRepository.DeleteElementAsync(elementToDelete.Id);
+        return Result.Success();
     }
 
     public async Task<Result> DeleteKitAsync(int id)
@@ -226,6 +286,7 @@ public class KitService(
         try
         {
             await kitRepository.DeleteAsync(id);
+            
             fileService.DeleteImage(kitToDelete.Image.FileUrl);
             if (kitToDelete.ShouldBeShown)
             {

@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
@@ -130,12 +131,20 @@ public class KitsController(
             return BadRequest();
         }
 
-        editedKitVm.ElementCount = await kitService.GetElementCount(editedKitVm.Id);
         var validationResults = await kitValidator.ValidateAsync(editedKitVm);
         if (!validationResults.IsValid)
         {
-            validationResults.AddToModelState(ModelState);
-            return View("Edit", editedKitVm);
+            var elementsCountResult = await kitService.GetElementCount(editedKitVm.Id);
+            switch (elementsCountResult)
+            {
+                case { IsSuccess: true }:
+                    validationResults.AddToModelState(ModelState);
+                    return View("Edit", editedKitVm);
+                case { IsFailure: true, Error.Code: ErrorCodes.Elements.DOES_NOT_EXIST }:
+                    return NotFound();
+                default:
+                    return this.RedirectToError();
+            }
         }
 
         var result = await kitService.EditKitAsync(editedKitVm);
@@ -210,8 +219,21 @@ public class KitsController(
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> AddComponent(int kitId, int itemId)
     {
-        var addingComponentVm = await kitService.GetVmForAddingElementAsync(kitId, itemId);
-        return View(addingComponentVm);
+        var addingComponentVmResult = await kitService.GetVmForAddingElementAsync(kitId, itemId);
+        switch (addingComponentVmResult)
+        {
+            case { IsSuccess: true }:
+                return View(addingComponentVmResult.Value);
+            case { IsFailure: true, Error.Code: ErrorCodes.Kits.DOES_NOT_EXIST }:
+            case { IsFailure: true, Error.Code: ErrorCodes.Items.DOES_NOT_EXIST }:
+                return NotFound();
+            case { IsFailure: true, Error.Code: ErrorCodes.Elements.ALREADY_EXISTS }:
+                return RedirectToAction("EditComponent", new { kitId, itemId });
+            default:
+                logger.LogError("Failed to get adding component view model: {kitId}, {itemId}: {error}",
+                    kitId, itemId, addingComponentVmResult.Error);
+                return this.RedirectToError();
+        }
     }
 
     [Route("AddComponent")]
@@ -236,8 +258,18 @@ public class KitsController(
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> EditComponent(int kitId, int itemId)
     {
-        var addingComponentVm = await kitService.GetVmForEditingElementAsync(kitId, itemId);
-        return View(addingComponentVm);
+        var getElementForEditResult = await kitService.GetVmForEditingElementAsync(kitId, itemId);
+        switch (getElementForEditResult)
+        {
+            case {IsSuccess:true}:
+                return View(getElementForEditResult.Value);
+            case {IsFailure:true, Error.Code: ErrorCodes.Elements.DOES_NOT_EXIST}:
+                return NotFound();
+            default:
+                logger.LogError("Failed to get edit element view model: {kitId}, {itemId}: {error}",
+                    kitId, itemId, getElementForEditResult.Error);
+                return this.RedirectToError();
+        }
     }
 
     [Route("EditComponent")]
@@ -253,8 +285,17 @@ public class KitsController(
             return View("AddComponent", elementVm);
         }
 
-        await kitService.EditElementAsync(elementVm);
-        return RedirectToAction("Details", new { id = elementVm.KitDetailsVm.Id });
+        var editResult = await kitService.EditElementAsync(elementVm);
+        switch (editResult)
+        {
+            case {IsSuccess:true}:
+                return RedirectToAction("Details", new {id = elementVm.KitDetailsVm.Id});
+            case {IsFailure:true, Error.Code: ErrorCodes.Elements.DOES_NOT_EXIST}:
+                return NotFound();
+            default:
+                logger.LogError("Failed to edit element: {elementVm}: {error}", elementVm, editResult.Error);
+                return this.RedirectToError();
+        }
     }
 
     [Route("DeleteComponent")]
@@ -262,7 +303,16 @@ public class KitsController(
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> DeleteComponent(int kitId, int itemId)
     {
-        await kitService.DeleteElementAsync(kitId, itemId);
-        return RedirectToAction("Details", new { id = kitId });
+        var deleteResult=await kitService.DeleteElementAsync(kitId, itemId);
+        switch (deleteResult)
+        {
+            case {IsSuccess:true}:
+                return RedirectToAction("Details", new {id = kitId});
+            case {IsFailure:true, Error.Code: ErrorCodes.Elements.DOES_NOT_EXIST}:
+                return NotFound();
+            default:
+                logger.LogError("Failed to delete element: {kitId}, {itemId}: {error}", kitId, itemId, deleteResult.Error);
+                return this.RedirectToError();
+        }
     }
 }

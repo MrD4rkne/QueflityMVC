@@ -7,15 +7,15 @@ namespace QueflityMVC.Application.Interfaces;
 
 public interface IKitService
 {
-    Task AddElementAsync(ElementVm elementVm);
+    Task<Result> AddElementAsync(ElementVm elementVm);
 
     Task<Result<KitVm>> CreateKitAsync(KitVm kitVm);
 
-    Task DeleteElementAsync(int kitId, int itemId);
+    Task<Result> DeleteElementAsync(int kitId, int itemId);
 
     Task<Result> DeleteKitAsync(int id);
 
-    Task EditElementAsync(ElementVm elementVm);
+    Task<Result> EditElementAsync(ElementVm elementVm);
 
     Task<Result<KitVm>> EditKitAsync(KitVm editKitVm);
 
@@ -30,9 +30,9 @@ public interface IKitService
 
     Task<Result<KitVm>> GetKitVmForEditAsync(int id);
 
-    Task<ElementVm> GetVmForAddingElementAsync(int kitId, int itemId);
+    Task<Result<ElementVm>> GetVmForAddingElementAsync(int kitId, int itemId);
 
-    Task<ElementVm> GetVmForEditingElementAsync(int kitId, int itemId);
+    Task<Result<ElementVm>> GetVmForEditingElementAsync(int kitId, int itemId);
 
-    Task<int> GetElementCount(int id);
+    Task<Result<int>> GetElementCount(int kitId);
 }

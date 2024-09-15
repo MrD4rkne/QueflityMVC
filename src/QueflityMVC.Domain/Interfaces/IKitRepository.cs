@@ -15,10 +15,12 @@ public interface IKitRepository : IBaseRepository<Kit>
     Task AddComponentAsync(Element componentToCreate);
 
     Task<Element?> GetElementAsync(int kitId, int itemId);
+    
+    Task<Element?> GetElementAsync(int elementId);
 
     Task UpdateElementAsync(Element componentToEdit);
 
     Task DeleteElementAsync(int kitId, int itemId);
-
-    Task<int> GetElementCount(int kitId);
+    
+    Task DeleteElementAsync(int elementId);
 }
