@@ -59,4 +59,10 @@ public static class ErrorCodes
     {
         public const string COULD_NOT_SEND = "Emails.CouldNotSend";
     }
+
+    public static class Elements
+    {
+        public const string DOES_NOT_EXIST = "Elements.DoesNotExist";
+        public const string ALREADY_EXISTS = "Elements.AlreadyExists";
+    }
 }

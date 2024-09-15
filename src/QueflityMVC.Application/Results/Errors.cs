@@ -88,4 +88,13 @@ public static class Errors
         public static readonly Error CouldNotSentEmail = new(
             ErrorCodes.Emails.COULD_NOT_SEND, "Could not send email");
     }
+    
+    public static class Elements
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Elements.DOES_NOT_EXIST, "Element does not exist");
+
+        public static readonly Error AlreadyExists = new(
+            ErrorCodes.Elements.ALREADY_EXISTS, "Element already exists");
+    }
 }

@@ -77,9 +77,16 @@ public class KitRepository(Context dbContext) : BaseRepository<Kit>(dbContext), 
             .FirstOrDefaultAsync();
     }
 
+    public Task<Element?> GetElementAsync(int elementId)
+    {
+        return DbContext.SetElements
+            .Where(element => element.Id == elementId)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task UpdateElementAsync(Element element)
     {
-        var elementToEdit = await DbContext.SetElements.FindAsync() ??
+        var elementToEdit = await DbContext.SetElements.FindAsync(element.Id) ??
                             throw new ResourceNotFoundException(entityName: nameof(Element));
         elementToEdit.PricePerItem = elementToEdit.PricePerItem;
         elementToEdit.ItemsAmount = elementToEdit.ItemsAmount;
@@ -95,18 +102,20 @@ public class KitRepository(Context dbContext) : BaseRepository<Kit>(dbContext), 
             throw new ResourceNotFoundException(nameof(Element));
         }
 
-        var kit = await GetFullKitWithMembershipsByIdAsync(kitId) ??
-                  throw new ResourceNotFoundException(entityName: nameof(Kit));
-
         DbContext.Remove(elemToDelete);
         await DbContext.SaveChangesAsync();
     }
-
-    public Task<int> GetElementCount(int kitId)
+    
+    public async Task DeleteElementAsync(int elementId)
     {
-        return DbContext.SetElements
-            .AsNoTracking()
-            .CountAsync(x => x.KitId == kitId);
+        var elemToDelete = await DbContext.SetElements.FindAsync(elementId);
+        if (elemToDelete is null)
+        {
+            throw new ResourceNotFoundException(nameof(Element));
+        }
+
+        DbContext.Remove(elemToDelete);
+        await DbContext.SaveChangesAsync();
     }
 
     public override async Task<Kit> UpdateAsync(Kit entityToUpdate)
