@@ -879,6 +879,267 @@ public class KitServiceTests
         result.Error.Code.ShouldBe(Errors.Kits.DoesNotExit.Code);
     }
 
+    [Fact]
+    public async Task Update_EditElementAsync_OnDoesNotExist_ReturnError()
+    {
+        // Arrange
+        int kitId = 1;
+        int elementId = 1;
+        int itemId = 1;
+        uint itemsAmount = 2;
+        decimal pricePerItem = 3;
+
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(false);
+        
+        ElementVm elementVm = new ElementVm()
+        {
+            Id = elementId,
+            Item = new ItemVm()
+            {
+                Id = itemId
+            },
+            KitDetailsVm= new KitDetailsVm()
+            {
+                Id = kitId,
+                ItemMemberships = [],
+                Name = "Kit",
+                Price = 0,
+                ShouldBeShown = true,
+                Image = new ImageVm()
+                {
+                    FileUrl = "fileUrl",
+                    AltDescription = "AltDescription"
+                }
+            },
+            ItemsAmount = itemsAmount,
+            PricePerItem = pricePerItem
+        };
+        
+        _kitRepository.Setup(x => x.GetElementAsync(elementId))
+            .ReturnsAsync((Element)null);
+
+        // Act
+        var result = await _kitService.EditElementAsync(elementVm);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ErrorCodes.Elements.DOES_NOT_EXIST);
+    }
+    
+    [Fact]
+    public async Task Update_EditElementAsync_ReturnSuccess()
+    {
+        // Arrange
+        int kitId = 1;
+        int elementId = 1;
+        int itemId = 1;
+        uint itemsAmount = 2;
+        decimal pricePerItem = 3;
+        
+        uint newItemsAmount = 2;
+        decimal newPricePerItem = 3;
+        
+        Item item = new Item
+        {
+            Id = itemId,
+            Name = "Item",
+            CategoryId = 1,
+            Category = new Category
+            {
+                Id = 1,
+                Name = "Category"
+            },
+            Image = new Image
+            {
+                FileUrl = "itemFileUrl",
+                AltDescription = "itemAltDescription"
+            },
+            ShouldBeShown = true
+        };
+        
+        Kit kit = new Kit()
+        {
+            Id = kitId,
+            Name = "Kit",
+            Description = "Description",
+            Image = new Image
+            {
+                FileUrl = "fileUrl",
+                AltDescription = "AltDescription"
+            },
+            ShouldBeShown = true,
+            Elements = []
+        };
+
+        Element elem = new Element()
+        {
+            Id = elementId,
+            KitId = kitId,
+            ItemId = itemId,
+            ItemsAmount = itemsAmount,
+            PricePerItem = pricePerItem,
+            Item = item,
+            Kit = kit
+        };
+        kit.Elements.Add(elem);
+
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(false);
+        
+        ElementVm elementVm = new ElementVm()
+        {
+            Id = elementId,
+            Item = new ItemVm()
+            {
+                Id = itemId,
+                Name = item.Name,
+                Price = item.Price,
+                ShouldBeShown = item.ShouldBeShown,
+                CategoryId = item.CategoryId,
+                Image = new ImageVm()
+                {
+                    FileUrl = item.Image.FileUrl,
+                    AltDescription = item.Image.AltDescription
+                }
+            },
+            KitDetailsVm= MapKitToDetailsVm(kit),
+            ItemsAmount = newItemsAmount,
+            PricePerItem = newPricePerItem
+        };
+        
+        _kitRepository.Setup(x => x.GetElementAsync(elementId))
+            .ReturnsAsync(new Element()
+            {
+                Id = elementId,
+                KitId = kitId,
+                ItemId = itemId,
+                ItemsAmount = itemsAmount,
+                PricePerItem = pricePerItem
+            });
+        _kitRepository.Setup(x => x.UpdateElementAsync(It.IsAny<Element>()));
+        _kitRepository.Setup(x=>x.GetByIdAsync(kitId))
+            .ReturnsAsync(kit);
+        
+        _itemRepository.Setup(x => x.GetByIdAsync(itemId))
+            .ReturnsAsync(item);
+
+        // Act
+        var result = await _kitService.EditElementAsync(elementVm);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        _kitRepository.Verify(x=>x.UpdateElementAsync(It.Is<Element>(e=>e.Id==elementId &&
+                                                                        e.KitId==kitId &&
+                                                                        e.ItemId==itemId &&
+                                                                        e.ItemsAmount==newItemsAmount &&
+                                                                        e.PricePerItem==newPricePerItem)),Times.Once);
+    }
+
+    [Fact]
+    public async Task Get_GetElementCount_OnNonExistingElement_ReturnError()
+    {
+        // Arrange
+        int kitId = 1;
+        int elementId = 1;
+        
+        _kitRepository.Setup(x => x.GetElementAsync(elementId))
+            .ReturnsAsync((Element)null);
+        
+        // Act
+        var result = await _kitService.GetElementCount(elementId);
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ErrorCodes.Elements.DOES_NOT_EXIST);
+    }
+    
+    [Fact]
+    public async Task Get_GetElementCount_ReturnSuccess()
+    {
+        // Arrange
+        int kitId = 1;
+        int elementId = 2;
+        
+        Kit kit = new Kit()
+        {
+            Id = kitId,
+            Name = "Kit",
+            Description = "Description",
+            Image = new Image
+            {
+                FileUrl = "fileUrl",
+                AltDescription = "AltDescription"
+            },
+            ShouldBeShown = true,
+            Elements = [
+                new Element()
+                {
+                    Id = elementId,
+                    KitId = kitId,
+                    ItemId = 1,
+                    ItemsAmount = 2,
+                    PricePerItem = 3,
+                    Item = new Item
+                    {
+                        Id = 1,
+                        Name = "Item",
+                        CategoryId = 1,
+                        Category = new Category
+                        {
+                            Id = 1,
+                            Name = "Category"
+                        },
+                        Image = new Image
+                        {
+                            FileUrl = "itemFileUrl",
+                            AltDescription = "itemAltDescription"
+                        },
+                        ShouldBeShown = true
+                    }
+                },
+                new Element()
+                {
+                    Id = elementId+1,
+                    KitId = kitId,
+                    ItemId = 2,
+                    ItemsAmount = 2,
+                    PricePerItem = 3,
+                    Item = new Item
+                    {
+                        Id = 1,
+                        Name = "Item",
+                        CategoryId = 1,
+                        Category = new Category
+                        {
+                            Id = 1,
+                            Name = "Category"
+                        },
+                        Image = new Image
+                        {
+                            FileUrl = "itemFileUrl",
+                            AltDescription = "itemAltDescription"
+                        },
+                        ShouldBeShown = true
+                    }
+                }
+            ]
+        };
+        
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync(kit);
+        _kitRepository.Setup(x => x.GetFullKitWithMembershipsByIdAsync(elementId))
+            .ReturnsAsync(kit);
+        
+        // Act
+        var result = await _kitService.GetElementCount(elementId);
+        
+        
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe(kit.Elements.Count);
+    }
+
     private KitDetailsVm MapKitToDetailsVm(Kit kit)
     {
         return new KitDetailsVm()
