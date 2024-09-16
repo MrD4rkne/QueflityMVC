@@ -86,14 +86,13 @@ public class MessageService(
             UserId = userContext.UserId,
             Content = firstMessageInConversationVm.Message
         };
+        
+        Conversation conversation = await conversationRepository.GetConversationByProductAndUserAsync(
+            firstMessageInConversationVm.Product.Id, userContext.UserId);
 
-        var existingConversationId = await GetConversationIdByProductAsync(firstMessageInConversationVm.Product.Id);
-
-        Conversation conversation = null;
-
-        if (existingConversationId.IsSuccess)
+        if (conversation is not null)
         {
-            message.ConversationId = existingConversationId.Value;
+            message.ConversationId = conversation.Id;
             _ = await conversationRepository.AddMessageAsync(message);
         }
         else
