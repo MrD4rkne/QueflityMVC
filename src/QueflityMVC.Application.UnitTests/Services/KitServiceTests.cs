@@ -1140,6 +1140,144 @@ public class KitServiceTests
         result.Value.ShouldBe(kit.Elements.Count);
     }
 
+    [Fact]
+    public async Task Delete_DeleteElementAsync_OnNonExisting_ReturnError()
+    {
+        // Arrange
+        int kitId = 1;
+        int itemId = 2;
+        
+        _kitRepository.Setup(x => x.GetElementAsync(kitId,itemId))
+            .ReturnsAsync((Element)null);
+        
+        // Act
+        var result = await _kitService.DeleteElementAsync(kitId,itemId);
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ErrorCodes.Elements.DOES_NOT_EXIST);
+        _kitRepository.Verify(x=>x.DeleteElementAsync(It.IsAny<int>()),Times.Never);
+    }
+    
+    [Fact]
+    public async Task Delete_DeleteElementAsync_ReturnSuccess()
+    {
+        // Arrange
+        int kitId = 1;
+        int itemId = 2;
+        int elementId = 3;
+
+        Element element = new Element()
+        {
+            Id=elementId,
+            ItemId = itemId,
+            KitId = kitId,
+            ItemsAmount = 4,
+            PricePerItem = 5.99m
+        };
+        
+        _kitRepository.Setup(x => x.GetElementAsync(kitId,itemId))
+            .ReturnsAsync(element);
+        
+        // Act
+        var result = await _kitService.DeleteElementAsync(kitId,itemId);
+        
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        _kitRepository.Verify(x=>x.DeleteElementAsync(elementId),Times.Once);
+    }
+    
+    
+    [Fact]
+    public async Task Delete_DeleteKitAsync_OnNonExisting_ReturnError()
+    {
+        // Arrange
+        int kitId = 1;
+        
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync((Kit)null);
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(false);
+        
+        // Act
+        var result = await _kitService.DeleteKitAsync(kitId);
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(Errors.Kits.DoesNotExit.Code);
+        _fileService.Verify(x=>x.DeleteImage(It.IsAny<string>()),Times.Never);
+        _productRepository.Verify(x=>x.BulkUpdateOrderAsync(It.IsAny<uint>()),Times.Never);
+    }
+
+    [Fact]
+    public async Task Delete_DeleteKitAsync_NotVisible_ReturnSuccess()
+    {
+        // Arrange
+        int kitId = 1;
+        Kit kit = new Kit()
+        {
+            Id = kitId,
+            Name = "Kit",
+            Description = "Description",
+            Image = new Image
+            {
+                FileUrl = "fileUrl",
+                AltDescription = "AltDescription"
+            },
+            Elements = []
+        };
+        
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync(kit);
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(true);
+        
+        // Act
+        var result = await _kitService.DeleteKitAsync(kitId);
+        
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        _kitRepository.Verify(x=>x.DeleteAsync(kitId),Times.Once);
+        _fileService.Verify(x=>x.DeleteImage(kit.Image.FileUrl),Times.Once);
+        _productRepository.Verify(x=>x.BulkUpdateOrderAsync(It.IsAny<uint>()),Times.Never);
+    }
+    
+    [Fact]
+    public async Task Delete_DeleteKitAsync_Visible_ReturnSuccess()
+    {
+        // Arrange
+        int kitId = 1;
+        uint orderNo = 2;
+        Kit kit = new Kit()
+        {
+            Id = kitId,
+            Name = "Kit",
+            Description = "Description",
+            Image = new Image
+            {
+                FileUrl = "fileUrl",
+                AltDescription = "AltDescription"
+            },
+            ShouldBeShown = true,
+            OrderNo = orderNo,
+            Elements = []
+        };
+        
+        _kitRepository.Setup(x => x.GetByIdAsync(kitId))
+            .ReturnsAsync(kit);
+        _kitRepository.Setup(x => x.ExistsAsync(kitId))
+            .ReturnsAsync(true);
+        
+        // Act
+        var result = await _kitService.DeleteKitAsync(kitId);
+        
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        _kitRepository.Verify(x=>x.DeleteAsync(kitId),Times.Once);
+        _fileService.Verify(x=>x.DeleteImage(kit.Image.FileUrl),Times.Once);
+        _productRepository.Verify(x=>x.BulkUpdateOrderAsync(orderNo),Times.Once);
+    }
+
     private KitDetailsVm MapKitToDetailsVm(Kit kit)
     {
         return new KitDetailsVm()
