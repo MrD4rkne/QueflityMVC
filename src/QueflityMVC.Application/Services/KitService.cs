@@ -287,7 +287,6 @@ public class KitService(
         {
             await kitRepository.DeleteAsync(id);
             
-            fileService.DeleteImage(kitToDelete.Image.FileUrl);
             if (kitToDelete.ShouldBeShown)
             {
                 await productRepository.BulkUpdateOrderAsync(kitToDelete.OrderNo.Value);
