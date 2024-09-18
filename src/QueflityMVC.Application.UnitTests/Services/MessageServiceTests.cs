@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
+using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Notifications;
 using QueflityMVC.Application.Results;
@@ -547,5 +548,218 @@ public class MessageServiceTests
             notification.Message.Content == firstMessageInConversationVm.Message &&
             notification.Message.UserId == _userId
             )), Times.Once);
+    }
+    
+    [Fact]
+    public async Task Get_GetConversationDetailsAsync_CannotAccessConversation_ReturnsError()
+    {
+        // Arrange
+        int conversationId = 1;
+        
+        Guid otherUserId = GetDifferentGuid(_userId);
+        Conversation conversation= new Conversation()
+        {
+            Id = conversationId,
+            ProductId = 1,
+            UserId = otherUserId,
+            Messages = new List<Message>()
+            {
+                new Message()
+                {
+                    Content = "Content",
+                    SentAt = DateTime.Now,
+                    UserId = otherUserId
+                }
+            },
+            IsClosed = false,
+            Title = "ConvoTitle"
+        };
+        
+        _conversationRepository.Setup(repository => repository.GetByIdAsync(conversationId))
+            .ReturnsAsync(conversation);
+        _userRepository.Setup(userRepo=>userRepo.HasClaimAsync(_userId, Claims.CONVERSATIONS_RESPOND, Claims.CONVERSATIONS_RESPOND))
+            .ReturnsAsync(false);
+        
+        // Act
+        var result = await _messageService.GetConversationDetailsAsync(conversationId);
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ErrorCodes.Conversation.DOES_NOT_EXIST);
+    }
+    
+    [Fact]
+    public async Task Get_GetConversationDetailsAsync_ConversationDoesNotExist_ReturnsError()
+    {
+        // Arrange
+        int conversationId = 1;
+        
+        _conversationRepository.Setup(repository => repository.GetByIdAsync(conversationId))
+            .ReturnsAsync((Conversation)null);
+        
+        // Act
+        var result = await _messageService.GetConversationDetailsAsync(conversationId);
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ErrorCodes.Conversation.DOES_NOT_EXIST);
+    }
+
+    public async Task SendMessage_OnCannotAccessConversation_ReturnsError()
+    {
+        // Arrange
+        int conversationId = 1;
+        
+        Guid otherUserId = GetDifferentGuid(_userId);
+        Conversation conversation= new Conversation()
+        {
+            Id = conversationId,
+            ProductId = 1,
+            UserId = otherUserId,
+            Messages =
+            [
+                new Message()
+                {
+                    Content = "Content",
+                    SentAt = DateTime.Now,
+                    UserId = otherUserId
+                }
+            ],
+            IsClosed = false,
+            Title = "ConvoTitle"
+        };
+        
+        _conversationRepository.Setup(repository => repository.GetByIdAsync(conversationId))
+            .ReturnsAsync(conversation);
+        _userRepository.Setup(userRepo=>userRepo.HasClaimAsync(_userId, Claims.CONVERSATIONS_RESPOND, Claims.CONVERSATIONS_RESPOND))
+            .ReturnsAsync(false);
+        
+        // Act
+        var result = await _messageService.SendMessage(conversationId, "Message");
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ErrorCodes.Conversation.DOES_NOT_EXIST);
+        
+        _conversationRepository.Verify(conversationRepository=> conversationRepository.AddMessageAsync(It.IsAny<Message>()), Times.Never());
+    }
+    
+    [Fact]
+    public async Task SendMessage_OnConversationDoesNotExist_ReturnsError()
+    {
+        // Arrange
+        int conversationId = 1;
+        
+        _conversationRepository.Setup(repository => repository.GetByIdAsync(conversationId))
+            .ReturnsAsync((Conversation)null);
+        
+        // Act
+        var result = await _messageService.SendMessage(conversationId, "Message");
+        
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ErrorCodes.Conversation.DOES_NOT_EXIST);
+        
+        _conversationRepository.Verify(conversationRepository=> conversationRepository.AddMessageAsync(It.IsAny<Message>()), Times.Never());
+    }
+    
+    [Fact]
+    public async Task SendMessage_OwnsConversation_ReturnsSuccess()
+    {
+        // Arrange
+        int conversationId = 1;
+        
+        Conversation conversation= new Conversation()
+        {
+            Id = conversationId,
+            ProductId = 1,
+            UserId = _userId,
+            Messages =
+            [
+                new Message()
+                {
+                    Content = "Content",
+                    SentAt = DateTime.Now,
+                    UserId = _userId
+                }
+            ],
+            IsClosed = false,
+            Title = "ConvoTitle"
+        };
+        
+        _conversationRepository.Setup(repository => repository.GetByIdAsync(conversationId))
+            .ReturnsAsync(conversation);
+        _userRepository.Setup(userRepo=>userRepo.HasClaimAsync(_userId, Claims.CONVERSATIONS_RESPOND, Claims.CONVERSATIONS_RESPOND))
+            .ReturnsAsync(false);
+        
+        // Act
+        var result = await _messageService.SendMessage(conversationId, "Message");
+        
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        
+        _conversationRepository.Verify(conversationRepository=> conversationRepository.AddMessageAsync(It.Is<Message>(msg=>
+            msg.ConversationId == conversationId &&
+            msg.Content == "Message" &&
+            msg.UserId == _userId
+            )), Times.Once());
+    }
+    
+    [Fact]
+    public async Task SendMessage_HasClaimsToAnswerConversations_ReturnsSuccess()
+    {
+        // Arrange
+        int conversationId = 1;
+        
+        Guid otherUserId = GetDifferentGuid(_userId);
+        Conversation conversation= new Conversation()
+        {
+            Id = conversationId,
+            ProductId = 1,
+            UserId = otherUserId,
+            Messages =
+            [
+                new Message()
+                {
+                    Content = "Content",
+                    SentAt = DateTime.Now,
+                    UserId = otherUserId
+                }
+            ],
+            IsClosed = false,
+            Title = "ConvoTitle"
+        };
+        
+        _conversationRepository.Setup(repository => repository.GetByIdAsync(conversationId))
+            .ReturnsAsync(conversation);
+        _userRepository.Setup(userRepo=>userRepo.HasClaimAsync(_userId, Claims.CONVERSATIONS_RESPOND, Claims.CONVERSATIONS_RESPOND))
+            .ReturnsAsync(true);
+        
+        // Act
+        var result = await _messageService.SendMessage(conversationId, "Message");
+        
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        
+        _conversationRepository.Verify(conversationRepository=> conversationRepository.AddMessageAsync(It.Is<Message>(msg=>
+            msg.ConversationId == conversationId &&
+            msg.Content == "Message" &&
+            msg.UserId == _userId
+        )), Times.Once());
+    }
+    
+    private Guid GetDifferentGuid(Guid guid)
+    {
+        return GetDifferentGuid([guid]);
+    }
+    
+    private Guid GetDifferentGuid(Guid[] guids)
+    {
+        Guid newGuid;
+        do
+        {
+            newGuid = Guid.NewGuid();
+        }while(guids.Contains(newGuid));
+        return newGuid;
     }
 }
