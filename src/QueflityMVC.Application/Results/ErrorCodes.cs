@@ -9,6 +9,11 @@ public static class ErrorCodes
         public const string NO_CATEGORIES = "Item.NoCategories";
     }
 
+    public static class Files
+    {
+        public const string FILE_UPLOAD_FAILED = "Files.FileUploadFailed";
+    }
+
     public static class Kits
     {
         public const string DOES_NOT_EXIST = "Kit.DoesNotExist";
@@ -18,7 +23,7 @@ public static class ErrorCodes
     {
         public const string DOES_NOT_EXIST = "Product.DoesNotExist";
         public const string INVALID_ORDER = "Product.NotValidOrder";
-        public const string PURCHASABLE_MISSING_IN_ORDER = "Product.ProductMissingInOrder";
+        public const string product_MISSING_IN_ORDER = "Product.ProductMissingInOrder";
     }
 
     public static class User
@@ -29,11 +34,20 @@ public static class ErrorCodes
 
         public const string DOES_NOT_EXIST = "User.DoesNotExist";
     }
+    
+    public static class Claims
+    {
+        public const string DOES_NOT_EXIST = "Claims.DoesNotExist";
+    }
+    
+    public static class Roles
+    {
+        public const string DOES_NOT_EXIST = "Roles.DoesNotExist";
+    }
 
     public static class Conversation
     {
         public const string DOES_NOT_EXIST = "Conversation.DoesNotExist";
-        public const string DOES_NOT_BELONG_TO_USER = "Conversation.DoesNotBelongToUser";
         public const string ALREADY_EXISTS = "Conversation.AlreadyExists";
     }
 
@@ -47,5 +61,17 @@ public static class ErrorCodes
     {
         public const string DUPLICATED_NAME = "Categories.DuplicatedName";
         public const string DOES_NOT_EXIST = "Categories.DoesNotExist";
+        public const string HAS_ITEMS = "Categories.HasItems";
+    }
+
+    public static class Emails
+    {
+        public const string COULD_NOT_SEND = "Emails.CouldNotSend";
+    }
+
+    public static class Elements
+    {
+        public const string DOES_NOT_EXIST = "Elements.DoesNotExist";
+        public const string ALREADY_EXISTS = "Elements.AlreadyExists";
     }
 }

@@ -9,16 +9,24 @@ public class OneOfMultiplePoliciesAuthorizationHandler(IServiceProvider serviceP
         OneOfMultiplePoliciesRequirement requirement)
     {
         var authorizationService = serviceProvider.GetRequiredService<IAuthorizationService>();
-        foreach (string policy in requirement.Policies)
+
+        // Parallelize sub-policy checks
+        var tasks = requirement.Policies.Select(async policy =>
         {
             var result = await authorizationService.AuthorizeAsync(context.User, policy);
-            if (result.Succeeded)
-            {
-                context.Succeed(requirement); // User meets one of the policies
-                return;
-            }
-        }
+            return result.Succeeded;
+        });
 
-        context.Fail(); // None of the policies were fulfilled
+        // Wait for all tasks to complete and check if any task returned true
+        var results = await Task.WhenAll(tasks);
+
+        // If any task succeeded, return true
+        if (results.Any(r => r))
+        {
+            context.Succeed(requirement);
+            return;
+        }
+        
+        context.Fail();
     }
 }

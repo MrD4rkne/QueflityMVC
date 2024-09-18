@@ -10,7 +10,7 @@ public interface IBaseRepository<T> where T : BaseEntity
     /// <param name="entityToAdd">Entity to be added</param>
     /// <returns>Entity's id</returns>
     /// <exception cref="ArgumentNullException">Entity is null</exception>
-    Task<int> AddAsync(T entityToAdd);
+    Task<T> AddAsync(T entityToAdd);
 
     /// <summary>
     ///     Delete entity by Id

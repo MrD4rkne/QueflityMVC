@@ -22,13 +22,13 @@ public interface IUserRepository
 
     Task<List<string>> GetAssignedClaimsIdsAsync(Guid userId);
 
-    Task GiveClaimsAsync(Guid userId, string[] claimsIds);
-
-    Task RemoveClaimsAsync(Guid userId, string[] claimsIds);
+    Task UpdateClaimsAsync(Guid userId, string[] claimsIds);
 
     Task<bool> HasVerifiedEmail(Guid userId);
 
     Task<string?> GetEmailForUserAsync(Guid userId);
 
     Task<bool> HasClaimAsync(Guid userId, string claimType, string claimValue);
+    
+    Task UpdateUserRolesAsync(Guid userId, Guid[] rolesForUser);
 }

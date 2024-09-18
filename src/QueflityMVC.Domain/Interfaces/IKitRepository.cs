@@ -2,7 +2,7 @@
 
 namespace QueflityMVC.Domain.Interfaces;
 
-public interface IKitRepository : IBaseProductRepository<Kit>
+public interface IKitRepository : IBaseRepository<Kit>
 {
     Task<Kit?> GetFullKitWithMembershipsByIdAsync(int id);
 
@@ -15,10 +15,12 @@ public interface IKitRepository : IBaseProductRepository<Kit>
     Task AddComponentAsync(Element componentToCreate);
 
     Task<Element?> GetElementAsync(int kitId, int itemId);
+    
+    Task<Element?> GetElementAsync(int elementId);
 
     Task UpdateElementAsync(Element componentToEdit);
 
     Task DeleteElementAsync(int kitId, int itemId);
-
-    Task<int> GetElementCount(int kitId);
+    
+    Task DeleteElementAsync(int elementId);
 }

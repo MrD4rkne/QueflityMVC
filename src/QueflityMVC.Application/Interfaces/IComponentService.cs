@@ -9,9 +9,9 @@ public interface IComponentService
 
     Task<Result> CreateComponentAsync(ComponentVm componentToCreateVm);
 
-    Task<ComponentVm?> GetComponentVmForEditAsync(int id);
+    Task<Result<ComponentVm>> GetComponentVmForEditAsync(int id);
 
     Task<Result> UpdateComponentAsync(ComponentVm componentToEditVm);
 
-    Task DeleteComponentAsync(int id);
+    Task<Result> DeleteComponentAsync(int id);
 }

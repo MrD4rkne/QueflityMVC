@@ -92,10 +92,10 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseHsts();
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Home/Error");
 }
 
-app.UseMiddleware<HttpErrorCodesMiddleware>();
+app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

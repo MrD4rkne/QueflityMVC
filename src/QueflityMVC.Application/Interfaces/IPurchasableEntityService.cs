@@ -3,7 +3,7 @@ using QueflityMVC.Application.ViewModels.Product;
 
 namespace QueflityMVC.Application.Interfaces;
 
-public interface IProductEntityService
+public interface IProductService
 {
     Task<EditOrderVm> GetEntitiesOrderVm();
 

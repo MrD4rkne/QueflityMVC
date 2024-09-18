@@ -2,10 +2,11 @@
 using QueflityMVC.Domain.Errors;
 using QueflityMVC.Domain.Interfaces;
 using QueflityMVC.Domain.Models;
+using QueflityMVC.Persistence.Common;
 
 namespace QueflityMVC.Persistence.Repositories;
 
-public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbContext), IItemRepository
+public class ItemRepository(Context dbContext) : BaseRepository<Item>(dbContext), IItemRepository
 {
     public override Task<Item?> GetByIdAsync(int entityId)
     {
@@ -51,15 +52,6 @@ public class ItemRepository(Context dbContext) : BaseProductRepository<Item>(dbC
 
         item.Components = components;
         await UpdateAsync(item);
-    }
-
-    public Task<uint?> GetOrderNoByIdAsync(int itemId)
-    {
-        return DbContext.Items
-            .AsNoTracking()
-            .Where(x => x.Id == itemId)
-            .Select(x => x.OrderNo)
-            .FirstOrDefaultAsync();
     }
 
     public override async Task<Item> UpdateAsync(Item entityToUpdate)

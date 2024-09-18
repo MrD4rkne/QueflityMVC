@@ -52,8 +52,7 @@ public class ConversationsController(IMessageService messageService, ILogger<Con
 
         return conversationDetails.Error.Code switch
         {
-            ErrorCodes.Conversation.DOES_NOT_EXIST => StatusCode(404),
-            ErrorCodes.Conversation.DOES_NOT_BELONG_TO_USER => StatusCode(403)
+            ErrorCodes.Conversation.DOES_NOT_EXIST => StatusCode(404)
         };
     }
 }

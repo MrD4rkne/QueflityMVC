@@ -14,6 +14,12 @@ public static class Errors
             ErrorCodes.Items.NO_CATEGORIES, "No categories found");
     }
 
+    public static class Files
+    {
+        public static readonly Error FileUploadFailed = new(
+            ErrorCodes.Files.FILE_UPLOAD_FAILED, "File upload failed");
+    }
+
     public static class Kits
     {
         public static readonly Error DoesNotExit = new(
@@ -23,10 +29,10 @@ public static class Errors
     public static class Product
     {
         public static readonly Error InvalidOrder = new(
-            ErrorCodes.Product.INVALID_ORDER, "Order of purchasable is not valid");
+            ErrorCodes.Product.INVALID_ORDER, "Order of product is not valid");
 
         public static readonly Error ProductMissingInOrder = new(
-            ErrorCodes.Product.PURCHASABLE_MISSING_IN_ORDER, "Not every visible purchasable is in order");
+            ErrorCodes.Product.product_MISSING_IN_ORDER, "Not every visible product is in order");
 
         public static readonly Error DoesNotExist = new(
             ErrorCodes.Product.DOES_NOT_EXIST, "Product does not exist");
@@ -44,13 +50,22 @@ public static class Errors
             ErrorCodes.User.DOES_NOT_EXIST, "User does not exist");
     }
 
+    public static class Claims
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Claims.DOES_NOT_EXIST, "Claim does not exist");
+    }
+
+    public static class Roles
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Roles.DOES_NOT_EXIST, "Role does not exist");
+    }
+
     public static class Conversation
     {
         public static readonly Error DoesNotExist = new(
             ErrorCodes.Conversation.DOES_NOT_EXIST, "Conversation does not exist");
-
-        public static readonly Error DoesNotBelongToUser = new(
-            ErrorCodes.Conversation.DOES_NOT_BELONG_TO_USER, "Conversation does not belong to user");
 
         public static readonly Error AlreadyExists = new(
             ErrorCodes.Conversation.ALREADY_EXISTS, "Conversation already exists");
@@ -72,5 +87,23 @@ public static class Errors
 
         public static readonly Error DoesNotExist = new(
             ErrorCodes.Categories.DOES_NOT_EXIST, "Category does not exist");
+
+        public static readonly Error HasItems = new(
+            ErrorCodes.Categories.HAS_ITEMS, "Category has items");
+    }
+
+    public static class Emails
+    {
+        public static readonly Error CouldNotSentEmail = new(
+            ErrorCodes.Emails.COULD_NOT_SEND, "Could not send email");
+    }
+    
+    public static class Elements
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Elements.DOES_NOT_EXIST, "Element does not exist");
+
+        public static readonly Error AlreadyExists = new(
+            ErrorCodes.Elements.ALREADY_EXISTS, "Element already exists");
     }
 }

@@ -26,7 +26,7 @@ public static class DependencyInjection
         services.AddTransient<IKitService, KitService>();
         services.AddTransient<IFileService, FileService>();
         services.AddTransient<IUserService, UserService>();
-        services.AddTransient<IProductEntityService, ProductEntityService>();
+        services.AddTransient<IProductService, ProductService>();
         services.AddTransient<IMessageService, MessageService>();
         services.AddTransient<IEmailService, EmailService>();
 

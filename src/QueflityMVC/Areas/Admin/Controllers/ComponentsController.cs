@@ -12,17 +12,12 @@ using QueflityMVC.Web.Common;
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class ComponentsController : Controller
+public class ComponentsController(
+    IComponentService componentService,
+    ILogger<ComponentsController> logger,
+    IValidator<ComponentVm> categoryValidator)
+    : Controller
 {
-    private readonly IValidator<ComponentVm> _categoryValidator;
-    private readonly IComponentService _componentService;
-
-    public ComponentsController(IComponentService componentService, IValidator<ComponentVm> categoryValidator)
-    {
-        _componentService = componentService;
-        _categoryValidator = categoryValidator;
-    }
-
     [HttpGet]
     [Authorize(Policy = Policies.ENTITIES_LIST)]
     public async Task<IActionResult> Index()
@@ -45,7 +40,7 @@ public class ComponentsController : Controller
 
         listComponents.NameFilter ??= string.Empty;
 
-        var listVm = await _componentService.GetFilteredListAsync(listComponents);
+        var listVm = await componentService.GetFilteredListAsync(listComponents);
         return View(listVm);
     }
 
@@ -63,14 +58,14 @@ public class ComponentsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Create(ComponentVm componentToAddVm)
     {
-        var validationResult = await _categoryValidator.ValidateAsync(componentToAddVm);
+        var validationResult = await categoryValidator.ValidateAsync(componentToAddVm);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
             return View("Create", componentToAddVm);
         }
 
-        var result = await _componentService.CreateComponentAsync(componentToAddVm);
+        var result = await componentService.CreateComponentAsync(componentToAddVm);
         switch (result)
         {
             case { IsSuccess: true }:
@@ -89,13 +84,17 @@ public class ComponentsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(int id)
     {
-        var componentVm = await _componentService.GetComponentVmForEditAsync(id);
-        if (componentVm is null)
+        var result = await componentService.GetComponentVmForEditAsync(id);
+        switch (result)
         {
-            return NotFound();
+            case { IsSuccess: true }:
+                return View(result.Value);
+            case { IsFailure: true, Error.Code: ErrorCodes.Components.DOES_NOT_EXIST }:
+                return NotFound();
+            default:
+                logger.LogError("Error while getting component with id {id}: {error}", id, result.Error);
+                return this.RedirectToError();
         }
-
-        return View(componentVm);
     }
 
     [Route("Edit")]
@@ -104,14 +103,14 @@ public class ComponentsController : Controller
     [Authorize(Policy = Policies.ENTITIES_EDIT)]
     public async Task<IActionResult> Edit(ComponentVm componentToEditVm)
     {
-        var validationResult = await _categoryValidator.ValidateAsync(componentToEditVm);
+        var validationResult = await categoryValidator.ValidateAsync(componentToEditVm);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
             return View("Edit", componentToEditVm);
         }
 
-        var result = await _componentService.UpdateComponentAsync(componentToEditVm);
+        var result = await componentService.UpdateComponentAsync(componentToEditVm);
         switch (result)
         {
             case { IsSuccess: true }:
@@ -123,6 +122,8 @@ public class ComponentsController : Controller
             case { IsFailure: true, Error.Code: ErrorCodes.Components.DOES_NOT_EXIST }:
                 return NotFound();
             default:
+                logger.LogError("Error while updating component with id {id}: {error}", componentToEditVm.Id,
+                    result.Error);
                 return this.RedirectToError();
         }
     }
@@ -131,7 +132,16 @@ public class ComponentsController : Controller
     [Authorize(Policy = Policies.ENTITIES_CREATE)]
     public async Task<IActionResult> Delete(int id)
     {
-        await _componentService.DeleteComponentAsync(id);
-        return RedirectToAction("Index");
+        var result = await componentService.DeleteComponentAsync(id);
+        switch (result)
+        {
+            case { IsSuccess: true }:
+                return RedirectToAction("Index");
+            case { IsFailure: true, Error.Code: ErrorCodes.Components.DOES_NOT_EXIST }:
+                return NotFound();
+            default:
+                logger.LogError("Error while deleting component with id {id}: {error}", id, result.Error);
+                return this.RedirectToError();
+        }
     }
 }

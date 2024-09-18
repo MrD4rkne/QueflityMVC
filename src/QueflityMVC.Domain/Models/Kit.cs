@@ -6,7 +6,7 @@ public class Kit : Product
 
     public override decimal Price
     {
-        get => Elements.Sum(e => e.ItemsAmount * e.PricePerItem);
+        get => Elements?.Sum(x => x.ItemsAmount * x.PricePerItem) ?? 0;
         protected set
         {
             /* No setter needed, as it is calculated */

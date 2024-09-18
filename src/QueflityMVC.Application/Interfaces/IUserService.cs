@@ -15,7 +15,7 @@ public interface IUserService
 
     Task<UserRolesVm> GetUsersRolesVmAsync(Guid userId);
 
-    Task UpdateUserClaimsAsync(UserClaimsVm userClaimsVm);
+    Task<Result> UpdateUserClaimsAsync(UserClaimsVm userClaimsVm);
 
-    Task UpdateUserRolesAsync(UserRolesVm userRolesVm);
+    Task<Result> UpdateUserRolesAsync(UserRolesVm userRolesVm);
 }

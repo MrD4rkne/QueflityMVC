@@ -36,7 +36,7 @@ public class ProductVm : IMapFrom<Domain.Models.Item>, IMapFrom<Domain.Models.Ki
                     typeof(Domain.Models.Item)),
                 ProductType.Kit => (Domain.Models.Kit)ctx.Mapper.Map(vm, typeof(ProductVm),
                     typeof(Domain.Models.Kit)),
-                _ => throw new InvalidOperationException("Unknown purchasable type")
+                _ => throw new InvalidOperationException("Unknown product type")
             });
     }
 }

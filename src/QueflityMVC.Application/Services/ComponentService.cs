@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using QueflityMVC.Application.Common.Pagination;
-using QueflityMVC.Application.Exceptions;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.ViewModels.Component;
@@ -33,9 +32,15 @@ public class ComponentService : IComponentService
         return Result.Success();
     }
 
-    public Task DeleteComponentAsync(int id)
+    public async Task<Result> DeleteComponentAsync(int id)
     {
-        return _componentRepository.DeleteAsync(id);
+        if (!await _componentRepository.ExistsAsync(id))
+        {
+            return Result.Failure(Errors.Components.DoesNotExist);
+        }
+
+        await _componentRepository.DeleteAsync(id);
+        return Result.Success();
     }
 
     public async Task<ListComponentsVm> GetFilteredListAsync(ListComponentsVm listComponentsVm)
@@ -48,10 +53,16 @@ public class ComponentService : IComponentService
         return listComponentsVm;
     }
 
-    public async Task<ComponentVm?> GetComponentVmForEditAsync(int id)
+    public async Task<Result<ComponentVm>> GetComponentVmForEditAsync(int id)
     {
-        var componentEntity = await _componentRepository.GetByIdAsync(id) ?? throw new EntityNotFoundException();
-        return _mapper.Map<ComponentVm>(componentEntity);
+        var componentEntity = await _componentRepository.GetByIdAsync(id);
+        if (componentEntity is null)
+        {
+            return Result<ComponentVm>.Failure(Errors.Components.DoesNotExist);
+        }
+
+        var componentVm = _mapper.Map<ComponentVm>(componentEntity);
+        return Result<ComponentVm>.Success(componentVm);
     }
 
     public async Task<Result> UpdateComponentAsync(ComponentVm componentToEditVm)

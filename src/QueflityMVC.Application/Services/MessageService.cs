@@ -15,7 +15,7 @@ using QueflityMVC.Domain.Interfaces;
 namespace QueflityMVC.Application.Services;
 
 public class MessageService(
-    IProductRepository purchasableRepository,
+    IProductRepository productRepository,
     IUserRepository userRepository,
     INotificationsService notificationsService,
     IConversationRepository conversationRepository,
@@ -23,36 +23,36 @@ public class MessageService(
     IUserContext userContext)
     : IMessageService
 {
-    public async Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int purchasableId)
+    public async Task<Result<FirstMessageInConversationVm>> GetContactVmAsync(int productId)
     {
         if (!await userRepository.HasVerifiedEmail(userContext.UserId))
         {
             return Result<FirstMessageInConversationVm>.Failure(Errors.User.EmailNotVerified);
         }
 
-        var existingConversation = await GetConversationIdByProductAsync(purchasableId, userContext.UserId);
+        var existingConversation = await GetConversationIdByProductAsync(productId, userContext.UserId);
         if (existingConversation.IsSuccess)
         {
             return Result<FirstMessageInConversationVm>.Failure(Errors.Conversation.AlreadyExists);
         }
 
-        var purchasable = await purchasableRepository.GetByIdAsync(purchasableId);
-        if (purchasable is null)
+        var product = await productRepository.GetByIdAsync(productId);
+        if (product is null)
         {
             return Result<FirstMessageInConversationVm>.Failure(Errors.Product.DoesNotExist);
         }
 
         FirstMessageInConversationVm firstMessageInConversationVm = new()
         {
-            Product = mapper.Map<ProductShortVm>(purchasable),
+            Product = mapper.Map<ProductShortVm>(product),
             Email = await userRepository.GetEmailForUserAsync(userContext.UserId)
         };
         return Result<FirstMessageInConversationVm>.Success(firstMessageInConversationVm);
     }
 
-    public Task<Result<int>> GetConversationIdByProductAsync(int purchasableId)
+    public Task<Result<int>> GetConversationIdByProductAsync(int productId)
     {
-        return GetConversationIdByProductAsync(purchasableId, userContext.UserId);
+        return GetConversationIdByProductAsync(productId, userContext.UserId);
     }
 
     public async Task<Result<int>> StartConversationAsync(FirstMessageInConversationVm firstMessageInConversationVm)
@@ -86,14 +86,13 @@ public class MessageService(
             UserId = userContext.UserId,
             Content = firstMessageInConversationVm.Message
         };
+        
+        Conversation conversation = await conversationRepository.GetConversationByProductAndUserAsync(
+            firstMessageInConversationVm.Product.Id, userContext.UserId);
 
-        var existingConversationId = await GetConversationIdByProductAsync(firstMessageInConversationVm.Product.Id);
-
-        Conversation conversation = null;
-
-        if (existingConversationId.IsSuccess)
+        if (conversation is not null)
         {
-            message.ConversationId = existingConversationId.Value;
+            message.ConversationId = conversation.Id;
             _ = await conversationRepository.AddMessageAsync(message);
         }
         else
@@ -157,12 +156,17 @@ public class MessageService(
 
     public async Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId)
     {
-        if (!await CanAccessConversation(conversationId))
-        {
-            return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
-        }
-
         var conversation = await conversationRepository.GetConversationDetails(conversationId);
+        if (conversation is null)
+        {
+            return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotExist);
+        }
+        
+        if (!await CanAccessConversation(conversation,userContext.UserId))
+        {
+            return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotExist);
+        }
+        
         var conversationVm = mapper.Map<ConversationVm>(conversation);
 
         var messages = conversationRepository.GetMessagesForConversation(conversationId);
@@ -174,9 +178,15 @@ public class MessageService(
 
     public async Task<Result<MessageVm>> SendMessage(int conversationId, string messageContent)
     {
-        if (!await CanAccessConversation(conversationId))
+        if (!await CanAccessConversation(conversationId, userContext.UserId))
         {
-            return Result<MessageVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
+            return Result<MessageVm>.Failure(Errors.Conversation.DoesNotExist);
+        }
+        
+        var conversation = await conversationRepository.GetByIdAsync(conversationId);
+        if (conversation is null)
+        {
+            return Result<MessageVm>.Failure(Errors.Conversation.DoesNotExist);
         }
 
         Message message = new()
@@ -193,7 +203,7 @@ public class MessageService(
 
     public async Task<Result<ProductShortVm>> GetProductForContactVmAsync(int productId)
     {
-        var product = await purchasableRepository.GetByIdAsync(productId);
+        var product = await productRepository.GetByIdAsync(productId);
         if (product is null)
         {
             return Result<ProductShortVm>.Failure(Errors.Product.DoesNotExist);
@@ -201,21 +211,36 @@ public class MessageService(
 
         return Result<ProductShortVm>.Success(mapper.Map<ProductShortVm>(product));
     }
-
-    public async Task<bool> CanAccessConversation(int conversationId)
+    
+    public Task<bool> CanAccessConversation(int conversationId)
     {
-        var conversation = await conversationRepository.GetByIdAsync(conversationId);
-        if (conversation.UserId == userContext.UserId)
-        {
-            return true;
-        }
-
-        return await CanRespondToConversations(userContext.UserId);
+        return CanAccessConversation(conversationId, userContext.UserId);
     }
 
-    private async Task<Result<int>> GetConversationIdByProductAsync(int purchasableId, Guid userId)
+    private async Task<bool> CanAccessConversation(int conversationId, Guid userId)
     {
-        var conversation = await conversationRepository.GetConversationByProductAndUserAsync(purchasableId, userId);
+        var conversation = await conversationRepository.GetByIdAsync(conversationId);
+        if (conversation is null)
+        {
+            return false;
+        }
+
+        return await CanAccessConversation(conversation, userId);
+    }
+    
+    private Task<bool> CanAccessConversation(Conversation conversation, Guid userId)
+    {
+        if (conversation.UserId == userId)
+        {
+            return Task.FromResult(true);
+        }
+
+        return CanAccessConversation(userId);
+    }
+
+    private async Task<Result<int>> GetConversationIdByProductAsync(int productId, Guid userId)
+    {
+        var conversation = await conversationRepository.GetConversationByProductAndUserAsync(productId, userId);
         if (conversation is not null)
         {
             return Result<int>.Success(conversation.Id);
@@ -244,7 +269,7 @@ public class MessageService(
         return userConversationsVm;
     }
 
-    private Task<bool> CanRespondToConversations(Guid userContextUserId)
+    private Task<bool> CanAccessConversation(Guid userContextUserId)
     {
         return userRepository.HasClaimAsync(userContextUserId, Claims.CONVERSATIONS_RESPOND,
             Claims.CONVERSATIONS_RESPOND);

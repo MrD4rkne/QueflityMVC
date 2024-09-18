@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Constants;
 using QueflityMVC.Application.Exceptions;
@@ -107,36 +108,49 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
         return userRolesVm;
     }
 
-    public async Task UpdateUserClaimsAsync(UserClaimsVm userClaimsVm)
+    public async Task<Result> UpdateUserClaimsAsync(UserClaimsVm userClaimsVm)
     {
         string[] claimsToGive = userClaimsVm.AllClaims
             .Where(x => x.IsSelected)
             .Select(x => x.Id)
-            .ToArray();
-        string[] claimsToRemove = userClaimsVm.AllClaims
-            .Where(x => x.IsSelected == false)
-            .Select(x => x.Id)
+            .Distinct()
             .ToArray();
 
-        await userRepository.GiveClaimsAsync(userClaimsVm.UserId, claimsToGive);
-        await userRepository.RemoveClaimsAsync(userClaimsVm.UserId, claimsToRemove);
-    }
-
-    public async Task UpdateUserRolesAsync(UserRolesVm userRolesVm)
-    {
-        await Parallel.ForEachAsync(userRolesVm.AllRoles,
-            async (role, cs) => { await UpdateRoleMembership(role, userRolesVm.UserId); });
-    }
-
-    private Task UpdateRoleMembership(RoleForSelectionVm? role, Guid userId)
-    {
-        if (role is null)
+        var allClaims = Claims.GetAll();
+        
+        bool doAllClaimsExist = claimsToGive.All(claim => allClaims.Contains(claim));
+        if (!doAllClaimsExist)
         {
-            return Task.CompletedTask;
+            return Result.Failure(Errors.Claims.DoesNotExist);
         }
-
-        return role.IsSelected
-            ? userRepository.AddToRoleAsync(userId, role.Id)
-            : userRepository.RemoveFromRoleAsync(userId, role.Id);
+        
+        await userRepository.UpdateClaimsAsync(userClaimsVm.UserId, claimsToGive);
+        return Result.Success();
     }
+
+    public async Task<Result> UpdateUserRolesAsync(UserRolesVm userRolesVm)
+    {
+        var rolesForUser = userRolesVm.AllRoles
+            .Where(x => x.IsSelected)
+            .Select(x => new
+            {
+                Id = x.Id,
+                Name = x.Name
+            })
+            .ToArray();
+        
+       var allRoles = await userRepository.GetAllRoles()
+           .ToListAsync();
+       
+       bool doAllRolesExist = rolesForUser.All(role => allRoles.Exists(x => x.Id == role.Id));
+       if (!doAllRolesExist)
+       {
+           return Result.Failure(Errors.Roles.DoesNotExist);
+       }
+
+       Guid[] rolesToAddIds = rolesForUser.Select(x => x.Id).ToArray();
+       await userRepository.UpdateUserRolesAsync(userRolesVm.UserId, rolesToAddIds);
+       return Result.Success();
+    }
+    
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QueflityMVC.Application.Common.Pagination;
 using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Results;
@@ -19,15 +20,37 @@ public class ItemService(
     ICategoryRepository categoryRepository,
     IComponentRepository componentRepository,
     IFileService fileService,
-    IProductRepository purchasableRepository)
+    IProductRepository productRepository,
+    ILogger<ItemService> logger)
     : IItemService
 {
-    public async Task<int> CreateItemAsync(ItemVm? createItemVm)
+    public async Task<Result> CreateItemAsync(ItemVm createItemVm)
     {
-        createItemVm.Image!.FileUrl = await fileService.UploadFileAsync(createItemVm.Image.FormFile);
+        if (!await categoryRepository.ExistsAsync(createItemVm.CategoryId.Value))
+        {
+            return Result.Failure(Errors.Categories.DoesNotExist);
+        }
+
+        try
+        {
+            createItemVm.Image!.FileUrl = await fileService.UploadFileAsync(createItemVm.Image.FormFile);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Image upload failed when creating item: {Item}", createItemVm);
+            return Result.Failure(Errors.Files.FileUploadFailed);
+        }
+
         var itemToCreate = mapper.Map<Item>(createItemVm);
-        itemToCreate.OrderNo = await purchasableRepository.GetNextOrderNumberAsync();
-        return await itemRepository.AddAsync(itemToCreate);
+
+        if (itemToCreate.ShouldBeShown)
+        {
+            itemToCreate.OrderNo = await productRepository.GetNextOrderNumberAsync();
+        }
+
+        await itemRepository.AddAsync(itemToCreate);
+
+        return Result.Success();
     }
 
     public async Task<Result> DeleteItemAsync(int id)
@@ -48,7 +71,7 @@ public class ItemService(
             await itemRepository.DeleteAsync(id);
             if (itemToDelete.ShouldBeShown)
             {
-                await itemRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
+                await productRepository.BulkUpdateOrderAsync(itemToDelete.OrderNo.Value);
             }
         }
         catch (ResourceNotFoundException)
@@ -81,36 +104,73 @@ public class ItemService(
             return Result<ManageItemVm>.Failure(Errors.Items.DoesNotExit);
         }
 
+        var categories = await categoryRepository.GetAll()
+            .ProjectTo<CategoryForSelectVm>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
         ManageItemVm manageObjItemVm = new()
         {
             ItemVm = mapper.Map<ItemVm>(item),
-            Categories = await categoryRepository.GetAll()
-                .ProjectTo<CategoryForSelectVm>(mapper.ConfigurationProvider).ToListAsync()
+            Categories = categories
         };
         return Result<ManageItemVm>.Success(manageObjItemVm);
     }
 
-    public async Task UpdateItemAsync(ItemVm? updateItemVm)
+    public async Task<Result<ItemVm>> UpdateItemAsync(ItemVm updateItemVm)
     {
-        var item = mapper.Map<Item>(updateItemVm);
+        var itemToUpdate = await itemRepository.GetByIdAsync(updateItemVm.Id);
+        if (itemToUpdate is null)
+        {
+            return Result<ItemVm>.Failure(Errors.Items.DoesNotExit);
+        }
+
+        if (!await categoryRepository.ExistsAsync(updateItemVm.CategoryId.Value))
+        {
+            return Result<ItemVm>.Failure(Errors.Categories.DoesNotExist);
+        }
+
+        itemToUpdate.CategoryId = updateItemVm.CategoryId.Value;
+        itemToUpdate.Name = updateItemVm.Name;
+        itemToUpdate.SetPrice(updateItemVm.Price);
+        itemToUpdate.Image.AltDescription = updateItemVm.Image.AltDescription;
+        itemToUpdate.ShouldBeShown = updateItemVm.ShouldBeShown;
+
         if (ShouldSwitchImages(updateItemVm))
         {
-            if (item.Image != null)
+            try
             {
-                fileService.DeleteImage(item.Image.FileUrl);
+                string newFileUrl = await fileService.UploadFileAsync(updateItemVm.Image.FormFile);
+
+                if (itemToUpdate.Image is not null)
+                {
+                    fileService.DeleteImage(itemToUpdate.Image.FileUrl);
+                }
+                
+                itemToUpdate.Image.FileUrl = newFileUrl;
             }
-
-            item.Image!.FileUrl = await fileService.UploadFileAsync(updateItemVm.Image!.FormFile!);
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Image upload failed when updating item: {Item}", updateItemVm);
+                return Result<ItemVm>.Failure(Errors.Files.FileUploadFailed);
+            }
         }
 
-        item.OrderNo = await itemRepository.GetOrderNoByIdAsync(item.Id);
-
-        if (item.ShouldBeShown && item.OrderNo is null)
+        // If the item was not shown before, and now it should be, get the next order number
+        if (itemToUpdate is { ShouldBeShown: true, OrderNo: null })
         {
-            item.OrderNo = await purchasableRepository.GetNextOrderNumberAsync();
+            itemToUpdate.OrderNo = await productRepository.GetNextOrderNumberAsync();
         }
 
-        _ = await itemRepository.UpdateAsync(item);
+        // If the item was shown before, and now it should not be, remove the order number
+        if (itemToUpdate is { ShouldBeShown: false, OrderNo: not null })
+        {
+            await productRepository.BulkUpdateOrderAsync(itemToUpdate.OrderNo.Value);
+            itemToUpdate.OrderNo = null;
+        }
+
+        itemToUpdate = await itemRepository.UpdateAsync(itemToUpdate);
+        var updatedVm = mapper.Map<ItemVm>(itemToUpdate);
+        return Result<ItemVm>.Success(updatedVm);
     }
 
     public async Task<Result<ManageItemVm>> GetItemVmForAddingAsync(int? categoryId)
@@ -165,11 +225,29 @@ public class ItemService(
         return Result<ItemComponentsSelectionVm>.Success(selectionVm);
     }
 
-    public Task UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)
+    public async Task<Result> UpdateItemComponentsAsync(ItemComponentsSelectionVm selectionVm)
     {
-        var selectedComponents = mapper.Map<IEnumerable<Component>>(selectionVm.AllComponents.Where(x => x.IsSelected))
+        if(!await itemRepository.ExistsAsync(selectionVm.Item.Id))
+        {
+            return Result.Failure(Errors.Items.DoesNotExit);
+        }
+        
+        var selectedComponentsIds = selectionVm.AllComponents
+            .Where(x => x.IsSelected)
+            .Select(x => x.Id)
             .ToList();
-        return itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
+        var selectedComponents = await componentRepository.GetAll()
+            .Where(x => selectedComponentsIds.Contains(x.Id))
+            .ToListAsync();
+        
+        if(selectedComponents.Count != selectedComponentsIds.Count)
+        {
+            return Result.Failure(Errors.Components.DoesNotExist);
+        }
+        
+        await itemRepository.UpdateComponentsAsync(selectionVm.Item.Id, selectedComponents);
+        
+        return Result.Success();
     }
 
     private bool ShouldSwitchImages(ItemVm? updatedItem)
