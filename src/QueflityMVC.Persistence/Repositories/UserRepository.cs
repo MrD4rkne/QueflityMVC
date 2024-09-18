@@ -13,10 +13,11 @@ public class UserRepository(
     RoleManager<ApplicationRole> roleManager)
     : IUserRepository
 {
+
     private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
 
     protected Context DbContext = dbContext;
-
+    
     public IQueryable<ApplicationUser> GetFilteredUsers(string? userNameFilter)
     {
         var matchingUsers = userManager.Users.AsNoTracking();
@@ -84,31 +85,31 @@ public class UserRepository(
             .ToList()!;
     }
 
-    public async Task GiveClaimsAsync(Guid userId, string[] claimsIds)
+    public async Task UpdateClaimsAsync(Guid userId, string[] claimsIds)
     {
         var user = await GetUserByIdAsync(userId);
         if (user is null)
         {
             throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
         }
-
-        IEnumerable<Claim> claimsToAdd = claimsIds.AsParallel().Select(cl => { return new Claim(cl, cl); });
-        await userManager.AddClaimsAsync(user, claimsToAdd);
-        await userManager.UpdateSecurityStampAsync(user);
-    }
-
-    public async Task RemoveClaimsAsync(Guid userId, string[] claimsIds)
-    {
-        var user = await GetUserByIdAsync(userId) ??
-                   throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
-        IEnumerable<Claim> claimsToRemove = claimsIds.AsParallel().Select(cl => new Claim(cl, cl));
-        await userManager.RemoveClaimsAsync(user, claimsToRemove);
-        await userManager.UpdateSecurityStampAsync(user);
+        
+        dbContext.UserClaims.RemoveRange(dbContext.UserClaims.Where(x => x.UserId == userId));
+        dbContext.UserClaims.AddRange(claimsIds.Select(claimId => new IdentityUserClaim<Guid>
+        {
+            UserId = userId,
+            ClaimType = claimId,
+            ClaimValue = claimId
+        }));
+        
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task<bool> HasVerifiedEmail(Guid userId)
     {
-        return await userManager.IsEmailConfirmedAsync(await GetUserByIdAsync(userId));
+        var user = await GetUserByIdAsync(userId) ??
+                   throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+
+        return user.EmailConfirmed;
     }
 
     public async Task<string?> GetEmailForUserAsync(Guid userId)
@@ -138,6 +139,24 @@ public class UserRepository(
             rc.ClaimType == claimName &&
             rc.ClaimValue == claimValue);
         return hasClaimByRole;
+    }
+
+    public async Task UpdateUserRolesAsync(Guid userId, Guid[] rolesForUser)
+    {
+        var user = await GetUserByIdAsync(userId);
+        if (user is null)
+        {
+            throw new ResourceNotFoundException(entityName: nameof(ApplicationUser));
+        }
+        
+        dbContext.UserRoles.RemoveRange(dbContext.UserRoles.Where(x => x.UserId == userId));
+        dbContext.UserRoles.AddRange(rolesForUser.Select(claimId => new IdentityUserRole<Guid>()
+        {
+            UserId = userId,
+            RoleId = claimId
+        }));
+        
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(ApplicationUser userToUpdate)

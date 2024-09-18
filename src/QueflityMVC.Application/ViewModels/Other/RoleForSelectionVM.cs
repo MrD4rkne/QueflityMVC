@@ -5,7 +5,7 @@ namespace QueflityMVC.Application.ViewModels.Other;
 
 public record RoleForSelectionVm : IMapFrom<ApplicationRole>
 {
-    public required string Id { get; set; }
+    public required Guid Id { get; set; }
 
     public required string Name { get; set; }
 

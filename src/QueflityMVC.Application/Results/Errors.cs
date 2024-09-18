@@ -50,6 +50,18 @@ public static class Errors
             ErrorCodes.User.DOES_NOT_EXIST, "User does not exist");
     }
 
+    public static class Claims
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Claims.DOES_NOT_EXIST, "Claim does not exist");
+    }
+
+    public static class Roles
+    {
+        public static readonly Error DoesNotExist = new(
+            ErrorCodes.Roles.DOES_NOT_EXIST, "Role does not exist");
+    }
+
     public static class Conversation
     {
         public static readonly Error DoesNotExist = new(

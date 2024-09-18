@@ -34,6 +34,16 @@ public static class ErrorCodes
 
         public const string DOES_NOT_EXIST = "User.DoesNotExist";
     }
+    
+    public static class Claims
+    {
+        public const string DOES_NOT_EXIST = "Claims.DoesNotExist";
+    }
+    
+    public static class Roles
+    {
+        public const string DOES_NOT_EXIST = "Roles.DoesNotExist";
+    }
 
     public static class Conversation
     {

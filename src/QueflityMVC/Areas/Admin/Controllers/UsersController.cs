@@ -11,7 +11,7 @@ using QueflityMVC.Web.Common;
 namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class UsersController(IUserService userService, IUserContext userContext) : Controller
+public class UsersController(IUserService userService, IUserContext userContext, ILogger<UsersController> logger) : Controller
 {
     [HttpGet]
     [Authorize(Policy = Policies.USERS_LIST)]
@@ -125,8 +125,18 @@ public class UsersController(IUserService userService, IUserContext userContext)
             return Forbid();
         }
 
-        await userService.UpdateUserClaimsAsync(userClaimsVm);
-        return RedirectToAction("Index");
+        var updateResult = await userService.UpdateUserClaimsAsync(userClaimsVm);
+        switch (updateResult)
+        {
+            case {IsSuccess:true}:
+                return RedirectToAction("Index");
+            case {Error: {Code: ErrorCodes.User.DOES_NOT_EXIST} }:
+            case {Error: {Code: ErrorCodes.Claims.DOES_NOT_EXIST} }:
+                return NotFound();
+            default:
+                logger.LogError("Failed to update user claims {userClaimsVm} with error: {Error}", userClaimsVm, updateResult.Error);
+                return this.RedirectToError();
+        }
     }
 
     private bool CanUserManageRoles(Guid userToBeManagedId)
