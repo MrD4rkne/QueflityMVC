@@ -8,11 +8,10 @@ using QueflityMVC.Domain.Models;
 
 namespace QueflityMVC.Application.Services;
 
-public class ProductEntityService(
+public class ProductService(
     IMapper mapper,
-    IProductRepository productRepository,
-    IUserRepository userRepository)
-    : IProductEntityService
+    IProductRepository productRepository)
+    : IProductService
 {
     public async Task<EditOrderVm> GetEntitiesOrderVm()
     {

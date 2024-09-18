@@ -10,12 +10,12 @@ namespace QueflityMVC.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Policy = Policies.ENTITIES_ORDER)]
-public class DashboardController(IProductEntityService productEntityService) : Controller
+public class DashboardController(IProductService productService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var orderEditVm = await productEntityService.GetEntitiesOrderVm();
+        var orderEditVm = await productService.GetEntitiesOrderVm();
         return View(orderEditVm);
     }
 
@@ -27,7 +27,7 @@ public class DashboardController(IProductEntityService productEntityService) : C
             return BadRequest();
         }
 
-        var result = await productEntityService.UpdateOrderAsync(editOrderVm);
+        var result = await productService.UpdateOrderAsync(editOrderVm);
         if (result.IsSuccess)
         {
             return RedirectToAction(nameof(Index), "Home");
