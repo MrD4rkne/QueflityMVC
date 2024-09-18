@@ -117,7 +117,7 @@ public class UserService(IUserRepository userRepository, IMapper mapper, IUserCo
             .Where(x => x.IsSelected == false)
             .Select(x => x.Id)
             .ToArray();
-
+        
         await userRepository.GiveClaimsAsync(userClaimsVm.UserId, claimsToGive);
         await userRepository.RemoveClaimsAsync(userClaimsVm.UserId, claimsToRemove);
     }

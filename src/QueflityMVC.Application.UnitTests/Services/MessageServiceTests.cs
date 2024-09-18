@@ -5,6 +5,7 @@ using QueflityMVC.Application.Interfaces;
 using QueflityMVC.Application.Notifications;
 using QueflityMVC.Application.Results;
 using QueflityMVC.Application.Services;
+using QueflityMVC.Application.UnitTests.Common;
 using QueflityMVC.Application.ViewModels.Image;
 using QueflityMVC.Application.ViewModels.Other;
 using QueflityMVC.Application.ViewModels.Product;
@@ -556,7 +557,7 @@ public class MessageServiceTests
         // Arrange
         int conversationId = 1;
         
-        Guid otherUserId = GetDifferentGuid(_userId);
+        Guid otherUserId = _userId.GetDifferentGuid();
         Conversation conversation= new Conversation()
         {
             Id = conversationId,
@@ -610,7 +611,7 @@ public class MessageServiceTests
         // Arrange
         int conversationId = 1;
         
-        Guid otherUserId = GetDifferentGuid(_userId);
+        Guid otherUserId = _userId.GetDifferentGuid();
         Conversation conversation= new Conversation()
         {
             Id = conversationId,
@@ -711,7 +712,7 @@ public class MessageServiceTests
         // Arrange
         int conversationId = 1;
         
-        Guid otherUserId = GetDifferentGuid(_userId);
+        Guid otherUserId = _userId.GetDifferentGuid();
         Conversation conversation= new Conversation()
         {
             Id = conversationId,
@@ -746,20 +747,5 @@ public class MessageServiceTests
             msg.Content == "Message" &&
             msg.UserId == _userId
         )), Times.Once());
-    }
-    
-    private Guid GetDifferentGuid(Guid guid)
-    {
-        return GetDifferentGuid([guid]);
-    }
-    
-    private Guid GetDifferentGuid(Guid[] guids)
-    {
-        Guid newGuid;
-        do
-        {
-            newGuid = Guid.NewGuid();
-        }while(guids.Contains(newGuid));
-        return newGuid;
     }
 }
