@@ -156,12 +156,17 @@ public class MessageService(
 
     public async Task<Result<ConversationVm>> GetConversationDetailsAsync(int conversationId)
     {
-        if (!await CanAccessConversation(conversationId))
-        {
-            return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
-        }
-
         var conversation = await conversationRepository.GetConversationDetails(conversationId);
+        if (conversation is null)
+        {
+            return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotExist);
+        }
+        
+        if (!await CanAccessConversation(conversation,userContext.UserId))
+        {
+            return Result<ConversationVm>.Failure(Errors.Conversation.DoesNotExist);
+        }
+        
         var conversationVm = mapper.Map<ConversationVm>(conversation);
 
         var messages = conversationRepository.GetMessagesForConversation(conversationId);
@@ -173,9 +178,15 @@ public class MessageService(
 
     public async Task<Result<MessageVm>> SendMessage(int conversationId, string messageContent)
     {
-        if (!await CanAccessConversation(conversationId))
+        if (!await CanAccessConversation(conversationId, userContext.UserId))
         {
-            return Result<MessageVm>.Failure(Errors.Conversation.DoesNotBelongToUser);
+            return Result<MessageVm>.Failure(Errors.Conversation.DoesNotExist);
+        }
+        
+        var conversation = await conversationRepository.GetByIdAsync(conversationId);
+        if (conversation is null)
+        {
+            return Result<MessageVm>.Failure(Errors.Conversation.DoesNotExist);
         }
 
         Message message = new()
@@ -200,16 +211,31 @@ public class MessageService(
 
         return Result<ProductShortVm>.Success(mapper.Map<ProductShortVm>(product));
     }
+    
+    public Task<bool> CanAccessConversation(int conversationId)
+    {
+        return CanAccessConversation(conversationId, userContext.UserId);
+    }
 
-    public async Task<bool> CanAccessConversation(int conversationId)
+    private async Task<bool> CanAccessConversation(int conversationId, Guid userId)
     {
         var conversation = await conversationRepository.GetByIdAsync(conversationId);
-        if (conversation.UserId == userContext.UserId)
+        if (conversation is null)
         {
-            return true;
+            return false;
         }
 
-        return await CanRespondToConversations(userContext.UserId);
+        return await CanAccessConversation(conversation, userId);
+    }
+    
+    private Task<bool> CanAccessConversation(Conversation conversation, Guid userId)
+    {
+        if (conversation.UserId == userId)
+        {
+            return Task.FromResult(true);
+        }
+
+        return CanAccessConversation(userId);
     }
 
     private async Task<Result<int>> GetConversationIdByProductAsync(int productId, Guid userId)
@@ -243,7 +269,7 @@ public class MessageService(
         return userConversationsVm;
     }
 
-    private Task<bool> CanRespondToConversations(Guid userContextUserId)
+    private Task<bool> CanAccessConversation(Guid userContextUserId)
     {
         return userRepository.HasClaimAsync(userContextUserId, Claims.CONVERSATIONS_RESPOND,
             Claims.CONVERSATIONS_RESPOND);
