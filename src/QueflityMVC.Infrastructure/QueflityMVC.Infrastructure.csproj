@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MailKit" Version="4.7.1.1"/>
+        <PackageReference Include="MailKit" Version="4.16.0"/>
         <PackageReference Include="Mailtrap" Version="1.1.0"/>
         <PackageReference Include="Quartz" Version="3.11.0"/>
         <PackageReference Include="Quartz.AspNetCore" Version="3.11.0"/>
